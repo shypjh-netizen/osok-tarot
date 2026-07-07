@@ -1178,7 +1178,7 @@ const CFG = {
   extraLink:'https://your-extra-payment-link.com',  // ← 추가 질문 결제 링크
   basicCodes: ['TAROT0001','TAROT0002','TAROT0003'], // ← 기본 상담 코드 (결제 후 발급)
   extraCodes: ['EXTRA0001','EXTRA0002','EXTRA0003'], // ← 추가 질문 코드 (결제 후 발급)
-  freeFollowups: 5,  // 기본 포함 추가질문 횟수
+  freeFollowups: 3,  // 기본 포함 추가질문 횟수
 };
 
 /* ── 상태 ── */
@@ -1235,7 +1235,8 @@ function submitCode() {
 
 function goUpgrade() {
   if(CFG.extraLink === 'https://your-extra-payment-link.com') {
-    alert('추가 결제 링크를 CFG.extraLink에 설정해주세요.');
+    showScreen('payment-screen');
+    toggleCodeInput();
     return;
   }
   window.open(CFG.extraLink, '_blank');
