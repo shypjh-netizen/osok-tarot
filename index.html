@@ -407,7 +407,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
         <input type="text" id="followup-input" class="field-input followup-input"
           placeholder="예) 제가 먼저 연락하는 게 좋을까요?" maxlength="100"
           onkeydown="if(event.key==='Enter')sendFollowUp()">
-        <button class="followup-send-btn" onclick="sendFollowUp()">카드 뽑기</button>
+        <button class="followup-send-btn" id="followup-send-btn" onclick="sendFollowUp()">카드 뽑기</button>
       </div>
       <div id="followup-answers"></div>
       <div class="upgrade-banner hidden" id="upgrade-banner">
@@ -1431,7 +1431,11 @@ async function showResult() {
 
   const cardList = S.picked.map((c,i)=>`${i+1}번 카드: ${c.kr} (${c.name}) — 키워드: ${c.kw}`).join('\n');
   const tag = S.name ? `${S.name}님` : '내담자님';
-  const userMsg = `${tag}의 상담 내용이에요.\n\n상황: ${S.situation}\n질문: ${S.question || '(없음)'}\n뽑힌 카드:\n${cardList}\n\n위 카드들을 바탕으로 상황과 질문에 맞는 깊이 있는 타로 리딩을 해주세요.`;
+  const cardCount = S.picked.length;
+  const multiCardGuide = cardCount > 1
+    ? `카드가 ${cardCount}장이에요. 반드시 각 카드를 순서대로 개별 해석하고(각 카드마다 2~3단락씩), 마지막에 전체 흐름을 종합해서 마무리해주세요.`
+    : `카드 1장을 깊이 있게 해석해주세요.`;
+  const userMsg = `${tag}의 상담 내용이에요.\n\n상황: ${S.situation}\n질문: ${S.question || '(없음)'}\n뽑힌 카드 (${cardCount}장):\n${cardList}\n\n${multiCardGuide}`;
 
   S.chatHistory = [{role:'user', content:userMsg}];
 
@@ -1566,7 +1570,7 @@ async function sendFollowUp() {
   const limit = CFG.freeFollowups + (S.extraUnlocked ? CFG.freeFollowups : 0);
   if(S.followupUsed >= limit) return;
 
-  const btn = document.querySelector('.followup-send-btn');
+  const btn = document.getElementById('followup-send-btn');
   btn.disabled = true;
   input.value = '';
 
@@ -1616,7 +1620,7 @@ async function sendFollowUp() {
     document.getElementById('upgrade-banner').classList.remove('hidden');
     document.getElementById('upgrade-banner').scrollIntoView({behavior:'smooth', block:'center'});
   } else {
-    btn.disabled = false;
+    document.getElementById('followup-send-btn').disabled = false;
     input.focus();
   }
 }
