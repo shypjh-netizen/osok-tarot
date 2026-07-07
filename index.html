@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ 타로 상담</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#06061a; --bg2:#0c0c2a; --violet:#6d28d9; --gold:#c9a227;
+  --gold-l:#e8c95a; --text:#ddd6f3; --dim:#9d8fbc;
+  --card-bg:#12103a; --card-b:#3d3580; --white:#f5f0ff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+#stars-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.screen{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px}
+.hidden{display:none!important}
+
+/* 인트로 */
+#intro{text-align:center;background:radial-gradient(ellipse at center,#1a0a3a 0%,var(--bg) 70%)}
+.logo-symbol{font-size:72px;display:block;margin-bottom:12px;animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.logo-title{font-family:'Nanum Myeongjo',serif;font-size:clamp(32px,6vw,56px);font-weight:800;
+  background:linear-gradient(135deg,var(--gold-l),var(--gold),#a07010);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px}
+.logo-sub{margin-top:10px;font-size:15px;color:var(--dim);letter-spacing:2px}
+.intro-desc{max-width:420px;line-height:1.9;font-size:15px;color:var(--dim);margin:20px 0 36px}
+.intro-desc strong{color:var(--gold-l)}
+.divider{width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:20px auto}
+
+/* 버튼 */
+.btn-main{padding:16px 48px;font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:700;
+  background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:none;border-radius:50px;
+  cursor:pointer;box-shadow:0 4px 24px rgba(109,40,217,.5);transition:all .3s;letter-spacing:2px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(109,40,217,.7)}
+.btn-sub{padding:12px 32px;font-family:'Nanum Gothic',sans-serif;font-size:14px;
+  background:transparent;color:var(--dim);border:1px solid var(--card-b);border-radius:50px;
+  cursor:pointer;transition:all .3s;margin-top:14px}
+.btn-sub:hover{color:var(--gold);border-color:var(--gold)}
+
+/* 폼 */
+#question-screen{max-width:560px;width:100%}
+.form-header{text-align:center;margin-bottom:32px}
+.form-header h2{font-family:'Nanum Myeongjo',serif;font-size:26px;font-weight:700;color:var(--gold-l);margin-bottom:8px}
+.form-header p{font-size:14px;color:var(--dim);line-height:1.7}
+.form-card{background:var(--bg2);border:1px solid var(--card-b);border-radius:16px;padding:28px;margin-bottom:20px}
+.field-label{display:block;font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px;letter-spacing:1px}
+.field-input{width:100%;padding:12px 16px;background:#0a0a20;border:1px solid var(--card-b);
+  border-radius:8px;color:var(--text);font-size:15px;font-family:'Nanum Gothic',sans-serif;
+  outline:none;transition:border-color .2s;resize:none}
+.field-input:focus{border-color:var(--violet)}
+.field-input::placeholder{color:var(--dim)}
+.field-group{margin-bottom:20px}.field-group:last-child{margin-bottom:0}
+.count-selector{display:flex;gap:10px;margin-top:4px}
+.count-btn{flex:1;padding:10px;background:#0a0a20;border:1px solid var(--card-b);border-radius:8px;
+  color:var(--dim);cursor:pointer;font-size:14px;transition:all .2s;text-align:center}
+.count-btn.active{background:rgba(109,40,217,.3);border-color:var(--violet);color:var(--gold-l)}
+.count-btn:hover{border-color:var(--violet)}
+.form-actions{display:flex;gap:12px;justify-content:center}
+
+/* 카드 뽑기 */
+#pick-screen{max-width:700px;width:100%}
+.pick-header{text-align:center;margin-bottom:32px}
+.pick-header h2{font-family:'Nanum Myeongjo',serif;font-size:24px;color:var(--gold-l);margin-bottom:8px}
+.pick-header p{font-size:14px;color:var(--dim);line-height:1.7}
+.cards-grid{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.tarot-card{width:110px;height:186px;position:relative;cursor:pointer;perspective:1000px;flex-shrink:0}
+.tarot-card.done{cursor:default}
+.card-inner{width:100%;height:100%;position:relative;transition:transform .7s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.tarot-card.flipped .card-inner{transform:rotateY(180deg)}
+.card-face,.card-back{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.card-back{background:linear-gradient(135deg,#1a1060,#0d0a30);border:2px solid var(--card-b);
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-back::before{content:'';position:absolute;inset:6px;border:1px solid rgba(109,40,217,.4);border-radius:8px}
+.card-back-sym{font-size:34px;opacity:.5;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.7}}
+.card-face{background:linear-gradient(160deg,#1e1060 0%,#0f0c38 100%);border:2px solid var(--gold);
+  transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:12px 8px;text-align:center;box-shadow:0 0 20px rgba(201,162,39,.3)}
+.card-emoji{font-size:32px;margin-bottom:8px}
+.card-kr{font-family:'Nanum Myeongjo',serif;font-size:13px;font-weight:700;color:var(--gold-l);margin-bottom:3px}
+.card-en{font-size:8px;color:var(--dim);letter-spacing:.5px}
+.card-kw{font-size:8px;color:#9d8fbc;margin-top:5px;line-height:1.4}
+.tarot-card .card-back:hover{border-color:var(--gold);box-shadow:0 0 18px rgba(201,162,39,.3)}
+.pick-hint{text-align:center;font-size:13px;color:var(--dim)}
+.pick-cnt{color:var(--gold-l);font-weight:700}
+
+/* 결과 */
+#result-screen{max-width:680px;width:100%}
+.result-header{text-align:center;margin-bottom:28px}
+.result-header h2{font-family:'Nanum Myeongjo',serif;font-size:24px;color:var(--gold-l);margin-bottom:8px}
+.result-cards{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.res-card{background:linear-gradient(160deg,#1e1060,#0f0c38);border:2px solid var(--gold);
+  border-radius:12px;padding:14px 10px;text-align:center;width:100px;
+  box-shadow:0 0 14px rgba(201,162,39,.2)}
+.res-card .card-emoji{font-size:26px;margin-bottom:7px}
+.res-card .card-kr{font-family:'Nanum Myeongjo',serif;font-size:12px;font-weight:700;color:var(--gold-l)}
+.res-card .card-en{font-size:8px;color:var(--dim);margin-top:2px}
+.reading-box{background:var(--bg2);border:1px solid var(--card-b);border-radius:16px;padding:28px;margin-bottom:22px}
+.reading-text{font-size:15px;line-height:2;color:var(--text);white-space:pre-wrap;word-break:keep-all}
+.reading-text .cursor{display:inline-block;width:2px;height:1em;background:var(--gold);
+  animation:blink 1s step-end infinite;margin-left:2px;vertical-align:middle}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* 추가 질문 */
+.followup-wrap{margin-bottom:22px;background:var(--bg2);border:1px solid var(--card-b);border-radius:16px;padding:24px}
+.followup-label{font-family:'Nanum Myeongjo',serif;font-size:16px;font-weight:700;color:var(--gold-l);margin-bottom:6px}
+.followup-desc{font-size:13px;color:var(--dim);margin-bottom:16px;line-height:1.6}
+.followup-input-row{display:flex;gap:10px;align-items:center}
+.followup-input{flex:1;margin:0}
+.followup-send-btn{padding:12px 20px;background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:none;
+  border-radius:8px;cursor:pointer;font-size:14px;font-family:'Nanum Gothic',sans-serif;font-weight:700;
+  white-space:nowrap;transition:all .2s;flex-shrink:0}
+.followup-send-btn:hover{opacity:.85}
+.followup-send-btn:disabled{opacity:.4;cursor:default}
+.followup-answer{margin-top:20px;padding-top:20px;border-top:1px solid var(--card-b)}
+.followup-q{font-size:13px;color:var(--gold);margin-bottom:12px;font-weight:700}
+.followup-q::before{content:'Q. '}
+.followup-new-card{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:14px}
+.followup-card-name{font-size:12px;color:var(--gold-l);font-family:'Nanum Myeongjo',serif}
+.followup-text{font-size:15px;line-height:2;color:var(--text);white-space:pre-wrap;word-break:keep-all}
+
+/* 결제 게이트 */
+#payment-screen{text-align:center}
+.price-box{background:var(--bg2);border:1px solid var(--card-b);border-radius:20px;padding:32px 28px;max-width:420px;width:100%;margin:0 auto 24px}
+.price-title{font-family:'Nanum Myeongjo',serif;font-size:20px;color:var(--gold-l);margin-bottom:20px}
+.price-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(61,53,128,.4);text-align:left}
+.price-item:last-child{border-bottom:none}
+.price-icon{font-size:22px;flex-shrink:0}
+.price-info{flex:1}
+.price-name{font-size:15px;font-weight:700;color:var(--white);margin-bottom:3px}
+.price-desc{font-size:12px;color:var(--dim);line-height:1.6}
+.price-amount{font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:700;color:var(--gold);white-space:nowrap}
+.pay-btn{width:100%;max-width:420px;padding:18px;font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:700;
+  background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;
+  cursor:pointer;box-shadow:0 4px 24px rgba(201,162,39,.4);transition:all .3s;letter-spacing:2px;margin-bottom:14px}
+.pay-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,162,39,.6)}
+.code-toggle{font-size:13px;color:var(--dim);cursor:pointer;text-decoration:underline;margin-bottom:16px;display:block}
+.code-toggle:hover{color:var(--gold)}
+.code-input-row{display:none;gap:10px;max-width:420px;width:100%;margin-bottom:8px}
+.code-input-row.show{display:flex}
+.code-err{font-size:12px;color:#fca5a5;margin-top:-4px;margin-bottom:8px;display:none}
+/* 추가결제 배너 */
+.upgrade-banner{background:linear-gradient(135deg,rgba(201,162,39,.12),rgba(109,40,217,.12));
+  border:1px solid var(--gold);border-radius:16px;padding:24px;text-align:center;margin-top:20px}
+.upgrade-title{font-family:'Nanum Myeongjo',serif;font-size:17px;color:var(--gold-l);margin-bottom:8px}
+.upgrade-desc{font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:16px}
+.upgrade-btn{padding:13px 36px;background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;
+  border:none;border-radius:50px;cursor:pointer;font-size:15px;font-weight:700;
+  font-family:'Nanum Myeongjo',serif;transition:all .3s}
+.upgrade-btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(201,162,39,.4)}
+.followup-count{font-size:12px;color:var(--dim);text-align:right;margin-bottom:8px}
+.followup-count span{color:var(--gold-l);font-weight:700}
+/* 할인 가격 */
+.price-amount-wrap{text-align:right;flex-shrink:0}
+.price-original{font-size:12px;color:var(--dim);text-decoration:line-through;margin-bottom:2px}
+.price-discount-row{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.price-badge{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-size:10px;font-weight:700;
+  padding:2px 6px;border-radius:20px;white-space:nowrap;letter-spacing:.5px}
+.price-amount-main{font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:700;color:var(--gold)}
+
+@media(max-width:500px){
+  .tarot-card{width:85px;height:144px}
+  .card-emoji{font-size:24px}
+  .card-kr{font-size:11px}
+  .followup-input-row{flex-direction:column}
+  .followup-send-btn{width:100%}
+}
+.ai-loading{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:14px;padding:8px 0}
+.ai-loading-dots{display:flex;gap:5px}
+.ai-loading-dots span{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:dotpulse 1.2s ease-in-out infinite}
+.ai-loading-dots span:nth-child(2){animation-delay:.2s}
+.ai-loading-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dotpulse{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="stars-canvas"></canvas>
+
+<!-- 인트로 -->
+<section class="screen" id="intro">
+  <span class="logo-symbol">🔮</span>
+  <h1 class="logo-title">오속 타로</h1>
+  <p class="logo-sub">TODAY'S INNER VOICE</p>
+  <div class="divider"></div>
+  <p class="intro-desc">
+    <strong>오</strong>늘의 <strong>속</strong>마음을 꺼내어 함께 바라봐요.<br><br>
+    카드는 <strong>정답을 주는 게 아니라</strong>, 지금 당신이<br>
+    미처 말하지 못한 마음속 이야기를 비춰주는 거울이에요.<br><br>
+    편안하게 고민을 나눠주세요. 카드와 함께<br>
+    지금 흐르는 에너지를 읽어드릴게요.
+  </p>
+  <button class="btn-main" onclick="goFreePick()">🌟 무료 카드 한 장 뽑기</button>
+  <button class="btn-sub" onclick="showScreen('payment-screen')" style="margin-top:10px">이미 결제하셨나요? 코드 입력하기</button>
+</section>
+
+<!-- 무료 질문 입력 -->
+<section class="screen hidden" id="free-question-screen">
+  <div style="max-width:500px;width:100%">
+    <div class="form-header">
+      <h2>🌟 무료 카드 한 장</h2>
+      <p>지금 가장 마음에 걸리는 것을 적어주세요<br>그 질문에 맞는 카드를 뽑아드릴게요</p>
+    </div>
+    <div class="form-card">
+      <div class="field-group" style="margin-bottom:0">
+        <label class="field-label">✦ 지금 가장 궁금한 것은?</label>
+        <textarea id="free-inp-question" class="field-input" rows="4"
+          placeholder="예) 그 사람이 나를 좋아할까요? / 이 일을 계속해야 할까요? / 지금 내 상황이 나아질 수 있을까요?"></textarea>
+      </div>
+    </div>
+    <div id="free-form-err" class="hidden" style="background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.4);border-radius:8px;padding:12px 16px;font-size:13px;color:#fca5a5;margin-bottom:14px">질문을 입력해주세요.</div>
+    <div class="form-actions">
+      <button class="btn-sub" onclick="showScreen('intro')">← 돌아가기</button>
+      <button class="btn-main" onclick="goFreePickConfirm()">카드 뽑기 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- 무료 카드 결과 -->
+<section class="screen hidden" id="free-result-screen">
+  <div style="max-width:640px;width:100%">
+    <div class="result-header">
+      <h2>🌟 오늘의 무료 카드</h2>
+      <p style="font-size:14px;color:var(--dim);margin-top:6px">내담자님의 지금 이 순간을 위한 카드예요</p>
+    </div>
+    <div class="result-cards" id="free-result-card"></div>
+    <div class="reading-box">
+      <div class="reading-text" id="free-reading-text"></div>
+    </div>
+    <div style="background:linear-gradient(135deg,rgba(201,162,39,.1),rgba(109,40,217,.1));border:1px solid var(--gold);border-radius:20px;padding:32px 28px;text-align:center;margin-bottom:22px">
+      <div style="font-family:'Nanum Myeongjo',serif;font-size:19px;color:var(--gold-l);margin-bottom:10px">✨ 더 깊은 상담을 원하시나요?</div>
+      <p style="font-size:14px;color:var(--dim);line-height:1.9;margin-bottom:24px">카드 1~3장 리딩과 추가 질문으로<br>내담자님의 상황을 더 깊이 살펴드릴게요</p>
+
+      <!-- 기본 상담 -->
+      <div style="background:rgba(109,40,217,.15);border:1px solid rgba(109,40,217,.5);border-radius:14px;padding:18px 20px;margin-bottom:12px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px">🔮 기본 타로 상담</div>
+          <div style="font-size:12px;color:var(--dim)">카드 1~3장 리딩 + 추가 질문 5회</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:11px;color:var(--dim);text-decoration:line-through;margin-bottom:2px">9,900원</div>
+          <div style="display:flex;align-items:center;gap:5px">
+            <span style="background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px">40% OFF</span>
+            <span style="font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:700;color:var(--gold)">5,900원</span>
+          </div>
+          <button onclick="showScreen('payment-screen')" style="margin-top:8px;padding:8px 18px;background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap">선택하기</button>
+        </div>
+      </div>
+
+      <!-- 세트 상품 -->
+      <div style="background:rgba(201,162,39,.12);border:2px solid var(--gold);border-radius:14px;padding:18px 20px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:var(--gold-l);margin-bottom:4px">✨ 기본 상담 + 추가 질문 세트</div>
+          <div style="font-size:12px;color:var(--dim)">카드 리딩 + 추가 질문 8회 전부 포함</div>
+          <div style="font-size:11px;color:var(--gold);margin-top:3px">★ 가장 인기있는 플랜</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:11px;color:var(--dim);text-decoration:line-through;margin-bottom:2px">16,800원</div>
+          <div style="display:flex;align-items:center;gap:5px">
+            <span style="background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px">47% OFF</span>
+            <span style="font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:700;color:var(--gold)">8,900원</span>
+          </div>
+          <button onclick="showScreen('payment-screen')" style="margin-top:8px;padding:8px 18px;background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap">선택하기</button>
+        </div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-sub" onclick="showScreen('intro')">🏠 처음으로</button>
+    </div>
+  </div>
+</section>
+
+<!-- 결제 안내 -->
+<section class="screen hidden" id="payment-screen">
+  <div style="max-width:460px;width:100%;text-align:center">
+    <h2 style="font-family:'Nanum Myeongjo',serif;font-size:24px;color:var(--gold-l);margin-bottom:6px">✨ 타로 상담 안내</h2>
+    <p style="font-size:13px;color:var(--dim);margin-bottom:24px">결제 후 발급된 코드를 입력하시면 상담이 시작됩니다</p>
+    <div class="price-box">
+      <div class="price-title">상담 요금</div>
+      <div class="price-item">
+        <span class="price-icon">🔮</span>
+        <div class="price-info">
+          <div class="price-name">기본 타로 상담</div>
+          <div class="price-desc">카드 1~3장 리딩 + 추가 질문 5회 포함</div>
+        </div>
+        <div class="price-amount-wrap">
+          <div class="price-original">9,900원</div>
+          <div class="price-discount-row">
+            <span class="price-badge">40% OFF</span>
+            <span class="price-amount-main">5,900원</span>
+          </div>
+        </div>
+      </div>
+      <div class="price-item">
+        <span class="price-icon">💬</span>
+        <div class="price-info">
+          <div class="price-name">추가 질문 3회</div>
+          <div class="price-desc">새 카드를 뽑아 이어서 상담</div>
+        </div>
+        <div class="price-amount-wrap">
+          <div class="price-original">6,900원</div>
+          <div class="price-discount-row">
+            <span class="price-badge">43% OFF</span>
+            <span class="price-amount-main">3,900원</span>
+          </div>
+        </div>
+      </div>
+      <div class="price-item" style="background:rgba(201,162,39,.07);border-radius:12px;margin:-4px -4px;padding:4px">
+        <span class="price-icon">✨</span>
+        <div class="price-info">
+          <div class="price-name" style="color:#e8c95a">기본 상담 + 추가 질문 세트</div>
+          <div class="price-desc">카드 리딩 + 추가 질문 8회 전부 포함<br><span style="color:#c9a227;font-size:11px">★ 가장 인기있는 플랜</span></div>
+        </div>
+        <div class="price-amount-wrap">
+          <div class="price-original">16,800원</div>
+          <div class="price-discount-row">
+            <span class="price-badge">47% OFF</span>
+            <span class="price-amount-main">8,900원</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a id="pay-link" href="#" target="_blank" class="pay-btn" onclick="onPayClick(event)">💳 결제하기</a>
+    <div style="height:32px"></div>
+    <span class="code-toggle" onclick="toggleCodeInput()">이미 결제하셨나요? 코드 입력하기</span>
+    <div class="code-input-row" id="code-input-row">
+      <input type="text" id="access-code" class="field-input" placeholder="발급받은 코드를 입력하세요"
+        style="margin:0;text-transform:uppercase" onkeydown="if(event.key==='Enter')submitCode()">
+      <button class="followup-send-btn" onclick="submitCode()" style="white-space:nowrap">확인</button>
+    </div>
+    <p class="code-err" id="code-err">유효하지 않은 코드예요. 다시 확인해주세요.</p>
+    <button class="btn-sub" onclick="showScreen('intro')">← 돌아가기</button>
+  </div>
+</section>
+
+<!-- 질문 폼 -->
+<section class="screen hidden" id="question-screen">
+  <div style="max-width:560px;width:100%">
+    <div class="form-header">
+      <h2>🌙 오늘의 고민을 나눠주세요</h2>
+      <p>편하게 말씀해 주세요. 내담자님의 상황에서<br>흐르는 에너지를 함께 읽어볼게요.</p>
+    </div>
+    <div class="form-card">
+      <div class="field-group">
+        <label class="field-label">✦ 이름 (선택)</label>
+        <input type="text" id="inp-name" class="field-input" placeholder="어떻게 불러드릴까요?">
+      </div>
+      <div class="field-group">
+        <label class="field-label">✦ 지금 상황을 알려주세요</label>
+        <textarea id="inp-situation" class="field-input" rows="4"
+          placeholder="예) 그 사람과 헤어진 지 한 달이 됐어요. 재회가 될 수 있을지 너무 궁금해요."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">✦ 가장 궁금한 것은?</label>
+        <input type="text" id="inp-question" class="field-input"
+          placeholder="예) 그 사람이 지금 저를 어떻게 생각하고 있을까요?">
+      </div>
+      <div class="field-group" style="margin-bottom:0">
+        <label class="field-label">✦ 카드 장수</label>
+        <p style="font-size:12px;color:var(--dim);margin-bottom:8px">처음엔 1장, 깊이 보고 싶다면 3장</p>
+        <div class="count-selector">
+          <div class="count-btn active" onclick="setCount(1,this)">1장</div>
+          <div class="count-btn" onclick="setCount(2,this)">2장</div>
+          <div class="count-btn" onclick="setCount(3,this)">3장</div>
+        </div>
+      </div>
+    </div>
+    <div id="form-err" class="hidden" style="background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.4);border-radius:8px;padding:12px 16px;font-size:13px;color:#fca5a5;margin-bottom:14px"></div>
+    <div class="form-actions">
+      <button class="btn-sub" onclick="showScreen('intro')">← 돌아가기</button>
+      <button class="btn-main" onclick="goPick()">카드 뽑기 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- 카드 뽑기 -->
+<section class="screen hidden" id="pick-screen">
+  <div style="max-width:700px;width:100%">
+    <div class="pick-header">
+      <h2>🃏 마음에 끌리는 카드를 선택하세요</h2>
+      <p>눈을 감고 고민에 집중한 뒤, 직관적으로 끌리는 카드를 클릭하세요</p>
+    </div>
+    <div class="cards-grid" id="cards-grid"></div>
+    <p class="pick-hint"><span class="pick-cnt" id="pick-cnt">0</span>/<span id="pick-total">1</span>장 선택됨</p>
+  </div>
+</section>
+
+<!-- 결과 -->
+<section class="screen hidden" id="result-screen">
+  <div style="max-width:680px;width:100%">
+    <div class="result-header">
+      <h2>✨ 타로가 전하는 이야기</h2>
+    </div>
+    <div class="result-cards" id="result-cards"></div>
+    <div class="reading-box">
+      <div class="reading-text" id="reading-text"></div>
+    </div>
+
+    <!-- 추가 질문 영역 -->
+    <div class="followup-wrap hidden" id="followup-wrap">
+      <div class="followup-label">💬 더 궁금한 게 있으신가요?</div>
+      <p class="followup-desc">새 카드를 한 장 더 뽑아서 이어서 봐드릴게요</p>
+      <p class="followup-count">추가 질문 <span id="fq-used">0</span> / 5회 사용</p>
+      <div class="followup-input-row" id="followup-input-row">
+        <input type="text" id="followup-input" class="field-input followup-input"
+          placeholder="예) 제가 먼저 연락하는 게 좋을까요?" maxlength="100"
+          onkeydown="if(event.key==='Enter')sendFollowUp()">
+        <button class="followup-send-btn" onclick="sendFollowUp()">카드 뽑기</button>
+      </div>
+      <div id="followup-answers"></div>
+      <div class="upgrade-banner hidden" id="upgrade-banner">
+        <div class="upgrade-title">✨ 추가 질문 5회를 모두 사용했어요</div>
+        <div class="upgrade-desc">더 깊이 들여다보고 싶다면<br>추가 질문 3회를 더 구매하실 수 있어요</div>
+        <button class="upgrade-btn" onclick="goUpgrade()">💬 추가 질문 3회 더 — 3,900원</button>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn-sub" onclick="showScreen('intro')">🏠 처음으로</button>
+      <button class="btn-main" onclick="newReading()">🔮 새 상담하기</button>
+    </div>
+  </div>
+</section>
+
+<!-- 이용약관 모달 -->
+<div id="terms-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;overflow-y:auto;padding:40px 20px">
+  <div style="max-width:600px;margin:0 auto;background:#0c0c2a;border:1px solid #3d3580;border-radius:16px;padding:32px">
+    <h2 style="font-family:'Nanum Myeongjo',serif;color:#e8c95a;margin-bottom:20px">이용약관</h2>
+    <div style="font-size:14px;color:#ddd6f3;line-height:2;white-space:pre-wrap">
+<strong>제1조 (목적)</strong>
+본 약관은 온나라(이하 "회사")가 제공하는 오속타로 서비스(이하 "서비스")의 이용에 관한 조건 및 절차를 규정함을 목적으로 합니다.
+
+<strong>제2조 (서비스 내용)</strong>
+회사는 타로 카드 기반의 온라인 상담 서비스를 제공합니다. 본 서비스는 오락 및 참고 목적으로 제공되며, 전문적인 심리상담·의료·법률 조언을 대체하지 않습니다.
+
+<strong>제3조 (결제 및 환불)</strong>
+① 서비스 이용 요금은 결제 시점에 고지된 금액으로 합니다.
+② 결제 완료 후 코드를 발급받아 서비스를 이용하지 않은 경우, 결제일로부터 7일 이내 환불 신청이 가능합니다.
+③ 코드를 이미 사용하여 서비스를 이용한 경우에는 환불이 불가합니다.
+④ 환불 문의: 070-8098-4346
+
+<strong>제4조 (개인정보)</strong>
+회사는 서비스 제공을 위해 최소한의 정보만 수집하며, 수집된 정보는 서비스 제공 외의 목적으로 사용하지 않습니다.
+
+<strong>제5조 (면책)</strong>
+타로 상담 결과는 참고용이며, 이를 근거로 한 판단과 행동의 결과에 대해 회사는 책임을 지지 않습니다.
+
+<strong>제6조 (문의)</strong>
+서비스 관련 문의: 070-8098-4346
+    </div>
+    <button onclick="document.getElementById('terms-modal').style.display='none'" style="margin-top:24px;padding:12px 32px;background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:15px">확인</button>
+  </div>
+</div>
+
+<!-- 푸터 -->
+<footer style="position:relative;z-index:1;background:rgba(6,6,26,.9);border-top:1px solid #1a1640;padding:28px 20px;text-align:center">
+  <div style="max-width:680px;margin:0 auto">
+    <p style="font-family:'Nanum Myeongjo',serif;font-size:15px;color:#c9a227;margin-bottom:12px">오속 타로</p>
+    <p style="font-size:12px;color:#6b6080;line-height:2">
+      상호: 온나라 &nbsp;|&nbsp; 대표: 박지현 &nbsp;|&nbsp; 사업자등록번호: 602-23-61592<br>
+      주소: 경상남도 진주시 사들로 126 &nbsp;|&nbsp; 전화: 070-8098-4346<br>
+      <span onclick="document.getElementById('terms-modal').style.display='block'" style="cursor:pointer;text-decoration:underline;color:#9d8fbc">이용약관</span>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <span style="color:#6b6080">본 서비스는 오락 목적으로 제공되며 전문 상담을 대체하지 않습니다</span>
+    </p>
+  </div>
+</footer>
+
+<script>
+/* ── 별 배경 ── */
+(()=>{
+  const c=document.getElementById('stars-canvas'),ctx=c.getContext('2d');
+  let s=[];
+  const resize=()=>{c.width=innerWidth;c.height=innerHeight};
+  const make=()=>{s=[];for(let i=0;i<200;i++)s.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.2+.2,sp:Math.random()*.003+.001,ph:Math.random()*Math.PI*2})};
+  const draw=t=>{ctx.clearRect(0,0,c.width,c.height);s.forEach(v=>{const a=.25+.5*Math.abs(Math.sin(t*v.sp+v.ph));ctx.beginPath();ctx.arc(v.x,v.y,v.r,0,Math.PI*2);ctx.fillStyle=`rgba(200,190,255,${a})`;ctx.fill()});requestAnimationFrame(draw)};
+  resize();make();addEventListener('resize',()=>{resize();make()});requestAnimationFrame(draw);
+})();
+
+/* ── 카드 데이터 78장 ── */
+const CARDS = [
+  {id:0,name:"The Fool",kr:"바보",emoji:"🌟",kw:"새로운 시작, 순수함, 모험"},
+  {id:1,name:"The Magician",kr:"마법사",emoji:"✨",kw:"능력, 의지, 표현력"},
+  {id:2,name:"The High Priestess",kr:"여사제",emoji:"🌙",kw:"직관, 내면, 신비"},
+  {id:3,name:"The Empress",kr:"여황제",emoji:"🌸",kw:"풍요, 모성, 창조"},
+  {id:4,name:"The Emperor",kr:"황제",emoji:"👑",kw:"권위, 안정, 리더십"},
+  {id:5,name:"The Hierophant",kr:"교황",emoji:"🏛️",kw:"전통, 가르침, 규칙"},
+  {id:6,name:"The Lovers",kr:"연인",emoji:"💕",kw:"사랑, 선택, 조화"},
+  {id:7,name:"The Chariot",kr:"전차",emoji:"⚡",kw:"의지, 승리, 통제"},
+  {id:8,name:"Strength",kr:"힘",emoji:"🦁",kw:"내면의 힘, 용기, 인내"},
+  {id:9,name:"The Hermit",kr:"은둔자",emoji:"🕯️",kw:"내면탐색, 고독, 지혜"},
+  {id:10,name:"Wheel of Fortune",kr:"운명의 수레바퀴",emoji:"☯️",kw:"변화, 운, 순환"},
+  {id:11,name:"Justice",kr:"정의",emoji:"⚖️",kw:"공정, 균형, 진실"},
+  {id:12,name:"The Hanged Man",kr:"매달린 남자",emoji:"🌊",kw:"인내, 새로운 시각, 희생"},
+  {id:13,name:"Death",kr:"죽음",emoji:"🦋",kw:"변화, 끝, 새로운 시작"},
+  {id:14,name:"Temperance",kr:"절제",emoji:"🌈",kw:"균형, 조화, 인내"},
+  {id:15,name:"The Devil",kr:"악마",emoji:"🔗",kw:"속박, 집착, 유혹"},
+  {id:16,name:"The Tower",kr:"탑",emoji:"🌩️",kw:"변화, 충격, 붕괴"},
+  {id:17,name:"The Star",kr:"별",emoji:"⭐",kw:"희망, 치유, 영감"},
+  {id:18,name:"The Moon",kr:"달",emoji:"🌕",kw:"환상, 불안, 무의식"},
+  {id:19,name:"The Sun",kr:"태양",emoji:"☀️",kw:"기쁨, 성공, 활력"},
+  {id:20,name:"Judgement",kr:"심판",emoji:"🌅",kw:"각성, 재탄생, 새로운 국면"},
+  {id:21,name:"The World",kr:"세계",emoji:"🌍",kw:"완성, 성취, 통합"},
+  {id:22,name:"Ace of Wands",kr:"완즈 에이스",emoji:"🔥",kw:"열정, 새로운 시작, 창의력"},
+  {id:23,name:"2 of Wands",kr:"완즈 2",emoji:"🗺️",kw:"계획, 결정, 미래"},
+  {id:24,name:"3 of Wands",kr:"완즈 3",emoji:"🚢",kw:"확장, 탐험, 기회"},
+  {id:25,name:"4 of Wands",kr:"완즈 4",emoji:"🎊",kw:"축하, 안정, 조화"},
+  {id:26,name:"5 of Wands",kr:"완즈 5",emoji:"⚔️",kw:"갈등, 경쟁, 도전"},
+  {id:27,name:"6 of Wands",kr:"완즈 6",emoji:"🏆",kw:"승리, 인정, 자신감"},
+  {id:28,name:"7 of Wands",kr:"완즈 7",emoji:"🛡️",kw:"방어, 끈기, 용기"},
+  {id:29,name:"8 of Wands",kr:"완즈 8",emoji:"💨",kw:"빠른 진행, 소식, 움직임"},
+  {id:30,name:"9 of Wands",kr:"완즈 9",emoji:"🏹",kw:"인내, 회복력, 경계"},
+  {id:31,name:"10 of Wands",kr:"완즈 10",emoji:"💼",kw:"부담, 책임, 노력"},
+  {id:32,name:"Page of Wands",kr:"완즈 페이지",emoji:"📜",kw:"열정, 탐험, 새로운 아이디어"},
+  {id:33,name:"Knight of Wands",kr:"완즈 나이트",emoji:"🐎",kw:"행동, 모험, 에너지"},
+  {id:34,name:"Queen of Wands",kr:"완즈 퀸",emoji:"🌻",kw:"자신감, 창의력, 카리스마"},
+  {id:35,name:"King of Wands",kr:"완즈 킹",emoji:"🦅",kw:"리더십, 비전, 열정"},
+  {id:36,name:"Ace of Cups",kr:"컵 에이스",emoji:"💧",kw:"새로운 감정, 사랑, 직관"},
+  {id:37,name:"2 of Cups",kr:"컵 2",emoji:"💑",kw:"연결, 파트너십, 사랑"},
+  {id:38,name:"3 of Cups",kr:"컵 3",emoji:"🥂",kw:"축하, 우정, 기쁨"},
+  {id:39,name:"4 of Cups",kr:"컵 4",emoji:"💭",kw:"무관심, 재평가, 명상"},
+  {id:40,name:"5 of Cups",kr:"컵 5",emoji:"😢",kw:"상실, 후회, 슬픔"},
+  {id:41,name:"6 of Cups",kr:"컵 6",emoji:"🌼",kw:"추억, 순수함, 과거"},
+  {id:42,name:"7 of Cups",kr:"컵 7",emoji:"🌫️",kw:"선택, 환상, 욕망"},
+  {id:43,name:"8 of Cups",kr:"컵 8",emoji:"🚶",kw:"떠남, 포기, 성장"},
+  {id:44,name:"9 of Cups",kr:"컵 9",emoji:"🍾",kw:"만족, 성취, 풍요"},
+  {id:45,name:"10 of Cups",kr:"컵 10",emoji:"🏡",kw:"행복, 가족, 완성"},
+  {id:46,name:"Page of Cups",kr:"컵 페이지",emoji:"🐟",kw:"감수성, 창의성, 메시지"},
+  {id:47,name:"Knight of Cups",kr:"컵 나이트",emoji:"🏇",kw:"로맨스, 제안, 이상주의"},
+  {id:48,name:"Queen of Cups",kr:"컵 퀸",emoji:"🌺",kw:"공감, 직관, 감성"},
+  {id:49,name:"King of Cups",kr:"컵 킹",emoji:"🌊",kw:"감정적 성숙, 배려, 균형"},
+  {id:50,name:"Ace of Swords",kr:"소드 에이스",emoji:"🗡️",kw:"명확함, 진실, 결단"},
+  {id:51,name:"2 of Swords",kr:"소드 2",emoji:"🤝",kw:"결정 회피, 교착, 균형"},
+  {id:52,name:"3 of Swords",kr:"소드 3",emoji:"💔",kw:"슬픔, 상처, 이별"},
+  {id:53,name:"4 of Swords",kr:"소드 4",emoji:"😴",kw:"휴식, 회복, 명상"},
+  {id:54,name:"5 of Swords",kr:"소드 5",emoji:"⚡",kw:"갈등, 패배, 자존심"},
+  {id:55,name:"6 of Swords",kr:"소드 6",emoji:"⛵",kw:"이동, 회복, 전환"},
+  {id:56,name:"7 of Swords",kr:"소드 7",emoji:"🎭",kw:"기만, 도피, 전략"},
+  {id:57,name:"8 of Swords",kr:"소드 8",emoji:"🪢",kw:"속박, 제한, 두려움"},
+  {id:58,name:"9 of Swords",kr:"소드 9",emoji:"😰",kw:"불안, 걱정, 악몽"},
+  {id:59,name:"10 of Swords",kr:"소드 10",emoji:"🌄",kw:"끝, 위기, 새로운 시작"},
+  {id:60,name:"Page of Swords",kr:"소드 페이지",emoji:"🔍",kw:"호기심, 경계, 정보"},
+  {id:61,name:"Knight of Swords",kr:"소드 나이트",emoji:"💨",kw:"행동, 단호함, 속도"},
+  {id:62,name:"Queen of Swords",kr:"소드 퀸",emoji:"🌬️",kw:"명확함, 독립, 냉철함"},
+  {id:63,name:"King of Swords",kr:"소드 킹",emoji:"🦁",kw:"권위, 지성, 공정"},
+  {id:64,name:"Ace of Pentacles",kr:"펜타클 에이스",emoji:"💎",kw:"현실적 기회, 물질, 새로운 시작"},
+  {id:65,name:"2 of Pentacles",kr:"펜타클 2",emoji:"🤹",kw:"균형, 적응, 우선순위"},
+  {id:66,name:"3 of Pentacles",kr:"펜타클 3",emoji:"🔨",kw:"협력, 기술, 노력"},
+  {id:67,name:"4 of Pentacles",kr:"펜타클 4",emoji:"💰",kw:"통제, 안정, 집착"},
+  {id:68,name:"5 of Pentacles",kr:"펜타클 5",emoji:"❄️",kw:"어려움, 결핍, 고난"},
+  {id:69,name:"6 of Pentacles",kr:"펜타클 6",emoji:"🤲",kw:"나눔, 관대함, 균형"},
+  {id:70,name:"7 of Pentacles",kr:"펜타클 7",emoji:"🌱",kw:"기다림, 성장, 평가"},
+  {id:71,name:"8 of Pentacles",kr:"펜타클 8",emoji:"🛠️",kw:"노력, 숙련, 헌신"},
+  {id:72,name:"9 of Pentacles",kr:"펜타클 9",emoji:"🍇",kw:"풍요, 독립, 자급자족"},
+  {id:73,name:"10 of Pentacles",kr:"펜타클 10",emoji:"🏰",kw:"부, 안정, 유산"},
+  {id:74,name:"Page of Pentacles",kr:"펜타클 페이지",emoji:"📚",kw:"배움, 현실적 계획, 성실"},
+  {id:75,name:"Knight of Pentacles",kr:"펜타클 나이트",emoji:"🐂",kw:"꾸준함, 책임감, 신뢰"},
+  {id:76,name:"Queen of Pentacles",kr:"펜타클 퀸",emoji:"🌿",kw:"풍요, 따뜻함, 현실적"},
+  {id:77,name:"King of Pentacles",kr:"펜타클 킹",emoji:"👨‍💼",kw:"성공, 안정, 물질적 지혜"},
+];
+
+/* ── 카드별 리딩 데이터 ── */
+const READING = {
+  0:{
+    scene:"이 카드를 보면, 절벽 끝에 서 있는 한 청년이 눈에 들어와요. 짐은 놀랍도록 가볍고, 흰 강아지 한 마리가 그 곁에서 뛰어오르고 있죠. 그런데 특이한 점은, 청년의 눈이 발 아래 낭떠러지가 아니라 하늘을 향하고 있다는 거예요. 대부분의 사람이라면 그 자리에서 두려움을 느낄 텐데, 이 청년의 표정엔 두려움보다 설렘이 훨씬 더 많이 담겨 있어요. 아직 어디로 갈지, 무엇을 하게 될지 아무것도 정해지지 않았지만, 그렇기 때문에 오히려 모든 가능성이 열려 있는 순간이기도 해요.",
+    feel:["순수한 설렘과, 아직 정해진 게 없기 때문에 오히려 자유로운 에너지","뒤를 돌아보지 않고 앞으로만 향하는, 가볍고 순수한 출발의 느낌","과거의 무게를 내려놓고 지금 이 순간에 온전히 집중하는 에너지"],
+    msg:["지금이 바로 새로운 시작을 위한 타이밍일 수 있어요. 아직 결과가 보이지 않더라도 첫 발을 내딛는 것 자체가 이미 의미 있는 선택이에요. 완벽하게 준비된 다음에 시작하려 하면, 시작할 수 없는 날이 계속될 수 있어요. 가볍게, 지금 할 수 있는 것부터 시작해보세요.","과거에 있었던 일들이 무겁게 느껴질 수 있어요. 하지만 그 무게를 계속 안고 가려 하면 정작 앞으로 나아가기 어려워져요. 지금 이 카드는, 그 짐을 내려놓아도 된다고 말하고 있어요. 과거는 과거로 두고, 지금 흐르는 새로운 에너지에 몸을 맡겨보세요.","모든 게 정해지지 않은 상태가 불안하게 느껴질 수도 있어요. 하지만 사실 그 불확실함이 가능성이기도 해요. 너무 많이 계산하고 따지기보다, 지금 마음이 가는 방향을 믿어보세요. 직관이 먼저 답을 알고 있을 때가 많거든요."]
+  },
+  1:{
+    scene:"마법사가 한 손은 하늘을 향해 높이 들고, 다른 손은 땅을 향해 내리고 있어요. '위에서 받아 아래로 전한다'는 의미처럼, 하늘의 에너지를 현실로 끌어내리는 모습이에요. 앞의 탁자 위엔 완즈·컵·소드·펜타클, 타로의 네 가지 원소가 모두 가지런히 놓여 있어요. 그러니까 필요한 도구는 이미 모두 갖춰져 있다는 뜻이에요. 부족한 게 아니에요. 이미 가지고 있어요. 지금 필요한 건 그걸 쓰겠다는 의지와, 실제로 움직이는 것뿐이에요.",
+    feel:["'할 수 있다'는 강한 자기 확신과, 그 확신을 현실로 만들어내는 실행력의 에너지","내가 가진 능력을 드디어 꺼내어 표현하고 싶어지는 순간의 집중력","생각을 현실로 옮기고 싶은, 강렬하고 주도적인 에너지"],
+    msg:["내담자님이 지금 필요하다고 느끼는 능력이나 자원, 사실 이미 갖추고 있을 가능성이 높아요. 없다고 생각하는 게 아니라, 쓰지 않고 있거나 믿지 못하고 있는 상태일 수 있어요. 지금은 의심보다 '할 수 있다'는 쪽으로 에너지를 모아볼 때예요.","생각을 현실로 옮길 수 있는 힘이 지금 강하게 흐르고 있어요. 망설이는 시간이 길어질수록 이 에너지가 흩어질 수 있어요. 완벽한 계획이 없어도 괜찮아요. 일단 시작하면 방향은 그 과정에서 잡혀가거든요.","지금 원하는 것이 있다면, 그걸 적극적으로 표현하고 행동으로 보여줘야 할 시점이에요. 마법사는 아는 것을 표현하고 드러내는 사람이에요. 내담자님도 지금 그런 에너지를 발휘할 때예요."]
+  },
+  2:{
+    scene:"여사제는 빛의 기둥과 어둠의 기둥, 두 기둥 사이에 조용히 앉아 있어요. 화려하게 꾸미거나 주목받으려 하지 않고, 그냥 그 자리에 고요하게 있어요. 손에는 두루마리가 쥐어져 있지만 펼쳐서 읽지 않고 그냥 들고 있죠. 그리고 발아래엔 반달이 놓여 있어요. 이 카드는 말하지 않아도 알고, 설명하지 않아도 느끼는 에너지예요. 직관과 내면, 그리고 '아직 때가 아니다'라는 조용한 지혜가 담겨 있어요.",
+    feel:["말하지 않아도 이미 알고 있는, 깊고 고요한 직관의 에너지","바깥이 아니라 내면으로 향하는, 성찰과 기다림의 에너지","아직 드러낼 때가 아니라는 것을 알면서도 평온하게 있는 인내의 느낌"],
+    msg:["지금은 빠르게 행동하거나 결론을 내리기보다, 내 안에서 무엇이 느껴지는지에 귀를 기울이는 게 더 중요한 시기예요. 여사제는 말보다 느낌을 먼저 믿는 사람이에요. 지금 내담자님의 직관이 어떤 방향을 가리키고 있는지, 조용히 들어봐주세요.","머리로 계산하면 할수록 답이 안 나오는 것 같은 순간이 있잖아요. 지금이 그런 때일 수 있어요. 논리보다 '느낌'이 더 정확할 수 있는 시점이에요. 지금 내 몸과 감정이 어떤 반응을 보내고 있는지를 먼저 확인해보세요.","아직 드러나지 않은 정보나 상황이 있어요. 모든 게 명확하지 않은 상태에서 억지로 판단을 내리면 놓치는 게 생길 수 있어요. 지금은 서두르지 않아도 돼요. 때가 되면 더 선명하게 보일 거예요."]
+  },
+  3:{
+    scene:"여황제는 풍요로운 자연 속에 왕좌를 두고 앉아 있어요. 주변엔 잘 자란 곡식과 꽃들이 가득하고, 물이 흐르는 소리가 들릴 것 같아요. 그녀의 표정엔 불안이나 긴장이 없어요. 충분히 가지고 있다는 것을 아는 사람의 여유로움이랄까요. 이 카드는 창조하고, 키우고, 나누는 에너지예요. 뭔가를 억지로 만들어내는 게 아니라 자연스럽게 자라나도록 공간을 주고, 따뜻하게 품는 모성적인 힘이 담겨 있어요.",
+    feel:["따뜻하고 풍요로운, 아낌없이 주는 에너지","무언가를 키우고 가꾸는 창조적인 모성의 힘","받기보다 베풀고 싶어지는, 넉넉하고 여유로운 느낌"],
+    msg:["지금은 무언가를 키우고 가꿔나갈 수 있는 좋은 에너지가 흐르고 있어요. 씨앗을 심으면 자랄 수 있는 계절이에요. 오래 아껴온 것, 정성을 쏟고 싶은 것에 지금 시간과 마음을 더 쏟아봐도 좋아요.","풍요로운 흐름이 서서히 다가오고 있어요. 그 흐름을 받기 위해서는, 내가 먼저 나 자신을 충분히 채워야 해요. 너무 오래 고갈된 상태로 있진 않았는지 돌아봐주세요. 나를 잘 돌보는 것이 지금 가장 중요한 첫걸음이에요.","창의적인 에너지가 강하게 올라와 있어요. 무언가를 만들거나 표현하고 싶은 마음이 있다면 지금이 그 에너지를 쓰기에 좋은 타이밍이에요. 결과보다 과정에서 기쁨을 찾는 흐름이 지금 내담자님에게 잘 맞을 것 같아요."]
+  },
+  4:{
+    scene:"황제는 단단한 돌로 만들어진 왕좌에 앉아 정면을 바라보고 있어요. 갑옷을 입고, 홀을 쥐고, 발 아래엔 양의 머리가 조각된 왕좌가 놓여 있어요. 흔들림이 없어요. 어떤 상황에서도 중심을 잃지 않겠다는 의지가 표정과 자세에 그대로 담겨 있어요. 이 카드는 통제, 안정, 책임의 에너지예요. 감정이 아닌 구조로, 느낌이 아닌 기준으로 상황을 이끌어가는 힘이에요.",
+    feel:["흔들리지 않는 안정감과, 어떤 상황에서도 중심을 지키는 의지의 에너지","감정보다 원칙을 앞세우는 책임감 있는 리더의 무게감","기준을 세우고 그 기준 안에서 움직이는, 단단하고 구조적인 에너지"],
+    msg:["지금은 감정의 흐름에 따라 움직이기보다, 현실적인 판단을 앞세워야 할 시기예요. 황제처럼 흔들리지 않는 기준을 하나 세워보세요. 내가 어디에 서 있고, 어디로 가려 하는지 분명히 알고 있으면 어떤 상황이 와도 흔들리지 않아요.","지금 상황에 구조나 계획이 없다면 먼저 그걸 만들어보는 게 도움이 될 것 같아요. 루틴을 세우거나, 명확한 기준을 정해두는 것만으로도 지금 느끼는 혼란이 많이 정리될 수 있어요.","책임감 있는 태도가 지금 내담자님의 가장 큰 강점이 될 수 있어요. 주변 사람들의 신뢰를 얻고, 그 신뢰를 토대로 더 큰 흐름을 만들어갈 수 있는 시점이에요."]
+  },
+  5:{
+    scene:"교황이 두 명의 신자 앞에 앉아 두 손가락을 들어 축복을 내리고 있어요. 화려한 복장과 황금 왕관, 그리고 그 앞에 무릎을 꿇은 두 사람. 이 카드에서 느껴지는 건 가르침과 전통, 그리고 '옳고 그름을 판단하는 기준'이에요. 혼자서 결정하기보다 검증된 지식이나 오랜 방식을 따르는 것이 더 안전하고 효과적인 에너지예요. 또는 내가 그 가르침을 주는 역할일 수도 있어요.",
+    feel:["전통과 검증된 방식에서 안정감을 찾는 에너지","조언을 구하거나 받아들이는 것이 더 효과적인 흐름","기준과 원칙 안에서 움직이는 것이 편안한 시기의 느낌"],
+    msg:["지금 혼자서 모든 걸 결정하려 하기보다, 이미 검증된 방법이나 경험 있는 사람의 조언을 구해보는 것이 훨씬 효과적인 시점이에요. 교황은 혼자 방황하지 않고, 이미 닦여진 길을 걷는 지혜를 가르쳐요.","지금 상황에서 너무 새롭고 실험적인 방향보다, 기존의 방식이나 전통적인 접근이 더 잘 맞을 수 있어요. 안정적이고 신뢰할 수 있는 것들을 먼저 활용해보세요.","누군가에게 가르침을 주거나 기준을 제시하는 역할이 지금 내담자님에게 주어져 있을 수 있어요. 내가 아는 것을 나누는 것이 나에게도, 상대에게도 도움이 되는 흐름이에요."]
+  },
+  6:{
+    scene:"하늘에서 천사가 빛을 내리고, 그 아래 두 사람이 서로를 바라보고 있어요. 한 사람은 천사를 올려다보고, 다른 사람은 그 상대를 보고 있죠. 이 카드가 담고 있는 건 단순한 사랑 이야기만이 아니에요. '선택'이라는 주제가 함께 담겨 있어요. 마음이 가는 곳이 있을 때, 이성적인 판단과 감정적인 끌림 사이에서 어느 쪽을 따라야 할지 고민하게 되는 순간이에요. 이 카드는 그 선택의 무게를 가볍게 보지 않아요.",
+    feel:["누군가 혹은 무언가를 향한 강하고 순수한 끌림의 에너지","두 가지 감정이나 선택지 사이에서 흔들리는, 설레고도 복잡한 마음","마음과 이성이 동시에 작동하면서 생겨나는 진지한 고민의 에너지"],
+    msg:["지금 마음이 움직이는 방향이 있다면, 그 감정을 억누르거나 무시하지 않는 게 중요해요. 이 카드는 끌림 자체가 틀리지 않다고 말하고 있어요. 다만 그 감정이 어디서 오는 것인지, 두려움인지 진심인지, 조용히 들여다봐주세요.","선택의 순간이 다가오고 있어요. 완벽한 선택은 없지만, 내 진심에 가장 가까운 선택은 있어요. 너무 오래 고민하다 보면 정작 선택할 기회를 놓칠 수 있어요. 지금 가장 솔직한 내 마음이 가리키는 방향을 믿어보세요.","끌림은 분명히 존재해요. 그 끌림이 단순한 감정인지, 아니면 더 깊은 연결인지를 확인하는 시간이 필요해요. 조금 천천히, 하지만 솔직하게 자신을 들여다봐주세요."]
+  },
+  7:{
+    scene:"전차 위에 갑옷을 입은 인물이 서 있어요. 그 앞엔 서로 반대 방향을 바라보고 있는 두 마리의 스핑크스가 있죠. 고삐도 없이, 오직 의지의 힘으로 이 두 스핑크스를 이끌고 있어요. 이 카드가 담고 있는 건 어마어마한 내면의 의지예요. 바깥의 갈등과 내면의 갈등이 동시에 존재하지만, 그 모든 것을 하나의 방향으로 이끌어내는 강한 추진력이에요. 포기하지 않고, 흔들리지 않고, 앞으로 나아가는 에너지예요.",
+    feel:["내 안의 충돌하는 감정들을 하나로 모아 앞으로 밀어붙이는 강한 의지의 에너지","포기하고 싶은 마음과 해내고 싶은 마음이 공존하는 긴장감","목표를 향해 달리는 집중력과, 그 과정에서 느끼는 피로를 이겨내는 끈기"],
+    msg:["지금은 망설이거나 돌아보는 것보다 앞으로 밀어붙이는 게 더 맞는 시점이에요. 두 마음이 공존하더라도, 내가 원하는 방향은 분명히 있어요. 그 방향을 잃지 않는 것이 지금 가장 중요한 것이에요.","여러 감정이나 상황이 서로 부딪히고 있더라도, 그게 방해가 되는 게 아니에요. 그 갈등 안에서도 앞으로 나아가는 것이 지금 내담자님에게 필요한 흐름이에요. 완벽한 상황이 되기를 기다리기보다, 지금 이 상태에서 움직여봐요.","지금 내담자님에겐 이걸 해낼 에너지가 이미 충분히 있어요. 다만 그 힘을 믿지 못하고 있을 수 있어요. 자기 자신을 조금 더 신뢰해주세요."]
+  },
+  8:{
+    scene:"한 여인이 사자의 턱을 부드럽게 감싸 쥐고 있어요. 힘으로 제압하는 게 아니에요. 표정은 오히려 따뜻하고 평화로워요. 사자도 그 손길에 저항하지 않아요. 이 장면이 말하는 건, 진짜 힘은 근육이나 권력이 아니라 내면의 용기와 부드러운 인내에서 나온다는 거예요. 두려움을 마주하면서도 흔들리지 않는 것, 강한 것을 부드럽게 다루는 것, 그게 이 카드의 힘이에요.",
+    feel:["부드럽지만 절대 흔들리지 않는 내면의 진짜 힘","두려운 것을 외면하지 않고 정면으로 마주하는 용기","오래 참고 버텨온 사람만이 가지게 되는 단단한 에너지"],
+    msg:["지금 상황이 두렵거나 버겁게 느껴질 수 있어요. 하지만 내담자님 안에는 이미 그 두려움을 감당할 수 있는 힘이 있어요. 그 힘은 바깥에서 가져오는 게 아니라 내 안에 이미 있는 거예요. 그걸 믿어봐주세요.","강하게 밀어붙이기보다, 부드럽고 꾸준하게 접근하는 것이 지금 더 효과적인 방법이에요. 상황을 억지로 통제하려 하기보다, 인내심을 가지고 천천히 다루어가는 흐름이 맞는 시점이에요.","이미 많은 것을 버텨왔어요. 그 버팀이 쌓여서 지금의 내담자님이 만들어진 거예요. 지금도 충분히 잘 하고 있어요. 더 이상 증명하지 않아도 돼요."]
+  },
+  9:{
+    scene:"눈이 쌓인 산 위에 노인이 혼자 서 있어요. 등불 하나만 들고, 긴 지팡이에 의지한 채로요. 주변엔 아무도 없어요. 하지만 그 고독이 쓸쓸함보다는 고요함에 가깝게 느껴져요. 이 사람은 외로워서 혼자 있는 게 아니라, 스스로 선택해서 혼자 있는 것처럼 보여요. 이 카드의 에너지는 '내 안에 있는 답을 찾기 위해 일부러 혼자가 되는 것'이에요.",
+    feel:["고독하지만 쓸쓸하지 않은, 자발적인 내면 탐색의 에너지","바깥의 소음을 끄고 자기 내면의 목소리에 귀 기울이는 조용한 지혜","혼자이지만 충분히 충만한, 내면이 단단한 사람의 에너지"],
+    msg:["지금은 많은 사람을 만나거나 바깥 활동을 늘리는 것보다, 혼자만의 조용한 시간을 갖는 것이 더 중요한 시기예요. 그 고요한 시간 안에서, 지금 내가 정말 무엇을 원하는지, 어디로 향하고 싶은지에 대한 답이 올라올 수 있어요.","주변 사람들의 조언이나 사회적 시선보다 지금은 내 안의 목소리가 더 중요한 시점이에요. 그 목소리가 뭐라고 말하는지, 조금 더 귀를 기울여봐주세요. 이미 알고 있는 경우가 많아요.","내담자님 안에 이미 답이 있어요. 다만 주변의 소음에 가려져서 잘 들리지 않고 있을 수 있어요. 조용한 공간에서 잠시 멈춰보는 것만으로도 많은 게 선명해질 거예요."]
+  },
+  10:{
+    scene:"공중에 떠 있는 큰 바퀴, 그 위에 스핑크스가 앉아 있고, 주변엔 다양한 생명체들이 올라가거나 내려오거나 매달려 있어요. 어떤 이는 올라가고, 어떤 이는 내려오죠. 바퀴는 멈추지 않아요. 이 카드가 담고 있는 건 삶의 순환과 흐름이에요. 좋은 것도, 나쁜 것도 영원하지 않아요. 지금 이 순간도 반드시 변해요. 그리고 그 변화는 이미 시작됐어요.",
+    feel:["지금 흐름이 전환점에 가까워지고 있다는 느낌","내가 통제할 수 없는 큰 흐름 안에 있다는 것을 받아들이는 에너지","변화가 두렵기도 하지만, 그 안에서 기회를 읽는 유연함의 에너지"],
+    msg:["지금 흐름이 바뀌고 있어요. 만약 오랫동안 힘들었다면, 이제 반전이 올 수 있는 에너지가 돌아오고 있어요. 반대로 좋은 상황이라면, 이 흐름을 잘 타면 더 크게 확장될 수 있어요. 지금 어떤 상태든, 변화는 이미 시작됐어요.","내가 모든 걸 통제하려 하기보다, 큰 흐름을 읽고 유연하게 적응하는 것이 지금 더 현명한 태도예요. 억지로 붙잡으면 오히려 흐름을 거스르는 에너지가 생길 수 있어요. 조금 여유를 두고 바라봐주세요.","어떤 일이든 영원하지 않아요. 좋은 것도, 나쁜 것도요. 지금 힘들다면 이 또한 지나갈 거예요. 그리고 그 지나간 자리에 새로운 흐름이 들어올 거예요."]
+  },
+  11:{
+    scene:"정의의 여신이 한 손엔 저울, 한 손엔 검을 들고 정면을 바라보고 있어요. 표정엔 감정이 없어요. 기쁘지도, 슬프지도 않아요. 오직 공정하게, 사실에 근거해서 판단을 내릴 준비가 된 표정이에요. 이 카드는 공정함, 진실, 그리고 원인과 결과의 연결을 상징해요. 내가 한 것이 결과로 돌아오는 흐름이에요. 억울하거나 왜곡된 것이 있다면, 그게 제자리를 찾아가는 에너지이기도 해요.",
+    feel:["감정보다 사실을 앞세우는, 냉정하지만 공정한 판단의 에너지","뿌린 것이 결과로 돌아오는 인과응보의 흐름","진실이 드러나고, 왜곡된 것이 제자리를 찾아가는 에너지"],
+    msg:["지금은 감정적으로 판단하기보다, 사실과 논리를 기준으로 상황을 바라보는 게 더 정확하고 도움이 돼요. 억울하거나 불공정하게 느껴지는 게 있다면, 그것도 결국 제자리를 찾아가게 돼 있어요.","내가 성실하게, 진심으로 해온 것이 있다면 그 결과가 이제 나타날 흐름이에요. 반대로, 미뤄왔거나 피해온 것이 있다면 이제 마주해야 할 시점이 됐을 수 있어요.","솔직함이 지금 가장 강한 카드예요. 진실을 감추거나 돌려 말하기보다, 있는 그대로 정직하게 접근하는 것이 지금 이 상황에서 가장 좋은 방향이에요."]
+  },
+  12:{
+    scene:"나무에 발목이 묶인 채 거꾸로 매달린 남자가 있어요. 그런데 이상하게도 표정이 평온해요. 심지어 머리 주변에 후광처럼 빛이 돌고 있어요. 고통스러운 상황이지만, 스스로 선택해서 이 자리에 있는 것 같은 느낌이에요. 세상을 거꾸로, 다른 각도에서 바라보기 위한 자발적인 멈춤이에요. 이 카드는 억지로 뭔가를 해결하려 하는 게 아니라, 잠시 멈추고 다른 시각을 얻는 에너지예요.",
+    feel:["자발적인 기다림과 멈춤의 에너지, 그리고 그 안에서 얻는 새로운 시각","지금 당장 아무것도 할 수 없는 상태이지만, 그 안에서 배우고 있는 느낌","억지로 해결하려 하지 않고 흐름에 맡기는 인내의 에너지"],
+    msg:["지금은 억지로 결론을 내리거나 상황을 풀려고 애쓰기보다, 잠시 멈추는 것이 더 나은 선택일 수 있어요. 기다리는 것 자체가 지금 내담자님이 할 수 있는 가장 현명한 행동이에요.","답답하게 느껴지는 상황이라면, 지금과 다른 각도에서 한번 바라봐주세요. 내가 당연하다고 생각했던 시각을 잠깐 내려놓고 보면, 예상치 못했던 해석이 보일 수도 있어요.","지금 당장 결론을 낼 수 없는 상황이 이어지고 있다면, 그 상황 자체를 무리하게 바꾸려 하지 않아도 돼요. 지금은 기다리는 것이 용기예요."]
+  },
+  13:{
+    scene:"갑옷을 입은 죽음의 기사가 흰 말을 타고 천천히 걸어오고 있어요. 손에는 검은 깃발을 들고, 앞을 가로막는 왕도, 어린아이도, 성직자도 있어요. 하지만 기사는 멈추지 않아요. 다만, 그 배경을 자세히 보면 수평선 너머로 태양이 떠오르고 있어요. 이 카드는 끝을 뜻하지만, 동시에 새로운 시작을 뜻하기도 해요. 두려운 이름을 가졌지만, 사실은 변화와 전환을 이야기하는 카드예요.",
+    feel:["무언가가 확실히 끝나고 있다는 느낌, 하지만 그 끝 너머에 새벽이 있다는 에너지","지금까지의 흐름이 완전히 전환되는 결정적인 변화의 에너지","놓아야 할 것을 놓는 것이 새로운 시작의 조건이 되는 흐름"],
+    msg:["이 카드가 나왔다고 해서 나쁜 일이 생긴다는 뜻이 아니에요. 오히려 지금 흘러가고 있는 것을 억지로 붙잡으려 하기보다, 자연스럽게 보내주는 것이 필요한 시점이에요. 놓는다고 해서 다 잃는 게 아니에요. 더 나은 것이 들어올 공간이 생기는 거예요.","지금 이 변화가 두렵게 느껴질 수 있어요. 하지만 지나고 나면, 이 시점이 오히려 전환점이 됐다는 걸 알게 되는 경우가 많아요. 지금의 어려움이 끝이 아니라 다음 장의 시작이에요.","반드시 보내야 할 것이 있어요. 그 대상이 사람일 수도, 상황일 수도, 오래된 생각이나 습관일 수도 있어요. 그 손을 놓는 순간부터 새로운 에너지가 들어오기 시작해요."]
+  },
+  14:{
+    scene:"천사가 두 컵 사이로 물을 천천히, 아주 조심스럽게 따르고 있어요. 서두르지 않아요. 정확하게, 균형을 맞추며, 한 방울도 흘리지 않으려는 듯 집중해 있어요. 발 한쪽은 땅에, 다른 쪽은 물에 담가 있어요. 두 가지 상반된 것 사이의 균형을 잡고 있는 거예요. 이 카드의 에너지는 서두르지 않는 것, 조급해하지 않는 것, 그리고 양쪽을 동시에 보며 중간을 유지하는 인내심이에요.",
+    feel:["조급함을 내려놓고 천천히 균형을 찾아가는 차분하고 안정된 에너지","한쪽에 치우치지 않고, 두 가지를 동시에 조율하는 섬세한 느낌","기다리면 반드시 좋은 결과가 온다는 것을 알고 있는 조용한 인내의 에너지"],
+    msg:["지금은 서두르는 것이 오히려 흐름을 흐트러뜨릴 수 있어요. 조급함을 내려놓고 천천히 가는 것이 더 빠른 길이 될 수 있는 시점이에요. 지금 흐름을 믿어봐주세요.","어느 한쪽에 치우치지 않고 균형을 유지하는 것이 중요해요. 감정과 이성, 나와 상대, 현재와 미래 — 양쪽을 동시에 보면서 중간 지점을 찾아가는 과정이 지금 필요한 것이에요.","지금 인내하고 있는 것이 반드시 더 나은 결과로 이어질 거예요. 포기하지 않아도 돼요. 이 카드는 기다리는 사람에게 좋은 흐름이 온다는 것을 보여주고 있어요."]
+  },
+  15:{
+    scene:"악마가 높은 왕좌에 앉아, 사슬로 두 사람을 묶고 있어요. 그런데 자세히 보면, 그 사슬이 두 사람의 목에 걸려 있긴 하지만 상당히 느슨해요. 조금만 손을 들면 스스로 벗어날 수 있을 정도예요. 이 카드가 담고 있는 진짜 메시지는 이거예요. 묶여 있다고 생각하는 게, 실제로는 스스로 선택한 묶임일 수 있다는 것. 두려움, 집착, 욕망이 우리를 가두는 사슬이 될 때예요.",
+    feel:["내가 스스로 만들어놓은 한계나 두려움에 갇혀 있는 느낌","벗어나고 싶지만 왜인지 놓을 수가 없는, 복잡한 집착의 에너지","무언가에 묶여 있으면서도 그 묶임이 편안하게 느껴지는 모순적인 상태"],
+    msg:["지금 너무 강하게 붙잡고 있는 게 있는 건 아닐까요? 그게 사람이든, 상황이든, 생각이든, 혹은 두려움이든요. 그 집착이 내담자님을 가두고 있을 수 있어요. 손을 펴보면, 사슬이 생각보다 느슨하다는 걸 알게 될 거예요.","지금 판단이 흐려져 있을 수 있어요. 두려움이나 집착이 안경처럼 씌워져서 상황을 왜곡해서 보게 만들고 있을 수 있어요. 조금 거리를 두고, 내가 정말 원하는 게 무엇인지, 냉정하게 들여다봐주세요.","사슬은 생각보다 느슨해요. 지금 묶여 있다고 느끼는 것이 사실은 내 선택일 수 있어요. 벗어나는 것이 두렵더라도, 그 두려움 너머에 더 자유로운 삶이 있어요."]
+  },
+  16:{
+    scene:"하늘에서 번개가 내리치고, 높은 탑이 부서지고 있어요. 탑 꼭대기에 있던 왕관이 날아가고, 두 사람이 아래로 떨어지고 있어요. 충격적이고 갑작스러운 장면이에요. 하지만 자세히 보면, 그 아래엔 단단한 땅이 있어요. 탑이 무너지더라도 땅은 남아 있어요. 이 카드는 갑작스럽고 충격적인 변화를 나타내지만, 그 변화가 나쁘기만 한 건 아니에요. 잘못 지어진 것이 무너지는 것이기도 하니까요.",
+    feel:["갑작스럽고 충격적인 변화가 닥친 느낌, 또는 그 예감","쌓아온 것이 한 순간에 무너지는 것 같은 두려움과 당혹감","하지만 그 무너짐이 더 나은 것을 짓기 위한 과정이라는 에너지"],
+    msg:["지금 많이 흔들리고 있을 수 있어요. 충격적이거나 예상치 못한 변화가 있었거나, 그런 상황이 다가오고 있다는 느낌이 있을 수 있어요. 그 당혹감과 두려움은 당연한 거예요. 부정하거나 무시하지 않아도 돼요.","탑 카드의 무너짐은 잘못 세워진 기반 위에 올라간 것들이 정리되는 과정이에요. 무너진 자리에 이번엔 더 단단하게, 더 진실하게 다시 쌓을 수 있어요. 지금 이 흔들림이 나쁘기만 한 건 아닐 수 있어요.","억지로 버티거나 붙잡으려 하기보다, 흘러가도록 두어보세요. 저항하면 오히려 더 힘들어질 수 있어요. 지나고 나면, 이 변화가 필요한 것이었다는 걸 알게 될 거예요."]
+  },
+  17:{
+    scene:"어두운 밤하늘 아래, 여인이 무릎을 꿇고 두 개의 물병을 기울이고 있어요. 하나는 땅에, 하나는 물에 천천히 물을 따르고 있어요. 위에는 큰 별 하나와 일곱 개의 작은 별이 빛나고 있어요. 고요하고, 조용하고, 치유적인 장면이에요. 힘든 밤이 지나고 별빛 아래에서 상처가 서서히 회복되고 있는 느낌이에요. 이 카드는 희망이에요. 작은 희망이지만, 분명히 빛나고 있는 희망이에요.",
+    feel:["오랜 힘든 시간이 지나고 드디어 숨을 쉬는 것 같은 안도감과 치유의 에너지","아직 완전히 밝지는 않지만, 어둠 속에서도 분명히 빛나는 별빛 같은 희망","상처가 서서히 아물고, 마음이 조금씩 회복되고 있다는 따뜻한 느낌"],
+    msg:["힘든 시간이 있었다면, 이제 그 상처가 서서히 아물기 시작하는 흐름이 왔어요. 완전히 회복된 건 아니더라도, 방향은 분명히 좋아지는 쪽을 향하고 있어요. 조금만 더 나 자신을 믿어주세요.","희망을 잃지 않아도 돼요. 지금 별빛이 너무 약하게 느껴지더라도, 그 빛은 분명히 거기 있어요. 어둠이 짙다고 별이 사라진 게 아니에요. 다만 구름에 가려져 있을 뿐이에요.","앞으로 향하는 흐름이 나쁘지 않아요. 지금 내담자님의 에너지가 회복되고 있는 시점이에요. 나를 아끼고, 충분히 쉬고, 천천히 앞으로 나아가봐요."]
+  },
+  18:{
+    scene:"보름달이 높이 떠 있는 밤, 두 마리의 개가 달을 향해 짖고 있어요. 물 속에서는 가재가 천천히 올라오고 있고, 길은 두 개의 탑 사이로 어둠 속으로 사라지고 있어요. 무엇이 진짜인지, 어디로 가야 하는지 불분명한 장면이에요. 달의 빛은 태양과 달리 직접적이지 않아요. 반사된 빛이라, 보이는 것이 실제와 다를 수 있어요. 이 카드는 환상과 불안, 그리고 무의식이 올라오는 에너지예요.",
+    feel:["지금 상황이 뿌옇고 불분명하게 느껴지는, 모호하고 불안한 에너지","진짜와 환상의 경계가 흐릿해지는, 직관과 두려움이 뒤섞인 느낌","무의식 속에 있던 것들이 표면으로 올라오는, 불편하지만 필요한 에너지"],
+    msg:["지금 상황이 불분명하고 안개처럼 흐릿하게 느껴지는 것이 있을 수 있어요. 그 불안함을 억지로 없애려 하지 않아도 돼요. 지금은 명확한 답을 찾기보다, 그 불명확함을 그냥 인정하는 것이 더 솔직한 태도예요.","지금은 섣불리 판단하거나 결론을 내리기보다 잠시 기다리는 게 좋아요. 달빛 아래에서 보이는 것이 항상 실제와 같지 않아요. 안개가 걷히고 더 선명한 상황이 드러날 때까지 기다려봐주세요.","두려움이 실제 상황보다 훨씬 크게 느껴지고 있을 수 있어요. 머릿속으로 최악의 상황을 먼저 그리게 되는 시기예요. 하지만 실제로는 내담자님이 생각하는 것보다 나쁘지 않을 가능성이 높아요."]
+  },
+  19:{
+    scene:"커다랗고 환한 태양이 화면 가득 빛나고 있어요. 그 아래 아이가 말을 타고 달리고 있어요. 두 팔을 활짝 벌리고, 얼굴엔 환한 웃음이 가득해요. 근심도, 걱정도, 두려움도 없는 순수한 기쁨이에요. 이 카드는 타로 78장 중에서 가장 밝은 에너지를 가진 카드 중 하나예요. 어둠이 지나고 드디어 빛이 드는 순간, 또는 오랫동안 바라던 것이 현실이 되는 흐름이에요.",
+    feel:["밝고 따뜻하고 순수한 기쁨의 에너지, 어둠이 지나고 빛이 드는 느낌","성공하거나 좋은 결과가 나타나고 있다는 활력 넘치는 에너지","걱정을 내려놓고 지금 이 좋은 흐름을 온전히 받아들이는 낙관적인 느낌"],
+    msg:["지금 흐름이 밝아요. 오랫동안 힘들었다면, 이제 그 무게가 조금 가벼워지는 시점이에요. 걱정하기보다 지금 이 좋은 에너지를 느끼고, 그 방향으로 더 나아가봐요.","좋은 소식이나 기쁜 일이 가까이에 있을 수 있어요. 너무 작은 일이라고 지나치지 마세요. 지금은 작은 기쁨도 충분히 기쁜 것이에요. 그 감사함을 느끼는 것이 더 큰 흐름을 만들어줘요.","지금 내담자님에게 빛이 비치고 있어요. 그 온기를 충분히 느껴도 돼요. 기쁨을 억누르거나 숨기지 않아도 돼요. 이 순간을 온전히 누려봐요."]
+  },
+  20:{
+    scene:"하늘에서 천사가 나팔을 불고 있어요. 그 소리에 반응하듯, 땅 아래 관에서 사람들이 하나둘 일어나 하늘을 향해 팔을 뻗고 있어요. 각성하는 장면이에요. 오랫동안 잠들어 있던 무언가가 깨어나는 순간이에요. 이 카드는 '이제 다르게 살아도 돼'라는 신호예요. 과거의 방식이나 판단을 내려놓고, 새로운 눈으로 자신과 상황을 바라볼 수 있는 전환점이에요.",
+    feel:["오랫동안 잠들어 있던 무언가가 드디어 깨어나는 각성의 에너지","과거의 방식을 내려놓고 새로운 장으로 넘어가는 결정적인 전환의 느낌","이제는 다르게 살아도 된다는, 재탄생의 따뜻하고 강렬한 에너지"],
+    msg:["새로운 국면이 열리고 있어요. 지금까지 당연하게 생각했던 것들을 한번 다시 들여다볼 때가 된 것 같아요. 같은 상황이라도, 다른 시각으로 바라보면 전혀 다른 가능성이 보일 수 있어요.","오랫동안 미뤄왔거나 외면해온 것들을 이제 직면할 준비가 됐을 수 있어요. 그게 두렵더라도, 그 직면이 결국 더 가볍고 자유로운 삶으로 이어지게 돼요. 이제 때가 됐어요.","과거는 과거로 두어도 돼요. 그 과거가 어떤 것이었든, 지금 이 순간부터 다시 시작할 수 있어요. 심판 카드는 벌을 내리는 카드가 아니에요. 새로운 장을 열어주는 카드예요."]
+  },
+  21:{
+    scene:"타원형 월계관 안에 한 여인이 서 있어요. 두 손에는 완즈를 들고, 사방을 고요하게 바라보고 있어요. 네 모퉁이엔 황소, 사자, 독수리, 천사가 있어요 — 완즈, 펜타클, 소드, 컵을 상징하는 네 가지 원소가 모두 모여 있는 거예요. 하나의 긴 여정이 완성되는 장면이에요. 이 카드는 완성, 성취, 통합의 에너지예요. 오래 걸렸지만 드디어 한 사이클이 아름답게 마무리되고 있어요.",
+    feel:["오랜 여정이 드디어 완성되는 성취감과 해방감의 에너지","하나의 큰 사이클이 아름답게 마무리되며 다음 장이 열리는 느낌","성취와 자유가 함께 찾아오는, 충만하고 통합된 에너지"],
+    msg:["하나의 큰 사이클이 완성되고 있어요. 그 과정이 얼마나 길고 험했든, 드디어 그 끝이 보이고 있어요. 오래 걸렸더라도 결국 해냈어요. 그 노력과 여정이 헛되지 않았어요.","지금까지의 경험과 노력이 드디어 결실을 맺는 흐름이에요. 작은 것이라도 지금 이루어지는 것이 있다면, 충분히 기뻐해도 돼요. 그 기쁨이 다음 사이클의 씨앗이 돼요.","새로운 장이 열리기 전, 지금 이 완성의 순간을 충분히 느끼고 가셔도 좋아요. 서두르지 않아도 돼요. 지금 이 순간 자체가 이미 충분해요."]
+  },
+};
+
+/* ── 마이너 아르카나 리딩 생성기 ── */
+const SUIT = {
+  wands:  {name:"완즈",  el:"불",  domain:"열정, 행동, 창의력",  open:"이 카드의 원소는 '불'이에요. 강한 에너지와 행동력, 열정이 담겨 있어요."},
+  cups:   {name:"컵",    el:"물",  domain:"감정, 관계, 직관",    open:"이 카드의 원소는 '물'이에요. 감정의 흐름과 관계, 내면의 목소리에 관한 에너지예요."},
+  swords: {name:"소드",  el:"바람",domain:"생각, 갈등, 진실",    open:"이 카드의 원소는 '바람'이에요. 생각과 판단, 소통에 관한 예리한 에너지를 담고 있어요."},
+  pentacles:{name:"펜타클",el:"흙",domain:"현실, 물질, 안정",    open:"이 카드의 원소는 '흙'이에요. 현실적인 상황, 물질적인 흐름, 안정과 성장에 관한 에너지예요."},
+};
+const NUM_MSG = {
+  1:  ["새로운 씨앗이 막 심어지는 에너지예요. 아직 눈에 보이는 결과는 없지만, 방향이 열리기 시작했어요. 지금은 결과를 재촉하기보다 그 씨앗이 뿌리를 내릴 수 있도록 공간을 만들어주는 것이 중요해요. 시작했다는 것 자체가 이미 의미 있는 에너지예요.","시작의 에너지가 강하게 흘러요. 아직 아무것도 정해지지 않은 상태이지만, 그렇기 때문에 오히려 모든 가능성이 열려 있어요. 지금이 첫 발을 내딛기에 좋은 타이밍이에요. 완벽하게 준비된 다음에 시작하려 하면 영원히 시작하지 못할 수 있어요."],
+  2:  ["두 가지 선택지 사이에서 저울질하고 있는 에너지예요. 어느 쪽도 완벽하지 않기 때문에 결정이 어렵게 느껴질 수 있어요. 하지만 결정을 미루는 것 자체도 하나의 선택이에요. 이제 내 진심이 어느 쪽으로 기울어지는지, 조용히 들어봐주세요.","선택의 기로에 서 있는 흐름이에요. 두 방향 모두 가능성이 있지만, 양쪽을 동시에 붙잡고 있기에는 에너지가 부족한 시기예요. 어느 방향으로든 결정을 내려야 할 시점이 다가오고 있어요. 두려움 때문이 아니라, 내 진심을 따르는 선택을 해보세요."],
+  3:  ["씨앗이 싹을 틔우고 조금씩 자라고 있는 에너지예요. 혼자가 아니라 함께하는 흐름이 느껴져요. 소통하고 나누는 것이 지금 이 성장을 더 빠르게 만들어줄 수 있어요. 혼자 안고 있던 것을 꺼내서 표현하거나, 도움을 주고받는 것이 지금 좋은 흐름이에요.","표현하고 나누는 에너지가 강해요. 지금 내담자님이 하고 있는 것, 혹은 느끼고 있는 것을 가까운 사람에게 나눠보세요. 소통이 열리면 생각지 못한 곳에서 도움이 오거나, 막혀 있던 것이 풀리는 흐름이 시작될 수 있어요."],
+  4:  ["잠시 멈추고 지금까지 쌓아온 것을 단단하게 다지는 시기예요. 안정과 기반이 키워드예요. 지금 너무 빠르게 앞으로 나아가려 하기보다, 내가 이미 가진 것을 잘 지키고 유지하는 데 집중해보세요. 다만, 지나치게 오래 멈춰 있으면 정체가 될 수 있어요.","단단하게 자리잡은 에너지가 흘러요. 새로운 것을 추구하기보다 지금 있는 것들을 잘 지키는 게 중요한 시점이에요. 하지만 안정이 고착이 되지 않도록 주의해주세요. 충분히 쉬었다면, 이제 조금씩 다음 단계를 준비할 때예요."],
+  5:  ["지금 흐름이 쉽지 않아 보여요. 갈등이나 어려움, 마찰이 있는 에너지예요. 하지만 이 단계를 피하거나 우회하려 하면 오히려 더 오래 이 상황이 이어질 수 있어요. 정면으로 마주하고, 그 안에서 배우는 것이 결국 더 빠른 길이에요.","충돌이나 도전이 있는 에너지예요. 주변에서 오는 마찰일 수도 있고, 내 안에서 일어나는 갈등일 수도 있어요. 억지로 피하려 하기보다 그 불편함 속에서 무엇을 배울 수 있는지를 찾아보세요. 이 시기를 지나고 나면 더 단단해진 내담자님을 발견하게 될 거예요."],
+  6:  ["갈등과 어려움의 단계를 지나, 이제 어느 정도 안정이 찾아오는 흐름이에요. 주고받음이 생기고, 관계가 부드러워지고, 흐름이 균형을 찾아가는 단계예요. 너무 많이 받으려 하거나 너무 많이 주려 하기보다, 자연스러운 균형을 찾아가는 것이 지금 중요해요.","조화로운 에너지가 흘러요. 나누고 소통하면 더 좋은 흐름이 만들어지는 시점이에요. 혼자 감당하려 하기보다, 주변과 연결되는 것이 지금 더 나은 방향이에요. 받는 것도, 주는 것도 모두 자연스럽게 흘러가도록 두어보세요."],
+  7:  ["지금은 앞으로 달리는 것보다 잠시 멈추고 돌아보는 것이 더 중요한 시기예요. 내가 지금 이 방향으로 가고 있는 것이 맞는지, 진짜 원하는 게 무엇인지를 확인해볼 필요가 있어요. 행동보다 성찰이 더 강력한 도구가 되는 시점이에요.","깊이 들여다보는 에너지가 필요해요. 방향을 재점검하거나, 지금까지 해온 것들을 한번 돌아봐주세요. 수정이 필요한 부분이 있다면 지금이 그걸 확인하고 조정할 수 있는 좋은 타이밍이에요. 멈추는 것이 후퇴가 아니에요."],
+  8:  ["빠르게 변화가 진행되거나, 곧 큰 움직임이 생길 흐름이에요. 지금까지 준비해왔던 것들이 드디어 실제로 움직이기 시작하는 에너지예요. 타이밍을 놓치지 않도록 준비하고, 기회가 왔을 때 빠르게 반응할 수 있도록 해두세요.","빠른 에너지가 강하게 흐르고 있어요. 일이 빠르게 전개될 수 있는 시점이에요. 그 속도에 압도되기보다 흐름을 잘 읽으면서 타이밍을 잡아봐요. 빠른 만큼 방향을 잃지 않는 것도 중요해요."],
+  9:  ["긴 여정의 마지막 구간에 들어섰어요. 조금만 더 버티면 원하는 지점에 닿을 수 있는 에너지예요. 지쳐 있을 수 있어요. 힘들게 느껴질 수 있어요. 하지만 지금 멈추기엔 너무 많이 왔어요. 거의 다 왔다는 것을 기억해주세요.","거의 다 왔다는 에너지가 느껴져요. 완성의 직전 단계예요. 마지막이 가장 힘들 때가 많아요. 하지만 포기하지 않아도 될 것 같아요. 지금 이 힘든 구간이 끝나면, 내담자님이 원하는 것이 가까이 있을 거예요."],
+  10: ["하나의 사이클이 완성되는 에너지예요. 완성이기도 하지만, 동시에 너무 많이 쌓여서 무겁게 느껴지는 때이기도 해요. 지금 짊어지고 있는 것이 너무 많다면, 내려놓을 것은 내려놓아야 할 시점이에요. 다음 단계로 넘어가기 위해 공간을 만들어주세요.","마무리와 과부하가 동시에 존재하는 에너지예요. 하나의 장이 끝나가고 있어요. 이 끝이 슬프거나 힘들게 느껴질 수 있지만, 이 마무리가 있어야 새로운 시작이 열려요. 지금 정리가 필요한 것들을 하나씩 정리해보세요."],
+};
+const COURT_MSG = {
+  page:   ["새로운 소식이나 아이디어가 막 도착한 것 같은 신선한 에너지예요. 경험은 아직 적지만 열정과 호기심이 가득해요. 배우고, 탐험하고, 시도해보는 것이 지금 내담자님에게 잘 맞는 에너지예요. 완벽하지 않아도 괜찮아요. 지금은 경험을 쌓는 시기예요.","배우고 탐험하는 에너지가 강해요. 아직 모든 걸 알지 못해도 괜찮아요. 지금은 시작하는 것 자체가 중요한 시점이에요. 새로운 것에 열린 태도로 접근하면, 예상치 못한 곳에서 좋은 흐름이 생길 수 있어요."],
+  knight: ["목표를 향해 거침없이 달려가는 강한 추진력의 에너지예요. 행동하고, 움직이고, 직접 뛰어드는 에너지가 강하게 흘러요. 생각이 많을 때가 아니라, 지금은 실행할 때예요. 다만 속도가 빠른 만큼 방향을 잃지 않도록 가끔 멈추고 확인해봐주세요.","직접 뛰어드는 행동의 에너지가 강해요. 지금 움직이지 않으면 기회를 놓칠 수 있는 시점이에요. 과감하게 행동해봐요. 다만 너무 빠른 속도에 주변이 따라오지 못할 수 있으니, 속도와 방향을 함께 챙겨봐주세요."],
+  queen:  ["이 원소의 에너지를 깊이 품고, 따뜻하게 나누는 성숙한 에너지예요. 배려와 직관이 강하고, 내면의 힘이 안정된 사람의 에너지예요. 지금 내담자님이 그런 에너지를 발휘할 수 있는 시점이에요. 주변을 품고 돌보는 것이 자연스럽게 더 큰 흐름을 만들어줄 거예요.","내면의 힘이 강하고 주변을 품는 에너지예요. 감정적으로 성숙하고, 상황을 직관적으로 읽는 능력이 지금 빛을 발할 시기예요. 내담자님이 가진 따뜻함과 통찰이 지금 가장 강한 무기예요."],
+  king:   ["이 원소의 에너지를 완전히 이해하고 활용할 수 있는 권위와 성숙함의 에너지예요. 현명하게 판단하고, 흔들리지 않게 이끌고, 주변에 신뢰를 주는 흐름이에요. 지금은 내담자님이 주도적인 역할을 맡아도 충분한 시점이에요.","안정감과 지혜, 그리고 리더십이 함께하는 에너지예요. 지금 내담자님의 판단을 믿어도 돼요. 경험에서 나온 현명함이 있어요. 주변 사람들도 내담자님의 그 중심을 느끼고 신뢰할 거예요."],
+};
+
+function getMinorReading(card) {
+  const name = card.name.toLowerCase();
+  let suit = null;
+  if(name.includes('wands'))    suit = SUIT.wands;
+  else if(name.includes('cups')) suit = SUIT.cups;
+  else if(name.includes('swords')) suit = SUIT.swords;
+  else if(name.includes('pentacles')) suit = SUIT.pentacles;
+  if(!suit) return null;
+
+  let numMsg = '', scene = '';
+  const courtMap = {page:'page',knight:'knight',queen:'queen',king:'king'};
+  const courtKey = Object.keys(courtMap).find(k => name.startsWith(k));
+
+  if(courtKey) {
+    const msgs = COURT_MSG[courtKey];
+    numMsg = pick(msgs);
+    scene = `이 카드는 ${suit.name}의 ${courtMap[courtKey] === 'page' ? '페이지' : courtMap[courtKey] === 'knight' ? '나이트' : courtMap[courtKey] === 'queen' ? '퀸' : '킹'}예요. ${suit.open}`;
+  } else {
+    const numMatch = name.match(/^(\d+)/);
+    if(!numMatch) return null;
+    const n = parseInt(numMatch[1]);
+    const msgs = NUM_MSG[n] || ["흐름이 느껴지는 카드예요."];
+    numMsg = pick(msgs);
+    scene = `이 카드는 ${suit.name} ${n}번이에요. ${suit.open}`;
+  }
+  return {scene, numMsg};
+}
+
+/* ── 카드 SVG 아트 ── */
+let _svgUid = 0;
+
+const SUIT_COL = {wands:'#e8a030',cups:'#4fc3f7',swords:'#b0c8e0',pentacles:'#81c784'};
+const SUIT_BG  = {
+  wands:    ['#3d1a00','#1a0a00'],
+  cups:     ['#0a1a4a','#000a1a'],
+  swords:   ['#0a1030','#000010'],
+  pentacles:['#0a2a0a','#001000'],
+};
+
+function getSuit(card){
+  const n=card.name.toLowerCase();
+  if(n.includes('wands'))return'wands';
+  if(n.includes('cups'))return'cups';
+  if(n.includes('swords'))return'swords';
+  if(n.includes('pentacles'))return'pentacles';
+  return null;
+}
+
+function drawPip(suit,cx,cy,s){
+  s=s||7;const c=SUIT_COL[suit]||'#c9a227';
+  if(suit==='wands')return`<line x1="${cx}" y1="${cy-s}" x2="${cx}" y2="${cy+s}" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/><line x1="${cx}" y1="${cy-s*.25}" x2="${cx-s*.6}" y2="${cy-s*.85}" stroke="${c}" stroke-width="1.2" stroke-linecap="round"/><line x1="${cx}" y1="${cy-s*.25}" x2="${cx+s*.6}" y2="${cy-s*.85}" stroke="${c}" stroke-width="1.2" stroke-linecap="round"/>`;
+  if(suit==='cups')return`<path d="M${cx-s*.8},${cy-s*.5} Q${cx-s*.9},${cy+s*.5} ${cx},${cy+s} Q${cx+s*.9},${cy+s*.5} ${cx+s*.8},${cy-s*.5} Z" fill="none" stroke="${c}" stroke-width="1.2"/><line x1="${cx-s*.4}" y1="${cy+s}" x2="${cx+s*.4}" y2="${cy+s}" stroke="${c}" stroke-width="1.2"/>`;
+  if(suit==='swords')return`<line x1="${cx}" y1="${cy-s}" x2="${cx}" y2="${cy+s}" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/><line x1="${cx-s*.65}" y1="${cy-s*.1}" x2="${cx+s*.65}" y2="${cy-s*.1}" stroke="${c}" stroke-width="1.2" stroke-linecap="round"/><polygon points="${cx},${cy-s} ${cx-s*.22},${cy-s*.5} ${cx+s*.22},${cy-s*.5}" fill="${c}"/>`;
+  if(suit==='pentacles'){const p=Array.from({length:5},(_,i)=>{const a=Math.PI/2+i*2*Math.PI/5;return`${(cx+Math.cos(a)*s).toFixed(1)},${(cy-Math.sin(a)*s).toFixed(1)}`;});const st=[0,2,4,1,3].map(i=>p[i]).join(' ');return`<polygon points="${st}" fill="none" stroke="${c}" stroke-width="1.2"/>`;}
+  return'';
+}
+
+const PIP_POS={
+  1:[[40,60]],
+  2:[[40,32],[40,85]],
+  3:[[40,26],[40,57],[40,88]],
+  4:[[25,32],[55,32],[25,82],[55,82]],
+  5:[[25,24],[55,24],[40,55],[25,83],[55,83]],
+  6:[[25,22],[55,22],[25,57],[55,57],[25,88],[55,88]],
+  7:[[25,18],[55,18],[25,44],[55,44],[40,65],[25,84],[55,84]],
+  8:[[25,17],[55,17],[25,42],[55,42],[25,67],[55,67],[25,88],[55,88]],
+  9:[[25,16],[55,16],[25,40],[55,40],[40,58],[25,74],[55,74],[25,92],[55,92]],
+  10:[[25,14],[55,14],[25,33],[55,33],[25,53],[55,53],[25,72],[55,72],[25,91],[55,91]],
+};
+
+/* 메이저 아르카나 SVG 데이터 [bg1, bg2, centerSVG] */
+const MAJOR_ART=[
+  ['#d4a800','#1a5a9a',`<circle cx="40" cy="50" r="12" fill="none" stroke="#fff" stroke-width="1.5" opacity=".85"/><line x1="45" y1="40" x2="62" y2="62" stroke="#ffe082" stroke-width="1.5" stroke-linecap="round"/><circle cx="36" cy="44" r="3.5" fill="#fff" opacity=".8"/>`],
+  ['#c62828','#f5f5f5',`<path d="M26,50 Q26,42 33,42 Q40,42 40,50 Q40,58 33,58 Q26,58 26,50 Z" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M54,50 Q54,42 47,42 Q40,42 40,50 Q40,58 47,58 Q54,58 54,50 Z" fill="none" stroke="#fff" stroke-width="1.5"/><line x1="28" y1="66" x2="52" y2="66" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/><line x1="40" y1="30" x2="40" y2="42" stroke="#c9a227" stroke-width="1.5"/>`],
+  ['#0d2f5e','#7cb8d8',`<rect x="22" y="32" width="5" height="52" fill="#b0bec5" rx="2"/><rect x="53" y="32" width="5" height="52" fill="#ffe082" rx="2"/><path d="M27,42 Q40,30 53,42" fill="none" stroke="#e0e0e0" stroke-width="1.5"/><rect x="28" y="58" width="24" height="18" fill="none" stroke="#b0bec5" stroke-width="1" rx="1"/><circle cx="40" cy="52" r="4" fill="#e0e0e0" opacity=".7"/>`],
+  ['#1a5c1a','#9a7020',`<circle cx="40" cy="44" r="16" fill="none" stroke="#ffe082" stroke-width="1.5"/><text x="40" y="76" text-anchor="middle" font-size="16" fill="#ffe082" font-family="serif">♀</text><path d="M30,54 Q36,62 40,66 Q44,62 50,54" fill="none" stroke="#a5d6a7" stroke-width="1.2"/>`],
+  ['#7a1010','#2a0000',`<rect x="22" y="32" width="36" height="44" fill="none" stroke="#c9a227" stroke-width="1.5" rx="2"/><rect x="30" y="22" width="20" height="12" fill="#c9a227" rx="2"/><text x="40" y="72" text-anchor="middle" font-size="14" fill="#ffe082" font-family="serif">♂</text>`],
+  ['#3a1a6a','#100030',`<line x1="40" y1="28" x2="40" y2="90" stroke="#c9a227" stroke-width="2"/><line x1="28" y1="42" x2="52" y2="42" stroke="#c9a227" stroke-width="1.5"/><line x1="28" y1="56" x2="52" y2="56" stroke="#c9a227" stroke-width="1.5"/><line x1="28" y1="70" x2="52" y2="70" stroke="#c9a227" stroke-width="1.5"/><circle cx="28" cy="85" r="3.5" fill="#c9a227"/><circle cx="52" cy="85" r="3.5" fill="#c9a227"/>`],
+  ['#8a1a3a','#2a0a20',`<circle cx="40" cy="28" r="10" fill="#ffe082" opacity=".9"/><path d="M34,38 L24,62 L40,52 L56,62 Z" fill="none" stroke="#fff" stroke-width="1.2"/><circle cx="26" cy="68" r="9" fill="none" stroke="#ffb3c1" stroke-width="1.2"/><circle cx="54" cy="68" r="9" fill="none" stroke="#bbbbff" stroke-width="1.2"/>`],
+  ['#0a1a6a','#000020',`<rect x="20" y="52" width="40" height="32" fill="none" stroke="#c9a227" stroke-width="1.5" rx="2"/><ellipse cx="28" cy="84" rx="6" ry="5" fill="none" stroke="#b0bec5" stroke-width="1"/><ellipse cx="52" cy="84" rx="6" ry="5" fill="none" stroke="#b0bec5" stroke-width="1"/><polygon points="40,28 32,46 20,46 30,57" fill="none" stroke="#b0bec5" stroke-width="1.2"/><polygon points="40,28 48,46 60,46 50,57" fill="none" stroke="#b0bec5" stroke-width="1.2"/><circle cx="40" cy="36" r="5" fill="#c9a227"/>`],
+  ['#c07010','#3a1800',`<path d="M22,56 Q22,46 32,46 Q40,46 40,56 Q40,66 32,66 Q22,66 22,56 Z" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M58,56 Q58,46 48,46 Q40,46 40,56 Q40,66 48,66 Q58,66 58,56 Z" fill="none" stroke="#fff" stroke-width="1.5"/><ellipse cx="40" cy="74" rx="14" ry="9" fill="none" stroke="#e8a030" stroke-width="1.2"/><circle cx="36" cy="68" r="2" fill="#fff" opacity=".7"/><circle cx="44" cy="68" r="2" fill="#fff" opacity=".7"/>`],
+  ['#101030','#080818',`<polygon points="40,28 36,40 38,40 32,58 48,58 42,40 44,40" fill="none" stroke="#c9a227" stroke-width="1.2"/><polygon points="40,34 39,38 36,38 38.5,40 37.5,44 40,42 42.5,44 41.5,40 44,38 41,38" fill="#ffe082"/><line x1="40" y1="64" x2="40" y2="90" stroke="#b0bec5" stroke-width="1.5"/><circle cx="40" cy="76" r="2.5" fill="#c9a227"/>`],
+  ['#280a5a','#5a1a5a',`<circle cx="40" cy="56" r="24" fill="none" stroke="#c9a227" stroke-width="1.5"/><circle cx="40" cy="56" r="14" fill="none" stroke="#9c8030" stroke-width="1"/><line x1="40" y1="32" x2="40" y2="80" stroke="#c9a227" stroke-width="1"/><line x1="16" y1="56" x2="64" y2="56" stroke="#c9a227" stroke-width="1"/><line x1="22" y1="39" x2="58" y2="73" stroke="#9c8030" stroke-width=".8"/><line x1="58" y1="39" x2="22" y2="73" stroke="#9c8030" stroke-width=".8"/><circle cx="40" cy="56" r="5" fill="#c9a227"/>`],
+  ['#7a1010','#100000',`<line x1="40" y1="28" x2="40" y2="68" stroke="#c9a227" stroke-width="2"/><polygon points="40,28 35,40 45,40" fill="#ffe082"/><path d="M20,74 Q32,62 40,70 Q48,78 60,66" fill="none" stroke="#c9a227" stroke-width="1.5"/><circle cx="30" cy="82" r="8" fill="none" stroke="#c9a227" stroke-width="1.2"/><circle cx="50" cy="82" r="8" fill="none" stroke="#c9a227" stroke-width="1.2"/>`],
+  ['#2a6a2a','#001000',`<line x1="40" y1="30" x2="40" y2="86" stroke="#c9a227" stroke-width="2"/><line x1="22" y1="30" x2="58" y2="30" stroke="#7a5020" stroke-width="2" stroke-linecap="round"/><circle cx="40" cy="52" r="12" fill="none" stroke="#c9a227" stroke-width="1.5"/><line x1="30" y1="66" x2="26" y2="84" stroke="#c9a227" stroke-width="1.2"/><line x1="50" y1="66" x2="54" y2="84" stroke="#c9a227" stroke-width="1.2"/>`],
+  ['#101010','#300000',`<polygon points="40,24 26,48 54,48" fill="none" stroke="#aaaaaa" stroke-width="1.5"/><circle cx="40" cy="37" r="6" fill="#aaaaaa" opacity=".9"/><circle cx="36" cy="35" r="2" fill="#101010"/><circle cx="44" cy="35" r="2" fill="#101010"/><path d="M36,41 Q40,45 44,41" fill="none" stroke="#555" stroke-width="1"/><path d="M26,48 Q40,94 54,48" fill="none" stroke="#666" stroke-width="1.2"/><path d="M38,58 Q40,52 42,58 L58,50" fill="none" stroke="#999" stroke-width="1.5"/>`],
+  ['#0a3a6a','#002040',`<circle cx="26" cy="50" r="12" fill="none" stroke="#4fc3f7" stroke-width="1.3"/><circle cx="54" cy="66" r="12" fill="none" stroke="#ffe082" stroke-width="1.3"/><path d="M26,38 Q40,26 54,40" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M26,62 Q36,68 54,58" fill="none" stroke="#9de" stroke-width="1.2"/>`],
+  ['#180000','#000000',`<polygon points="40,26 20,74 60,74" fill="none" stroke="#660000" stroke-width="1.5"/><polygon points="40,32 28,60 52,60" fill="none" stroke="#aa2222" stroke-width="1.2"/><line x1="40" y1="26" x2="40" y2="18" stroke="#aa2222" stroke-width="1.5"/><line x1="40" y1="18" x2="32" y2="26" stroke="#aa2222" stroke-width="1.2"/><line x1="40" y1="18" x2="48" y2="26" stroke="#aa2222" stroke-width="1.2"/><circle cx="26" cy="82" r="5" fill="none" stroke="#660000" stroke-width="1"/><circle cx="54" cy="82" r="5" fill="none" stroke="#660000" stroke-width="1"/>`],
+  ['#180800','#300a00',`<rect x="28" y="28" width="24" height="36" fill="none" stroke="#c9a227" stroke-width="1.5" rx="2"/><rect x="34" y="20" width="12" height="10" fill="#aa2200" rx="1"/><path d="M52,34 Q72,44 64,60 Q56,50 52,52" fill="none" stroke="#ff7020" stroke-width="1.5"/><circle cx="24" cy="74" r="5" fill="#fff" opacity=".6"/><circle cx="56" cy="78" r="5" fill="#fff" opacity=".6"/>`],
+  ['#050520','#10104a',`<polygon points="40,28 56,48 24,48 40,28" fill="none" stroke="#ffe082" stroke-width="1.5"/><circle cx="40" cy="46" r="6" fill="#c9a227"/><circle cx="16" cy="24" r="3" fill="#ffe082" opacity=".8"/><circle cx="64" cy="24" r="3" fill="#ffe082" opacity=".8"/><circle cx="14" cy="52" r="2.5" fill="#ffe082" opacity=".7"/><circle cx="66" cy="52" r="2.5" fill="#ffe082" opacity=".7"/><circle cx="20" cy="74" r="2.5" fill="#ffe082" opacity=".7"/><circle cx="60" cy="74" r="2.5" fill="#ffe082" opacity=".7"/><circle cx="40" cy="82" r="2.5" fill="#ffe082" opacity=".7"/>`],
+  ['#080828','#18083a',`<path d="M24,36 Q14,58 24,84 Q32,64 40,56 Q48,64 56,84 Q66,58 56,36" fill="none" stroke="#9080c0" stroke-width="1.5"/><circle cx="40" cy="32" r="12" fill="none" stroke="#d0d0f0" stroke-width="1.5"/><circle cx="35" cy="28" r="7" fill="#080828"/><line x1="18" y1="90" x2="18" y2="60" stroke="#9080c0" stroke-width="1.5" stroke-linecap="round"/><line x1="62" y1="90" x2="62" y2="60" stroke="#9080c0" stroke-width="1.5" stroke-linecap="round"/><path d="M22,90 Q40,80 58,90" fill="none" stroke="#4040aa" stroke-width="1.2"/>`],
+  ['#c07800','#803c00',`<circle cx="40" cy="40" r="16" fill="#ffe082"/><line x1="40" y1="20" x2="40" y2="12" stroke="#ffe082" stroke-width="2"/><line x1="51" y1="23" x2="56" y2="17" stroke="#ffe082" stroke-width="2"/><line x1="58" y1="32" x2="65" y2="28" stroke="#ffe082" stroke-width="2"/><line x1="60" y1="44" x2="68" y2="44" stroke="#ffe082" stroke-width="2"/><line x1="58" y1="56" x2="65" y2="60" stroke="#ffe082" stroke-width="2"/><line x1="51" y1="62" x2="56" y2="68" stroke="#ffe082" stroke-width="2"/><line x1="40" y1="64" x2="40" y2="72" stroke="#ffe082" stroke-width="2"/><line x1="29" y1="62" x2="24" y2="68" stroke="#ffe082" stroke-width="2"/><line x1="22" y1="56" x2="15" y2="60" stroke="#ffe082" stroke-width="2"/><line x1="20" y1="44" x2="12" y2="44" stroke="#ffe082" stroke-width="2"/><line x1="22" y1="32" x2="15" y2="28" stroke="#ffe082" stroke-width="2"/><line x1="29" y1="23" x2="24" y2="17" stroke="#ffe082" stroke-width="2"/><circle cx="40" cy="78" r="9" fill="none" stroke="#fff" stroke-width="1.2"/>`],
+  ['#5a3a8a','#180a3a',`<circle cx="40" cy="30" r="10" fill="none" stroke="#ffe082" stroke-width="1.5"/><path d="M36,20 Q40,8 44,20" fill="none" stroke="#c9a227" stroke-width="1.2"/><path d="M40,40 L28,62 L52,62 Z" fill="none" stroke="#fff" stroke-width="1.2"/><circle cx="20" cy="82" r="8" fill="none" stroke="#b0bec5" stroke-width="1.2"/><circle cx="40" cy="84" r="8" fill="none" stroke="#c9a227" stroke-width="1.2"/><circle cx="60" cy="82" r="8" fill="none" stroke="#b0bec5" stroke-width="1.2"/>`],
+  ['#1e0848','#4a1880',`<ellipse cx="40" cy="60" rx="22" ry="32" fill="none" stroke="#81c784" stroke-width="1.5"/><circle cx="40" cy="60" r="9" fill="#c9a227" opacity=".9"/><circle cx="18" cy="30" r="5" fill="#ffcc02" opacity=".8"/><circle cx="62" cy="30" r="5" fill="#ffcc02" opacity=".8"/><circle cx="18" cy="90" r="5" fill="#ffcc02" opacity=".8"/><circle cx="62" cy="90" r="5" fill="#ffcc02" opacity=".8"/>`],
+];
+
+function getMajorSVG(card){
+  const uid=`mg${++_svgUid}`;
+  const def=MAJOR_ART[card.id];
+  if(!def)return'';
+  const[bg1,bg2,sym]=def;
+  const roman=['0','Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ','Ⅵ','Ⅶ','Ⅷ','Ⅸ','Ⅹ','Ⅺ','Ⅻ','ⅩⅢ','ⅩⅣ','ⅩⅤ','ⅩⅥ','ⅩⅦ','ⅩⅧ','ⅩⅨ','ⅩⅩ','ⅩⅩⅠ'][card.id]||'?';
+  return`<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg" style="border-radius:6px;display:block">
+    <defs><linearGradient id="${uid}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg2}"/></linearGradient></defs>
+    <rect width="80" height="120" fill="url(#${uid})" rx="6"/>
+    <rect x="3" y="3" width="74" height="114" fill="none" stroke="#c9a227" stroke-width="1" rx="5" opacity=".55"/>
+    <text x="8" y="18" fill="#c9a227" font-size="9" font-family="serif">${roman}</text>
+    ${sym}
+    <text x="40" y="112" text-anchor="middle" fill="#c9a227" font-size="8" font-family="serif">${card.kr}</text>
+  </svg>`;
+}
+
+function getMinorSVG(card){
+  const uid=`mn${++_svgUid}`;
+  const suit=getSuit(card);
+  const col=SUIT_COL[suit]||'#c9a227';
+  const[bg1,bg2]=(SUIT_BG[suit]||['#1e1060','#0f0c38']);
+  const n=card.name.toLowerCase();
+  let pips='',label='';
+  if(n.startsWith('ace')||n.includes(' ace')){label='A';pips=drawPip(suit,40,62,16);}
+  else if(n.includes('page')){label='P';pips=`<rect x="26" y="36" width="28" height="34" fill="none" stroke="${col}" stroke-width="1.2" rx="2"/>${drawPip(suit,40,82,10)}`;}
+  else if(n.includes('knight')){label='Kn';pips=`<polygon points="40,28 52,52 28,52" fill="none" stroke="${col}" stroke-width="1.2"/>${drawPip(suit,40,82,10)}`;}
+  else if(n.includes('queen')){label='Q';pips=`<path d="M26,36 Q40,20 54,36 L50,58 L30,58 Z" fill="none" stroke="${col}" stroke-width="1.2"/>${drawPip(suit,40,82,10)}`;}
+  else if(n.includes('king')){label='K';pips=`<path d="M24,36 L26,24 L34,32 L40,18 L46,32 L54,24 L56,36 L52,60 L28,60 Z" fill="none" stroke="${col}" stroke-width="1.2"/>${drawPip(suit,40,82,10)}`;}
+  else{const m=n.match(/(\d+)/);const num=m?parseInt(m[1]):2;label=String(num);const pos=PIP_POS[num]||PIP_POS[2];pips=pos.map(([x,y])=>drawPip(suit,x,y,7)).join('');}
+  return`<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg" style="border-radius:6px;display:block">
+    <defs><linearGradient id="${uid}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg2}"/></linearGradient></defs>
+    <rect width="80" height="120" fill="url(#${uid})" rx="6"/>
+    <rect x="3" y="3" width="74" height="114" fill="none" stroke="${col}" stroke-width="1" rx="5" opacity=".55"/>
+    <text x="8" y="16" fill="${col}" font-size="10" font-family="serif" font-weight="bold">${label}</text>
+    ${pips}
+    <text x="40" y="112" text-anchor="middle" fill="${col}" font-size="7.5" font-family="serif">${card.kr}</text>
+  </svg>`;
+}
+
+function getCardSVG(card){return card.id<=21?getMajorSVG(card):getMinorSVG(card);}
+
+/* ── 유니버셜 웨이트 카드 이미지 (Wikimedia Commons RWS 퍼블릭 도메인) ── */
+const CARD_IMGS=[
+  'RWS_Tarot_00_Fool','RWS_Tarot_01_Magician','RWS_Tarot_02_High_Priestess',
+  'RWS_Tarot_03_Empress','RWS_Tarot_04_Emperor','RWS_Tarot_05_Hierophant',
+  'RWS_Tarot_06_Lovers','RWS_Tarot_07_Chariot','RWS_Tarot_08_Strength',
+  'RWS_Tarot_09_Hermit','RWS_Tarot_10_Wheel_of_Fortune','RWS_Tarot_11_Justice',
+  'RWS_Tarot_12_Hanged_Man','RWS_Tarot_13_Death','RWS_Tarot_14_Temperance',
+  'RWS_Tarot_15_Devil','RWS_Tarot_16_Tower','RWS_Tarot_17_Star',
+  'RWS_Tarot_18_Moon','RWS_Tarot_19_Sun','RWS_Tarot_20_Judgement','RWS_Tarot_21_World',
+  'Wands01','Wands02','Wands03','Wands04','Wands05','Wands06','Wands07',
+  'Wands08','Wands09','Wands10','Wands11','Wands12','Wands13','Wands14',
+  'Cups01','Cups02','Cups03','Cups04','Cups05','Cups06','Cups07',
+  'Cups08','Cups09','Cups10','Cups11','Cups12','Cups13','Cups14',
+  'Swords01','Swords02','Swords03','Swords04','Swords05','Swords06','Swords07',
+  'Swords08','Swords09','Swords10','Swords11','Swords12','Swords13','Swords14',
+  'Pents01','Pents02','Pents03','Pents04','Pents05','Pents06','Pents07',
+  'Pents08','Pents09','Pents10','Pents11','Pents12','Pents13','Pents14',
+];
+
+function getCardImgUrl(card){
+  const f=CARD_IMGS[card.id];
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${f}.jpg`;
+}
+
+function _cardImgErr(el,id){
+  el.onerror=null;
+  const card=CARDS[id];
+  const svg=getCardSVG(card);
+  const fb='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+  el.src=fb;
+  el.style.objectFit='contain';
+}
+
+function getCardImg(card,w,h){
+  const url=getCardImgUrl(card);
+  return `<img src="${url}" width="${w}" height="${h}" style="border-radius:6px;object-fit:cover;display:block;margin:0 auto" onerror="_cardImgErr(this,${card.id})" alt="${card.kr}">`;
+}
+
+/* ── 유틸 ── */
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+/* ── 주제 감지 (세분화) ── */
+function detectTopic(t) {
+  if (/재회|다시 만나|돌아올|돌아와|연락이 올|연락이 없|연락을 끊/.test(t)) return 'reunion';
+  if (/이별|헤어|헤어졌|헤어지|이별 후|이별했|이별을/.test(t)) return 'breakup';
+  if (/짝사랑|좋아하는 사람|좋아해|좋아하는데|고백|사귀게 될|사귈 수/.test(t)) return 'crush';
+  if (/남자친구|여자친구|남친|여친|연인|애인|사귀고 있|연애 중/.test(t)) return 'relationship';
+  if (/결혼|프로포즈|혼인|배우자|남편|아내|부부/.test(t)) return 'marriage';
+  if (/취업|면접|합격|불합격|입사|채용|일자리|구직/.test(t)) return 'job';
+  if (/이직|직장|퇴사|회사|직장 동료|상사|팀장|업무/.test(t)) return 'work';
+  if (/사업|창업|프리랜서|매출|거래처|계약|클라이언트/.test(t)) return 'business';
+  if (/돈|금전|재정|빚|대출|투자|수입|월급|재산/.test(t)) return 'money';
+  if (/건강|병|아프|몸 상태|병원|치료|회복/.test(t)) return 'health';
+  if (/가족|부모|엄마|아빠|형제|자매|자녀|아이/.test(t)) return 'family';
+  if (/친구|인간관계|사람|갈등|관계|소통|대인/.test(t)) return 'relation';
+  return 'general';
+}
+
+/* ── 오프닝 — 상황을 직접 언급 ── */
+function makeOpening(name, situation, q) {
+  const tag = name ? `${name}님` : '내담자님';
+  const topic = detectTopic(situation + ' ' + q);
+  const sit = situation ? `"${situation.slice(0,40)}${situation.length>40?'…':''}"` : '말씀해 주신 상황';
+
+  const openings = {
+    reunion: [
+      `${tag}, ${sit} — 이 상황에서 얼마나 마음이 복잡하셨을지, 저도 느껴져요. 다시 연결될 수 있을지, 그 흐름을 카드를 통해 함께 살펴볼게요.`,
+      `${tag}, 재회에 대한 마음을 꺼내는 게 쉽지 않으셨을 것 같아요. ${sit}라는 상황에서 지금 어떤 에너지가 흐르고 있는지 카드가 보여줄 거예요.`,
+    ],
+    breakup: [
+      `${tag}, ${sit} — 이별 후의 시간은 정말 하루하루가 길게 느껴지죠. 지금 내담자님 주변에 어떤 에너지가 흐르고 있는지, 카드와 함께 천천히 들여다볼게요.`,
+      `${tag}, 이별의 상처를 안고 이 자리에 와주셨군요. ${sit}라는 상황, 충분히 힘드셨을 거예요. 카드가 지금 이 흐름에서 무엇을 보여주는지 함께 읽어볼게요.`,
+    ],
+    crush: [
+      `${tag}, ${sit} — 좋아하는 마음을 혼자 안고 있는 건 생각보다 훨씬 에너지가 많이 드는 일이에요. 그 사람과의 흐름이 어디로 향하고 있는지 카드가 말해줄 거예요.`,
+      `${tag}, 짝사랑의 설렘과 불안이 동시에 느껴지는 상황이네요. ${sit}에서 지금 어떤 흐름이 흐르고 있는지 함께 살펴볼게요.`,
+    ],
+    relationship: [
+      `${tag}, ${sit} — 연인 사이에서 생기는 고민은 내 마음만 들여다봐서는 풀리지 않을 때가 많죠. 지금 이 관계 안에서 흐르는 에너지를 카드가 보여줄 거예요.`,
+      `${tag}, 함께하는 관계에서 답답함이 생겼을 때는 정말 힘들죠. ${sit}라는 상황에서 지금 흐름이 어디로 향하는지 카드와 함께 읽어볼게요.`,
+    ],
+    marriage: [
+      `${tag}, ${sit} — 결혼과 관련된 고민은 단순히 감정만의 문제가 아니라 현실도 함께 얽혀 있어서 더 복잡하게 느껴지죠. 카드가 지금 흐름을 보여줄 거예요.`,
+    ],
+    job: [
+      `${tag}, ${sit} — 취업이나 면접 앞에서 느끼는 긴장감과 불안, 정말 공감돼요. 지금 내담자님을 둘러싼 에너지가 어떤 흐름인지 카드가 말해줄 거예요.`,
+      `${tag}, 열심히 준비하고 있는데도 결과가 안 보일 때의 답답함이 느껴져요. ${sit}라는 상황에서 지금 어떤 흐름이 흐르는지 살펴볼게요.`,
+    ],
+    work: [
+      `${tag}, ${sit} — 직장이나 업무와 관련된 고민은 하루하루 쌓이다 보면 정말 지치죠. 지금 이 상황에서 카드가 어떤 흐름을 보여주는지 함께 읽어볼게요.`,
+    ],
+    business: [
+      `${tag}, ${sit} — 사업과 관련된 결정들은 혼자 감당하는 무게가 크죠. 지금 흐름이 어느 방향을 가리키는지 카드가 보여줄 거예요.`,
+    ],
+    money: [
+      `${tag}, ${sit} — 금전적인 고민은 생각보다 훨씬 더 많은 에너지를 쓰게 해요. 지금 이 상황에서 카드가 어떤 흐름을 보여주는지 함께 살펴볼게요.`,
+    ],
+    health: [
+      `${tag}, ${sit} — 몸이나 건강에 대한 걱정은 마음도 함께 무겁게 만들죠. 지금 흐르는 에너지를 카드가 보여줄 거예요.`,
+    ],
+    family: [
+      `${tag}, ${sit} — 가족과의 관계는 가장 가까운 만큼 상처도 크게 다가오죠. 지금 이 흐름에서 카드가 무엇을 보여주는지 함께 읽어볼게요.`,
+    ],
+    relation: [
+      `${tag}, ${sit} — 인간관계 안에서 생기는 갈등은 내 잘못도, 상대 잘못도 아닌 경우가 많아요. 지금 에너지가 어떤 흐름인지 카드와 함께 살펴볼게요.`,
+    ],
+    general: [
+      `${tag}, ${sit} — 이야기를 나눠주셔서 고마워요. 지금 내담자님 주변에 어떤 에너지가 흐르고 있는지, 카드가 보여주는 흐름을 함께 읽어볼게요.`,
+      `${tag}, 오늘 이 자리에 와주셔서 다행이에요. ${sit}라는 상황에서 지금 카드가 어떤 이야기를 전하는지 천천히 풀어볼게요.`,
+    ],
+  };
+  return pick(openings[topic] || openings.general);
+}
+
+/* ── 카드 에너지 유형 분류 ── */
+function getCardArchetype(card) {
+  const id = card.id;
+  const name = card.name.toLowerCase();
+  // 메이저 아르카나
+  const archetypes = {
+    hope:      [17,19,21,3,14],   // 별, 태양, 세계, 여황제, 절제
+    action:    [0,1,7,20],        // 바보, 마법사, 전차, 심판
+    emotion:   [2,6,8,18],        // 여사제, 연인, 힘, 달
+    waiting:   [9,12,4,5],        // 은둔자, 매달린남자, 황제, 교황
+    change:    [10,13,16],        // 수레바퀴, 죽음, 탑
+    shadow:    [15,11],           // 악마, 정의
+    complete:  [21],              // 세계
+  };
+  for(const [type, ids] of Object.entries(archetypes)) {
+    if(ids.includes(id)) return type;
+  }
+  // 마이너 아르카나 — 수트 기반
+  if(name.includes('wands'))      return 'action';
+  if(name.includes('cups'))       return 'emotion';
+  if(name.includes('swords'))     return 'shadow';
+  if(name.includes('pentacles'))  return 'waiting';
+  // 숫자 기반 보조 분류
+  const m = name.match(/^(\d+)/);
+  if(m) {
+    const n = parseInt(m[1]);
+    if([1,3,6,8].includes(n)) return 'action';
+    if([4,7,9].includes(n))   return 'waiting';
+    if([5,2].includes(n))     return 'shadow';
+    if(n===10)                return 'change';
+  }
+  return 'hope';
+}
+
+/* ── 상황 연결 문장 생성 (카드 에너지 반영) ── */
+function makeSituationLink(topic, question, tag, card) {
+  const q = question ? `"${question}"` : '궁금하신 것';
+  const cn = card ? card.kr : '이 카드';
+  const archetype = card ? getCardArchetype(card) : 'hope';
+
+  // archetype별 → topic별 메시지
+  const matrix = {
+    hope: {
+      reunion:      `${tag}이 궁금하신 ${q}에 대해, **${cn}** 카드는 분명한 희망의 신호를 보내고 있어요. 재회의 가능성이 완전히 닫혀 있지 않아요. 다만 이 희망이 현실이 되려면 한 가지 조건이 있어요 — 내담자님이 먼저 자신을 충분히 회복하고 충만해지는 것이에요. 내담자님이 빛나고 있을 때, 그 에너지가 상대를 자연스럽게 끌어당기는 힘이 돼요. 조급함보다 나를 먼저 아끼는 것이 가장 강한 전략이에요.`,
+      breakup:      `${cn} 카드가 ${q}에 대해 말하는 건, 이 힘든 시간이 내담자님을 무너뜨리는 게 아니라 회복시키고 있다는 거예요. 아직 완전히 아물지 않았어도 괜찮아요. 지금 이 카드처럼, 별빛은 구름이 있어도 사라지지 않아요. 내담자님 안에도 그 빛이 여전히 있어요. 시간이 지나면 더 선명하게 빛날 거예요.`,
+      crush:        `${cn}의 에너지로 ${q}를 읽으면, 지금 내담자님의 마음이 가진 진심이 가장 큰 무기예요. 이 카드처럼 밝고 따뜻한 에너지로 자연스럽게 다가간다면, 상대방도 그 에너지를 느낄 수 있어요. 너무 전략적으로 생각하기보다 솔직하고 따뜻하게 다가가봐요.`,
+      job:          `${cn} 카드는 ${q}에 대해, 지금 내담자님이 향하고 있는 방향이 나쁘지 않다고 말하고 있어요. 결과가 바로 보이지 않더라도 흐름은 분명히 좋아지고 있어요. 지금 이 에너지를 믿고 꾸준히 이어가면, 타이밍은 반드시 찾아와요.`,
+      general:      `${cn} 카드가 ${q}에 대해 말하는 건, 지금 흐름이 나쁘지 않다는 거예요. 불안하더라도 방향은 맞아요. 이 카드의 밝은 에너지처럼, 지금 내담자님 주변에도 좋은 흐름이 서서히 피어오르고 있어요. 믿어봐주세요.`,
+    },
+    action: {
+      reunion:      `${cn} 카드는 ${q}에 대해 "움직여야 할 타이밍"이라고 말하고 있어요. 이 카드의 에너지는 멈춰 기다리기보다 내담자님이 먼저 방향을 잡고 한 발 내딛는 쪽을 가리켜요. 단, 조급함에서 나온 행동이 아니라, 충분히 생각하고 내린 진심 어린 행동이어야 해요. 지금 마음이 정리됐다면, 더 이상 기다리지 않아도 돼요.`,
+      breakup:      `${cn}의 에너지가 ${q}에 대해 말하는 건, 지금은 슬픔 안에 머무르기보다 조금씩 앞으로 움직이기 시작해야 할 시점이라는 거예요. 모든 게 정리된 다음에 움직이려 하면 언제까지나 그 자리에 있게 될 수 있어요. 작은 것부터, 지금 내담자님이 할 수 있는 것부터 시작해봐요.`,
+      crush:        `${cn} 카드가 ${q}에 대해 말하는 건, 지금이 기다리는 시간보다 행동할 시간이라는 거예요. 이 카드처럼 의지를 가지고 한 발 내딛어봐요. 완벽한 타이밍은 없어요. 지금 이 순간이 바로 그 타이밍이에요.`,
+      job:          `${cn}의 에너지는 ${q}에 대해 "지금 움직여야 한다"고 말해요. 더 이상 준비만 하는 시기가 아니에요. 지금 내담자님이 가진 것들을 믿고, 적극적으로 표현하고 행동하는 것이 지금 흐름에 가장 맞아요.`,
+      general:      `${cn} 카드가 ${q}에 대해 말하는 건, 지금은 생각보다 행동이 더 중요한 시점이라는 거예요. 이 카드처럼 강한 의지와 추진력으로 움직여보세요. 준비가 완벽하지 않아도 괜찮아요. 시작하면 방향은 잡혀가요.`,
+    },
+    emotion: {
+      reunion:      `${cn} 카드는 ${q}에 대해 감정의 깊이로 답하고 있어요. 지금 이 상황에서 가장 중요한 건 내담자님의 진심이에요. 상대방도 그 감정의 무게를 느끼고 있을 거예요. 다만 이 카드가 말하는 건, 그 감정을 표현하는 방식이 중요하다는 거예요. 조급함이 아닌, 진심 어린 마음으로 천천히 다가가는 것이 더 깊은 연결을 만들어줄 수 있어요.`,
+      breakup:      `${cn}의 에너지는 ${q}에 대해 감정을 충분히 느끼는 것이 치유의 시작이라고 말해요. 억지로 괜찮은 척하거나 슬픔을 빨리 끝내려 하지 않아도 돼요. 이 카드처럼 감정의 흐름을 따라가면서, 그 안에서 내 진심을 다시 만나보세요.`,
+      crush:        `${cn}의 에너지로 ${q}를 읽으면, 지금 내담자님의 감정이 충분히 진심이고 아름답다는 게 느껴져요. 이 카드처럼 감정에 솔직해지는 것이 가장 자연스러운 표현이에요. 상대에게 보여주고 싶은 내담자님의 따뜻함, 그대로 전달해봐요.`,
+      relationship: `${cn} 카드가 ${q}에 대해 말하는 건, 지금 이 관계에서 가장 필요한 건 솔직한 감정 표현이라는 거예요. 이 카드처럼 감정을 깊이 느끼고 그것을 용기 있게 꺼내는 것이 관계를 더 가깝게 만드는 흐름이에요.`,
+      general:      `${cn} 카드가 ${q}에 대해 말하는 건, 지금 내담자님의 감정이 이미 방향을 알고 있다는 거예요. 머리로 분석하기보다 마음이 가는 방향을 한 번 더 믿어봐주세요.`,
+    },
+    waiting: {
+      reunion:      `${cn} 카드가 ${q}에 대해 말하는 건, 지금은 서두르면 안 된다는 거예요. 이 카드의 에너지는 고요한 기다림과 내면의 준비를 말해요. 지금 당장 결과를 만들려 하기보다, 내담자님 자신이 충분히 준비된 상태가 됐을 때 흐름이 자연스럽게 열릴 거예요. 기다리는 것이 포기가 아니에요. 때를 기다리는 것도 전략이에요.`,
+      breakup:      `${cn}의 에너지는 ${q}에 대해 지금은 빠른 결론보다 충분한 시간이 필요하다고 말해요. 서두르지 않아도 돼요. 이 카드처럼 조용히 내 안을 들여다보면서, 지금 내가 어떤 상태인지, 무엇을 원하는지 찬찬히 확인해봐요.`,
+      job:          `${cn} 카드가 ${q}에 대해 말하는 건, 지금은 더 적극적으로 나서기보다 충분히 준비하고 타이밍을 기다리는 것이 더 현명한 선택이라는 거예요. 씨앗은 서두른다고 빨리 자라지 않아요. 지금 이 기다림의 시간이 이후의 결과를 더 단단하게 만들어줄 거예요.`,
+      work:         `${cn}의 에너지는 ${q}에 대해, 지금 억지로 변화를 만들기보다 내가 할 수 있는 범위 안에서 꾸준히 움직이며 때를 기다리는 것이 더 맞는 흐름이라고 말해요.`,
+      general:      `${cn} 카드가 ${q}에 대해 말하는 건, 지금은 행동보다 기다림이 더 강력한 선택일 수 있다는 거예요. 이 카드처럼 조용히 내 안을 살피면서, 더 선명한 방향이 보일 때를 기다려봐요.`,
+    },
+    change: {
+      reunion:      `${cn} 카드가 ${q}에 대해 말하는 건 쉽지 않은 이야기일 수 있어요. 이 카드의 에너지는 지금 흐름에서 무언가가 완전히 전환되고 있다는 걸 말해요. 재회 자체보다, 지금 내담자님과 그 관계가 어떤 변화를 필요로 하는지를 먼저 들여다보는 게 중요해요. 억지로 예전으로 돌아가려 하기보다, 이 변화 안에서 진짜 원하는 게 무엇인지를 확인해봐주세요.`,
+      breakup:      `${cn}의 에너지는 ${q}에 대해 솔직하게 말하고 있어요. 지금 이 이별은 단순한 이별이 아니라, 내담자님의 삶에서 중요한 전환점이 될 수 있어요. 이 카드처럼, 무너지는 것은 더 단단하게 다시 세우기 위한 과정이에요. 지금은 아프지만, 이 변화가 나중에 더 좋은 흐름으로 이어질 거예요.`,
+      job:          `${cn} 카드가 ${q}에 대해 말하는 건, 지금 상황이 갑작스럽게 바뀌거나 예상치 못한 변화가 생길 수 있다는 거예요. 그 변화를 막으려 하기보다, 유연하게 적응하면서 새로운 가능성을 찾아보는 것이 지금 더 현명한 에너지예요.`,
+      general:      `${cn} 카드가 ${q}에 대해 말하는 건, 지금 중요한 전환점이 가까이 있다는 거예요. 이 변화를 두려워하지 않아도 돼요. 이 카드처럼, 무너지는 것처럼 보이는 것이 사실은 더 좋은 것을 위한 자리 만들기일 수 있어요.`,
+    },
+    shadow: {
+      reunion:      `${cn} 카드가 ${q}에 대해 말하는 건, 지금 내담자님이 스스로에게 솔직해져야 할 시점이라는 거예요. 그 사람을 그리워하는 마음이 진심인지, 아니면 두려움이나 습관에서 오는 마음인지를 먼저 들여다봐주세요. 집착과 진심을 구분하는 것이 지금 가장 중요한 일이에요. 그 구분이 명확해지면, 앞으로 어떻게 할지도 자연스럽게 보이기 시작해요.`,
+      breakup:      `${cn} 카드가 ${q}에 대해 솔직하게 말하는 건, 지금 내담자님이 이 이별에서 아직 해방되지 못한 감정이 있다는 거예요. 그게 미련인지, 두려움인지, 아니면 아직 말하지 못한 것인지 — 그 감정을 정면으로 마주하는 것이 진짜 회복의 시작이에요.`,
+      relationship: `${cn} 카드가 ${q}에 대해 말하는 건, 이 관계 안에서 솔직하게 꺼내지 못한 것들이 있다는 거예요. 그것을 계속 쌓아두면 관계가 더 무거워질 수 있어요. 불편하더라도 지금 그 이야기를 꺼낼 용기가 필요한 시점이에요.`,
+      crush:        `${cn} 카드가 ${q}에 대해 말하는 건, 지금 내담자님 마음속에 스스로도 인정하지 못한 감정이 있을 수 있다는 거예요. 두근거림인지 집착인지, 상대를 진심으로 원하는 건지 — 그것을 먼저 내 마음에게 솔직하게 물어보는 것이 첫 번째예요.`,
+      marriage:     `${cn} 카드는 ${q}에 대해, 결혼이나 관계에서 지금 서로 꺼내지 못하고 쌓아온 것들이 있다는 신호를 보내요. 그것을 더 묵혀두기 전에 솔직한 대화가 필요한 시점이에요. 불편한 대화일수록 오히려 관계를 더 단단하게 만들어줘요.`,
+      job:          `${cn} 카드는 ${q}에 대해, 직업이나 직장 상황에서 스스로 외면해온 부분이 있다고 말해요. 현재 상황의 진짜 원인이 무엇인지 직면하는 것이 해결의 출발점이에요. 불편하더라도 그 지점을 들여다보는 것이 지금 필요한 용기예요.`,
+      work:         `${cn} 카드가 ${q}에 대해 말하는 건, 일하면서 알면서도 미루거나 덮어두고 있는 문제가 있다는 거예요. 그 부분을 직면할수록 더 빠르게 앞으로 나아갈 수 있어요.`,
+      business:     `${cn} 카드는 ${q}에 대해, 사업이나 비즈니스에서 솔직하게 보지 못했던 약점이나 문제를 이제 들여다봐야 할 때라고 말해요. 불편한 현실도 알아야 대응할 수 있어요.`,
+      money:        `${cn} 카드가 ${q}에 대해 말하는 건, 재물이나 금전 문제에서 외면해온 현실이 있다는 거예요. 불편하더라도 지금 내 재정 상황을 솔직하게 들여다보고 계획을 세우는 것이 지금 가장 필요한 에너지예요.`,
+      health:       `${cn} 카드는 ${q}에 대해, 건강 문제에서 알면서도 미루고 있는 것이 있다고 말해요. 더 늦어지기 전에 확인해봐야 할 신호가 있어요. 몸의 소리를 외면하지 말아주세요.`,
+      family:       `${cn} 카드가 ${q}에 대해 말하는 건, 가족 관계에서 서로 꺼내지 못한 감정이나 말들이 쌓여있다는 거예요. 불편하더라도 그 대화를 시작하는 것이 관계를 회복하는 첫 걸음이에요.`,
+      general:      [`${cn} 카드가 ${q}에 대해 말하는 건, 지금 스스로에게 솔직해져야 할 시점이라는 거예요. 마음속에 알고 있으면서도 외면해온 것이 있다면, 이제 그것을 꺼내볼 용기가 필요해요.`,
+                    `${cn} 카드는 ${q}에 대해 표면 아래에 있는 감정이나 상황을 직시해야 할 때라고 말하고 있어요. 그 진실을 마주하는 것이 지금 가장 필요한 힘이에요.`,
+                    `${cn} 카드가 ${q}에서 말하는 건, 지금 인정하기 불편한 부분이 있더라도 그것을 용기 있게 바라보는 것이 변화의 시작이라는 거예요. 외면할수록 더 오래 제자리에 머물게 돼요.`,
+                    `${cn} 카드는 ${q}에 대해, 마음속에 오래 눌러두었던 감정이나 생각을 이제 밖으로 꺼내야 할 때라고 말해요. 꺼내는 순간 훨씬 가벼워질 수 있어요.`,
+                    `${cn} 카드가 ${q}에 대해 보내는 신호는, 지금 내담자님이 직면해야 할 무언가가 가까이 있다는 거예요. 두렵더라도 그 부분을 바라보는 것이 앞으로 나아가는 유일한 방법이에요.`],
+    },
+    complete: {
+      reunion:      `${cn} 카드가 ${q}에 대해 말하는 건, 지금 이 관계가 하나의 큰 사이클을 마무리하고 있다는 거예요. 재회가 되든 되지 않든, 이 사이클이 완성된 이후의 내담자님은 지금과는 다른 더 자유로운 에너지를 가지게 될 거예요. 결과에 집착하기보다, 이 완성의 과정 자체를 받아들여봐요.`,
+      general:      `${cn} 카드가 ${q}에 대해 말하는 건, 지금 하나의 큰 여정이 완성되어가고 있다는 거예요. 오래 걸렸지만 드디어 그 끝이 보이고 있어요. 지금까지의 과정이 헛되지 않았어요.`,
+    },
+  };
+
+  const topicMsgs = matrix[archetype];
+  if(!topicMsgs) return pick(matrix.hope.general ? [matrix.hope.general] : ['지금 흐름을 믿어봐주세요.']);
+
+  // topic 우선, 없으면 general
+  const raw = topicMsgs[topic] || topicMsgs.general;
+  const msg = Array.isArray(raw) ? pick(raw) : raw;
+  return msg || pick(Object.values(topicMsgs).map(v => Array.isArray(v) ? pick(v) : v));
+}
+
+/* ── 카드 해석 텍스트 (상황 연결 포함) ── */
+function makeCardText(card, idx, total, situation, question, name) {
+  const tag = name ? `${name}님` : '내담자님';
+  const label = total === 1 ? '카드' : `${idx+1}번째 카드`;
+  const topic = detectTopic(situation + ' ' + question);
+  let scene='', feel='', msg='', situLink='';
+
+  if(READING[card.id]) {
+    const r = READING[card.id];
+    scene = r.scene;
+    feel = pick(r.feel);
+    msg = pick(r.msg);
+  } else {
+    const minor = getMinorReading(card);
+    if(minor) {
+      scene = minor.scene;
+      feel = card.kw;
+      msg = minor.numMsg;
+    } else {
+      scene = `이 카드는 ${card.kr} (${card.name})예요.`;
+      feel = card.kw;
+      msg = "지금 상황에 맞게 이 에너지를 활용해보세요.";
+    }
+  }
+
+  situLink = makeSituationLink(topic, question, tag, card);
+
+  return `【 ${label} — ${card.kr} 】\n\n${scene}\n\n이 카드에서 느껴지는 에너지는 '${feel}'이에요.\n\n${msg}\n\n${situLink}`;
+}
+
+/* ── 종합 메시지 (카드들 연결) ── */
+function makeSynthesis(cards, situation, question, name) {
+  const tag = name ? `${name}님` : '내담자님';
+  const topic = detectTopic(situation + ' ' + question);
+  const cardNames = cards.map(c => c.kr).join(', ');
+  const count = cards.length;
+
+  const synth = {
+    reunion: [
+      `${tag}, ${cardNames} — ${count}장의 카드를 함께 읽어보면, 지금 에너지의 흐름은 이렇게 보여요. 재회의 문이 완전히 닫혀 있지는 않아요. 하지만 그 문이 열리는 조건이 있는데, 그게 바로 내담자님이 먼저 회복되고 충만해지는 것이에요. 지금 그 사람을 그리워하는 마음에 대부분의 에너지를 쏟고 있다면, 역설적으로 그 에너지가 오히려 흐름을 막을 수 있어요. 상대가 돌아오는 흐름은 내가 빛날 때 가장 강하게 만들어져요. 내 삶을 충실히 살고, 나 자신을 먼저 회복시키는 것이 결국 가장 강한 전략이에요.`,
+      `카드들이 함께 보여주는 흐름은, 지금 억지로 결과를 만들려 하기보다 내담자님 스스로가 안정되고 충만해지는 데 에너지를 먼저 쏟아야 한다는 거예요. 재회가 되든 되지 않든, 그 방향과 관계없이 지금 내담자님에게 가장 필요한 건 내 중심을 찾는 것이에요. 그 중심이 단단해지면, 어떤 결과가 오든 내담자님이 흔들리지 않을 수 있어요.`,
+    ],
+    breakup: [
+      `${tag}, ${cardNames} — 이 카드들이 함께 말하는 건, 지금 이 이별이 아무리 아프고 끝난 것처럼 느껴지더라도, 이게 ${tag}의 이야기의 끝이 아니라는 거예요. 한 장의 카드만 봐도 그렇지만, ${count}장을 함께 보면 더 선명하게 보여요 — 지금은 아프고 혼란스럽지만, 이 시간이 지나면 반드시 새로운 흐름이 시작돼요. 지금 감정을 충분히 받아들이고, 스스로에게 시간을 줘도 괜찮아요. 빨리 괜찮아지려 하지 않아도 돼요.`,
+      `카드들이 함께 전하는 메시지는, 지금 이 상처를 억지로 빨리 극복하려 하거나, 상황을 빠르게 정리하려 하지 않아도 된다는 거예요. 충분히 아파도 괜찮아요. 충분히 슬퍼도 괜찮아요. 그 감정들을 온전히 느끼고 소화하는 과정이 결국 더 단단하고 건강한 내담자님을 만들어줄 거예요.`,
+    ],
+    crush: [
+      `${tag}, ${cardNames} — 이 카드들이 함께 보여주는 건, 지금 내담자님의 마음이 충분히 진심이고, 그 진심 자체는 굉장히 좋은 에너지라는 거예요. 그 마음이 상대방에게 닿을 수 있는 흐름이 조금씩 열리고 있어요. 하지만 결과를 너무 빨리 확인하려 하거나, 상대의 반응에 너무 민감하게 반응하면 오히려 자연스러운 흐름이 어색해질 수 있어요. 조금씩, 천천히, 자연스럽게 다가가는 흐름이 지금 가장 잘 맞아요.`,
+    ],
+    relationship: [
+      `${tag}, ${cardNames} — 이 카드들이 함께 말하는 건, 지금 이 관계가 중요한 갈림길 위에 있다는 거예요. 갈등이 생겼을 때 이기려 하거나, 서로 맞고 틀림을 증명하려 하면 관계가 더 소모돼요. 지금 가장 중요한 건, 이 관계 안에서 내가 진짜 원하는 게 무엇인지를 먼저 명확히 하는 거예요. 그 답이 명확해지면, 상대와 어떻게 대화할지도 자연스럽게 보이기 시작해요.`,
+    ],
+    job: [
+      `${tag}, ${cardNames} — 카드들이 함께 전하는 건, 지금 내담자님의 노력이 눈에 바로 결과로 나타나지 않더라도, 반드시 결과로 이어지는 흐름 위에 있다는 거예요. 지금 당장 보이지 않는다고 해서 아무것도 쌓이지 않고 있는 게 아니에요. 씨앗은 땅속에서 먼저 뿌리를 내린 다음에 싹이 올라와요. 조금 더 버텨봐요. 타이밍은 생각보다 가까이 있을 수 있어요.`,
+    ],
+    work: [
+      `${tag}, ${cardNames} — 이 카드들이 함께 보여주는 흐름은, 지금 당장 뭔가를 크게 바꾸거나 억지로 만들려 하기보다, 내가 할 수 있는 범위 안에서 꾸준히 움직이면서 흐름을 기다리는 것이 더 현명한 시점이라는 거예요. 때로는 기다리는 것도 전략이에요.`,
+    ],
+    business: [
+      `${tag}, ${cardNames} — 이 카드들이 함께 말하는 건, 지금 사업이나 일의 방향에서 속도보다 방향을 다시 점검해야 할 시점이라는 거예요. 빠르게 확장하는 것보다, 지금 하고 있는 것의 기반을 더 단단하게 하는 것이 장기적으로 더 큰 흐름을 만들어요.`,
+    ],
+    money: [
+      `${tag}, ${cardNames} — 카드들이 함께 말하는 건, 금전적인 흐름이 한 번에 크게 바뀌기보다 조금씩 쌓여가는 방향으로 흐르고 있다는 거예요. 작은 것부터 꾸준히 관리하고, 흐름을 만들어가는 것이 지금 가장 효과적인 에너지예요.`,
+    ],
+    general: [
+      `${tag}, ${cardNames} — 이 카드들이 함께 전하는 이야기는, 지금 내담자님이 이미 맞는 방향을 향해 가고 있다는 거예요. 눈에 당장 결과가 보이지 않더라도, 그 흐름은 분명히 이어지고 있어요. 너무 조급하게 결과를 확인하려 하거나, 계획을 자꾸 바꾸려 하기보다 지금 가고 있는 방향을 조금 더 믿어봐주세요.`,
+      `카드들이 함께 말하는 건, 지금 내담자님이 중요한 전환점 위에 서 있다는 거예요. 지금은 그것이 잘 느껴지지 않을 수 있어요. 하지만 시간이 지나고 돌아봤을 때, 이 시점이 의미 있는 분기점이 됐다는 걸 알게 되실 거예요. 지금을 믿어봐요.`,
+    ],
+  };
+  return pick(synth[topic] || synth.general);
+}
+
+/* ── 클로징 멘트 ── */
+function makeClosing(name, topic) {
+  const tag = name ? `${name}님` : '내담자님';
+  const closes = {
+    reunion: [
+      `${tag}, 오늘 이 마음을 꺼내는 게 쉽지 않으셨을 텐데 이야기해주셔서 고마워요. 카드는 결과를 예언하는 게 아니라, 지금 흐르는 에너지를 보여주는 거예요. 가장 중요한 건 ${tag}의 마음과 선택이에요 :)`,
+    ],
+    breakup: [
+      `${tag}, 많이 힘드셨을 텐데 오늘 이야기 나눠주셔서 고마워요. 이 시간이 얼마나 길게 느껴지든, 내담자님은 반드시 이 시간을 잘 지나갈 거예요. 응원하고 있어요.`,
+    ],
+    job: [
+      `${tag}, 열심히 준비하고 있는 그 과정이 분명히 의미 있는 결과로 이어질 거예요. 지금 잘 하고 있어요 :)`,
+    ],
+    general: [
+      `${tag}, 오늘 이야기 나눠주셔서 감사해요. 카드는 방향을 보여줄 뿐, 결국 선택하고 만들어나가는 건 내담자님이에요. 잘 하고 계세요 :)`,
+      `오늘 이 리딩이 ${tag}의 마음에 조금이나마 도움이 됐으면 해요. 언제든 또 이야기 나눠요.`,
+      `${tag}, 오늘 용기 내서 이야기해주셨어요. 그 용기만으로도 이미 충분히 잘 하고 있는 거예요.`,
+    ],
+  };
+  return pick(closes[topic] || closes.general);
+}
+
+/* ── 타이핑 애니메이션 ── */
+function typeText(el, text, speed=16) {
+  el.textContent = '';
+  let i = 0;
+  return new Promise(res => {
+    const t = setInterval(() => {
+      el.textContent += text[i++];
+      el.scrollIntoView({block:'end',behavior:'smooth'});
+      if(i >= text.length) { clearInterval(t); res(); }
+    }, speed);
+  });
+}
+
+/* ══════════════════════════════════════════
+   ★ 관리자 설정 — 결제 코드 및 링크
+   결제 완료 후 고객에게 이 코드를 발송하세요.
+   코드는 여기서 자유롭게 추가/삭제 가능합니다.
+══════════════════════════════════════════ */
+const CFG = {
+  payLink:  'https://your-payment-link.com',        // ← 기본 상담 결제 링크 (토스/카카오페이 등)
+  extraLink:'https://your-extra-payment-link.com',  // ← 추가 질문 결제 링크
+  basicCodes: ['TAROT0001','TAROT0002','TAROT0003'], // ← 기본 상담 코드 (결제 후 발급)
+  extraCodes: ['EXTRA0001','EXTRA0002','EXTRA0003'], // ← 추가 질문 코드 (결제 후 발급)
+  freeFollowups: 5,  // 기본 포함 추가질문 횟수
+};
+
+/* ── 상태 ── */
+let S = { count:1, picked:[], name:'', situation:'', question:'', followupUsed:0, extraUnlocked:false, freeMode:false, chatHistory:[], freeQuestion:'' };
+
+function showScreen(id) {
+  ['intro','free-question-screen','free-result-screen','payment-screen','question-screen','pick-screen','result-screen'].forEach(s =>
+    document.getElementById(s).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+/* ── 결제 게이트 ── */
+function onPayClick(e) {
+  if(CFG.payLink === 'https://your-payment-link.com') {
+    e.preventDefault();
+    alert('결제 링크를 CFG.payLink에 설정해주세요.');
+    return;
+  }
+  // 결제 링크로 이동 (target=_blank)
+  document.getElementById('pay-link').href = CFG.payLink;
+  setTimeout(()=>toggleCodeInput(), 1500);
+}
+
+function toggleCodeInput() {
+  const row = document.getElementById('code-input-row');
+  row.classList.toggle('show');
+  if(row.classList.contains('show')) document.getElementById('access-code').focus();
+}
+
+function submitCode() {
+  const code = document.getElementById('access-code').value.trim().toUpperCase();
+  const err = document.getElementById('code-err');
+  if(CFG.basicCodes.includes(code)) {
+    err.style.display = 'none';
+    // 사용된 코드 제거 (재사용 방지 — 새로고침 전까지)
+    CFG.basicCodes.splice(CFG.basicCodes.indexOf(code), 1);
+    showScreen('question-screen');
+  } else if(CFG.extraCodes.includes(code)) {
+    err.style.display = 'none';
+    CFG.extraCodes.splice(CFG.extraCodes.indexOf(code), 1);
+    S.extraUnlocked = true;
+    S.followupUsed = 0;
+    document.getElementById('upgrade-banner').classList.add('hidden');
+    document.getElementById('followup-input-row').classList.remove('hidden');
+    updateFollowupCount();
+    showScreen('result-screen');
+  } else {
+    err.style.display = 'block';
+  }
+}
+
+function goUpgrade() {
+  if(CFG.extraLink === 'https://your-extra-payment-link.com') {
+    alert('추가 결제 링크를 CFG.extraLink에 설정해주세요.');
+    return;
+  }
+  window.open(CFG.extraLink, '_blank');
+  toggleCodeInput();
+}
+
+function updateFollowupCount() {
+  const el = document.getElementById('fq-used');
+  if(el) el.textContent = S.followupUsed;
+}
+
+/* ── 무료 카드 뽑기 ── */
+function goFreePick() {
+  document.getElementById('free-inp-question').value = '';
+  showScreen('free-question-screen');
+}
+
+function goFreePickConfirm() {
+  const q = document.getElementById('free-inp-question').value.trim();
+  const err = document.getElementById('free-form-err');
+  if(!q) { err.classList.remove('hidden'); return; }
+  err.classList.add('hidden');
+  S.freeQuestion = q;
+  S.freeMode = true;
+  S.count = 1;
+  buildPickScreen();
+  showScreen('pick-screen');
+}
+
+/* ── AI 호출 ── */
+const TAROT_SYSTEM = `당신은 '오속 타로'의 전문 타로 상담사예요. '오속'은 '오늘의 속마음'이라는 뜻이에요.
+따뜻하고 공감적인 어조로 내담자의 속마음을 카드를 통해 비춰드려요.
+
+규칙:
+- 반드시 존댓말 사용 (해요체)
+- 내담자의 상황과 질문을 직접 언급하며 개인화된 리딩
+- 카드의 상징과 에너지를 내담자의 실제 상황과 연결
+- 너무 단정적이거나 부정적이지 않게 — 가능성과 흐름을 이야기
+- 희망적이고 실용적인 메시지로 마무리
+- 자연스러운 단락 구분 (빈 줄 포함)
+- 5~7단락 분량으로 작성`;
+
+async function callAI(messages) {
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({system: TAROT_SYSTEM, messages})
+  });
+  if(!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(JSON.stringify(err));
+  }
+  const data = await res.json();
+  return data.content;
+}
+
+function loadingHTML() {
+  return `<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> 카드를 읽고 있어요...</div>`;
+}
+
+function makeFreeReading(card) {
+  const r = READING[card.id];
+  const arch = getCardArchetype(card);
+  const kw = card.kw.split(',').map(s=>s.trim());
+  const feel = r ? pick(r.feel) : kw[0];
+
+  const suitDescFull = {
+    wands:`완즈 수트는 불의 원소예요. 열정, 의지, 창의적 에너지를 담고 있고, 삶에서 행동과 추진력에 관한 이야기를 전해줘요. 무언가를 불태우고 싶은 마음, 새로운 것을 향해 달려나가고 싶은 충동 — 그 에너지가 이 수트에 담겨 있어요.`,
+    cups:`컵 수트는 물의 원소예요. 감정과 관계, 내면의 목소리를 담고 있어요. 마음속에서 흐르는 것들, 누군가를 향한 감정, 관계 안에서 느끼는 것들 — 그 에너지가 이 수트에 담겨 있어요.`,
+    swords:`소드 수트는 바람의 원소예요. 생각과 판단, 진실을 담고 있어요. 머릿속에서 맴도는 고민들, 결단이 필요한 순간들, 명확함을 원하는 마음 — 그 에너지가 이 수트에 담겨 있어요.`,
+    pentacles:`펜타클 수트는 흙의 원소예요. 현실과 물질, 안정을 담고 있어요. 실제 삶 속에서 이루어나가는 것들, 노력과 결과, 현실적인 안정 — 그 에너지가 이 수트에 담겨 있어요.`,
+  };
+  const suit = getSuit(card);
+
+  const freeQ = S.freeQuestion || '';
+
+  // p1: 카드 소개 + 질문 연결
+  const p1 = `"${freeQ}"\n\n이 질문을 품고 뽑힌 카드는 '${card.kr}'이에요.\n\n이 카드가 지금 이 자리에 나왔다는 건, 내담자님의 질문에 담긴 에너지 흐름 속에 '${kw[0]}'와 관련된 무언가가 중요하게 움직이고 있다는 신호예요. 우연처럼 보여도 타로는 지금 가장 필요한 이야기를 꺼내오는 경향이 있어요.`;
+
+  // p2: 카드 장면/수트 묘사
+  const p2 = r ? r.scene : `${suitDescFull[suit] || ''}\n\n이 카드의 키워드는 '${kw.join(', ')}'이에요. ${kw[0]}와 ${kw[1]||kw[0]}의 에너지가 지금 내담자님에게 흐르고 있어요.`;
+
+  // p3: 에너지 묘사
+  const p3 = `이 카드에서 느껴지는 에너지는 '${feel}'이에요.\n\n이 에너지는 단순한 감정이 아니에요. 지금 내담자님의 삶 속에서 실제로 흐르고 있는 흐름이에요. 무시하거나 외면하기보다, 이 에너지가 보내는 신호를 먼저 인정해주는 것이 첫 번째 단계가 될 거예요.`;
+
+  // p4: 카드 메시지 + 질문 연결
+  const baseMsg = r ? pick(r.msg) : `${kw[0]}의 에너지를 믿고 한 발씩 나아가봐요.`;
+  const p4 = `"${freeQ}"에 대해 이 카드가 전하는 이야기예요.\n\n${baseMsg}`;
+
+  // p5: 아르키타입별 추가 조언
+  const archAdvice = {
+    hope:`지금 내담자님 안에 있는 희망의 씨앗은 생각보다 강해요. 작게 느껴지더라도, 그 불씨를 꺼뜨리지 않는 것이 가장 중요한 순간이에요. 주변의 시선이나 결과에 흔들리기보다 지금 이 흐름을 믿어봐요. 희망을 품는 것 자체가 이미 방향을 만들어요.`,
+    action:`지금은 분석하고 고민하는 것보다 한 발 실제로 내딛는 것이 훨씬 더 큰 변화를 만들어줄 시기예요. 완벽하지 않아도 괜찮아요. 움직임 자체가 에너지를 바꿔놓아요. 지금 할 수 있는 가장 작은 한 가지를 오늘 해봐요.`,
+    emotion:`지금 내담자님의 감정은 단순한 감정이 아니라 중요한 신호예요. 그 감정이 보내는 메시지를 억누르거나 외면하기보다, 솔직하게 들여다보는 것이 가장 정직한 방향이에요. 내 감정을 믿는 것이 곧 나를 믿는 거예요.`,
+    waiting:`때가 있어요. 지금은 무언가를 억지로 만들어내려 하기보다, 내가 할 수 있는 것을 꾸준히 하면서 흐름을 기다리는 것이 가장 현명한 선택이에요. 기다림도 행동이에요. 조급함을 내려놓는 순간, 오히려 더 좋은 흐름이 들어오는 경우가 많아요.`,
+    change:`변화는 이미 시작됐어요. 그 흐름을 막으려 하기보다 유연하게 올라타는 것이 지금 가장 좋은 에너지예요. 변화 속에서 오히려 더 나은 것이 열리는 경우가 많아요. 지금의 흔들림이 더 좋은 자리를 향한 움직임이에요.`,
+    shadow:`직면해야 할 것이 있어요. 회피하면 할수록 더 무거워지는 성질의 에너지예요. 용기 내서 마주하는 순간부터 실제로 가벼워지기 시작해요. 내담자님은 이미 그 준비가 되어 있어요. 알면서도 외면해온 그것과, 오늘 조금만 마주해봐요.`,
+    complete:`지금 내담자님이 있는 곳은 충분히 가치 있는 자리예요. 더 채우려 하기 전에, 지금 이미 이루어진 것들을 먼저 충분히 인정해봐요. 그 인정이 다음 단계를 위한 가장 든든한 발판이 돼요. 완성된 것들을 기억해주세요.`,
+  };
+  const p5 = archAdvice[arch] || archAdvice.hope;
+
+  return `${p1}\n\n${p2}\n\n${p3}\n\n${p4}\n\n${p5}`;
+}
+
+async function showFreeResult(card) {
+  // 카드 이미지 표시
+  const cardEl = document.getElementById('free-result-card');
+  cardEl.innerHTML = '';
+  const d = document.createElement('div');
+  d.className = 'res-card';
+  d.innerHTML = `<div style="width:80px;height:120px;margin:0 auto 8px">${getCardImg(card,80,120)}</div>
+    <div class="card-kr">${card.kr}</div>
+    <div class="card-en">${card.name}</div>`;
+  cardEl.appendChild(d);
+
+  showScreen('free-result-screen');
+
+  const el = document.getElementById('free-reading-text');
+  el.innerHTML = loadingHTML();
+
+  try {
+    const userMsg = `질문: ${S.freeQuestion}\n뽑힌 카드: ${card.kr} (${card.name})\n카드 키워드: ${card.kw}\n\n위 카드를 바탕으로 질문에 맞는 타로 리딩을 해주세요.`;
+    const text = await callAI([{role:'user', content:userMsg}]);
+    el.textContent = '';
+    await typeText(el, text, 14);
+  } catch(e) {
+    el.textContent = '죄송해요, 리딩을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+  }
+}
+
+function setCount(n, el) {
+  S.count = n;
+  document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function goPick() {
+  S.name = document.getElementById('inp-name').value.trim();
+  S.situation = document.getElementById('inp-situation').value.trim();
+  S.question = document.getElementById('inp-question').value.trim();
+  const err = document.getElementById('form-err');
+  err.classList.add('hidden');
+  if(!S.situation) {
+    err.textContent = '현재 상황을 간단히 작성해주세요.';
+    err.classList.remove('hidden');
+    return;
+  }
+  buildPickScreen();
+  showScreen('pick-screen');
+}
+
+function buildPickScreen() {
+  S.picked = [];
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = '';
+  document.getElementById('pick-total').textContent = S.count;
+  document.getElementById('pick-cnt').textContent = '0';
+
+  const shuffled = [...CARDS].sort(() => Math.random() - .5).slice(0, 12);
+  shuffled.forEach((card, i) => {
+    const el = document.createElement('div');
+    el.className = 'tarot-card';
+    el.dataset.idx = i;
+    el.innerHTML = `<div class="card-inner">
+      <div class="card-back"><span class="card-back-sym">✦</span></div>
+      <div class="card-face">
+        <div style="width:58px;height:87px;margin:0 auto 4px">${getCardImg(card,58,87)}</div>
+        <div class="card-kr" style="font-size:10px">${card.kr}</div>
+      </div></div>`;
+    el.addEventListener('click', () => pickCard(el, card));
+    grid.appendChild(el);
+  });
+}
+
+function pickCard(el, card) {
+  if(S.picked.length >= S.count || el.classList.contains('flipped')) return;
+  el.classList.add('flipped','done');
+  S.picked.push(card);
+  document.getElementById('pick-cnt').textContent = S.picked.length;
+  if(S.picked.length >= S.count) {
+    if(S.freeMode) setTimeout(() => showFreeResult(card), 900);
+    else setTimeout(showResult, 900);
+  }
+}
+
+async function showResult() {
+  buildResultCards();
+  showScreen('result-screen');
+
+  const el = document.getElementById('reading-text');
+  el.innerHTML = loadingHTML();
+
+  const cardList = S.picked.map((c,i)=>`${i+1}번 카드: ${c.kr} (${c.name}) — 키워드: ${c.kw}`).join('\n');
+  const tag = S.name ? `${S.name}님` : '내담자님';
+  const userMsg = `${tag}의 상담 내용이에요.\n\n상황: ${S.situation}\n질문: ${S.question || '(없음)'}\n뽑힌 카드:\n${cardList}\n\n위 카드들을 바탕으로 상황과 질문에 맞는 깊이 있는 타로 리딩을 해주세요.`;
+
+  S.chatHistory = [{role:'user', content:userMsg}];
+
+  try {
+    const text = await callAI(S.chatHistory);
+    S.chatHistory.push({role:'assistant', content:text});
+    el.textContent = '';
+    await typeText(el, text, 16);
+  } catch(e) {
+    el.textContent = '죄송해요, 리딩을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+  }
+
+  // 타이핑 완료 후 추가 질문 영역 표시
+  const fw = document.getElementById('followup-wrap');
+  fw.classList.remove('hidden');
+  fw.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function buildResultCards() {
+  const c = document.getElementById('result-cards');
+  c.innerHTML = '';
+  S.picked.forEach(card => {
+    const d = document.createElement('div');
+    d.className = 'res-card';
+    d.innerHTML = `<div style="width:68px;height:102px;margin:0 auto 6px">${getCardImg(card,68,102)}</div>
+      <div class="card-kr">${card.kr}</div>
+      <div class="card-en">${card.name}</div>`;
+    c.appendChild(d);
+  });
+}
+
+function newReading() {
+  document.getElementById('inp-situation').value = '';
+  document.getElementById('inp-question').value = '';
+  document.getElementById('followup-answers').innerHTML = '';
+  document.getElementById('followup-wrap').classList.add('hidden');
+  document.getElementById('followup-input').value = '';
+  document.getElementById('followup-input-row').classList.remove('hidden');
+  document.getElementById('upgrade-banner').classList.add('hidden');
+  S.picked = []; S.followupCards = []; S.followupUsed = 0; S.extraUnlocked = false; S.freeMode = false; S.chatHistory = [];
+  updateFollowupCount();
+  showScreen('question-screen');
+}
+
+/* ── 추가 질문: 새 카드 뽑기 ── */
+function drawNewCard() {
+  const usedIds = new Set(S.picked.map(c=>c.id));
+  if(S.followupCards) S.followupCards.forEach(c=>usedIds.add(c.id));
+  const pool = CARDS.filter(c=>!usedIds.has(c.id));
+  if(pool.length===0) return pick(CARDS);
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function makeFollowUpAnswer(newQ, newCard, situation, name) {
+  const tag = name ? `${name}님` : '내담자님';
+  const r = READING[newCard.id];
+  const feels = r ? r.feel : [newCard.kw.split(',')[0].trim()];
+  const feel = pick(feels);
+  const scene = r ? r.scene : '';
+  const cardMsg = r ? pick(r.msg) : '';
+  const arch = getCardArchetype(newCard);
+  const kw = newCard.kw.split(',').map(s=>s.trim());
+
+  // 마이너 아르카나 수트별 보조 설명
+  const suitDesc = {
+    wands: `완즈 수트는 불의 원소로, 열정과 의지, 창의적 에너지를 담고 있어요. 행동과 추진력에 관한 이야기를 전해줘요.`,
+    cups: `컵 수트는 물의 원소로, 감정과 관계, 내면의 목소리를 담고 있어요. 마음의 흐름과 연결에 관한 이야기를 전해줘요.`,
+    swords: `소드 수트는 바람의 원소로, 생각과 판단, 진실을 담고 있어요. 명확함과 결단, 때로는 갈등에 관한 이야기를 전해줘요.`,
+    pentacles: `펜타클 수트는 흙의 원소로, 현실과 물질, 안정을 담고 있어요. 실질적인 노력과 성과에 관한 이야기를 전해줘요.`,
+  };
+  const suit = getSuit(newCard);
+  const minorDesc = suit ? suitDesc[suit] : '';
+
+  // 1단락: 카드 소개 + 장면/수트 묘사
+  const p1 = `새로 ${newCard.kr} 카드가 나왔어요.\n\n${scene
+    ? scene.substring(0, scene.lastIndexOf('.')+1 || scene.length)
+    : `${minorDesc ? minorDesc + ' ' : ''}이 카드의 키워드는 '${kw.join(', ')}'이에요. ${kw[0]}와 ${kw[1]||kw[0]}의 에너지가 지금 이 질문에 흐르고 있어요.`}`;
+
+  // 2단락: 카드에서 느껴지는 에너지
+  const p2 = `이 카드에서 느껴지는 에너지는 '${feel}'이에요.`;
+
+  // 3단락: 질문에 맞게 상황 연결 (아르키타입별)
+  const linkByArch = {
+    hope:[
+      `"${newQ}"에 대해 이 카드가 말하는 건, 지금 내담자님이 걱정하는 것보다 상황이 훨씬 더 좋은 방향으로 흘러가고 있다는 거예요. ${kw[0]}의 에너지가 실제로 내담자님 주변에 있어요. 지금 이 흐름을 믿고 움직여봐도 돼요. 완벽하게 준비가 된 다음이 아니라, 지금 이 순간에도 충분히 시작할 수 있어요.`,
+      `"${newQ}" — 이 카드는 가능성이 열려 있다고 말해요. ${kw[0]}의 에너지가 지금 내담자님의 흐름에 실려 있어요. 두려움보다 설렘 쪽에 더 집중해봐요. 긍정적인 가능성을 마음속에 그릴수록, 그 방향으로 움직이는 힘이 생겨요.`,
+    ],
+    action:[
+      `"${newQ}"에 대해 이 카드는 명확하게 말해요 — 지금은 더 고민할 때가 아니라 실제로 움직일 때라고요. ${kw[0]}의 에너지가 흐르는 지금, 작더라도 구체적인 행동 하나가 이 상황의 흐름을 바꿔줄 거예요. 망설임 속에서도 한 발 내딛는 것, 그게 지금 이 카드가 말하는 가장 강력한 선택이에요.`,
+      `"${newQ}" — 이 카드는 행동을 권하고 있어요. 내담자님이 지금 느끼는 망설임은 자연스럽지만, ${kw[0]}의 에너지는 생각보다 움직임 속에서 더 선명하게 방향을 보여줘요. 지금 할 수 있는 가장 작은 한 가지부터 시작해봐요.`,
+    ],
+    emotion:[
+      `"${newQ}"에 대해 이 카드가 말하는 건, 지금 내담자님의 감정 자체가 가장 중요한 나침반이라는 거예요. ${kw[0]}의 에너지 안에서, 지금 느끼는 감정을 억누르거나 무시하기보다 그대로 인정해주는 것이 먼저예요. 그 감정에 귀를 기울이면, 내담자님이 정말 원하는 게 무엇인지 더 선명하게 보이기 시작할 거예요.`,
+      `"${newQ}" — 이 카드는 감정의 흐름을 따르라고 말해요. 지금 내담자님이 느끼는 것이 잘못된 게 아니에요. ${kw.slice(0,2).join(', ')}의 에너지 안에서, 그 감정이 보내는 신호를 조금 더 진지하게 받아들여봐요. 그 안에 이미 답이 있을 수 있어요.`,
+    ],
+    waiting:[
+      `"${newQ}"에 대해 이 카드는 서두를 필요가 없다고 말해요. ${kw[0]}의 에너지는 조급함보다 여유 속에서 훨씬 더 좋은 결과를 만들어줘요. 지금 기다리는 시간이 낭비처럼 느껴질 수도 있지만, 사실 이 시간 자체가 더 나은 타이밍을 만들어가는 준비 과정이에요.`,
+      `"${newQ}" — 이 카드는 지금 당장 결론을 내리기보다 조금 더 지켜볼 것을 권해요. ${kw.slice(0,2).join(', ')}의 에너지처럼, 때를 아는 것이 가장 현명한 전략이에요. 무르익지 않은 상황을 억지로 끌어당기면 오히려 흐름이 어긋날 수 있어요.`,
+    ],
+    change:[
+      `"${newQ}"에 대해 이 카드가 말하는 건, 지금 흘러오는 변화를 막으려 하기보다 그 흐름에 올라타는 것이 낫다는 거예요. 겉으로는 흔들리는 것처럼 느껴질 수 있지만, ${kw[0]}의 에너지는 사실 더 나은 방향으로 재편되고 있는 과정이에요. 변화를 두려워하기보다 새로운 가능성으로 바라봐봐요.`,
+      `"${newQ}" — 이 카드는 변화가 필요한 시점이라고 말해요. ${kw.slice(0,2).join(', ')}의 에너지가 지금 내담자님 주변에 흐르고 있어요. 익숙한 것을 잡으려는 마음도 이해되지만, 이 흐름은 더 좋은 것으로 이어지고 있어요.`,
+    ],
+    shadow:[
+      `"${newQ}"에 대해 이 카드는 솔직하게 말하고 있어요 — 불편하더라도 직면해야 할 부분이 있다고요. ${kw[0]}의 에너지는 회피할수록 더 무거워지는 성질이 있어요. 내담자님이 눈 돌리고 싶었던 그 부분을 지금 조금만 들여다봐요. 마주하는 순간부터 실제로 가벼워지기 시작하거든요.`,
+      `"${newQ}" — 이 카드는 내담자님이 스스로에게 솔직해지는 것이 가장 먼저라고 말해요. 외부 상황을 바꾸려 하기 전에, ${kw.slice(0,2).join(', ')}의 에너지를 안으로 향하게 해봐요. 내 안에서 무언가를 인정하는 순간, 상황도 달라지기 시작해요.`,
+    ],
+    complete:[
+      `"${newQ}"에 대해 이 카드가 말하는 건, 지금 내담자님이 이미 충분한 곳에 있다는 거예요. ${kw[0]}의 에너지가 흐르는 지금, 더 많은 것을 채우려 하기보다 지금 가진 것의 가치를 충분히 느껴봐요. 마무리는 끝이 아니라 다음 시작을 위한 자리를 만드는 과정이에요.`,
+      `"${newQ}" — 이 카드는 지금 내담자님이 있는 곳이 이미 좋은 자리라는 걸 알려줘요. ${kw.slice(0,2).join(', ')}의 에너지. 완성된 것들을 충분히 인정하고 받아들이는 것, 그게 지금 내담자님에게 가장 필요한 태도예요.`,
+    ],
+  };
+
+  const p3 = pick(linkByArch[arch] || linkByArch.hope);
+
+  // 4단락: 카드 메시지 기반 마무리 조언
+  const closings = [
+    cardMsg ? cardMsg : `${kw[0]}의 에너지를 믿고 한 발씩 나아가봐요. 지금 내담자님이 가는 방향은 틀리지 않았어요.`,
+    `지금 이 카드가 ${tag}의 곁에 왔다는 건, 이미 그 답을 향해 가고 있다는 신호예요. 조금 더 자신을 믿어봐요.`,
+    `${tag}, 이 카드가 전하는 에너지 — '${feel}' — 를 오늘 하루 마음에 품고 지내봐요. 생각지 못한 방향에서 실마리가 보일 수 있어요.`,
+  ];
+
+  return `${p1}\n\n${p2}\n\n${p3}\n\n${pick(closings)}`;
+}
+
+async function sendFollowUp() {
+  const input = document.getElementById('followup-input');
+  const q = input.value.trim();
+  if(!q) return;
+
+  // 추가질문 한도 체크
+  const limit = CFG.freeFollowups + (S.extraUnlocked ? CFG.freeFollowups : 0);
+  if(S.followupUsed >= limit) return;
+
+  const btn = document.querySelector('.followup-send-btn');
+  btn.disabled = true;
+  input.value = '';
+
+  // 새 카드 뽑기
+  const newCard = drawNewCard();
+  if(!S.followupCards) S.followupCards = [];
+  S.followupCards.push(newCard);
+
+  const answersEl = document.getElementById('followup-answers');
+  const block = document.createElement('div');
+  block.className = 'followup-answer';
+  block.innerHTML = `
+    <div class="followup-q">${q}</div>
+    <div class="followup-new-card">
+      ${getCardImg(newCard,52,78)}
+      <div class="followup-card-name">${newCard.kr}</div>
+    </div>
+    <div class="followup-text"></div>`;
+  answersEl.appendChild(block);
+  block.scrollIntoView({behavior:'smooth', block:'start'});
+
+  const textEl = block.querySelector('.followup-text');
+  textEl.innerHTML = loadingHTML();
+
+  const followMsg = `추가 질문: ${q}\n새로 뽑힌 카드: ${newCard.kr} (${newCard.name}) — 키워드: ${newCard.kw}\n\n이 카드를 바탕으로 추가 질문에 답해주세요.`;
+  if(!S.chatHistory) S.chatHistory = [];
+  S.chatHistory.push({role:'user', content:followMsg});
+
+  let answer;
+  try {
+    answer = await callAI(S.chatHistory);
+    S.chatHistory.push({role:'assistant', content:answer});
+  } catch(e) {
+    answer = '죄송해요, 답변을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+  }
+  textEl.textContent = '';
+  await typeText(textEl, answer, 16);
+
+  // 카운터 업데이트
+  S.followupUsed++;
+  updateFollowupCount();
+
+  const newLimit = CFG.freeFollowups + (S.extraUnlocked ? CFG.freeFollowups : 0);
+  if(S.followupUsed >= newLimit) {
+    // 입력창 숨기고 업그레이드 배너 표시
+    document.getElementById('followup-input-row').classList.add('hidden');
+    document.getElementById('upgrade-banner').classList.remove('hidden');
+    document.getElementById('upgrade-banner').scrollIntoView({behavior:'smooth', block:'center'});
+  } else {
+    btn.disabled = false;
+    input.focus();
+  }
+}
+</script>
+</body>
+</html>
