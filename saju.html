@@ -90,20 +90,27 @@ footer{text-align:center;padding:32px 16px 20px;color:var(--sub);font-size:.75re
 @keyframes dotbounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
 .ai-text{color:var(--text);font-size:.93rem;line-height:2;white-space:pre-wrap}
 
-/* Follow-up */
-.followup-section{background:var(--card);border:1px solid rgba(201,168,76,.2);border-radius:16px;padding:24px;margin-bottom:20px}
-.followup-section h3{color:var(--gold);font-size:.95rem;letter-spacing:.08em;margin-bottom:16px}
-.followup-messages{margin-bottom:16px;display:flex;flex-direction:column;gap:14px}
-.msg-user{background:#1a1535;border-radius:10px;padding:12px 16px;color:var(--text);font-size:.88rem;line-height:1.7}
-.msg-ai{color:var(--text);font-size:.9rem;line-height:1.9;white-space:pre-wrap;padding:6px 0;border-bottom:1px solid rgba(201,168,76,.08)}
-.followup-input-row{display:flex;gap:10px;margin-top:4px}
-.followup-input{flex:1;background:#1a1535;border:1px solid rgba(201,168,76,.3);border-radius:9px;color:var(--text);padding:11px 14px;font-size:.9rem;font-family:inherit;outline:none;transition:border .2s}
-.followup-input:focus{border-color:var(--gold)}
-.followup-btn{background:linear-gradient(135deg,#4a2d8a,#7c5cbf);border:1px solid var(--gold);border-radius:9px;color:var(--gold);padding:11px 20px;font-family:inherit;font-size:.9rem;cursor:pointer;white-space:nowrap;letter-spacing:.04em}
-.followup-counter{text-align:center;color:var(--sub);font-size:.8rem;margin-top:10px}
-.upgrade-box{text-align:center;padding:20px;border:1px solid rgba(201,168,76,.3);border-radius:12px;margin-top:12px;background:#0f0c20}
-.upgrade-box p{color:var(--sub);font-size:.88rem;margin-bottom:14px;line-height:1.7}
-.upgrade-box button{background:linear-gradient(135deg,#c9a84c,#e8c97a);border:none;border-radius:9px;color:#13102a;padding:12px 28px;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;letter-spacing:.04em}
+/* Category buttons */
+.category-section{background:var(--card);border:1px solid rgba(201,168,76,.2);border-radius:16px;padding:24px;margin-bottom:20px}
+.category-section h3{color:var(--gold);font-size:.95rem;letter-spacing:.08em;margin-bottom:6px}
+.category-section p{color:var(--sub);font-size:.82rem;margin-bottom:18px}
+.category-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cat-btn{background:#1a1535;border:1px solid rgba(201,168,76,.3);border-radius:12px;color:var(--text);padding:14px 12px;font-family:inherit;font-size:.88rem;cursor:pointer;text-align:left;transition:all .25s;letter-spacing:.02em;line-height:1.5}
+.cat-btn:hover{border-color:var(--gold);background:#221a40;color:var(--gold)}
+.cat-btn.active{border-color:var(--gold);background:linear-gradient(135deg,#2a1a4e,#1a1535);color:var(--gold)}
+
+/* Code input */
+.code-input-box{margin-top:16px;padding:18px;background:#0f0c20;border:1px solid rgba(201,168,76,.25);border-radius:12px}
+.code-input-box p{color:var(--sub);font-size:.85rem;margin-bottom:12px;line-height:1.7}
+.code-row{display:flex;gap:8px}
+.code-input{flex:1;background:#1a1535;border:1px solid rgba(201,168,76,.3);border-radius:8px;color:var(--text);padding:10px 13px;font-size:.9rem;font-family:inherit;outline:none;text-transform:uppercase;letter-spacing:.05em}
+.code-input:focus{border-color:var(--gold)}
+.code-submit-btn{background:linear-gradient(135deg,#4a2d8a,#7c5cbf);border:1px solid var(--gold);border-radius:8px;color:var(--gold);padding:10px 18px;font-family:inherit;font-size:.88rem;cursor:pointer;white-space:nowrap}
+.code-err{color:#e57373;font-size:.8rem;margin-top:8px}
+
+/* Category reading */
+.cat-reading-card{background:var(--card);border:1px solid rgba(201,168,76,.25);border-radius:16px;padding:24px;margin-bottom:20px}
+.cat-reading-card h3{color:var(--gold);font-size:1rem;letter-spacing:.08em;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(201,168,76,.15)}
 
 /* Reset btn */
 .reset-btn{display:block;width:100%;margin-top:4px;padding:13px;background:transparent;border:1px solid rgba(201,168,76,.3);border-radius:10px;color:var(--sub);font-size:.9rem;font-family:inherit;cursor:pointer;letter-spacing:.06em;transition:all .3s}
@@ -177,17 +184,30 @@ footer{text-align:center;padding:32px 16px 20px;color:var(--sub);font-size:.75re
       <div id="ai-reading-body"></div>
     </div>
 
-    <div class="followup-section hidden" id="followup-section">
-      <h3>✦ 더 궁금한 것이 있으신가요?</h3>
-      <div class="followup-messages" id="followup-messages"></div>
-      <div id="followup-input-wrap">
-        <div class="followup-input-row">
-          <input class="followup-input" id="followup-input" type="text" placeholder="사주에 대해 더 물어보세요..." onkeydown="if(event.key==='Enter')sendFollowUp()">
-          <button class="followup-btn" id="followup-send-btn" onclick="sendFollowUp()">질문하기</button>
-        </div>
-        <div class="followup-counter" id="followup-counter"></div>
+    <div class="category-section hidden" id="category-section">
+      <h3>✦ 더 깊이 들여다보기</h3>
+      <p>관심 있는 영역을 선택하면 코드 입력 후 상세 리딩을 받을 수 있어요.</p>
+      <div class="category-btns">
+        <button class="cat-btn" onclick="selectCategory('love')">💕 사랑 &amp; 인연</button>
+        <button class="cat-btn" onclick="selectCategory('career')">💼 직업 &amp; 적성</button>
+        <button class="cat-btn" onclick="selectCategory('money')">💰 금전 &amp; 재물</button>
+        <button class="cat-btn" onclick="selectCategory('health')">🌿 건강 &amp; 활력</button>
+        <button class="cat-btn" onclick="selectCategory('flow')">🌊 운의 흐름</button>
+        <button class="cat-btn" onclick="selectCategory('monthly')">📅 월별 운세</button>
       </div>
-      <div id="followup-upgrade" class="hidden"></div>
+      <div id="code-input-box" class="code-input-box hidden">
+        <p id="code-input-desc">선택하신 카테고리의 상세 리딩을 위해 코드를 입력해주세요.</p>
+        <div class="code-row">
+          <input class="code-input" id="saju-code-input" type="text" placeholder="코드 입력" onkeydown="if(event.key==='Enter')submitSajuCode()">
+          <button class="code-submit-btn" onclick="submitSajuCode()">확인</button>
+        </div>
+        <div class="code-err hidden" id="saju-code-err">유효하지 않은 코드예요.</div>
+      </div>
+    </div>
+
+    <div class="cat-reading-card hidden" id="cat-reading-card">
+      <h3 id="cat-reading-title"></h3>
+      <div id="cat-reading-body"></div>
     </div>
 
     <button class="reset-btn" onclick="resetSaju()">↩ 다시 입력하기</button>
@@ -229,14 +249,13 @@ const BRANCH_HANJA=['子','丑','寅','卯','辰','巳','午','未','申','酉',
 const BRANCH_ANIMAL=['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'];
 
 const CFG = {
-  freeFollowups: 3,
+  sajuCodes: ['SAJU0001','SAJU0002','SAJU0003'],
 };
 
 /* ─── 상태 ─── */
 let S = {
   chatHistory: [],
-  followupUsed: 0,
-  sajuContext: '',
+  selectedCategory: null,
 };
 
 /* ─── AI 시스템 프롬프트 ─── */
@@ -415,66 +434,64 @@ ${pillarDesc.join('\n')}
 위 사주팔자와 별자리를 바탕으로 ${tag}님만을 위한 깊이 있는 종합 리딩을 해주세요. 일간의 본질적 성격, 오행의 강약이 삶에 미치는 영향, 사주와 별자리 에너지의 조화, 사랑·직업·재물·건강 각 영역별 흐름, 지금 이 시기의 에너지, 그리고 앞으로의 흐름을 구체적으로 담아주세요. 마지막 단락은 반드시 이 문장으로 끝내주세요: "오늘의 사주와 별자리가 ${tag}님만의 이야기를 꺼내줬어요. 더 깊이 들여다보고 싶은 부분이 있다면 언제든지 물어봐 주세요. ✦"`;
 }
 
-function updateFollowupCounter() {
-  const remaining = CFG.freeFollowups - S.followupUsed;
-  const counter = document.getElementById('followup-counter');
-  if (counter) counter.textContent = `무료 추가 질문 ${remaining}회 남았어요`;
+const CATEGORY_INFO = {
+  love:    { label:'💕 사랑 & 인연', prompt:'사랑과 인연에 대해 훨씬 더 깊이 분석해주세요. 이 사람의 연애 패턴, 이상형과의 궁합, 현재 인연의 흐름, 앞으로 좋은 인연이 찾아올 시기와 그 에너지를 구체적으로 담아주세요.' },
+  career:  { label:'💼 직업 & 적성', prompt:'직업과 적성에 대해 훨씬 더 깊이 분석해주세요. 이 사람이 가장 빛날 수 있는 분야, 사주에서 보이는 직업적 강점과 약점, 지금 커리어 흐름, 앞으로의 성장 방향을 구체적으로 담아주세요.' },
+  money:   { label:'💰 금전 & 재물', prompt:'금전과 재물에 대해 훨씬 더 깊이 분석해주세요. 재물운의 흐름, 돈을 모으는 방식과 쓰는 패턴, 투자 성향, 앞으로 재물이 들어올 시기와 주의해야 할 시기를 구체적으로 담아주세요.' },
+  health:  { label:'🌿 건강 & 활력', prompt:'건강과 활력에 대해 훨씬 더 깊이 분석해주세요. 사주에서 보이는 체질적 특성, 주의해야 할 신체 부위, 에너지가 떨어지는 시기, 건강을 지키는 생활 습관을 구체적으로 담아주세요.' },
+  flow:    { label:'🌊 운의 흐름', prompt:'앞으로의 운의 큰 흐름을 분석해주세요. 지금 어떤 대운·세운의 흐름 속에 있는지, 앞으로 1~3년간 찾아올 기회와 조심해야 할 시기, 이 흐름을 잘 타기 위한 방향을 구체적으로 담아주세요.' },
+  monthly: { label:'📅 월별 운세', prompt:'올해 남은 달부터 내년까지 월별 운세를 분석해주세요. 각 달에 어떤 에너지가 흐르는지, 좋은 달과 조심해야 할 달, 각 달에 집중하면 좋을 영역을 구체적으로 월별로 담아주세요.' },
+};
+
+function selectCategory(key) {
+  S.selectedCategory = key;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  const box = document.getElementById('code-input-box');
+  box.classList.remove('hidden');
+  document.getElementById('saju-code-input').value = '';
+  document.getElementById('saju-code-err').classList.add('hidden');
+  document.getElementById('code-input-desc').textContent = `"${CATEGORY_INFO[key].label}" 상세 리딩을 위해 코드를 입력해주세요.`;
+  document.getElementById('saju-code-input').focus();
 }
 
-async function sendFollowUp() {
-  const input = document.getElementById('followup-input');
-  const q = input.value.trim();
-  if (!q) return;
+async function submitSajuCode() {
+  const code = document.getElementById('saju-code-input').value.trim().toUpperCase();
+  const errEl = document.getElementById('saju-code-err');
 
-  if (S.followupUsed >= CFG.freeFollowups) return;
+  if (!CFG.sajuCodes.includes(code)) {
+    errEl.classList.remove('hidden');
+    return;
+  }
 
-  input.value = '';
-  const btn = document.getElementById('followup-send-btn');
-  btn.disabled = true;
+  CFG.sajuCodes.splice(CFG.sajuCodes.indexOf(code), 1);
+  errEl.classList.add('hidden');
+  document.getElementById('code-input-box').classList.add('hidden');
 
-  const msgs = document.getElementById('followup-messages');
-  const userDiv = document.createElement('div');
-  userDiv.className = 'msg-user';
-  userDiv.textContent = q;
-  msgs.appendChild(userDiv);
+  const cat = CATEGORY_INFO[S.selectedCategory];
+  const card = document.getElementById('cat-reading-card');
+  const body = document.getElementById('cat-reading-body');
+  document.getElementById('cat-reading-title').textContent = cat.label + ' 상세 리딩';
+  body.innerHTML = `<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> 분석 중이에요...</div>`;
+  card.classList.remove('hidden');
+  card.scrollIntoView({behavior:'smooth'});
 
-  const loadingDiv = document.createElement('div');
-  loadingDiv.className = 'msg-ai';
-  loadingDiv.innerHTML = `<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> 답변을 준비하고 있어요...</div>`;
-  msgs.appendChild(loadingDiv);
-  loadingDiv.scrollIntoView({behavior:'smooth',block:'nearest'});
-
-  S.chatHistory.push({role:'user', content: q});
+  const messages = [
+    ...S.chatHistory,
+    {role:'user', content: cat.prompt}
+  ];
 
   try {
-    const answer = await callAI(S.chatHistory);
-    S.chatHistory.push({role:'assistant', content: answer});
-    S.followupUsed++;
-
-    loadingDiv.innerHTML = '';
-    loadingDiv.textContent = answer;
-
-    if (S.followupUsed >= CFG.freeFollowups) {
-      document.getElementById('followup-input-wrap').classList.add('hidden');
-      const upgradeDiv = document.getElementById('followup-upgrade');
-      upgradeDiv.classList.remove('hidden');
-      upgradeDiv.innerHTML = `<div class="upgrade-box">
-        <p>무료 추가 질문 ${CFG.freeFollowups}회를 모두 사용하셨어요.<br>더 깊은 상담을 원하신다면 추가 질문권을 구매해주세요.</p>
-        <button onclick="goSajuUpgrade()">추가 질문 더 하기</button>
-      </div>`;
-    } else {
-      updateFollowupCounter();
-      btn.disabled = false;
-    }
+    const reading = await callAI(messages);
+    body.innerHTML = '';
+    const textDiv = document.createElement('div');
+    textDiv.className = 'ai-text';
+    textDiv.textContent = reading;
+    body.appendChild(textDiv);
   } catch(e) {
-    loadingDiv.textContent = '답변을 불러오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
-    S.chatHistory.pop();
-    btn.disabled = false;
+    body.innerHTML = `<div class="ai-text" style="color:var(--sub)">리딩을 불러오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.</div>`;
   }
-}
-
-function goSajuUpgrade() {
-  alert('추가 질문권 결제 링크를 준비 중이에요. 곧 오픈될 예정이에요!');
 }
 
 /* ─── 메인 계산 ─── */
@@ -512,16 +529,15 @@ async function calculate() {
 
   // 상태 초기화
   S.chatHistory = [];
-  S.followupUsed = 0;
+  S.selectedCategory = null;
 
   // 화면 전환
   document.getElementById('form-sec').classList.add('hidden');
   document.getElementById('result-sec').classList.remove('hidden');
-  document.getElementById('followup-section').classList.add('hidden');
-  document.getElementById('followup-messages').innerHTML = '';
-  document.getElementById('followup-input-wrap').classList.remove('hidden');
-  document.getElementById('followup-upgrade').classList.add('hidden');
-  document.getElementById('followup-upgrade').innerHTML = '';
+  document.getElementById('category-section').classList.add('hidden');
+  document.getElementById('cat-reading-card').classList.add('hidden');
+  document.getElementById('code-input-box').classList.add('hidden');
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
 
   renderPillars(pillars, knownHour);
   renderOhaeng(ohaeng);
@@ -547,10 +563,8 @@ async function calculate() {
     textDiv.textContent = reading;
     aiBody.appendChild(textDiv);
 
-    // 추가 질문 섹션 표시
-    const followupSec = document.getElementById('followup-section');
-    followupSec.classList.remove('hidden');
-    updateFollowupCounter();
+    // 카테고리 섹션 표시
+    document.getElementById('category-section').classList.remove('hidden');
   } catch(e) {
     aiBody.innerHTML = `<div class="ai-text" style="color:var(--sub)">리딩을 불러오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.\n\n오류: ${e.message}</div>`;
   }
