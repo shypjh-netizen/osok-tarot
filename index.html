@@ -1443,15 +1443,18 @@ async function showResult() {
     const text = await callAI(S.chatHistory);
     S.chatHistory.push({role:'assistant', content:text});
     el.textContent = '';
+
+    // 추가 질문 영역 먼저 표시
+    const fw = document.getElementById('followup-wrap');
+    fw.classList.remove('hidden');
+
     await typeText(el, text, 16);
+    fw.scrollIntoView({behavior:'smooth', block:'start'});
   } catch(e) {
     el.textContent = '죄송해요, 리딩을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+    const fw = document.getElementById('followup-wrap');
+    fw.classList.remove('hidden');
   }
-
-  // 타이핑 완료 후 추가 질문 영역 표시
-  const fw = document.getElementById('followup-wrap');
-  fw.classList.remove('hidden');
-  fw.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function buildResultCards() {
