@@ -1358,7 +1358,7 @@ async function showFreeResult(card) {
   el.innerHTML = loadingHTML();
 
   try {
-    const userMsg = `질문: ${S.freeQuestion}\n뽑힌 카드: ${card.kr} (${card.name})\n카드 키워드: ${card.kw}\n\n위 카드를 바탕으로 질문에 맞는 타로 리딩을 해주세요.`;
+    const userMsg = `질문: ${S.freeQuestion}\n뽑힌 카드: ${card.kr} (${card.name})\n카드 키워드: ${card.kw}\n\n위 카드를 바탕으로 질문에 맞는 타로 리딩을 해주세요. 리딩 맨 마지막 단락은 반드시 이 문장으로 끝내주세요: "오늘의 카드가 지금 내담자님의 마음속 이야기를 꺼내줬어요. 한 가지 더 — 이 에너지가 앞으로 어떻게 흘러갈지, 그 흐름, 조금 더 들여다볼까요? ✦"`;
     const text = await callAI([{role:'user', content:userMsg}]);
     el.textContent = '';
     await typeText(el, text, 14);
