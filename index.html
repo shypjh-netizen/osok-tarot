@@ -137,6 +137,12 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
   background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;
   cursor:pointer;box-shadow:0 4px 24px rgba(201,162,39,.4);transition:all .3s;letter-spacing:2px;margin-bottom:14px}
 .pay-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,162,39,.6)}
+.pay-btn-sm{display:inline-block;margin-top:6px;padding:6px 14px;font-size:12px;font-weight:700;
+  background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:none;border-radius:50px;
+  cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap}
+.pay-btn-sm:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(124,58,237,.5)}
+.pay-btn-gold{background:linear-gradient(135deg,#c9a227,#e8c95a)!important;color:#1a0a00!important}
+.pay-btn-gold:hover{box-shadow:0 4px 16px rgba(201,162,39,.5)!important}
 .code-toggle{font-size:13px;color:var(--dim);cursor:pointer;text-decoration:underline;margin-bottom:16px;display:block}
 .code-toggle:hover{color:var(--gold)}
 .code-input-row{display:none;gap:10px;max-width:420px;width:100%;margin-bottom:8px}
@@ -282,8 +288,8 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
       <div class="price-item">
         <span class="price-icon">🔮</span>
         <div class="price-info">
-          <div class="price-name">기본 타로 상담</div>
-          <div class="price-desc">카드 1~3장 리딩 + 추가 질문 5회 포함</div>
+          <div class="price-name">심층리딩</div>
+          <div class="price-desc">카드 1~3장 리딩 + 추가 질문 3회 포함</div>
         </div>
         <div class="price-amount-wrap">
           <div class="price-original">9,900원</div>
@@ -291,12 +297,13 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span class="price-badge">40% OFF</span>
             <span class="price-amount-main">5,900원</span>
           </div>
+          <a href="#" target="_blank" class="pay-btn-sm" onclick="event.preventDefault();window.open(CFG.payLink,'_blank')">결제하기</a>
         </div>
       </div>
       <div class="price-item">
         <span class="price-icon">💬</span>
         <div class="price-info">
-          <div class="price-name">추가 질문 3회</div>
+          <div class="price-name">추가 질문</div>
           <div class="price-desc">새 카드를 뽑아 이어서 상담</div>
         </div>
         <div class="price-amount-wrap">
@@ -305,13 +312,14 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span class="price-badge">43% OFF</span>
             <span class="price-amount-main">3,900원</span>
           </div>
+          <a href="#" target="_blank" class="pay-btn-sm" onclick="event.preventDefault();window.open(CFG.extraLink,'_blank')">결제하기</a>
         </div>
       </div>
       <div class="price-item" style="background:rgba(201,162,39,.07);border-radius:12px;margin:-4px -4px;padding:4px">
         <span class="price-icon">✨</span>
         <div class="price-info">
-          <div class="price-name" style="color:#e8c95a">기본 상담 + 추가 질문 세트</div>
-          <div class="price-desc">카드 리딩 + 추가 질문 8회 전부 포함<br><span style="color:#c9a227;font-size:11px">★ 가장 인기있는 플랜</span></div>
+          <div class="price-name" style="color:#e8c95a">심층리딩 + 추가 질문 세트</div>
+          <div class="price-desc">카드 리딩 + 추가 질문 전부 포함<br><span style="color:#c9a227;font-size:11px">★ 가장 인기있는 플랜</span></div>
         </div>
         <div class="price-amount-wrap">
           <div class="price-original">16,800원</div>
@@ -319,10 +327,10 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span class="price-badge">47% OFF</span>
             <span class="price-amount-main">8,900원</span>
           </div>
+          <a href="#" target="_blank" class="pay-btn-sm pay-btn-gold" onclick="event.preventDefault();window.open(CFG.setLink,'_blank')">결제하기</a>
         </div>
       </div>
     </div>
-    <a id="pay-link" href="#" target="_blank" class="pay-btn" onclick="onPayClick(event)">💳 결제하기</a>
     <div style="height:32px"></div>
     <span class="code-toggle" onclick="toggleCodeInput()">이미 결제하셨나요? 코드 입력하기</span>
     <div class="code-input-row" id="code-input-row">
@@ -1174,8 +1182,9 @@ function typeText(el, text, speed=16) {
    코드는 여기서 자유롭게 추가/삭제 가능합니다.
 ══════════════════════════════════════════ */
 const CFG = {
-  payLink:  'https://www.groble.im/products/aLupJN',
-  extraLink:'https://your-extra-payment-link.com',  // ← 추가 질문 결제 링크
+  payLink:  'https://www.groble.im/payment/zLtadD',   // ← 심층리딩 5,900원
+  extraLink:'https://www.groble.im/payment/MKzubs',   // ← 추가 질문 3,900원
+  setLink:  'https://www.groble.im/payment/RVUzGx',   // ← 세트 8,900원
   basicCodes: ['TAROT0001','TAROT0002','TAROT0003'], // ← 기본 상담 코드 (결제 후 발급)
   extraCodes: ['EXTRA0001','EXTRA0002','EXTRA0003'], // ← 추가 질문 코드 (결제 후 발급)
   freeFollowups: 3,  // 기본 포함 추가질문 횟수
