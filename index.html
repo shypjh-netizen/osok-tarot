@@ -282,7 +282,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 <section class="screen hidden" id="payment-screen">
   <div style="max-width:460px;width:100%;text-align:center">
     <h2 style="font-family:'Nanum Myeongjo',serif;font-size:24px;color:var(--gold-l);margin-bottom:6px">✨ 타로 상담 안내</h2>
-    <p style="font-size:13px;color:var(--dim);margin-bottom:24px">결제 후 발급된 코드를 입력하시면 상담이 시작됩니다</p>
+    <p style="font-size:13px;color:var(--dim);margin-bottom:24px">결제 완료 후 받은 <b style="color:var(--gold-l)">주문번호</b>를 입력하시면 상담이 시작됩니다</p>
     <div class="price-box">
       <div class="price-title">상담 요금</div>
       <div class="price-item">
@@ -332,13 +332,13 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
       </div>
     </div>
     <div style="height:32px"></div>
-    <span class="code-toggle" onclick="toggleCodeInput()">이미 결제하셨나요? 코드 입력하기</span>
+    <span class="code-toggle" onclick="toggleCodeInput()">이미 결제하셨나요? 주문번호 입력하기</span>
     <div class="code-input-row" id="code-input-row">
-      <input type="text" id="access-code" class="field-input" placeholder="발급받은 코드를 입력하세요"
-        style="margin:0;text-transform:uppercase" onkeydown="if(event.key==='Enter')submitCode()">
+      <input type="text" id="access-code" class="field-input" placeholder="그로블 주문번호를 입력하세요"
+        style="margin:0" onkeydown="if(event.key==='Enter')submitCode()">
       <button class="followup-send-btn" onclick="submitCode()" style="white-space:nowrap">확인</button>
     </div>
-    <p class="code-err" id="code-err">유효하지 않은 코드예요. 다시 확인해주세요.</p>
+    <p class="code-err" id="code-err">유효하지 않은 주문번호예요. 그로블 결제 내역을 확인해주세요.</p>
     <button class="btn-sub" onclick="showScreen('intro')">← 돌아가기</button>
   </div>
 </section>
@@ -1218,26 +1218,35 @@ function toggleCodeInput() {
   if(row.classList.contains('show')) document.getElementById('access-code').focus();
 }
 
-function submitCode() {
-  const code = document.getElementById('access-code').value.trim().toUpperCase();
+async function submitCode() {
+  const code = document.getElementById('access-code').value.trim();
   const err = document.getElementById('code-err');
-  if(CFG.basicCodes.includes(code)) {
-    err.style.display = 'none';
-    CFG.basicCodes.splice(CFG.basicCodes.indexOf(code), 1);
-    S.freeMode = false;
-    S.picked = [];
-    S.chatHistory = [];
-    showScreen('question-screen');
-  } else if(CFG.extraCodes.includes(code)) {
-    err.style.display = 'none';
-    CFG.extraCodes.splice(CFG.extraCodes.indexOf(code), 1);
-    S.extraUnlocked = true;
-    S.followupUsed = 0;
-    document.getElementById('upgrade-banner').classList.add('hidden');
-    document.getElementById('followup-input-row').classList.remove('hidden');
-    updateFollowupCount();
-    showScreen('result-screen');
-  } else {
+  if (!code) return;
+
+  try {
+    const res = await fetch(`/api/webhook?code=${encodeURIComponent(code)}`);
+    const data = await res.json();
+
+    if (data.valid) {
+      err.style.display = 'none';
+      const product = data.product || '';
+      if (product.includes('추가질문') || product.includes('추가 질문')) {
+        S.extraUnlocked = true;
+        S.followupUsed = 0;
+        document.getElementById('upgrade-banner').classList.add('hidden');
+        document.getElementById('followup-input-row').classList.remove('hidden');
+        updateFollowupCount();
+        showScreen('result-screen');
+      } else {
+        S.freeMode = false;
+        S.picked = [];
+        S.chatHistory = [];
+        showScreen('question-screen');
+      }
+    } else {
+      err.style.display = 'block';
+    }
+  } catch(e) {
     err.style.display = 'block';
   }
 }

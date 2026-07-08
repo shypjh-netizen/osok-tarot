@@ -1,18 +1,17 @@
 import { Redis } from '@upstash/redis';
-import crypto from 'crypto';
 
 const redis = Redis.fromEnv();
 
 export default async function handler(req, res) {
-  // 토큰 검증 요청 (프론트엔드에서 호출)
+  // 주문번호 검증 요청 (프론트엔드에서 호출)
   if (req.method === 'GET') {
-    const { token } = req.query;
-    if (!token) return res.status(400).json({ valid: false });
+    const { code } = req.query;
+    if (!code) return res.status(400).json({ valid: false });
 
-    const data = await redis.get(`token:${token}`);
+    const data = await redis.get(`order:${code}`);
     if (!data) return res.status(200).json({ valid: false });
 
-    await redis.del(`token:${token}`); // 1회 사용 후 삭제
+    await redis.del(`order:${code}`); // 1회 사용 후 삭제
     return res.status(200).json({ valid: true, product: data.product });
   }
 
@@ -26,13 +25,15 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
-      // 1회용 토큰 생성 (1시간 유효)
-      const token = crypto.randomBytes(32).toString('hex');
+      // 주문번호를 키로 저장 (24시간 유효)
+      const orderCode = body.order?.order_code || body.order_code || body.order?.id || '';
       const productName = body.order?.product_name || body.product_name || '';
 
-      await redis.set(`token:${token}`, { product: productName }, { ex: 3600 });
+      if (orderCode) {
+        await redis.set(`order:${orderCode}`, { product: productName }, { ex: 86400 });
+      }
 
-      return res.status(200).json({ ok: true, token });
+      return res.status(200).json({ ok: true });
     } catch (e) {
       return res.status(500).json({ error: e.message });
     }
