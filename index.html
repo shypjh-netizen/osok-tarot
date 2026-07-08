@@ -40,7 +40,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 .btn-sub:hover{color:var(--gold);border-color:var(--gold)}
 
 /* 폼 */
-#question-screen{max-width:560px;width:100%}
+#question-screen{max-width:560px;width:100%;margin-left:auto;margin-right:auto}
 .form-header{text-align:center;margin-bottom:32px}
 .form-header h2{font-family:'Nanum Myeongjo',serif;font-size:26px;font-weight:700;color:var(--gold-l);margin-bottom:8px}
 .form-header p{font-size:14px;color:var(--dim);line-height:1.7}
@@ -1274,16 +1274,29 @@ async function submitReview() {
   closeReview();
   document.getElementById('review-btn-wrap').style.display = 'none';
   // 보너스 카드 뽑기
-  alert('감사해요! 보너스 카드를 한 장 더 뽑아드릴게요 🎴');
   const bonusCard = drawNewCard();
   const el = document.getElementById('reading-text');
-  el.insertAdjacentHTML('beforeend', `<div style="margin-top:24px;padding:20px;background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.3);border-radius:14px;text-align:center">
+  const bonusBox = document.createElement('div');
+  bonusBox.style.cssText = 'margin-top:24px;padding:20px;background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.3);border-radius:14px;text-align:center';
+  bonusBox.innerHTML = `
     <div style="font-family:'Nanum Myeongjo',serif;color:var(--gold-l);font-size:15px;margin-bottom:12px">🎁 후기 감사 보너스 카드</div>
     <div style="margin:0 auto 8px;width:68px">${getCardImg(bonusCard,68,102)}</div>
     <div style="color:var(--gold-l);font-weight:700">${bonusCard.kr}</div>
     <div style="font-size:12px;color:var(--dim);margin-top:4px">${bonusCard.kw}</div>
-  </div>`);
-  el.lastElementChild.scrollIntoView({behavior:'smooth', block:'center'});
+    <div class="reading-text" id="bonus-reading-text" style="text-align:left;margin-top:16px">${loadingHTML()}</div>`;
+  el.appendChild(bonusBox);
+  bonusBox.scrollIntoView({behavior:'smooth', block:'start'});
+
+  // 보너스 카드 AI 리딩
+  const bonusMsg = `보너스 카드로 뽑힌 카드: ${bonusCard.kr} (${bonusCard.name}) — 키워드: ${bonusCard.kw}\n\n이 카드를 바탕으로 짧고 따뜻한 메시지를 3~4단락으로 전해주세요. 앞선 리딩의 에너지를 마무리하는 느낌으로요.`;
+  try {
+    const bonusText = await callAI([...S.chatHistory, {role:'user', content:bonusMsg}]);
+    const bonusEl = document.getElementById('bonus-reading-text');
+    bonusEl.textContent = '';
+    await typeText(bonusEl, bonusText, 16);
+  } catch(e) {
+    document.getElementById('bonus-reading-text').textContent = '보너스 카드가 전하는 에너지를 마음속으로 느껴보세요 ✨';
+  }
 }
 async function loadReviews() {
   try {
