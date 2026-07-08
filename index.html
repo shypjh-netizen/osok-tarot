@@ -185,6 +185,21 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 <body>
 <canvas id="stars-canvas"></canvas>
 
+<!-- 결제 안내 팝업 -->
+<div id="pay-notice-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#12103a;border:1px solid #3d3580;border-radius:20px;padding:32px 28px;max-width:380px;width:100%;text-align:center;position:relative">
+    <div style="font-size:28px;margin-bottom:12px">🙏</div>
+    <div style="font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:700;color:var(--gold-l);margin-bottom:16px">결제 전 안내드려요</div>
+    <p style="font-size:14px;color:var(--dim);line-height:1.9;margin-bottom:20px">
+      결제 완료 후 카카오톡·이메일로 받은 <b style="color:var(--gold-l)">주문번호</b>를 입력하시면 상담이 시작돼요.<br><br>
+      지금은 자동 연결 방식을 준비 중이라 조금 번거로우실 수 있어요.<br>
+      불편함만큼 더 정성을 담아, 카드 한 장 한 장 세심하게 읽어드릴게요. ✨
+    </p>
+    <button onclick="confirmPayNotice()" style="width:100%;padding:14px;background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:none;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px">결제하러 가기</button>
+    <button onclick="closePayNotice()" style="width:100%;padding:10px;background:transparent;color:var(--dim);border:1px solid var(--card-b);border-radius:50px;font-size:14px;cursor:pointer">취소</button>
+  </div>
+</div>
+
 <!-- 인트로 -->
 <section class="screen" id="intro">
   <span class="logo-symbol">🔮</span>
@@ -243,7 +258,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
       <div style="background:rgba(109,40,217,.15);border:1px solid rgba(109,40,217,.5);border-radius:14px;padding:18px 20px;margin-bottom:12px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px">
         <div>
           <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px">🔮 기본 타로 상담</div>
-          <div style="font-size:12px;color:var(--dim)">카드 1~3장 리딩 + 추가 질문 5회</div>
+          <div style="font-size:12px;color:var(--dim)">카드 1~3장 리딩 + 추가 질문 3회</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div style="font-size:11px;color:var(--dim);text-decoration:line-through;margin-bottom:2px">9,900원</div>
@@ -297,7 +312,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span class="price-badge">40% OFF</span>
             <span class="price-amount-main">5,900원</span>
           </div>
-          <a href="#" target="_blank" class="pay-btn-sm" onclick="event.preventDefault();window.open(CFG.payLink,'_blank')">결제하기</a>
+          <a href="#" class="pay-btn-sm" onclick="event.preventDefault();showPayNotice(CFG.payLink)">결제하기</a>
         </div>
       </div>
       <div class="price-item" style="background:rgba(201,162,39,.07);border-radius:12px;margin:-4px -4px;padding:4px">
@@ -312,13 +327,13 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span class="price-badge">47% OFF</span>
             <span class="price-amount-main">8,900원</span>
           </div>
-          <a href="#" target="_blank" class="pay-btn-sm pay-btn-gold" onclick="event.preventDefault();window.open(CFG.setLink,'_blank')">결제하기</a>
+          <a href="#" class="pay-btn-sm pay-btn-gold" onclick="event.preventDefault();showPayNotice(CFG.setLink)">결제하기</a>
         </div>
       </div>
     </div>
     <div style="height:32px"></div>
     <span class="code-toggle" onclick="toggleCodeInput()">이미 결제하셨나요? 주문번호 입력하기</span>
-    <div id="code-input-row" style="display:none;margin-top:12px">
+    <div id="code-input-row" style="display:none;margin-top:12px;text-align:left;max-width:420px;width:100%;margin-left:auto;margin-right:auto">
       <div style="background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--dim);text-align:left;line-height:1.7;margin-bottom:10px;word-break:keep-all">
         💡 카카오톡·이메일에서 받은 주문번호를 <b style="color:var(--gold-l)">길게 눌러 복사</b>한 뒤 아래 붙여넣기 버튼을 눌러주세요
       </div>
@@ -401,7 +416,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
     <div class="followup-wrap hidden" id="followup-wrap">
       <div class="followup-label">💬 더 궁금한 게 있으신가요?</div>
       <p class="followup-desc">새 카드를 한 장 더 뽑아서 이어서 봐드릴게요</p>
-      <p class="followup-count">추가 질문 <span id="fq-used">0</span> / 5회 사용</p>
+      <p class="followup-count">추가 질문 <span id="fq-used">0</span> / 3회 사용</p>
       <div class="followup-input-row" id="followup-input-row">
         <input type="text" id="followup-input" class="field-input followup-input"
           placeholder="예) 제가 먼저 연락하는 게 좋을까요?" maxlength="100"
@@ -410,7 +425,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
       </div>
       <div id="followup-answers"></div>
       <div class="upgrade-banner hidden" id="upgrade-banner">
-        <div class="upgrade-title">✨ 추가 질문 5회를 모두 사용했어요</div>
+        <div class="upgrade-title">✨ 추가 질문 3회를 모두 사용했어요</div>
         <div class="upgrade-desc">더 깊이 들여다보고 싶다면<br>추가 질문 3회를 더 구매하실 수 있어요</div>
         <button class="upgrade-btn" onclick="goUpgrade()">💬 추가 질문 3회 더 — 3,900원</button>
       </div>
@@ -1201,6 +1216,20 @@ function onPayClick(e) {
   // 결제 링크로 이동 (target=_blank)
   document.getElementById('pay-link').href = CFG.payLink;
   setTimeout(()=>toggleCodeInput(), 1500);
+}
+
+let _pendingPayLink = '';
+function showPayNotice(link) {
+  _pendingPayLink = link;
+  document.getElementById('pay-notice-overlay').style.display = 'flex';
+}
+function closePayNotice() {
+  document.getElementById('pay-notice-overlay').style.display = 'none';
+}
+function confirmPayNotice() {
+  closePayNotice();
+  window.open(_pendingPayLink, '_blank');
+  setTimeout(() => toggleCodeInput(), 1000);
 }
 
 async function pasteOrderCode() {
