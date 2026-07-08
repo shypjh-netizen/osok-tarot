@@ -40,7 +40,8 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 .btn-sub:hover{color:var(--gold);border-color:var(--gold)}
 
 /* 폼 */
-#question-screen{max-width:560px;width:100%;margin-left:auto;margin-right:auto}
+#question-screen{width:100%}
+#question-screen>div{max-width:560px;width:100%;margin-left:auto;margin-right:auto}
 .form-header{text-align:center;margin-bottom:32px}
 .form-header h2{font-family:'Nanum Myeongjo',serif;font-size:26px;font-weight:700;color:var(--gold-l);margin-bottom:8px}
 .form-header p{font-size:14px;color:var(--dim);line-height:1.7}
@@ -297,7 +298,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
       <div style="background:rgba(201,162,39,.12);border:2px solid var(--gold);border-radius:14px;padding:18px 20px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px">
         <div>
           <div style="font-size:15px;font-weight:700;color:var(--gold-l);margin-bottom:4px">✨ 기본 상담 + 추가 질문 세트</div>
-          <div style="font-size:12px;color:var(--dim)">카드 리딩 + 추가 질문 8회 전부 포함</div>
+          <div style="font-size:12px;color:var(--dim)">심층리딩 + 추가 질문 3회 모두 포함</div>
           <div style="font-size:11px;color:var(--gold);margin-top:3px">★ 가장 인기있는 플랜</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
@@ -338,11 +339,26 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
           <a href="#" class="pay-btn-sm" onclick="event.preventDefault();showPayNotice(CFG.payLink)">결제하기</a>
         </div>
       </div>
+      <div class="price-item" style="cursor:pointer" onclick="alert('심층리딩을 먼저 진행하신 후 이용하실 수 있어요 😊 위의 심층리딩을 먼저 시작해보세요!')">
+        <span class="price-icon">💬</span>
+        <div class="price-info">
+          <div class="price-name" style="color:var(--dim)">추가 질문</div>
+          <div class="price-desc">심층리딩 후 이용 가능한 서비스예요</div>
+        </div>
+        <div class="price-amount-wrap">
+          <div class="price-original">6,900원</div>
+          <div class="price-discount-row">
+            <span class="price-badge">43% OFF</span>
+            <span class="price-amount-main" style="color:var(--dim)">3,900원</span>
+          </div>
+          <span style="font-size:11px;color:var(--dim);margin-top:4px;display:block">심층리딩 후 구매</span>
+        </div>
+      </div>
       <div class="price-item" style="background:rgba(201,162,39,.07);border-radius:12px;margin:-4px -4px;padding:4px">
         <span class="price-icon">✨</span>
         <div class="price-info">
           <div class="price-name" style="color:#e8c95a">심층리딩 + 추가 질문 세트</div>
-          <div class="price-desc">카드 리딩 + 추가 질문 전부 포함<br><span style="color:#c9a227;font-size:11px">★ 가장 인기있는 플랜</span></div>
+          <div class="price-desc">심층리딩 + 추가 질문 3회 모두 포함<br><span style="color:#c9a227;font-size:11px">★ 가장 인기있는 플랜</span></div>
         </div>
         <div class="price-amount-wrap">
           <div class="price-original">16,800원</div>
@@ -1359,7 +1375,18 @@ async function submitCode() {
     if (data.valid) {
       err.style.display = 'none';
       const product = data.product || '';
-      if (product.includes('추가질문') || product.includes('추가 질문')) {
+      const isExtra = product.includes('추가질문') || product.includes('추가 질문');
+      const isSet = product.includes('세트');
+      if (isSet) {
+        // 세트: 심층리딩 + 추가질문 모두 언락
+        S.freeMode = false;
+        S.extraUnlocked = true;
+        S.followupUsed = 0;
+        S.picked = [];
+        S.chatHistory = [];
+        showScreen('question-screen');
+      } else if (isExtra) {
+        // 추가질문만 언락 (심층리딩 결과 화면에서 추가질문 활성화)
         S.extraUnlocked = true;
         S.followupUsed = 0;
         document.getElementById('upgrade-banner').classList.add('hidden');
@@ -1367,6 +1394,7 @@ async function submitCode() {
         updateFollowupCount();
         showScreen('result-screen');
       } else {
+        // 심층리딩
         S.freeMode = false;
         S.picked = [];
         S.chatHistory = [];
