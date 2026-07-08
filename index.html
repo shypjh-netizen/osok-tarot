@@ -1461,6 +1461,12 @@ function updateFollowupCount() {
 
 /* ── 무료 카드 뽑기 ── */
 function goFreePick() {
+  const today = new Date().toLocaleDateString('ko-KR');
+  const lastDate = localStorage.getItem('freeCardDate');
+  if (lastDate === today) {
+    alert('오늘의 무료 카드는 이미 뽑으셨어요 🌙\n내일 자정이 지나면 다시 만날 수 있어요 ✨');
+    return;
+  }
   document.getElementById('free-inp-question').value = '';
   showScreen('free-question-screen');
 }
@@ -1473,6 +1479,8 @@ function goFreePickConfirm() {
   S.freeQuestion = q;
   S.freeMode = true;
   S.count = 1;
+  const today = new Date().toLocaleDateString('ko-KR');
+  localStorage.setItem('freeCardDate', today);
   buildPickScreen();
   showScreen('pick-screen');
 }
