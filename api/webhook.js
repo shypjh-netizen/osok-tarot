@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     const data = await redis.get(`order:${code}`);
     if (!data) return res.status(200).json({ valid: false });
 
-    await redis.del(`order:${code}`); // 1회 사용 후 삭제
+    // 삭제하지 않고 유지 — 뒤로가기/새로고침 해도 재입력 가능
     return res.status(200).json({ valid: true, product: data.product });
   }
 

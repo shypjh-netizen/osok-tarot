@@ -185,6 +185,21 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 <body>
 <canvas id="stars-canvas"></canvas>
 
+<!-- 후기 작성 팝업 -->
+<div id="review-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#12103a;border:1px solid #3d3580;border-radius:20px;padding:32px 28px;max-width:380px;width:100%;text-align:center">
+    <div style="font-size:26px;margin-bottom:8px">✨</div>
+    <div style="font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:700;color:var(--gold-l);margin-bottom:6px">후기를 남겨주세요</div>
+    <p style="font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.7">후기를 남겨주시면 카드 한 장을 더 뽑아드려요 🎁</p>
+    <div id="review-stars" style="font-size:32px;margin-bottom:16px;cursor:pointer;letter-spacing:4px">
+      <span onclick="setRating(1)">⭐</span><span onclick="setRating(2)">⭐</span><span onclick="setRating(3)">⭐</span><span onclick="setRating(4)">⭐</span><span onclick="setRating(5)">⭐</span>
+    </div>
+    <textarea id="review-content" style="width:100%;padding:12px;background:#0a0a20;border:1px solid var(--card-b);border-radius:8px;color:var(--text);font-size:14px;font-family:'Nanum Gothic',sans-serif;resize:none;margin-bottom:14px" rows="3" placeholder="리딩은 어떠셨나요? 솔직하게 남겨주세요 😊"></textarea>
+    <button onclick="submitReview()" style="width:100%;padding:14px;background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">후기 남기고 카드 뽑기 🎴</button>
+    <button onclick="closeReview()" style="width:100%;padding:10px;background:transparent;color:var(--dim);border:1px solid var(--card-b);border-radius:50px;font-size:13px;cursor:pointer">다음에 할게요</button>
+  </div>
+</div>
+
 <!-- 결제 안내 팝업 -->
 <div id="pay-notice-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px">
   <div style="background:#12103a;border:1px solid #3d3580;border-radius:20px;padding:32px 28px;max-width:380px;width:100%;text-align:center;position:relative">
@@ -215,6 +230,14 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
   </p>
   <button class="btn-main" onclick="goFreePick()">🌟 무료 카드 한 장 뽑기</button>
   <button class="btn-sub" onclick="showScreen('payment-screen')" style="margin-top:10px">이미 결제하셨나요? 코드 입력하기</button>
+
+  <!-- 후기 섹션 -->
+  <div style="max-width:480px;width:100%;margin-top:48px">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-family:'Nanum Myeongjo',serif;font-size:16px;color:var(--gold-l)">✦ 내담자님들의 이야기 ✦</div>
+    </div>
+    <div id="reviews-list" style="display:flex;flex-direction:column;gap:12px"></div>
+  </div>
 </section>
 
 <!-- 무료 질문 입력 -->
@@ -429,6 +452,11 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
         <div class="upgrade-desc">더 깊이 들여다보고 싶다면<br>추가 질문 3회를 더 구매하실 수 있어요</div>
         <button class="upgrade-btn" onclick="goUpgrade()">💬 추가 질문 3회 더 — 3,900원</button>
       </div>
+    </div>
+
+    <!-- 후기 버튼 -->
+    <div id="review-btn-wrap" style="text-align:center;margin-bottom:16px">
+      <button onclick="openReview()" style="padding:14px 32px;background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(201,162,39,.4)">✨ 후기 남기고 카드 한 장 더 받기</button>
     </div>
 
     <div class="result-actions">
@@ -1218,6 +1246,63 @@ function onPayClick(e) {
   setTimeout(()=>toggleCodeInput(), 1500);
 }
 
+/* ── 후기 ── */
+let _reviewRating = 5;
+function setRating(n) {
+  _reviewRating = n;
+  const stars = document.querySelectorAll('#review-stars span');
+  stars.forEach((s, i) => s.textContent = i < n ? '⭐' : '☆');
+}
+function openReview() {
+  setRating(5);
+  document.getElementById('review-content').value = '';
+  document.getElementById('review-overlay').style.display = 'flex';
+}
+function closeReview() {
+  document.getElementById('review-overlay').style.display = 'none';
+}
+async function submitReview() {
+  const content = document.getElementById('review-content').value.trim();
+  if (!content) { alert('후기 내용을 입력해주세요!'); return; }
+  try {
+    await fetch('/api/review', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ rating: _reviewRating, content })
+    });
+  } catch(e) {}
+  closeReview();
+  document.getElementById('review-btn-wrap').style.display = 'none';
+  // 보너스 카드 뽑기
+  alert('감사해요! 보너스 카드를 한 장 더 뽑아드릴게요 🎴');
+  const bonusCard = drawNewCard();
+  const el = document.getElementById('reading-text');
+  el.insertAdjacentHTML('beforeend', `<div style="margin-top:24px;padding:20px;background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.3);border-radius:14px;text-align:center">
+    <div style="font-family:'Nanum Myeongjo',serif;color:var(--gold-l);font-size:15px;margin-bottom:12px">🎁 후기 감사 보너스 카드</div>
+    <div style="margin:0 auto 8px;width:68px">${getCardImg(bonusCard,68,102)}</div>
+    <div style="color:var(--gold-l);font-weight:700">${bonusCard.kr}</div>
+    <div style="font-size:12px;color:var(--dim);margin-top:4px">${bonusCard.kw}</div>
+  </div>`);
+  el.lastElementChild.scrollIntoView({behavior:'smooth', block:'center'});
+}
+async function loadReviews() {
+  try {
+    const res = await fetch('/api/review');
+    const data = await res.json();
+    const list = document.getElementById('reviews-list');
+    if (!list || !data.reviews?.length) return;
+    list.innerHTML = data.reviews.slice(0,5).map(r => {
+      const review = typeof r === 'string' ? JSON.parse(r) : r;
+      const stars = '⭐'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+      return `<div style="background:rgba(255,255,255,.04);border:1px solid var(--card-b);border-radius:14px;padding:16px 18px;text-align:left">
+        <div style="font-size:14px;margin-bottom:4px">${stars}</div>
+        <div style="font-size:14px;color:var(--text);line-height:1.7">${review.content}</div>
+        <div style="font-size:11px;color:var(--dim);margin-top:6px">${review.date}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {}
+}
+
 let _pendingPayLink = '';
 function showPayNotice(link) {
   _pendingPayLink = link;
@@ -1680,6 +1765,8 @@ async function sendFollowUp() {
     input.focus();
   }
 }
+
+loadReviews();
 </script>
 </body>
 </html>
