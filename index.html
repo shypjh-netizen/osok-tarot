@@ -88,7 +88,8 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 .pick-cnt{color:var(--gold-l);font-weight:700}
 
 /* 결과 */
-#result-screen{max-width:680px;width:100%;display:flex;flex-direction:column}
+#result-screen{width:100%;display:flex;flex-direction:column}
+#result-screen>div{max-width:680px;width:100%;margin-left:auto;margin-right:auto}
 .result-header{text-align:center;margin-bottom:28px}
 .result-header h2{font-family:'Nanum Myeongjo',serif;font-size:24px;color:var(--gold-l);margin-bottom:8px}
 .result-cards{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
@@ -385,7 +386,8 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
         </div>
       </div>
     </div>
-    <div style="height:32px"></div>
+    <div style="height:20px"></div>
+    <a href="http://pf.kakao.com/_bSudX/chat" target="_blank" style="display:block;font-size:13px;color:var(--dim);text-decoration:none;margin-bottom:20px">💬 결제 문제가 있으신가요? <span style="color:#f9a8d4;text-decoration:underline">카카오 채널로 문의하기</span></a>
     <span class="code-toggle" onclick="toggleCodeInput()">이미 결제하셨나요? 주문번호 입력하기</span>
     <div id="code-input-row" style="display:none;margin-top:12px;text-align:left;max-width:420px;width:100%;margin-left:auto;margin-right:auto">
       <div style="background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--dim);text-align:left;line-height:1.7;margin-bottom:10px;word-break:keep-all">
@@ -398,7 +400,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
         <button class="followup-send-btn" onclick="submitCode()" style="white-space:nowrap">확인</button>
       </div>
     </div>
-    <p class="code-err" id="code-err">유효하지 않은 주문번호예요. 그로블 결제 내역을 확인해주세요.</p>
+    <p class="code-err" id="code-err">유효하지 않은 주문번호예요. 그로블 결제 내역을 확인해주세요.<br><a href="http://pf.kakao.com/_bSudX/chat" target="_blank" style="color:#f9a8d4;text-decoration:underline">💬 카카오 채널로 문의하기</a></p>
     <button class="btn-sub" onclick="showScreen('intro')">← 돌아가기</button>
   </div>
 </section>
@@ -1398,6 +1400,11 @@ async function submitCode() {
 
     if (data.valid) {
       err.style.display = 'none';
+      S._orderCode = code;
+
+      // 이전 상담 내용이 있으면 복원
+      if (restoreReadingFromLocal(code)) return;
+
       const product = data.product || '';
       const isExtra = product.includes('추가질문') || product.includes('추가 질문');
       const isSet = product.includes('세트');
@@ -1658,6 +1665,7 @@ async function showResult() {
     updateFollowupCount();
 
     await typeText(el, text, 16);
+    saveReadingToLocal();
     fw.scrollIntoView({behavior:'smooth', block:'start'});
   } catch(e) {
     el.textContent = '죄송해요, 리딩을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
@@ -1687,7 +1695,7 @@ function newReading() {
   document.getElementById('followup-input').value = '';
   document.getElementById('followup-input-row').classList.remove('hidden');
   document.getElementById('upgrade-banner').classList.add('hidden');
-  S.picked = []; S.followupCards = []; S.followupUsed = 0; S.extraUnlocked = false; S.freeMode = false; S.chatHistory = [];
+  S.picked = []; S.followupCards = []; S.followupUsed = 0; S.extraUnlocked = false; S.freeMode = false; S.chatHistory = []; S._orderCode = null;
   updateFollowupCount();
   showScreen('question-screen');
 }
@@ -1824,6 +1832,7 @@ async function sendFollowUp() {
   // 카운터 업데이트
   S.followupUsed++;
   updateFollowupCount();
+  saveReadingToLocal();
 
   const newLimit = CFG.freeFollowups + (S.extraUnlocked ? CFG.freeFollowups : 0);
   if(S.followupUsed >= newLimit) {
@@ -1895,6 +1904,62 @@ async function saveAsImage() {
     document.body.removeChild(wrap);
     btn.textContent = '🖼 이미지로 저장';
     btn.disabled = false;
+  }
+}
+
+function saveReadingToLocal() {
+  if (!S._orderCode) return;
+  const data = {
+    picked: S.picked,
+    situation: S.situation,
+    question: S.question,
+    name: S.name,
+    extraUnlocked: S.extraUnlocked,
+    followupUsed: S.followupUsed,
+    readingText: document.getElementById('reading-text')?.textContent || '',
+    followupHTML: document.getElementById('followup-answers')?.innerHTML || '',
+  };
+  localStorage.setItem(`reading:${S._orderCode}`, JSON.stringify(data));
+}
+
+function restoreReadingFromLocal(code) {
+  const raw = localStorage.getItem(`reading:${code}`);
+  if (!raw) return false;
+  try {
+    const data = JSON.parse(raw);
+    S.picked = data.picked || [];
+    S.situation = data.situation || '';
+    S.question = data.question || '';
+    S.name = data.name || '';
+    S.extraUnlocked = data.extraUnlocked || false;
+    S.followupUsed = data.followupUsed || 0;
+    S.freeMode = false;
+    S._orderCode = code;
+
+    buildResultCards();
+    showScreen('result-screen');
+
+    const readingEl = document.getElementById('reading-text');
+    if (readingEl) readingEl.textContent = data.readingText;
+
+    const answersEl = document.getElementById('followup-answers');
+    if (answersEl) answersEl.innerHTML = data.followupHTML;
+
+    const fw = document.getElementById('followup-wrap');
+    fw.classList.remove('hidden');
+    updateFollowupCount();
+
+    const limit = CFG.freeFollowups + (S.extraUnlocked ? CFG.freeFollowups : 0);
+    if (S.followupUsed >= limit) {
+      document.getElementById('followup-input-row').classList.add('hidden');
+      document.getElementById('upgrade-banner').classList.remove('hidden');
+    } else {
+      document.getElementById('followup-input-row').classList.remove('hidden');
+      document.getElementById('upgrade-banner').classList.add('hidden');
+    }
+    return true;
+  } catch(e) {
+    return false;
   }
 }
 
