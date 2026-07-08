@@ -181,7 +181,22 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 .ai-loading-dots span:nth-child(2){animation-delay:.2s}
 .ai-loading-dots span:nth-child(3){animation-delay:.4s}
 @keyframes dotpulse{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+@media print {
+  body { background: #fff !important; color: #111 !important; }
+  .screen { display: none !important; }
+  #print-area { display: block !important; }
+  #print-area h1 { font-size: 22px; color: #4a1080; margin-bottom: 4px; }
+  #print-area .print-date { font-size: 12px; color: #888; margin-bottom: 20px; }
+  #print-area .print-section { margin-bottom: 20px; }
+  #print-area .print-label { font-size: 12px; font-weight: 700; color: #7c3aed; margin-bottom: 4px; }
+  #print-area .print-value { font-size: 14px; color: #222; line-height: 1.8; white-space: pre-wrap; word-break: keep-all; }
+  #print-area .print-cards { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  #print-area .print-card-tag { background: #f3e8ff; color: #6b21a8; padding: 4px 10px; border-radius: 20px; font-size: 13px; }
+  #print-area .print-divider { border: none; border-top: 1px solid #e5e7eb; margin: 16px 0; }
+  #print-area .print-footer { font-size: 11px; color: #aaa; text-align: center; margin-top: 32px; }
+}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <canvas id="stars-canvas"></canvas>
@@ -440,6 +455,9 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
   </div>
 </section>
 
+<!-- 인쇄용 영역 (평소엔 숨김) -->
+<div id="print-area" style="display:none"></div>
+
 <!-- 결과 -->
 <section class="screen hidden" id="result-screen">
   <div style="max-width:680px;width:100%">
@@ -455,7 +473,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
     <div class="followup-wrap hidden" id="followup-wrap">
       <div class="followup-label">💬 더 궁금한 게 있으신가요?</div>
       <p class="followup-desc">새 카드를 한 장 더 뽑아서 이어서 봐드릴게요</p>
-      <p class="followup-count">추가 질문 <span id="fq-used">0</span> / 3회 사용</p>
+      <p class="followup-count">추가 질문 <span id="fq-used">0</span> / <span id="fq-limit">3</span>회 사용</p>
       <div class="followup-input-row" id="followup-input-row">
         <input type="text" id="followup-input" class="field-input followup-input"
           placeholder="예) 제가 먼저 연락하는 게 좋을까요?" maxlength="100"
@@ -464,7 +482,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
       </div>
       <div id="followup-answers"></div>
       <div class="upgrade-banner hidden" id="upgrade-banner">
-        <div class="upgrade-title">✨ 추가 질문 3회를 모두 사용했어요</div>
+        <div class="upgrade-title" id="upgrade-title">✨ 추가 질문 3회를 모두 사용했어요</div>
         <div class="upgrade-desc">더 깊이 들여다보고 싶다면<br>추가 질문 3회를 더 구매하실 수 있어요</div>
         <button class="upgrade-btn" onclick="goUpgrade()">💬 추가 질문 3회 더 — 3,900원</button>
       </div>
@@ -473,6 +491,12 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
     <!-- 후기 버튼 -->
     <div id="review-btn-wrap" style="text-align:center;margin-bottom:16px">
       <button onclick="openReview()" style="padding:14px 32px;background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(201,162,39,.4)">✨ 후기 남기고 카드 한 장 더 받기</button>
+    </div>
+
+    <!-- 저장 버튼 -->
+    <div style="text-align:center;margin-bottom:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button onclick="saveAsImage()" style="padding:12px 24px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);color:var(--dim);border-radius:50px;font-size:14px;cursor:pointer">🖼 이미지로 저장</button>
+      <button onclick="saveReading()" style="padding:12px 24px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);color:var(--dim);border-radius:50px;font-size:14px;cursor:pointer">📄 PDF로 저장</button>
     </div>
 
     <div class="result-actions">
@@ -1419,8 +1443,13 @@ function goUpgrade() {
 }
 
 function updateFollowupCount() {
-  const el = document.getElementById('fq-used');
-  if(el) el.textContent = S.followupUsed;
+  const limit = CFG.freeFollowups + (S.extraUnlocked ? CFG.freeFollowups : 0);
+  const usedEl = document.getElementById('fq-used');
+  const limitEl = document.getElementById('fq-limit');
+  const titleEl = document.getElementById('upgrade-title');
+  if(usedEl) usedEl.textContent = S.followupUsed;
+  if(limitEl) limitEl.textContent = limit;
+  if(titleEl) titleEl.textContent = `✨ 추가 질문 ${limit}회를 모두 사용했어요`;
 }
 
 /* ── 무료 카드 뽑기 ── */
@@ -1626,6 +1655,7 @@ async function showResult() {
     // 추가 질문 영역 먼저 표시
     const fw = document.getElementById('followup-wrap');
     fw.classList.remove('hidden');
+    updateFollowupCount();
 
     await typeText(el, text, 16);
     fw.scrollIntoView({behavior:'smooth', block:'start'});
@@ -1805,6 +1835,114 @@ async function sendFollowUp() {
     document.getElementById('followup-send-btn').disabled = false;
     input.focus();
   }
+}
+
+async function saveAsImage() {
+  const btn = event.target;
+  btn.textContent = '⏳ 생성 중...';
+  btn.disabled = true;
+
+  const date = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+  const cardNames = S.picked.map(c => c.kr || c.name || c).join('  ·  ');
+  const mainReading = document.getElementById('reading-text')?.textContent || '';
+
+  const followupEls = document.querySelectorAll('#followup-answers .followup-answer');
+  let followupHTML = '';
+  followupEls.forEach((el, i) => {
+    const q = el.querySelector('.followup-q')?.textContent?.replace(/^Q\.\s*/, '') || '';
+    const a = el.querySelector('.followup-text')?.textContent || '';
+    const cardName = el.querySelector('.followup-card-name')?.textContent || '';
+    followupHTML += `
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)">
+        <div style="font-size:12px;color:#c9a227;margin-bottom:6px">추가 질문 ${i+1}${cardName ? ' · ' + cardName : ''}</div>
+        <div style="font-size:13px;color:#e8c95a;margin-bottom:8px">Q. ${q}</div>
+        <div style="font-size:14px;color:#e2d9f3;line-height:1.9;white-space:pre-wrap">${a}</div>
+      </div>`;
+  });
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:fixed;left:-9999px;top:0;width:600px;padding:40px;background:linear-gradient(160deg,#0d0620 0%,#1a0a3e 60%,#0d0620 100%);font-family:"Nanum Gothic",sans-serif;color:#e2d9f3;box-sizing:border-box;';
+  wrap.innerHTML = `
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="font-size:28px;margin-bottom:8px">🔮</div>
+      <div style="font-family:'Nanum Myeongjo',serif;font-size:22px;color:#e8c95a;letter-spacing:2px">오속 타로</div>
+      <div style="font-size:12px;color:#7c6fa0;margin-top:4px">${date}</div>
+    </div>
+    ${S.situation ? `<div style="margin-bottom:16px"><div style="font-size:11px;color:#c9a227;margin-bottom:4px">상황</div><div style="font-size:14px;line-height:1.7">${S.situation}</div></div>` : ''}
+    ${S.question ? `<div style="margin-bottom:16px"><div style="font-size:11px;color:#c9a227;margin-bottom:4px">질문</div><div style="font-size:14px;line-height:1.7">${S.question}</div></div>` : ''}
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;color:#c9a227;margin-bottom:8px">뽑은 카드</div>
+      <div style="font-size:15px;font-family:'Nanum Myeongjo',serif;color:#e8c95a">${cardNames}</div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:20px;margin-bottom:4px">
+      <div style="font-size:11px;color:#c9a227;margin-bottom:10px">타로 리딩</div>
+      <div style="font-size:14px;line-height:2;white-space:pre-wrap;word-break:keep-all">${mainReading}</div>
+    </div>
+    ${followupHTML}
+    <div style="text-align:center;margin-top:32px;font-size:11px;color:#4a3a6a">osok-tarot.vercel.app</div>
+  `;
+  document.body.appendChild(wrap);
+
+  try {
+    const canvas = await html2canvas(wrap, { scale: 2, useCORS: true, backgroundColor: null });
+    const link = document.createElement('a');
+    link.download = `오속타로_${date}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(e) {
+    alert('이미지 생성에 실패했어요. PDF 저장을 이용해주세요.');
+  } finally {
+    document.body.removeChild(wrap);
+    btn.textContent = '🖼 이미지로 저장';
+    btn.disabled = false;
+  }
+}
+
+function saveReading() {
+  const date = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
+
+  // 카드 목록
+  const cardTags = S.picked.map(c =>
+    `<span class="print-card-tag">${c.kr || c.name || c}</span>`
+  ).join('');
+
+  // 추가질문 대화 수집
+  const followupEls = document.querySelectorAll('#followup-answers .followup-answer');
+  let followupHtml = '';
+  followupEls.forEach((el, i) => {
+    const q = el.querySelector('.followup-q')?.textContent?.replace(/^Q\.\s*/, '') || '';
+    const a = el.querySelector('.followup-text')?.textContent || '';
+    const cardName = el.querySelector('.followup-card-name')?.textContent || '';
+    followupHtml += `
+      <div class="print-section">
+        <div class="print-label">추가 질문 ${i+1}${cardName ? ' · ' + cardName : ''}</div>
+        <div class="print-value"><strong>Q. ${q}</strong>\n${a}</div>
+      </div>`;
+  });
+
+  const mainReading = document.getElementById('reading-text')?.textContent || '';
+  const situation = S.situation ? `<div class="print-section"><div class="print-label">상황</div><div class="print-value">${S.situation}</div></div>` : '';
+  const question = S.question ? `<div class="print-section"><div class="print-label">질문</div><div class="print-value">${S.question}</div></div>` : '';
+
+  document.getElementById('print-area').innerHTML = `
+    <h1>🔮 오속 타로 상담 결과</h1>
+    <div class="print-date">${date}</div>
+    <hr class="print-divider">
+    ${situation}
+    ${question}
+    <div class="print-section">
+      <div class="print-label">뽑은 카드</div>
+      <div class="print-cards">${cardTags}</div>
+    </div>
+    <div class="print-section">
+      <div class="print-label">타로 리딩</div>
+      <div class="print-value">${mainReading}</div>
+    </div>
+    ${followupHtml ? '<hr class="print-divider">' + followupHtml : ''}
+    <div class="print-footer">오속 타로 · osok-tarot.vercel.app</div>
+  `;
+
+  window.print();
 }
 
 loadReviews();
