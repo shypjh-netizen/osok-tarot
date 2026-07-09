@@ -89,6 +89,13 @@ footer{text-align:center;padding:32px 16px 20px;color:var(--sub);font-size:.75re
 .ai-loading-dots span:nth-child(3){animation-delay:.4s}
 @keyframes dotbounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
 .ai-text{color:var(--text);font-size:.93rem;line-height:2;white-space:pre-wrap}
+.ai-blur-wrap{position:relative}
+.ai-para{margin-bottom:1.2em;font-size:.93rem;line-height:2;color:var(--text)}
+.ai-para.blurred{filter:blur(5px);user-select:none;pointer-events:none;transition:filter .3s}
+.ai-para.blurred-more{filter:blur(8px);user-select:none;pointer-events:none}
+.ai-unlock-overlay{position:absolute;bottom:0;left:0;right:0;height:220px;background:linear-gradient(to bottom,transparent,rgba(10,10,24,.97));display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:24px;gap:12px}
+.ai-unlock-overlay p{color:var(--sub);font-size:.85rem;text-align:center}
+.ai-unlock-btn{background:linear-gradient(135deg,#4a2d8a,#7c5cbf);border:1px solid var(--gold);border-radius:12px;color:var(--gold);padding:12px 28px;font-family:inherit;font-size:.95rem;cursor:pointer;letter-spacing:.05em}
 
 /* Category buttons */
 .category-section{background:var(--card);border:1px solid rgba(201,168,76,.2);border-radius:16px;padding:24px;margin-bottom:20px}
@@ -558,16 +565,40 @@ async function calculate() {
     S.chatHistory.push({role:'assistant', content: reading});
 
     aiBody.innerHTML = '';
-    const textDiv = document.createElement('div');
-    textDiv.className = 'ai-text';
-    textDiv.textContent = reading;
-    aiBody.appendChild(textDiv);
+    const paragraphs = reading.split(/\n\n+|\n(?=[^\n])/).filter(p => p.trim()).reduce((acc, p) => {
+      if (p.length < 30 && acc.length > 0) { acc[acc.length-1] += ' ' + p; return acc; }
+      acc.push(p); return acc;
+    }, []);
+    const wrap = document.createElement('div');
+    wrap.className = 'ai-blur-wrap';
+
+    paragraphs.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = 'ai-para';
+      if (i >= paragraphs.length - 2) div.classList.add('blurred-more');
+      else if (i >= 2) div.classList.add('blurred');
+      div.textContent = p.trim();
+      wrap.appendChild(div);
+    });
+
+    const overlay = document.createElement('div');
+    overlay.className = 'ai-unlock-overlay';
+    overlay.innerHTML = `
+      <p>✨ 더 깊은 내용이 숨겨져 있어요</p>
+      <button class="ai-unlock-btn" onclick="scrollToCategorySection()">카테고리별 상세 리딩 보기 →</button>
+    `;
+    wrap.appendChild(overlay);
+    aiBody.appendChild(wrap);
 
     // 카테고리 섹션 표시
     document.getElementById('category-section').classList.remove('hidden');
   } catch(e) {
     aiBody.innerHTML = `<div class="ai-text" style="color:var(--sub)">리딩을 불러오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.\n\n오류: ${e.message}</div>`;
   }
+}
+
+function scrollToCategorySection() {
+  document.getElementById('category-section').scrollIntoView({behavior:'smooth'});
 }
 
 function resetSaju() {
