@@ -576,7 +576,7 @@ async function calculate() {
       const div = document.createElement('div');
       div.className = 'ai-para';
       if (i >= paragraphs.length - 2) div.classList.add('blurred-more');
-      else if (i >= 2) div.classList.add('blurred');
+      else if (i >= 7) div.classList.add('blurred');
       div.textContent = p.trim();
       wrap.appendChild(div);
     });
