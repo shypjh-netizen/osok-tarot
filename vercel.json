@@ -1,5 +1,11 @@
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" }
+  ],
+  "crons": [
+    {
+      "path": "/api/auto-post?secret=osok2026",
+      "schedule": "0 23 * * *"
+    }
   ]
 }
