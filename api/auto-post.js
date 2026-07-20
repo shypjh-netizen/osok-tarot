@@ -163,7 +163,8 @@ CTA: 부담 없이 자신의 마음을 돌아볼 수 있는 짧은 질문으로 
   });
 
   const data = await response.json();
-  const parsed = JSON.parse(data.content[0].text);
+  const raw = data.content[0].text.replace(/```json\n?/g, '').replace(/```/g, '').trim();
+  const parsed = JSON.parse(raw);
   return parsed.content;
 }
 
