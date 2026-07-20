@@ -5,11 +5,11 @@
   "crons": [
     {
       "path": "/api/auto-post?secret=osok2026",
-      "schedule": "0 23 * * *"
+      "schedule": "30 23 * * *"
     },
     {
       "path": "/api/auto-post?secret=osok2026",
-      "schedule": "0 6 * * *"
+      "schedule": "30 11 * * *"
     }
   ]
 }
