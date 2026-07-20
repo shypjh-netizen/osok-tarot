@@ -15,18 +15,41 @@ async function generateContent(card) {
     timeZone: 'Asia/Seoul'
   });
 
-  const prompt = `오늘(${today})의 타로 카드는 "${card}"입니다.
+  const themes = [
+    { target: '요즘 결정을 못 내리고 있는 분', topic: '선택과 방향' },
+    { target: '열심히 하는데 뭔가 안 풀리는 분', topic: '흐름과 타이밍' },
+    { target: '관계 때문에 지쳐있는 분', topic: '인간관계' },
+    { target: '돈 걱정이 끊이지 않는 분', topic: '재물운' },
+    { target: '이 일이 맞는 건지 모르겠는 분', topic: '직업과 커리어' },
+    { target: '누군가에게 상처받은 분', topic: '감정과 치유' },
+    { target: '뭔가 변화가 필요한 것 같은 분', topic: '변화와 새로운 시작' },
+  ];
+  const theme = themes[Math.floor(Math.random() * themes.length)];
 
-Threads 게시물을 작성해주세요. 다음 조건을 반드시 지켜주세요:
+  const prompt = `오늘의 타로 카드는 "${card}"입니다.
+오늘 타겟: "${theme.target}"
+주제: "${theme.topic}"
 
-1. 500자 이내
-2. 첫 줄은 오늘의 카드 제목 (이모지 포함)
-3. 카드가 전하는 오늘의 메시지 (2-3문장, 따뜻하고 공감적인 말투)
-4. 연애/직업/돈 중 오늘 이 카드와 가장 관련 있는 주제 한 가지만 짧게
-5. 마지막에 "더 깊은 리딩이 궁금하다면 → 링크 클릭" 이런 식으로 자연스럽게 유도
-6. 해시태그 5개 이내 (#타로 #오늘의카드 #타로리딩 포함)
+Threads 게시물을 써주세요. 아래 구조를 따르세요:
 
-광고처럼 느껴지면 안 되고, 진짜 타로이스트가 팔로워에게 전하는 메시지처럼 써주세요.`;
+[첫 줄 - 훅]
+타겟 독자가 "어? 나 얘기인데?" 싶게 만드는 한 줄. 질문이나 공감형으로 시작. 이모지 1개.
+예시: "요즘 결정을 못 내리고 계속 미루고 있나요? 🌀"
+
+[본문 - 카드 메시지]
+카드가 그 사람에게 전하는 말. 2-3문장. 다 알려주지 말고 핵심 키워드만 흘리기.
+따뜻하지만 구체적으로. 마크다운 기호(**) 절대 금지.
+
+[댓글 유도]
+"지금 어떤 상황인지 댓글로 알려주세요" 또는 "이 카드 공감되면 댓글 남겨요" 같이 자연스럽게.
+
+[CTA]
+"내 카드 직접 뽑아보기 → https://osok-tarot.vercel.app"
+
+[해시태그]
+#타로 #오늘의카드 #타로리딩 포함해서 4개 이내
+
+전체 300자 이내. 광고 느낌 금지. 진짜 타로이스트가 팔로워에게 보내는 메시지처럼.`;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -101,6 +124,12 @@ export default async function handler(req, res) {
     const card = TAROT_CARDS[dayOfYear % TAROT_CARDS.length];
 
     const content = await generateContent(card);
+    const isDry = req.query.dry === 'true';
+
+    if (isDry) {
+      return res.status(200).json({ dry_run: true, card, content });
+    }
+
     const result = await postToThreads(content);
 
     return res.status(200).json({
