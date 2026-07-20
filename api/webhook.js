@@ -74,6 +74,24 @@ export default async function handler(req, res) {
       const productName = obj.content?.title || '';
       const email = obj.buyer?.email?.toLowerCase().trim() || '';
 
+      // 사주 결제 처리
+      if (productName.includes('사주') && email) {
+        const sajuData = await redis.get(`saju_pending:${email}`);
+        if (sajuData) {
+          // 빠르게 200 반환 후 이메일 발송 (fire & forget)
+          res.status(200).json({ ok: true });
+          const baseUrl = process.env.VERCEL_URL
+            ? `https://${process.env.VERCEL_URL}`
+            : 'https://osok-tarot.vercel.app';
+          fetch(`${baseUrl}/api/saju-email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, sajuData }),
+          }).catch(() => {});
+          return;
+        }
+      }
+
       if (orderCode) {
         await redis.set(`order:${orderCode}`, { product: productName }, { ex: 86400 });
       }
