@@ -86,31 +86,34 @@ async function generateContent(card, isAfternoon) {
   const theme = themes[Math.floor(Math.random() * themes.length)];
   const cta = theme.ctas[Math.floor(Math.random() * theme.ctas.length)];
 
-  const afternoonCta = isAfternoon ? [
-    '혼자서는 관계의 흐름이 잘 보이지 않을 때, 프로필에서 더 깊은 리딩을 만나볼 수 있어요.',
-    '그 사람의 마음을 조금 더 깊이 알고 싶다면 프로필을 확인해 주세요.',
-    '내 상황에 맞는 리딩이 필요하다면 프로필에서 이어서 만나보세요.',
-  ][Math.floor(Math.random() * 3)] : '';
+  const useConsultCta = isAfternoon && Math.random() < 0.2;
 
-  const prompt = `타로 카드 "${card}"를 바탕으로 Threads 게시물을 써주세요.
+  const prompt = `당신은 연애와 일상 고민을 다루는 따뜻하고 현실적인 타로 리더입니다.
 
-오늘 이 글을 읽을 사람: ${theme.target}
-주제: ${theme.topic}
+타로 카드 "${card}"의 정방향 핵심 의미를 정확히 반영해, 스레드에 올릴 짧은 데일리 리딩을 작성하세요.
+오늘 독자: ${theme.target} (주제: ${theme.topic})
+${useConsultCta ? '이번 글은 상담 연결 CTA를 사용하세요 (전체의 20% 해당).' : '이번 글은 질문·댓글·공감형 CTA를 사용하세요.'}
 
-아래 예시처럼 따뜻한 해요체로 써주세요:
----
-오늘은 마음을 재촉하지 않아도 괜찮아요.
-상대방 역시 자신의 감정을 정리할 시간이 필요한 마음으로 보여요.
-지금은 답을 확인하려 하기보다 자연스러운 흐름을 지켜보는 것도 괜찮아요.
----
+[작성 규칙]
+1. 전체 글은 자연스럽고 따뜻한 해요체로 작성합니다.
+2. 첫 문장은 독자가 현재 느낄 법한 감정이나 상황을 묻는 짧은 질문으로 시작합니다.
+3. 카드 이름을 억지로 반복하지 말고, 카드가 상징하는 상황과 감정을 구체적으로 풀어주세요.
+4. 모든 카드를 무조건 좋은 결과, 재회, 연락, 행운으로 해석하지 않습니다.
+5. 불안감을 과장하거나 결과를 확정적으로 단정하지 않습니다.
+6. '우주가 돕고 있어요', '곧 좋은 일이 생겨요'처럼 근거 없이 희망만 주는 표현은 사용하지 않습니다.
+7. 카드의 부정적인 의미도 숨기지 말고, 독자가 현실적으로 취할 수 있는 태도나 조언으로 연결합니다.
+8. 문장은 짧고 편안하게 쓰며, 같은 의미를 반복하지 않습니다.
+9. 본문은 250~350자 내외로 작성합니다.
+10. CTA는 글마다 하나만 사용합니다.
+11. 유료 상담이나 프로필 방문 CTA와 댓글·공감 CTA를 동시에 넣지 않습니다.
+12. 해시태그는 카드 내용에 맞는 것 2~3개만 작성합니다.
+13. 카드 이름을 큰따옴표로 강조하지 않습니다.
+14. 이모지는 전체 글에서 1~2개만 자연스럽게 사용합니다.
+15. 마크다운 기호(**) 사용 금지.
+16. 최종 결과는 반드시 아래 JSON 형식으로만 출력합니다.
 
-규칙:
-- 첫 줄은 읽는 사람이 "나 얘기인데?" 싶게. 이모지 1개. 카드 이름 언급 금지.
-- 본문 2~3문장. 딱딱한 표현 금지. 마크다운(**)  금지.
-- ${isAfternoon && afternoonCta ? `마지막에서 두 번째 줄: "${afternoonCta}"` : ''}
-- 마지막 줄: "${cta}" (그대로 쓸 것)
-- 해시태그 #타로 #타로리딩 포함 3개 이내
-- 전체 250자 이내`;
+{"card":"카드이름","content":"완성된 게시물"}`;
+
 
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -128,7 +131,8 @@ async function generateContent(card, isAfternoon) {
   });
 
   const data = await response.json();
-  return data.content[0].text;
+  const parsed = JSON.parse(data.content[0].text);
+  return parsed.content;
 }
 
 async function postToThreads(text) {
