@@ -15,15 +15,22 @@ function verifySignature(secret, timestamp, rawBody, signature, signaturePrev) {
 }
 
 export default async function handler(req, res) {
-  // 주문번호 검증 요청 (프론트엔드에서 호출)
+  // 이메일 또는 주문번호로 검증 (프론트엔드에서 호출)
   if (req.method === 'GET') {
-    const { code } = req.query;
-    if (!code) return res.status(400).json({ valid: false });
+    const { code, email } = req.query;
 
+    // 이메일로 조회
+    if (email) {
+      const key = `email:${email.toLowerCase().trim()}`;
+      const data = await redis.get(key);
+      if (!data) return res.status(200).json({ valid: false });
+      return res.status(200).json({ valid: true, product: data.product, code: data.code });
+    }
+
+    // 주문번호로 조회 (기존 방식 유지)
+    if (!code) return res.status(400).json({ valid: false });
     const data = await redis.get(`order:${code}`);
     if (!data) return res.status(200).json({ valid: false });
-
-    // 삭제하지 않고 유지 — 뒤로가기/새로고침 해도 재입력 가능
     return res.status(200).json({ valid: true, product: data.product });
   }
 
@@ -63,11 +70,16 @@ export default async function handler(req, res) {
       }
 
       const obj = body.data?.object || {};
-      const orderCode = obj.merchantUid || '';        // 최상위 필드
-      const productName = obj.content?.title || '';   // content 안 필드
+      const orderCode = obj.merchantUid || '';
+      const productName = obj.content?.title || '';
+      const email = obj.buyer?.email?.toLowerCase().trim() || '';
 
       if (orderCode) {
         await redis.set(`order:${orderCode}`, { product: productName }, { ex: 86400 });
+      }
+      // 이메일로도 저장 (7일 유지)
+      if (email) {
+        await redis.set(`email:${email}`, { product: productName, code: orderCode }, { ex: 604800 });
       }
 
       return res.status(200).json({ ok: true });
