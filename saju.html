@@ -81,27 +81,59 @@ body{background:var(--dark);color:var(--text);font-family:'Noto Serif KR',serif;
 .ellipsis{text-align:center;color:rgba(201,168,76,.3);font-size:1.4rem;letter-spacing:.3em;padding:16px 0}
 
 /* ══════════════════════════════════
-   발견 리스트
+   비교 섹션
 ══════════════════════════════════ */
-.discover-sec{padding:32px 0 20px}
+.compare-sec{padding:32px 0 20px}
 
 .sec-header{text-align:center;margin-bottom:28px}
 .sec-kw{font-size:.75rem;color:var(--gold);letter-spacing:.2em;margin-bottom:10px;opacity:.7}
 .sec-title{font-size:1.2rem;color:var(--text);line-height:1.6}
 .sec-title .em{color:var(--gold)}
 
-.discover-list{display:flex;flex-direction:column;gap:0}
-.d-item{display:flex;align-items:flex-start;gap:16px;padding:18px 0;border-bottom:1px solid rgba(201,168,76,.08)}
-.d-item:last-child{border-bottom:none}
-.d-num{flex-shrink:0;width:28px;height:28px;border:1px solid rgba(201,168,76,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;color:var(--gold);margin-top:2px}
-.d-text{}
-.d-text strong{display:block;color:var(--text);font-size:1.05rem;margin-bottom:5px;letter-spacing:.02em}
-.d-text span{color:var(--sub);font-size:.92rem;line-height:1.75}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:560px){.compare-grid{grid-template-columns:1fr;gap:10px}}
+.cmp-card{border-radius:18px;padding:20px 16px;position:relative;overflow:hidden}
+.cmp-card.free{background:var(--card);border:1px solid rgba(201,168,76,.18)}
+.cmp-card.basic{background:linear-gradient(145deg,#1a0d3e,#0d0c22);border:1px solid rgba(201,168,76,.4)}
+.cmp-card.premium{background:linear-gradient(145deg,#2a1000,#0d0c22);border:1px solid rgba(201,140,40,.7);box-shadow:0 0 24px rgba(201,140,40,.12)}
+.cmp-card.basic::before,.cmp-card.premium::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.07),transparent 60%);pointer-events:none}
+.cmp-card.premium::before{background:radial-gradient(ellipse at 50% 0%,rgba(230,160,40,.1),transparent 60%)}
+.cmp-popular{position:absolute;top:12px;right:12px;background:linear-gradient(135deg,#c9a84c,#e8c97a);color:#06060f;font-size:.62rem;font-weight:700;letter-spacing:.08em;padding:3px 8px;border-radius:20px}
+.cmp-badge{display:inline-block;font-size:.65rem;letter-spacing:.12em;padding:3px 10px;border-radius:20px;margin-bottom:12px}
+.cmp-badge.free{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.25)}
+.cmp-badge.basic{background:rgba(201,168,76,.18);color:var(--gold2);border:1px solid rgba(201,168,76,.5)}
+.cmp-badge.premium{background:rgba(230,160,40,.2);color:#f0c060;border:1px solid rgba(230,160,40,.6)}
+.cmp-title{font-size:.9rem;color:var(--text);font-weight:700;margin-bottom:4px}
+.cmp-price{font-size:.75rem;color:var(--sub);margin-bottom:14px}
+.cmp-price strong{color:var(--gold);font-size:1rem}
+.cmp-card.premium .cmp-price strong{color:#f0c060;font-size:1.05rem}
+.cmp-items{display:flex;flex-direction:column;gap:9px}
+.cmp-item{display:flex;align-items:flex-start;gap:7px;font-size:.79rem;line-height:1.55}
+.cmp-item .ci-icon{flex-shrink:0;margin-top:1px;font-size:.75rem}
+.cmp-item.free-item{color:var(--sub)}
+.cmp-item.free-item .ci-icon{color:rgba(201,168,76,.4)}
+.cmp-item.basic-item{color:var(--text)}
+.cmp-item.basic-item .ci-icon{color:var(--gold)}
+.cmp-item.prem-item{color:#ede0c8}
+.cmp-item.prem-item .ci-icon{color:#f0c060}
+.cmp-item.prem-item.star{color:#f0c060;font-weight:600}
+.cmp-item.prem-item.star .ci-icon{color:#f0c060}
 
 /* 무료 배지 */
 .free-badge-sec{text-align:center;padding:28px 0 8px}
 .free-badge{display:inline-block;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:14px 28px;font-size:.9rem;color:var(--sub);line-height:1.7}
 .free-badge strong{color:var(--gold);font-size:1rem;display:block;margin-bottom:4px;letter-spacing:.05em}
+
+/* 상세 리딩 챕터 리스트 */
+.detail-sec{padding:12px 0 24px}
+.detail-list{display:flex;flex-direction:column;gap:0;margin-top:4px}
+.dt-item{display:flex;align-items:flex-start;gap:16px;padding:18px 0;border-bottom:1px solid rgba(201,168,76,.08)}
+.dt-item:last-child{border-bottom:none}
+.dt-num{flex-shrink:0;width:30px;height:30px;border:1px solid rgba(201,168,76,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;color:var(--gold);margin-top:2px;background:rgba(201,168,76,.05)}
+.dt-text strong{display:block;color:var(--text);font-size:1rem;margin-bottom:5px;letter-spacing:.02em}
+.dt-text span{color:var(--sub);font-size:.88rem;line-height:1.75}
+.dt-item.highlight .dt-num{border-color:var(--gold2);color:var(--gold2);background:rgba(201,168,76,.1)}
+.dt-item.highlight strong{color:var(--gold2)}
 
 /* ══════════════════════════════════
    입력 폼
@@ -339,54 +371,103 @@ footer{text-align:center;padding:32px 16px 20px;color:rgba(154,128,96,.45);font-
     <p class="story-line big">그 답의 실마리가 <span class="em">사주에 있어요.</span></p>
   </section>
 
-  <!-- ══ 발견 리스트 ══ -->
-  <section class="discover-sec">
+  <!-- ══ 상세 리딩 챕터 ══ -->
+  <section class="detail-sec">
     <div class="sec-header">
-      <p class="sec-kw">오속이 읽어드립니다</p>
-      <h2 class="sec-title">이런 걸 <span class="em">알게 됩니다</span></h2>
+      <p class="sec-kw">상세 리딩에서 알게 되는 것들</p>
+      <h2 class="sec-title">이런 걸 <span class="em">읽어드려요</span></h2>
+    </div>
+    <div class="detail-list">
+      <div class="dt-item">
+        <div class="dt-num">1</div>
+        <div class="dt-text">
+          <strong>사주 근간 — 나는 어떤 에너지를 타고났나</strong>
+          <span>불처럼 타오르는 사람인지, 물처럼 깊은 사람인지. 일간의 본질과 오행 분포로 타고난 기질의 핵심을 짚어드려요.</span>
+        </div>
+      </div>
+      <div class="dt-item">
+        <div class="dt-num">2</div>
+        <div class="dt-text">
+          <strong>올해 운세 흐름 — 지금 어떤 파도 위에 있나</strong>
+          <span>밀어주는 해인지, 버텨야 하는 해인지. 이 시기를 어떻게 타야 하는지 구체적으로 알려드려요.</span>
+        </div>
+      </div>
+      <div class="dt-item">
+        <div class="dt-num">3</div>
+        <div class="dt-text">
+          <strong>6개 카테고리 심층 분석 — 사랑·직업·재물·건강·운의 흐름·월별</strong>
+          <span>맛보기가 아니라, 각 영역을 사주팔자 기반으로 깊이 있게 풀어드려요. A4 6~8장 분량이에요.</span>
+        </div>
+      </div>
+      <div class="dt-item">
+        <div class="dt-num">4</div>
+        <div class="dt-text">
+          <strong>앞으로 3년의 큰 흐름과 기회의 시기</strong>
+          <span>대운·세운의 흐름으로 언제가 내 인생의 터닝포인트인지, 어떤 준비가 필요한지 읽어드려요.</span>
+        </div>
+      </div>
+      <div class="dt-item highlight">
+        <div class="dt-num">5</div>
+        <div class="dt-text">
+          <strong>내 사주에 맞는 인생 방향 조언</strong>
+          <span>타고난 에너지로 어떤 방향으로 살아야 가장 잘 풀리는지 — 단순 운세가 아니라 실질적인 나침반이에요.</span>
+        </div>
+      </div>
+      <div class="dt-item highlight">
+        <div class="dt-num">6</div>
+        <div class="dt-text">
+          <strong>피해야 할 선택과 지금 당장 해야 할 것</strong>
+          <span>지금 이 시기에 하면 안 되는 것, 반대로 지금 잡아야 하는 것. 구체적이고 실용적인 조언이에요.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 무료 vs 상세 비교 ══ -->
+  <section class="compare-sec">
+    <div class="sec-header">
+      <p class="sec-kw">무료 체험 vs 상세 리딩</p>
+      <h2 class="sec-title">어떤 내용을 <span class="em">알게 되나요?</span></h2>
     </div>
 
-    <div class="discover-list">
-      <div class="d-item">
-        <div class="d-num">1</div>
-        <div class="d-text">
-          <strong>내 일간(日干)의 본질 — 나는 어떤 에너지를 타고났나</strong>
-          <span>불처럼 타오르는 사람인지, 물처럼 깊은 사람인지. 타고난 기질의 핵심을 짚어드려요.</span>
+    <div class="compare-grid">
+      <!-- 무료 -->
+      <div class="cmp-card free">
+        <div class="cmp-badge free">✦ 무료 체험</div>
+        <div class="cmp-title">지금 바로 확인</div>
+        <div class="cmp-price">생년월일만 입력</div>
+        <div class="cmp-items">
+          <div class="cmp-item free-item"><span class="ci-icon">✦</span><span>사주 근간 맛보기</span></div>
+          <div class="cmp-item free-item"><span class="ci-icon">✦</span><span>올해 운세 흐름</span></div>
+          <div class="cmp-item free-item"><span class="ci-icon">✦</span><span>연애·재물·직업<br>핵심 요약 (일부)</span></div>
+          <div class="cmp-item free-item"><span class="ci-icon">✦</span><span>지금 집중할 것 1가지</span></div>
         </div>
       </div>
-      <div class="d-item">
-        <div class="d-num">2</div>
-        <div class="d-text">
-          <strong>오행 분포 — 넘치는 게 뭔지, 부족한 게 뭔지</strong>
-          <span>강한 기운이 오히려 나를 막는 경우도 있어요. 균형이 뭔지 알면 삶이 달라져요.</span>
+
+      <!-- 기본 -->
+      <div class="cmp-card basic">
+        <div class="cmp-badge basic">✦ 기본 리딩</div>
+        <div class="cmp-title">이메일로 전달</div>
+        <div class="cmp-price"><strong>₩9,900</strong></div>
+        <div class="cmp-items">
+          <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>무료 내용 전체 포함</span></div>
+          <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>6개 카테고리 심층 분석</span></div>
+          <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>월별 운세</span></div>
+          <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>앞으로 3년 흐름과<br>기회의 시기</span></div>
         </div>
       </div>
-      <div class="d-item">
-        <div class="d-num">3</div>
-        <div class="d-text">
-          <strong>올해 운세 흐름 — 지금 어떤 파도 위에 있나</strong>
-          <span>올해가 밀어주는 해인지, 버텨야 하는 해인지. 타이밍이 전략이에요.</span>
-        </div>
-      </div>
-      <div class="d-item">
-        <div class="d-num">4</div>
-        <div class="d-text">
-          <strong>재물운 맛보기 — 돈의 흐름과 내 그릇</strong>
-          <span>들어오는 돈, 나가는 패턴. 핵심 시기와 방법은 상세 리딩에서 확인하세요. 🔒</span>
-        </div>
-      </div>
-      <div class="d-item">
-        <div class="d-num">5</div>
-        <div class="d-text">
-          <strong>직업운 맛보기 — 나에게 맞는 방향</strong>
-          <span>사주에서 보이는 적성과 커리어 흐름. 지금 이 시기에 집중해야 할 게 있어요. 🔒</span>
-        </div>
-      </div>
-      <div class="d-item">
-        <div class="d-num">6</div>
-        <div class="d-text">
-          <strong>연애운 맛보기 — 지금 내 인연의 기운</strong>
-          <span>이 시기 연애에 어떤 에너지가 흐르는지, 핵심은 살짝 가려져 있어요. 🔒</span>
+
+      <!-- 프리미엄 -->
+      <div class="cmp-card premium">
+        <div class="cmp-popular">추천</div>
+        <div class="cmp-badge premium">★ 프리미엄</div>
+        <div class="cmp-title">이메일로 전달</div>
+        <div class="cmp-price"><strong>₩14,900</strong></div>
+        <div class="cmp-items">
+          <div class="cmp-item prem-item"><span class="ci-icon">✦</span><span>기본 리딩 전체 포함</span></div>
+          <div class="cmp-item prem-item star"><span class="ci-icon">★</span><span>내 사주에 맞는<br>인생 방향 조언</span></div>
+          <div class="cmp-item prem-item star"><span class="ci-icon">★</span><span>피해야 할 선택과<br>지금 해야 할 것</span></div>
+          <div class="cmp-item prem-item star"><span class="ci-icon">★</span><span>중요한 선택 앞에서<br>어떻게 결정할지 조언</span></div>
         </div>
       </div>
     </div>
@@ -395,9 +476,9 @@ footer{text-align:center;padding:32px 16px 20px;color:rgba(154,128,96,.45);font-
   <!-- 무료 배지 -->
   <div class="free-badge-sec">
     <div class="free-badge">
-      <strong>✦ 지금 무료로 시작하세요 ✦</strong>
-      생년월일만 입력하면 1~3번은 바로 볼 수 있어요.<br>
-      4~6번 상세 리딩은 코드 입력 후 확인하세요.
+      <strong>✦ 생년월일만 입력하면 바로 시작해요 ✦</strong>
+      무료 체험은 로그인·결제 없이 바로 확인 가능해요.<br>
+      상세 리딩은 결제 후 입력하신 이메일로 발송돼요.
     </div>
   </div>
 
@@ -484,21 +565,34 @@ footer{text-align:center;padding:32px 16px 20px;color:rgba(154,128,96,.45);font-
     <div class="upgrade-banner" id="upgrade-banner" style="display:none">
       <p class="up-kw">✦ 상세 리딩 ✦</p>
       <h2>지금 이 시기,<br><span class="em">당신이 가야 할 방향</span></h2>
-      <p class="up-sub">
-        연애·재물·직업·건강·운의 흐름·월별 운세<br>
-        6가지 영역에서 타고난 에너지로<br>
-        지금 무엇을 해야 하는지 읽어드려요.
-      </p>
-      <div class="price-wrap">
-        <div class="price-orig">개인 상담 기준 50,000원</div>
-        <div class="price-main"><span>₩</span>9,900 <span class="price-tag">특별가</span></div>
+      <p class="up-sub">결제 완료 후 입력하신 이메일로 자동 발송돼요</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <!-- 기본 -->
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.3);border-radius:14px;padding:18px 14px">
+          <div style="font-size:.7rem;color:var(--gold);letter-spacing:.1em;margin-bottom:10px">✦ 기본 리딩</div>
+          <div style="font-size:1.4rem;color:var(--gold);font-weight:700;margin-bottom:12px">₩9,900</div>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px;font-size:.78rem;color:var(--sub);line-height:1.5">
+            <div>✦ 6개 카테고리 심층 분석</div>
+            <div>✦ 월별 운세</div>
+            <div>✦ 앞으로 3년 흐름</div>
+          </div>
+          <button class="pay-btn" style="font-size:.85rem;padding:12px" onclick="showSajuEmailPopup('basic')">기본 리딩 받기 →</button>
+        </div>
+        <!-- 프리미엄 -->
+        <div style="background:linear-gradient(145deg,#2a1000,#0d0c22);border:1px solid rgba(230,140,40,.6);border-radius:14px;padding:18px 14px;position:relative">
+          <div style="position:absolute;top:-1px;right:12px;background:linear-gradient(135deg,#c9a84c,#e8c97a);color:#06060f;font-size:.62rem;font-weight:700;padding:3px 8px;border-radius:0 0 8px 8px">추천</div>
+          <div style="font-size:.7rem;color:#f0c060;letter-spacing:.1em;margin-bottom:10px">★ 프리미엄</div>
+          <div style="font-size:1.4rem;color:#f0c060;font-weight:700;margin-bottom:12px">₩14,900</div>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px;font-size:.78rem;color:#ede0c8;line-height:1.5">
+            <div>✦ 기본 리딩 전체 포함</div>
+            <div>★ 인생 방향 조언</div>
+            <div>★ 피해야 할 선택</div>
+            <div>★ 선택 앞 결정 조언</div>
+          </div>
+          <button class="pay-btn" style="font-size:.85rem;padding:12px;background:linear-gradient(135deg,#b87820,#e8a030)" onclick="showSajuEmailPopup('premium')">프리미엄 받기 →</button>
+        </div>
       </div>
-      <div class="up-items">
-        <div class="up-item">6가지 영역 전체 — 사랑·직업·재물·건강·운의 흐름·월별 운세</div>
-        <div class="up-item">A4 6~8장 분량의 개인 맞춤 상세 리딩</div>
-        <div class="up-item">결제 완료 후 입력하신 이메일로 자동 발송</div>
-      </div>
-      <button class="pay-btn" onclick="showSajuEmailPopup()">지금 상세 리딩 받기 →</button>
       <p class="pay-note">결제 시 입력한 이메일로 리딩이 발송돼요</p>
     </div>
 
@@ -547,8 +641,9 @@ footer{text-align:center;padding:32px 16px 20px;color:rgba(154,128,96,.45);font-
   <div style="background:#10102a;border:1px solid rgba(201,168,76,.35);border-radius:20px;padding:32px 28px;max-width:380px;width:100%;text-align:center">
     <div style="font-size:26px;margin-bottom:12px">✉️</div>
     <h3 style="font-size:18px;color:#e8c97a;margin-bottom:8px;font-weight:700">이메일 주소를 입력해주세요</h3>
+    <p id="saju-popup-tier" style="font-size:12px;color:#c9a84c;margin-bottom:6px;letter-spacing:.05em">✦ 기본 리딩 (₩9,900)</p>
     <p style="font-size:13px;color:#b89e7e;line-height:1.8;margin-bottom:20px">
-      결제 완료 후 입력하신 이메일로<br>6가지 영역 상세 리딩이 자동 발송돼요.
+      결제 완료 후 입력하신 이메일로<br>상세 리딩이 자동 발송돼요.
     </p>
     <input type="email" id="saju-email-input"
       style="width:100%;padding:13px 14px;background:#0d0c22;border:1px solid rgba(201,168,76,.3);border-radius:10px;color:#ede0c8;font-size:15px;font-family:inherit;outline:none;margin-bottom:8px;box-sizing:border-box"
@@ -602,7 +697,8 @@ const BRANCH_HANJA=['子','丑','寅','卯','辰','巳','午','未','申','酉',
 const BRANCH_ANIMAL=['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'];
 
 const CFG = {
-  payLink: 'https://groble.io/p/saju', // 그로블 사주 결제 링크로 교체 필요
+  payLink:        'https://www.groble.im/payment/aWJpJN', // 기본 리딩
+  premiumPayLink: 'https://www.groble.im/payment/k4TFxq', // 프리미엄 리딩
 };
 
 let S = { chatHistory: [], sajuData: null };
@@ -787,8 +883,11 @@ const CATEGORY_INFO = {
   monthly: {label:'📅 월별 운세',prompt:'올해 남은 달부터 내년까지 월별 운세를 분석해주세요. 각 달에 어떤 에너지가 흐르는지, 좋은 달과 조심해야 할 달, 각 달에 집중하면 좋을 영역을 구체적으로 월별로 담아주세요.'},
 };
 
-function showSajuEmailPopup(){
+function showSajuEmailPopup(tier='basic'){
   const overlay=document.getElementById('saju-email-overlay');
+  overlay.dataset.tier=tier;
+  const title=overlay.querySelector('#saju-popup-tier');
+  if(title) title.textContent=tier==='premium'?'★ 프리미엄 리딩 (₩14,900)':'✦ 기본 리딩 (₩9,900)';
   overlay.style.display='flex';
   document.getElementById('saju-email-input').value='';
   document.getElementById('saju-email-err').style.display='none';
@@ -814,18 +913,19 @@ async function submitSajuEmail(){
     return;
   }
 
+  const tier=document.getElementById('saju-email-overlay').dataset.tier||'basic';
   try{
     await fetch('/api/saju-save',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email, sajuData:S.sajuData}),
+      body:JSON.stringify({email, sajuData:S.sajuData, tier}),
     });
   }catch(e){
     // 저장 실패해도 결제는 진행
   }
 
   closeSajuEmailPopup();
-  window.open(CFG.payLink,'_blank');
+  window.open(tier==='premium'?CFG.premiumPayLink:CFG.payLink,'_blank');
 }
 
 async function calculate(){

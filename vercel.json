@@ -10,6 +10,14 @@
     {
       "path": "/api/auto-post?secret=osok2026",
       "schedule": "30 11 * * *"
+    },
+    {
+      "path": "/api/auto-post-saju?secret=osok2026",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/auto-post-saju?secret=osok2026",
+      "schedule": "0 12 * * *"
     }
   ]
 }
