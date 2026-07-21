@@ -11,6 +11,12 @@ const CATEGORY_PROMPTS = [
   { key: 'monthly', icon: '📅', label: '월별 운세',     prompt: '올해 남은 달부터 내년까지 월별 운세를 분석해주세요. 각 달의 에너지, 좋은 달과 조심해야 할 달, 각 달에 집중하면 좋을 영역을 월별로 구체적으로 담아주세요.' },
 ];
 
+const PREMIUM_PROMPTS = [
+  { key: 'direction', icon: '🧭', label: '인생 방향 조언', prompt: '이 사람의 사주팔자와 오행 에너지를 바탕으로 인생 방향 조언을 깊이 있게 작성해주세요. 타고난 기질로 가장 잘 풀리는 삶의 방향, 어떤 환경과 역할에서 빛나는지, 이 에너지로 살아갈 때 가장 행복하고 성공적인 삶이 무엇인지 구체적으로 담아주세요. 단순 격려가 아닌 사주에서 읽히는 실질적인 나침반을 제시해주세요.' },
+  { key: 'avoid',     icon: '⚠️', label: '피해야 할 선택',  prompt: '이 사람의 사주에서 피해야 할 선택과 패턴을 분석해주세요. 오행의 과잉·부족에서 비롯되는 반복적 실수, 에너지를 소진시키는 관계나 환경, 이 시기에 특히 조심해야 할 결정들을 구체적으로 담아주세요. 두렵게 만드는 게 아니라 미리 알고 피할 수 있도록 따뜻하고 실용적으로 써주세요.' },
+  { key: 'decision',  icon: '🔑', label: '선택 앞 결정 조언', prompt: '중요한 선택의 기로에 섰을 때 이 사람이 어떻게 결정해야 하는지 조언해주세요. 이 사주의 기질로 볼 때 어떤 선택 방식이 맞는지, 직감을 믿어야 할 때와 신중하게 따져봐야 할 때, 지금 이 시기의 대운·세운 흐름에서 어떤 방향으로 무게를 실어야 하는지 구체적으로 담아주세요.' },
+];
+
 const SAJU_EMAIL_SYSTEM = `당신은 사주명리학, 자미두수, 서양 점성술을 아우르는 동서양 명리 전문 상담사예요.
 결제 고객에게 이메일로 전달될 사주 상세 리딩을 작성해주세요.
 
@@ -97,7 +103,7 @@ function buildEmailHtml(name, sajuInfoLine, sections) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
-  const { email, sajuData } = req.body;
+  const { email, sajuData, isPremium } = req.body;
   if (!email || !sajuData) return res.status(400).json({ error: 'missing fields' });
 
   try {
@@ -109,6 +115,14 @@ export default async function handler(req, res) {
     for (const cat of CATEGORY_PROMPTS) {
       const content = await generateCategoryReading(sajuData.context, cat.prompt);
       sections.push({ icon: cat.icon, label: cat.label, content });
+    }
+
+    // 프리미엄 전용 추가 섹션
+    if (isPremium || sajuData.tier === 'premium') {
+      for (const cat of PREMIUM_PROMPTS) {
+        const content = await generateCategoryReading(sajuData.context, cat.prompt);
+        sections.push({ icon: cat.icon, label: cat.label, content });
+      }
     }
 
     const html = buildEmailHtml(name, sajuInfoLine, sections);

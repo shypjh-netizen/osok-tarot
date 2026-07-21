@@ -78,6 +78,7 @@ export default async function handler(req, res) {
       if (productName.includes('사주') && email) {
         const sajuData = await redis.get(`saju_pending:${email}`);
         if (sajuData) {
+          const isPremium = productName.includes('프리미엄') || (sajuData.tier === 'premium');
           // 빠르게 200 반환 후 이메일 발송 (fire & forget)
           res.status(200).json({ ok: true });
           const baseUrl = process.env.VERCEL_URL
@@ -86,7 +87,7 @@ export default async function handler(req, res) {
           fetch(`${baseUrl}/api/saju-email`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, sajuData }),
+            body: JSON.stringify({ email, sajuData, isPremium }),
           }).catch(() => {});
           return;
         }
