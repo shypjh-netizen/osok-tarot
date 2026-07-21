@@ -19,7 +19,8 @@ body{background:var(--dark);color:var(--text);font-family:'Noto Serif KR',serif;
 #stars{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.7}
 
 /* ── 전체 래퍼 ── */
-.page{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 24px 80px}
+.page{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 20px 80px}
+@media(min-width:640px){.page{padding:0 28px 80px}}
 
 /* ══════════════════════════════════
    히어로
@@ -294,6 +295,255 @@ body{background:var(--dark);color:var(--text);font-family:'Noto Serif KR',serif;
 footer{text-align:center;padding:32px 16px 20px;color:rgba(154,128,96,.45);font-size:.72rem;line-height:2.1;border-top:1px solid rgba(201,168,76,.07);margin-top:40px}
 
 /* ══════════════════════════════════
+   출생 정보 바
+══════════════════════════════════ */
+.birth-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.18);border-radius:12px;padding:12px 16px;flex-wrap:wrap}
+.birth-info-text{font-size:.82rem;color:var(--sub);line-height:1.6;flex:1}
+.birth-edit-btn{flex-shrink:0;background:transparent;border:1px solid rgba(201,168,76,.3);border-radius:8px;color:var(--gold);font-size:.75rem;padding:5px 12px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:border-color .2s}
+.birth-edit-btn:hover{border-color:var(--gold)}
+
+/* ══════════════════════════════════
+   요약 카드
+══════════════════════════════════ */
+.summary-card{background:linear-gradient(135deg,#1a0d3e,#0d0c22);border:1px solid rgba(201,168,76,.25);border-radius:18px;padding:24px 20px;position:relative;overflow:hidden}
+.summary-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.07),transparent 60%);pointer-events:none}
+.summary-kw-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.summary-kw{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:20px;color:var(--gold);font-size:.78rem;padding:4px 13px;letter-spacing:.03em}
+.summary-personality{color:var(--text);font-size:1rem;line-height:1.85;margin-bottom:14px}
+.summary-flow-box{background:rgba(201,168,76,.08);border-left:2px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;color:var(--gold);font-size:.88rem;line-height:1.7}
+
+/* ══════════════════════════════════
+   고정 목차 내비게이션
+══════════════════════════════════ */
+.saju-nav{position:sticky;top:0;z-index:100;background:rgba(6,6,15,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.12);margin:0 -24px;padding:0 24px;display:none}
+.saju-nav.visible{display:block}
+.saju-nav-inner{display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.saju-nav-inner::-webkit-scrollbar{display:none}
+.sn-item{flex-shrink:0;padding:11px 14px;font-size:.78rem;color:rgba(184,158,126,.6);text-decoration:none;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.04em;white-space:nowrap;cursor:pointer}
+.sn-item:hover{color:var(--sub)}
+.sn-item.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* ══════════════════════════════════
+   리딩 섹션 (접기/펼치기)
+══════════════════════════════════ */
+.reading-section{background:var(--card);border:1px solid rgba(201,168,76,.15);border-radius:16px;overflow:hidden;scroll-margin-top:48px}
+.rs-header{padding:20px 20px 0}
+.rs-label{font-size:.7rem;color:var(--gold);letter-spacing:.15em;opacity:.7;margin-bottom:8px}
+.rs-title{color:var(--gold);font-size:.95rem;letter-spacing:.08em;padding-bottom:10px;border-bottom:1px solid rgba(201,168,76,.1);margin-bottom:0}
+.rs-headline{background:rgba(201,168,76,.07);border-left:2px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;margin:14px 0 0;color:var(--text);font-size:.95rem;line-height:1.75;font-style:italic}
+.rs-preview{padding:16px 20px 0}
+.rs-full{padding:0 20px}
+.rs-full.hidden{display:none}
+.rs-toggle-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:13px;background:transparent;border:none;border-top:1px solid rgba(201,168,76,.08);color:var(--gold);font-size:.82rem;font-family:inherit;cursor:pointer;letter-spacing:.05em;transition:background .2s}
+.rs-toggle-btn:hover{background:rgba(201,168,76,.05)}
+.rs-toggle-icon{transition:transform .3s;display:inline-block;font-style:normal}
+.rs-toggle-btn.open .rs-toggle-icon{transform:rotate(180deg)}
+
+/* 리딩 단락 개선 */
+.rs-para{margin-bottom:1.4em;font-size:1rem;line-height:1.85;color:#e8dcc8}
+.rs-para:last-child{margin-bottom:0}
+
+/* ══════════════════════════════════
+   맨 위로 버튼
+══════════════════════════════════ */
+.scroll-top-btn{position:fixed;bottom:24px;right:20px;z-index:200;width:44px;height:44px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:50%;color:var(--gold);font-size:1rem;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(8px)}
+.scroll-top-btn.visible{display:flex}
+.scroll-top-btn:hover{background:rgba(201,168,76,.28)}
+
+/* ══════════════════════════════════
+   카드 유형 통일 (3종)
+══════════════════════════════════ */
+/* 공통 카드 기반 */
+.card-base{border-radius:18px;padding:24px 20px;border:1px solid rgba(201,168,76,.18);background:var(--card);transition:border-color .25s}
+/* 핵심 요약 카드 */
+.card-summary-type{background:linear-gradient(145deg,#1a0d3e,#0d0c22);border-color:rgba(201,168,76,.35);box-shadow:0 0 24px rgba(201,168,76,.06)}
+/* 일반 해석 카드 */
+.card-reading-type{background:#10102a;border-color:rgba(201,168,76,.15)}
+/* 잠금/프리미엄 카드 */
+.card-premium-type{background:linear-gradient(145deg,#1e0e00,#0d0c22);border-color:rgba(230,150,40,.55);box-shadow:0 0 28px rgba(230,150,40,.08)}
+/* 카드 사이 간격 통일 */
+#result-sec{gap:16px}
+/* section-card 기반 통일 */
+.section-card{border-radius:18px;padding:24px 20px}
+/* reading-section 간격 */
+.reading-section{margin:0}
+
+/* ══════════════════════════════════
+   터치 영역 최소 44px
+══════════════════════════════════ */
+button,.calc-btn,.pay-btn,.reset-btn,.rs-toggle-btn,.birth-edit-btn,.cat-btn{min-height:44px}
+.sn-item{min-height:44px;display:flex;align-items:center}
+
+/* ══════════════════════════════════
+   사주 용어 툴팁
+══════════════════════════════════ */
+.term-trigger{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;border:1px solid rgba(201,168,76,.45);color:rgba(201,168,76,.7);font-size:.58rem;cursor:pointer;vertical-align:middle;margin-left:3px;flex-shrink:0;line-height:1;transition:all .2s;font-style:normal}
+.term-trigger:hover,.term-trigger.active{background:rgba(201,168,76,.18);border-color:var(--gold);color:var(--gold)}
+#term-tooltip{position:fixed;z-index:9999;max-width:260px;background:#1a1535;border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:12px 14px;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+#term-tooltip.visible{opacity:1;pointer-events:auto}
+#term-tooltip .tt-name{font-size:.75rem;color:var(--gold);margin-bottom:5px;letter-spacing:.04em}
+#term-tooltip .tt-desc{font-size:.82rem;color:#ddd0b8;line-height:1.7}
+#term-tooltip .tt-close{display:none;position:absolute;top:8px;right:10px;color:rgba(201,168,76,.5);font-size:.9rem;cursor:pointer;padding:2px 4px}
+@media(max-width:640px){#term-tooltip .tt-close{display:block}}
+
+/* ══════════════════════════════════
+   상품 비교 카드 (신규)
+══════════════════════════════════ */
+.product-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:520px){.product-compare{grid-template-columns:1fr;gap:12px}}
+.product-card{border-radius:18px;padding:22px 18px;position:relative;overflow:hidden}
+.product-card.basic{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.28)}
+.product-card.premium{background:linear-gradient(145deg,#1e0e00,#0a0918);border:1px solid rgba(230,150,40,.6);box-shadow:0 0 24px rgba(230,150,40,.08)}
+.product-card.premium::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(230,150,40,.07),transparent 60%);pointer-events:none}
+.product-popular{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#c9a84c,#e8c97a);color:#06060f;font-size:.62rem;font-weight:700;letter-spacing:.06em;padding:4px 14px;border-radius:0 0 10px 10px;white-space:nowrap}
+.product-tier{font-size:.68rem;letter-spacing:.15em;margin-bottom:10px;margin-top:4px}
+.product-card.basic .product-tier{color:var(--gold);opacity:.8}
+.product-card.premium .product-tier{color:#f0c060}
+.product-price{font-size:1.55rem;font-weight:700;margin-bottom:4px}
+.product-card.basic .product-price{color:var(--gold)}
+.product-card.premium .product-price{color:#f0c060}
+.product-once{font-size:.72rem;color:var(--sub);margin-bottom:14px}
+.product-items{display:flex;flex-direction:column;gap:7px;margin-bottom:6px}
+.product-item{display:flex;align-items:flex-start;gap:7px;font-size:.8rem;line-height:1.55}
+.product-card.basic .product-item{color:var(--sub)}
+.product-card.basic .product-item .pi-icon{color:rgba(201,168,76,.5);flex-shrink:0;margin-top:1px}
+.product-card.premium .product-item{color:#ddd0b8}
+.product-card.premium .product-item .pi-icon{color:#f0c060;flex-shrink:0;margin-top:1px}
+.product-card.premium .product-item.star{color:#f0c060;font-weight:500}
+.product-divider{border:none;border-top:1px solid rgba(201,168,76,.1);margin:12px 0}
+.product-meta{font-size:.72rem;color:rgba(154,128,96,.55);line-height:1.8;margin-bottom:16px}
+.product-pay-btn{display:block;width:100%;padding:14px 12px;border:none;border-radius:12px;font-size:.9rem;font-family:inherit;font-weight:700;letter-spacing:.06em;cursor:pointer;text-align:center;transition:all .3s;min-height:44px}
+.product-pay-btn.basic{background:linear-gradient(135deg,#3d2476,#7c5cbf);color:var(--gold);border:1px solid rgba(201,168,76,.4)}
+.product-pay-btn.basic:hover{box-shadow:0 0 20px rgba(124,92,191,.35)}
+.product-pay-btn.premium{background:linear-gradient(135deg,#b87820,#e8a030);color:#06060f}
+.product-pay-btn.premium:hover{box-shadow:0 0 24px rgba(232,160,48,.35)}
+.product-refund{display:block;text-align:center;font-size:.72rem;color:rgba(154,128,96,.45);margin-top:8px;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+
+/* 결과 영역 별 밝기 감소 */
+#result-sec ~ #stars,
+#result-sec + * #stars{opacity:.3}
+.result-stars-dim #stars{opacity:.25}
+
+/* ══════════════════════════════════
+   넓은 콘텐츠 가로 스크롤
+══════════════════════════════════ */
+.overflow-x-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* ══════════════════════════════════
+   접근성 — 포커스·호버·액티브 상태
+══════════════════════════════════ */
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.calc-btn:active{transform:scale(.99);opacity:.9}
+.pay-btn:active,.product-pay-btn:active{transform:translateY(0) scale(.99)}
+.cat-btn:focus-visible{border-color:var(--gold);color:var(--gold)}
+.rs-toggle-btn:focus-visible{background:rgba(201,168,76,.08)}
+.sn-item:focus-visible{color:var(--gold);border-bottom-color:rgba(201,168,76,.5)}
+.pay-btn:disabled,.product-pay-btn:disabled{opacity:.6;cursor:not-allowed;transform:none!important;pointer-events:none}
+
+/* ══════════════════════════════════
+   결과 액션 버튼 행
+══════════════════════════════════ */
+.result-actions{display:flex;gap:8px;flex-wrap:wrap}
+.action-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;font-size:.8rem;font-family:inherit;cursor:pointer;transition:all .2s;min-height:44px;letter-spacing:.03em;border:1px solid rgba(201,168,76,.22);background:rgba(201,168,76,.05);color:var(--sub);white-space:nowrap}
+.action-btn:hover{border-color:rgba(201,168,76,.45);color:var(--text);background:rgba(201,168,76,.1)}
+.action-btn.primary{border-color:rgba(201,168,76,.4);color:var(--gold);background:rgba(201,168,76,.09)}
+.action-btn.primary:hover{background:rgba(201,168,76,.17);box-shadow:0 0 12px rgba(201,168,76,.14)}
+.action-btn.danger{border-color:rgba(192,57,43,.28);color:rgba(220,80,80,.7);background:rgba(192,57,43,.04)}
+.action-btn.danger:hover{border-color:rgba(192,57,43,.5);color:#e57373;background:rgba(192,57,43,.1)}
+
+/* ══════════════════════════════════
+   삭제 확인 모달
+══════════════════════════════════ */
+.confirm-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:2000;align-items:center;justify-content:center;padding:20px}
+.confirm-modal-overlay.active{display:flex}
+.confirm-modal{background:#10102a;border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center}
+.confirm-modal h3{color:var(--text);font-size:1rem;margin-bottom:8px}
+.confirm-modal p{color:var(--sub);font-size:.85rem;line-height:1.75;margin-bottom:20px}
+.confirm-modal-btns{display:flex;gap:10px}
+.confirm-btn{flex:1;padding:13px;border-radius:10px;font-family:inherit;font-size:.9rem;cursor:pointer;min-height:44px;transition:all .2s}
+.confirm-btn.cancel{background:transparent;border:1px solid rgba(201,168,76,.2);color:var(--sub)}
+.confirm-btn.cancel:hover{border-color:rgba(201,168,76,.4);color:var(--text)}
+.confirm-btn.delete{background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.4);color:#e57373}
+.confirm-btn.delete:hover{background:rgba(192,57,43,.22)}
+
+/* ══════════════════════════════════
+   공유 모달
+══════════════════════════════════ */
+.share-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:2000;align-items:center;justify-content:center;padding:20px}
+.share-modal-overlay.active{display:flex}
+.share-modal{background:#10102a;border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:28px 24px;max-width:380px;width:100%}
+.share-modal h3{color:var(--gold);font-size:1rem;margin-bottom:6px;letter-spacing:.05em}
+.share-modal>p{color:var(--sub);font-size:.82rem;margin-bottom:14px;line-height:1.6}
+.share-privacy{display:flex;align-items:center;padding:11px 14px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.14);border-radius:10px;margin-bottom:14px}
+.share-privacy label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.82rem;color:var(--sub)}
+.share-privacy input[type=checkbox]{accent-color:var(--gold);width:15px;height:15px;flex-shrink:0}
+.share-btns{display:flex;flex-direction:column;gap:9px;margin-bottom:10px}
+.share-option-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;font-family:inherit;font-size:.9rem;cursor:pointer;min-height:44px;transition:all .2s;text-align:left;border:none}
+.share-option-btn.kakao{background:#FEE500;color:#3A1D1D}
+.share-option-btn.kakao:hover{filter:brightness(1.08)}
+.share-option-btn.link-copy{background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.28);color:var(--text)}
+.share-option-btn.link-copy:hover{background:rgba(201,168,76,.17)}
+.share-option-btn.img-save{background:rgba(124,92,191,.12);border:1px solid rgba(124,92,191,.32);color:var(--text)}
+.share-option-btn.img-save:hover{background:rgba(124,92,191,.22)}
+.share-modal-close{width:100%;padding:12px;background:transparent;border:1px solid rgba(201,168,76,.14);border-radius:10px;color:rgba(154,128,96,.55);font-family:inherit;font-size:.85rem;cursor:pointer;min-height:44px;transition:all .2s}
+.share-modal-close:hover{border-color:rgba(201,168,76,.3);color:var(--sub)}
+
+/* ══════════════════════════════════
+   잠긴 유료 섹션
+══════════════════════════════════ */
+.locked-section{background:rgba(201,168,76,.03);border:1px solid rgba(201,168,76,.1);border-radius:16px;padding:18px 20px;position:relative;overflow:hidden}
+.locked-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.04),transparent 70%);pointer-events:none}
+.locked-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.locked-title{color:rgba(232,201,122,.5);font-size:.88rem;letter-spacing:.05em;font-weight:600}
+.locked-icon{font-size:.9rem;color:rgba(201,168,76,.3)}
+.locked-preview{color:rgba(154,128,96,.7);font-size:.83rem;line-height:1.7;margin-bottom:12px}
+.locked-unlock-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.28);border-radius:8px;color:var(--gold);font-size:.8rem;font-family:inherit;cursor:pointer;transition:all .2s;min-height:40px}
+.locked-unlock-btn:hover{background:rgba(201,168,76,.16);box-shadow:0 0 10px rgba(201,168,76,.12)}
+
+/* ══════════════════════════════════
+   무료→유료 전환 안내
+══════════════════════════════════ */
+.upgrade-what-you-get{background:rgba(6,6,15,.55);border:1px solid rgba(201,168,76,.15);border-radius:16px;padding:20px}
+.upgrade-what-you-get h3{color:var(--gold);font-size:.85rem;letter-spacing:.08em;margin-bottom:12px;opacity:.85}
+.upgrade-diff-list{display:flex;flex-direction:column;gap:7px}
+.upgrade-diff-item{display:flex;align-items:flex-start;gap:9px;font-size:.82rem;color:var(--sub);line-height:1.6}
+.upgrade-diff-item .udi-dot{color:var(--gold);opacity:.55;flex-shrink:0}
+.upgrade-sep{text-align:center;padding:4px 0 16px;display:flex;align-items:center;gap:10px}
+.upgrade-sep::before,.upgrade-sep::after{content:'';flex:1;height:1px;background:rgba(201,168,76,.08)}
+.upgrade-sep span{color:rgba(154,128,96,.4);font-size:.75rem;letter-spacing:.08em;white-space:nowrap}
+
+/* ══════════════════════════════════
+   신뢰 정보 섹션
+══════════════════════════════════ */
+.trust-section{background:rgba(255,255,255,.015);border:1px solid rgba(201,168,76,.09);border-radius:16px;padding:20px}
+.trust-section h4{color:rgba(201,168,76,.55);font-size:.75rem;letter-spacing:.14em;margin-bottom:14px}
+.trust-dl{display:grid;grid-template-columns:1fr 1fr;gap:11px 18px}
+@media(max-width:480px){.trust-dl{grid-template-columns:1fr}}
+.trust-dl dt{color:rgba(201,168,76,.55);font-size:.72rem;letter-spacing:.04em;margin-bottom:3px}
+.trust-dl dd{color:rgba(154,128,96,.6);font-size:.76rem;line-height:1.7;margin:0}
+.trust-note{color:rgba(154,128,96,.45);font-size:.72rem;line-height:1.85;padding-top:12px;border-top:1px solid rgba(201,168,76,.07);margin-top:12px}
+.trust-note a{color:rgba(154,128,96,.55);text-decoration:underline;text-underline-offset:2px}
+.trust-note a:hover{color:var(--gold)}
+
+/* ══════════════════════════════════
+   개선된 오류 상태
+══════════════════════════════════ */
+.error-card{background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.22);border-radius:14px;padding:20px;text-align:center}
+.error-card p{color:var(--sub);font-size:.88rem;line-height:1.8;margin-bottom:14px}
+.error-retry-btn{padding:11px 24px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.32);border-radius:10px;color:var(--gold);font-family:inherit;font-size:.88rem;cursor:pointer;min-height:44px;transition:all .2s}
+.error-retry-btn:hover{background:rgba(201,168,76,.17)}
+
+/* ══════════════════════════════════
+   푸터 개선
+══════════════════════════════════ */
+.footer-new{margin-top:40px;border-top:1px solid rgba(201,168,76,.07)}
+.footer-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:18px 0 14px}
+.footer-links a{color:rgba(154,128,96,.45);font-size:.73rem;text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold);text-decoration:underline}
+.footer-biz{text-align:center;color:rgba(154,128,96,.35);font-size:.7rem;line-height:2.1;padding:0 0 20px}
+.footer-biz a{color:inherit}
+
+/* ══════════════════════════════════
    반응형
 ══════════════════════════════════ */
 @media(max-width:480px){
@@ -303,11 +553,23 @@ footer{text-align:center;padding:32px 16px 20px;color:rgba(154,128,96,.45);font-
   .pillar .stem,.pillar .branch{font-size:1.65rem}
   .hero-hook{font-size:1.45rem}
   .price-main{font-size:1.9rem}
+  .saju-nav{margin:0 -20px;padding:0 20px}
+  .sn-item{padding:10px 12px;font-size:.75rem}
+  .rs-para{font-size:1rem;line-height:1.85}
+  .summary-personality{font-size:.95rem}
+  .section-card,.card-base,.reading-section{padding:18px 16px;border-radius:16px}
+  .product-card{padding:18px 14px}
 }
 </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
+<button class="scroll-top-btn" id="scroll-top-btn" onclick="scrollToTop()" title="맨 위로">↑</button>
+<div id="term-tooltip" role="tooltip">
+  <button class="tt-close" onclick="hideTermTooltip()">✕</button>
+  <div class="tt-name"></div>
+  <div class="tt-desc"></div>
+</div>
 <div class="page">
 
   <!-- ══ 히어로 ══ -->
@@ -531,28 +793,78 @@ footer{text-align:center;padding:32px 16px 20px;color:rgba(154,128,96,.45);font-
 
   <!-- ══ 결과 ══ -->
   <section id="result-sec" class="hidden">
-    <div class="pillars-wrap">
+
+    <!-- 출생 정보 바 -->
+    <div class="birth-bar" id="sec-summary">
+      <span class="birth-info-text" id="birth-info-text"></span>
+      <button class="birth-edit-btn" onclick="resetSaju()" aria-label="정보 수정">✎ 정보 수정</button>
+    </div>
+
+    <!-- 결과 액션 버튼 -->
+    <div class="result-actions" role="toolbar" aria-label="결과 관리">
+      <button class="action-btn primary" onclick="openShareModal()" aria-label="결과 공유하기">
+        🔗 공유하기
+      </button>
+      <button class="action-btn" onclick="saveResultImage()" aria-label="결과 이미지로 저장">
+        📷 저장하기
+      </button>
+      <button class="action-btn danger" onclick="confirmDeleteMyInfo()" aria-label="내 정보 삭제">
+        🗑 내 정보 삭제
+      </button>
+    </div>
+
+    <!-- 한눈에 보기 요약 카드 -->
+    <div class="summary-card" id="summary-card" style="display:none">
+      <div class="summary-kw-row" id="summary-kw-row"></div>
+      <div class="summary-personality" id="summary-personality"></div>
+      <div class="summary-flow-box" id="summary-flow"></div>
+    </div>
+
+    <!-- 고정 목차 -->
+    <nav class="saju-nav" id="saju-nav">
+      <div class="saju-nav-inner">
+        <a class="sn-item" onclick="navScrollTo('sec-summary')">한눈에 보기</a>
+        <a class="sn-item" onclick="navScrollTo('sec-pillars')">사주 원국</a>
+        <a class="sn-item" onclick="navScrollTo('sec-ohaeng')">오행</a>
+        <a class="sn-item" onclick="navScrollTo('sec-personality')">성격</a>
+        <a class="sn-item" onclick="navScrollTo('sec-year')">올해 운세</a>
+        <a class="sn-item" onclick="navScrollTo('sec-love')">연애</a>
+        <a class="sn-item" onclick="navScrollTo('sec-money')">재물</a>
+        <a class="sn-item" onclick="navScrollTo('sec-career')">직업</a>
+        <a class="sn-item" onclick="navScrollTo('sec-upgrade')">상세 리딩</a>
+      </div>
+    </nav>
+
+    <!-- 사주팔자 -->
+    <div class="pillars-wrap" id="sec-pillars" style="scroll-margin-top:48px">
       <p class="pillars-label">✦ 사주팔자 ✦</p>
+      <p style="font-size:.72rem;color:rgba(184,158,126,.45);text-align:center;margin-bottom:12px;margin-top:-8px">
+        천간<i class="term-trigger" onclick="event.stopPropagation();showTermTooltip('천간',this)">?</i> (위) &nbsp;·&nbsp; 지지<i class="term-trigger" onclick="event.stopPropagation();showTermTooltip('지지',this)">?</i> (아래) &nbsp;·&nbsp; 십성<i class="term-trigger" onclick="event.stopPropagation();showTermTooltip('십성',this)">?</i> (배지)
+      </p>
       <div class="pillars-grid" id="pillars-grid"></div>
     </div>
 
-    <div class="section-card">
+    <!-- 오행 -->
+    <div class="section-card" id="sec-ohaeng" style="scroll-margin-top:48px">
       <h3>오행(五行) 분포</h3>
       <div class="ohaeng-bars" id="ohaeng-bars"></div>
       <div id="ohaeng-msg" class="ohaeng-msg-text"></div>
     </div>
 
-    <div class="section-card" id="sinsal-sec" style="display:none">
-      <h3>✦ 신살 & 특수 에너지</h3>
+    <!-- 신살 -->
+    <div class="section-card" id="sinsal-sec" style="display:none;scroll-margin-top:48px">
+      <h3>✦ 신살 & 특수 에너지 <i class="term-trigger" style="font-size:.6rem" onclick="event.stopPropagation();showTermTooltip('대운',this)">대운?</i> <i class="term-trigger" style="font-size:.6rem;width:auto;border-radius:8px;padding:0 5px" onclick="event.stopPropagation();showTermTooltip('세운',this)">세운?</i></h3>
       <div class="sinsal-wrap" id="sinsal-wrap"></div>
     </div>
 
+    <!-- 별자리 -->
     <div class="zodiac-badge" id="zodiac-badge"></div>
 
-    <div class="ai-reading-card">
-      <h3>✦ 오속의 사주 리딩</h3>
-      <div id="ai-reading-body"></div>
-    </div>
+    <!-- AI 리딩 로딩/오류 -->
+    <div id="ai-reading-body"></div>
+
+    <!-- AI 리딩 섹션들 (파싱 후 동적 생성) -->
+    <div id="reading-sections"></div>
 
     <div class="category-section hidden" id="category-section">
       <h3>✦ 상세 리딩에 포함되는 내용</h3>
@@ -573,41 +885,89 @@ footer{text-align:center;padding:32px 16px 20px;color:rgba(154,128,96,.45);font-
     </div>
 
     <!-- 결제 유도 배너 -->
-    <div class="upgrade-banner" id="upgrade-banner" style="display:none">
+    <div class="upgrade-banner" id="upgrade-banner" style="display:none;scroll-margin-top:48px">
       <p class="up-kw">✦ 상세 리딩 ✦</p>
       <h2>지금 이 시기,<br><span class="em">당신이 가야 할 방향</span></h2>
       <p class="up-sub">결제 완료 후 입력하신 이메일로 자동 발송돼요</p>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-        <!-- 기본 -->
-        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.3);border-radius:14px;padding:18px 14px">
-          <div style="font-size:.7rem;color:var(--gold);letter-spacing:.1em;margin-bottom:10px">✦ 기본 리딩</div>
-          <div style="font-size:1.4rem;color:var(--gold);font-weight:700;margin-bottom:12px">₩9,900</div>
-          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px;font-size:.78rem;color:var(--sub);line-height:1.5">
-            <div>✦ 6개 카테고리 심층 분석</div>
-            <div>✦ 월별 운세</div>
-            <div>✦ 앞으로 3년 흐름</div>
+      <div class="product-compare">
+        <!-- 기본 리딩 -->
+        <div class="product-card basic">
+          <p class="product-tier">✦ 기본 리딩</p>
+          <div class="product-price">₩9,900</div>
+          <p class="product-once">일회성 결제 · 30일 재열람 가능</p>
+          <div class="product-items">
+            <div class="product-item"><span class="pi-icon">✦</span>사랑 &amp; 인연 심층 분석</div>
+            <div class="product-item"><span class="pi-icon">✦</span>직업 &amp; 적성 심층 분석</div>
+            <div class="product-item"><span class="pi-icon">✦</span>금전 &amp; 재물 심층 분석</div>
+            <div class="product-item"><span class="pi-icon">✦</span>건강 &amp; 활력 분석</div>
+            <div class="product-item"><span class="pi-icon">✦</span>운의 흐름 (1~3년)</div>
+            <div class="product-item"><span class="pi-icon">✦</span>월별 운세</div>
           </div>
-          <button class="pay-btn" style="font-size:.85rem;padding:12px" onclick="showSajuEmailPopup('basic')">기본 리딩 받기 →</button>
+          <hr class="product-divider">
+          <p class="product-meta">PDF 저장 미포함<br>무료 리딩과의 차이: 6개 영역 전체 심층 공개</p>
+          <button class="product-pay-btn basic" onclick="if(guardPayBtn(this))showSajuEmailPopup('basic')">기본 리딩 받기 →</button>
+          <span class="product-refund" onclick="window.open('http://pf.kakao.com/_bSudX/chat','_blank')">환불 조건 확인</span>
         </div>
-        <!-- 프리미엄 -->
-        <div style="background:linear-gradient(145deg,#2a1000,#0d0c22);border:1px solid rgba(230,140,40,.6);border-radius:14px;padding:18px 14px;position:relative">
-          <div style="position:absolute;top:-1px;right:12px;background:linear-gradient(135deg,#c9a84c,#e8c97a);color:#06060f;font-size:.62rem;font-weight:700;padding:3px 8px;border-radius:0 0 8px 8px">추천</div>
-          <div style="font-size:.7rem;color:#f0c060;letter-spacing:.1em;margin-bottom:10px">★ 프리미엄</div>
-          <div style="font-size:1.4rem;color:#f0c060;font-weight:700;margin-bottom:12px">₩14,900</div>
-          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px;font-size:.78rem;color:#ede0c8;line-height:1.5">
-            <div>✦ 기본 리딩 전체 포함</div>
-            <div>★ 인생 방향 조언</div>
-            <div>★ 피해야 할 선택</div>
-            <div>★ 선택 앞 결정 조언</div>
+        <!-- 프리미엄 종합 풀이 -->
+        <div class="product-card premium">
+          <div class="product-popular">가장 인기</div>
+          <p class="product-tier">★ 프리미엄 종합 풀이</p>
+          <div class="product-price">₩14,900</div>
+          <p class="product-once">일회성 결제 · 60일 재열람 가능</p>
+          <div class="product-items">
+            <div class="product-item"><span class="pi-icon">✦</span>기본 리딩 전체 포함</div>
+            <div class="product-item star"><span class="pi-icon">★</span>인생 방향 조언</div>
+            <div class="product-item star"><span class="pi-icon">★</span>피해야 할 선택</div>
+            <div class="product-item star"><span class="pi-icon">★</span>선택 앞 결정 조언</div>
+            <div class="product-item star"><span class="pi-icon">★</span>PDF 저장 가능</div>
+            <div class="product-item star"><span class="pi-icon">★</span>광고 없이 다시 보기</div>
           </div>
-          <button class="pay-btn" style="font-size:.85rem;padding:12px;background:linear-gradient(135deg,#b87820,#e8a030)" onclick="showSajuEmailPopup('premium')">프리미엄 받기 →</button>
+          <hr class="product-divider">
+          <p class="product-meta">기본 리딩 + 심화 3개 섹션 추가<br>결과는 이메일로 즉시 발송돼요</p>
+          <button class="product-pay-btn premium" onclick="if(guardPayBtn(this))showSajuEmailPopup('premium')">프리미엄 받기 →</button>
+          <span class="product-refund" onclick="window.open('http://pf.kakao.com/_bSudX/chat','_blank')">환불 조건 확인</span>
         </div>
       </div>
-      <p class="pay-note">결제 시 입력한 이메일로 리딩이 발송돼요</p>
+      <p class="pay-note">결제 시 입력한 이메일로 리딩이 발송돼요 · 일회성 결제, 정기구독 없음</p>
     </div>
 
-    <button class="reset-btn" onclick="resetSaju()">↩ 다시 입력하기</button>
+    <!-- 유료 전환 안내 -->
+    <div class="upgrade-sep"><span>✦ 상세 리딩에서 더 알게 되는 것</span></div>
+    <div class="upgrade-what-you-get" id="upgrade-what-you-get" style="display:none">
+      <h3>✦ 유료 리딩에서는 이런 내용을 더 알게 돼요</h3>
+      <div class="upgrade-diff-list">
+        <div class="upgrade-diff-item"><span class="udi-dot">✦</span><span><strong style="color:var(--text)">재물운 심층 분석</strong> — 돈이 모이는 방식과 반복적으로 지출이 늘어나는 시기를 확인할 수 있어요.</span></div>
+        <div class="upgrade-diff-item"><span class="udi-dot">✦</span><span><strong style="color:var(--text)">연애·결혼 심층 흐름</strong> — 내가 관계에서 반복하는 패턴과 인연이 강해지는 시기를 확인할 수 있어요.</span></div>
+        <div class="upgrade-diff-item"><span class="udi-dot">✦</span><span><strong style="color:var(--text)">타고난 기질 내면 분석</strong> — 사주적 근거, 장단점, 실제 생활에서 나타나는 구체적인 모습까지 담겨요.</span></div>
+        <div class="upgrade-diff-item"><span class="udi-dot">✦</span><span><strong style="color:var(--text)">대인관계·감정 표현 방식</strong> — 내가 사람을 대하는 방식과 갈등이 생기는 원인을 알 수 있어요.</span></div>
+        <div class="upgrade-diff-item"><span class="udi-dot">✦</span><span><strong style="color:var(--text)">건강·생활 습관 조언</strong> — 사주에서 보이는 체질과 주의해야 할 신체 부위가 담겨요.</span></div>
+        <div class="upgrade-diff-item"><span class="udi-dot">✦</span><span><strong style="color:var(--text)">10년 단위 대운 분석 + 2026년 월별 운세</strong> — 중요한 기회와 조심해야 할 시기를 달 단위로 확인해요.</span></div>
+        <div class="upgrade-diff-item"><span class="udi-dot">✦</span><span><strong style="color:var(--text)">분야별 맞춤 행동 조언 + PDF 저장</strong> — 구체적인 행동 방법과 전체 리딩 저장 기능이 포함돼요.</span></div>
+      </div>
+    </div>
+
+    <!-- 신뢰 안내 -->
+    <div class="trust-section" id="trust-section" style="display:none">
+      <h4>✦ 서비스 안내</h4>
+      <dl class="trust-dl">
+        <div><dt>입력 정보 저장 여부</dt><dd>입력 정보는 브라우저에만 임시 저장되며, 결제 시 이메일 외 별도 서버에 저장되지 않아요.</dd></div>
+        <div><dt>결제 및 환불 정책</dt><dd>리딩 발송 전까지 전액 환불 가능해요. 발송 후 환불은 카카오 채널로 문의해주세요.</dd></div>
+        <div><dt>사주 산출 기준</dt><dd>만세력(萬歲曆) 기반 계산이며, 입력하신 양력 생년월일을 기준으로 해요.</dd></div>
+        <div><dt>양력·음력 처리 기준</dt><dd>현재 양력 기준으로만 계산해요. 음력 생일은 양력으로 변환 후 입력해 주세요.</dd></div>
+        <div><dt>표준시(시간대) 적용</dt><dd>한국 표준시(KST, UTC+9) 기준이에요. 해외 출생 시 현지 시간을 KST로 변환해 입력하면 더 정확해요.</dd></div>
+        <div><dt>자정 전후 출생</dt><dd>23:00~01:00은 자시(子時)예요. 자정이 넘어도 해당 시간대라면 자시로 입력하면 돼요.</dd></div>
+      </dl>
+      <p class="trust-note">
+        고객 문의: <a href="http://pf.kakao.com/_bSudX/chat" target="_blank" rel="noopener">카카오 채널 @오속타로</a>
+        &nbsp;·&nbsp; 운영자: 박지현 (온나라) &nbsp;·&nbsp; 사업자등록번호: 602-23-61592<br>
+        <a href="#" onclick="showPrivacyPolicy();return false;">개인정보처리방침</a>
+        &nbsp;·&nbsp; <a href="#" onclick="showTerms();return false;">이용약관</a>
+        &nbsp;·&nbsp; 본 서비스는 오락·참고 목적이며 전문적인 상담을 대체하지 않아요.
+      </p>
+    </div>
+
+    <button class="reset-btn" onclick="resetSaju()" aria-label="다시 입력하기">↩ 다시 입력하기</button>
   </section>
 
   <!-- ══ 후기 ══ -->
@@ -661,8 +1021,8 @@ footer{text-align:center;padding:32px 16px 20px;color:rgba(154,128,96,.45);font-
       placeholder="이메일 주소 입력"
       onkeydown="if(event.key==='Enter')submitSajuEmail()">
     <p id="saju-email-err" style="display:none;color:#e57373;font-size:12px;margin-bottom:8px">이메일 주소를 올바르게 입력해주세요.</p>
-    <button onclick="submitSajuEmail()"
-      style="width:100%;padding:15px;background:linear-gradient(135deg,#c9a84c,#e8c97a);border:none;border-radius:12px;color:#06060f;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px">
+    <button id="saju-pay-submit-btn" onclick="submitSajuEmail()"
+      style="width:100%;padding:15px;background:linear-gradient(135deg,#c9a84c,#e8c97a);border:none;border-radius:12px;color:#06060f;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:44px">
       결제하러 가기 →
     </button>
     <button onclick="closeSajuEmailPopup()"
@@ -672,12 +1032,88 @@ footer{text-align:center;padding:32px 16px 20px;color:rgba(154,128,96,.45);font-
   </div>
 </div>
 
-<footer>
-  상호: 온나라 &nbsp;|&nbsp; 대표: 박지현 &nbsp;|&nbsp; 사업자등록번호: 602-23-61592<br>
-  주소: 경상남도 진주시 사들로 126 &nbsp;|&nbsp; 전화: 070-8098-4346<br>
-  카카오 채널: <a href="http://pf.kakao.com/_bSudX/chat" style="color:inherit">@오속타로</a><br>
-  본 서비스는 오락·참고 목적이며, 전문적인 상담을 대체하지 않습니다.
+<footer class="footer-new">
+  <div class="footer-links">
+    <a href="#" onclick="showPrivacyPolicy();return false;">개인정보처리방침</a>
+    <a href="#" onclick="showTerms();return false;">이용약관</a>
+    <a href="http://pf.kakao.com/_bSudX/chat" target="_blank" rel="noopener">결제·환불 문의</a>
+    <a href="http://pf.kakao.com/_bSudX/chat" target="_blank" rel="noopener">카카오 채널 @오속타로</a>
+  </div>
+  <div class="footer-biz">
+    상호: 온나라 &nbsp;·&nbsp; 대표: 박지현 &nbsp;·&nbsp; 사업자등록번호: 602-23-61592<br>
+    주소: 경상남도 진주시 사들로 126 &nbsp;·&nbsp; 전화: 070-8098-4346<br>
+    본 서비스는 오락·참고 목적이며 전문적인 상담을 대체하지 않아요.
+  </div>
 </footer>
+
+<!-- 내 정보 삭제 확인 모달 -->
+<div class="confirm-modal-overlay" id="delete-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+  <div class="confirm-modal">
+    <h3 id="delete-modal-title">내 정보를 삭제할까요?</h3>
+    <p>저장된 사주 데이터와 리딩 내용이 모두 삭제돼요.<br>삭제 후에는 복구할 수 없어요.</p>
+    <div class="confirm-modal-btns">
+      <button class="confirm-btn cancel" onclick="closeDeleteConfirm()">취소</button>
+      <button class="confirm-btn delete" onclick="executeDeleteMyInfo()">삭제하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 공유 모달 -->
+<div class="share-modal-overlay" id="share-modal" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
+  <div class="share-modal">
+    <h3 id="share-modal-title">결과 공유하기</h3>
+    <p>공유 시 개인정보 포함 여부를 선택해주세요.</p>
+    <div class="share-privacy">
+      <label>
+        <input type="checkbox" id="share-show-birth" aria-label="생년월일·출생시간 포함">
+        생년월일·출생시간 포함하기 (기본: 숨김)
+      </label>
+    </div>
+    <div class="share-btns">
+      <button class="share-option-btn kakao" onclick="shareKakao()" aria-label="카카오톡으로 공유">
+        <span aria-hidden="true">💬</span> 카카오톡으로 공유
+      </button>
+      <button class="share-option-btn link-copy" onclick="copyShareLink()" aria-label="링크 복사">
+        <span aria-hidden="true">🔗</span> 링크 복사
+      </button>
+      <button class="share-option-btn img-save" onclick="saveResultImage(true)" aria-label="요약 이미지 저장">
+        <span aria-hidden="true">📷</span> 요약 이미지 저장
+      </button>
+    </div>
+    <button class="share-modal-close" onclick="closeShareModal()">닫기</button>
+  </div>
+</div>
+
+<!-- 개인정보처리방침 모달 -->
+<div class="confirm-modal-overlay" id="privacy-modal" role="dialog" aria-modal="true">
+  <div class="confirm-modal" style="max-width:420px;text-align:left">
+    <h3 style="margin-bottom:14px">개인정보처리방침</h3>
+    <p style="font-size:.8rem;line-height:1.85;margin-bottom:20px;max-height:260px;overflow-y:auto;padding-right:4px">
+      오속 사주(운영자: 박지현, 온나라)는 서비스 제공을 위해 최소한의 개인정보를 수집합니다.<br><br>
+      <strong style="color:var(--gold)">수집 항목:</strong> 이메일 주소 (유료 리딩 신청 시), 생년월일·출생시간·성별 (사주 계산용)<br><br>
+      <strong style="color:var(--gold)">이용 목적:</strong> 사주 리딩 결과 발송, 고객 문의 응대<br><br>
+      <strong style="color:var(--gold)">보유 기간:</strong> 리딩 발송 완료 후 60일 보관 후 파기<br><br>
+      <strong style="color:var(--gold)">제3자 제공:</strong> 제공하지 않음<br><br>
+      입력하신 사주 정보는 브라우저 로컬에만 임시 저장되며, 이메일 수집 없이는 서버에 저장되지 않습니다. 개인정보 관련 문의는 카카오 채널 @오속타로로 연락해주세요.
+    </p>
+    <div class="confirm-modal-btns"><button class="confirm-btn cancel" style="flex:none;width:100%" onclick="closePrivacyModal()">확인</button></div>
+  </div>
+</div>
+
+<!-- 이용약관 모달 -->
+<div class="confirm-modal-overlay" id="terms-modal" role="dialog" aria-modal="true">
+  <div class="confirm-modal" style="max-width:420px;text-align:left">
+    <h3 style="margin-bottom:14px">이용약관</h3>
+    <p style="font-size:.8rem;line-height:1.85;margin-bottom:20px;max-height:260px;overflow-y:auto;padding-right:4px">
+      <strong style="color:var(--gold)">서비스 목적:</strong> 본 서비스는 사주명리학 기반의 오락·참고 목적 서비스이며, 법적·의료적·금융적 판단의 근거로 사용할 수 없습니다.<br><br>
+      <strong style="color:var(--gold)">결제 및 환불:</strong> 리딩 발송 전 취소 시 전액 환불됩니다. 리딩 발송 완료 후에는 콘텐츠 특성상 환불이 제한될 수 있으며, 이의가 있는 경우 카카오 채널로 문의해주세요.<br><br>
+      <strong style="color:var(--gold)">재열람 기간:</strong> 기본 리딩 30일, 프리미엄 리딩 60일. 기간 내 이메일을 통해 재열람 가능합니다.<br><br>
+      <strong style="color:var(--gold)">지식재산권:</strong> 리딩 결과물의 저작권은 운영자에게 있으며, 무단 복제·배포를 금합니다.<br><br>
+      <strong style="color:var(--gold)">면책:</strong> 사주 해석은 참고용이며, 이를 근거로 한 의사결정의 결과에 대해 운영자는 책임지지 않습니다.
+    </p>
+    <div class="confirm-modal-btns"><button class="confirm-btn cancel" style="flex:none;width:100%" onclick="closeTermsModal()">확인</button></div>
+  </div>
+</div>
 
 <script>
 /* ─── 별 배경 ─── */
@@ -756,14 +1192,15 @@ function calcSinsal(pillars,dayCycle,knownHour){
     found.push({name:'양인(羊刃)',emoji:'⚔️',
       desc:`강한 의지와 날카로운 에너지. 집중력·추진력이 탁월하지만 고집이 강할 수 있어요.`});
 
-  // 공망: 일주 기준 旬에서 빠진 지지
+  // 공망: 일주 기준 旬에서 빠진 지지 (항상 표시)
   const GONGMANG=[[10,11],[8,9],[6,7],[4,5],[2,3],[0,1]];
   const sun=Math.floor(dayCycle/10);
   const gongB=GONGMANG[sun];
-  const gongFound=allB.filter(b=>gongB.includes(b));
-  if(gongFound.length>0)
-    found.push({name:'공망(空亡)',emoji:'🕳️',
-      desc:`${gongFound.map(b=>BRANCHES[b]).join('·')} 공망. 해당 지지의 운에서 에너지가 약해질 수 있어요.`});
+  const gongInPillars=allB.filter(b=>gongB.includes(b));
+  const gongDesc=gongInPillars.length>0
+    ?`${gongB.map(b=>BRANCHES[b]).join('·')} 공망. 사주 기둥에 공망 지지가 포함되어 영향이 강해요.`
+    :`${gongB.map(b=>BRANCHES[b]).join('·')} 공망. 해당 지지 해(年)·운에서 에너지가 약해질 수 있어요.`;
+  found.push({name:'공망(空亡)',emoji:'🕳️',desc:gongDesc});
 
   return found;
 }
@@ -783,23 +1220,45 @@ const SAJU_SYSTEM = `당신은 사주명리학, 자미두수(紫微斗數), 서�
 - "좋다/나쁘다"보다 "지금 이 시기에 당신이 해야 할 것"을 중심으로 이야기해요
 - 과거 기질 분석 + 현재 흐름 + 앞으로의 방향성을 하나의 스토리로 연결해요
 
-규칙:
-- 반드시 존댓말 사용 (해요체)
-- 내담자의 이름, 생년월일, 사주팔자 데이터를 처음부터 직접 언급하며 완전히 개인화된 리딩
-- 사주팔자(일간의 오행 성질, 오행 분포의 강약)를 핵심 축으로 해석
-- 자미두수 관점: 생년월일시를 바탕으로 내담자의 명궁 에너지, 주요 성계의 기운이 어떻게 작용하는지 자연스럽게 녹여서 설명
-- 별자리 에너지와 사주 에너지의 조화·충돌 포인트를 분석
-- 자연스러운 단락 구분 (빈 줄 포함)
-- 반드시 아래 순서로 작성할 것:
-  1. 사주 근간 풀이 (일간의 성질, 오행 분포, 전체적인 기질 + 이 에너지로 어떻게 살아야 하는지) — 6~7단락 충분히
-  2. 올해의 운세 흐름 — 지금 어떤 파도 위에 있고, 이 시기에 집중해야 할 방향 — 2단락
-  3. 연애운 맛보기 한 단락 — 도입 1~2문장은 보여주고, 핵심이 되는 문장(언제, 어떤 인연, 어떤 변화)은 [BLUR]내용[/BLUR] 태그로 감싸기
-  4. 재물운 맛보기 한 단락 — 도입 1~2문장은 보여주고, 핵심 문장은 [BLUR]내용[/BLUR] 태그로 감싸기
-  5. 직업운 맛보기 한 단락 — 도입 1~2문장은 보여주고, 핵심 문장은 [BLUR]내용[/BLUR] 태그로 감싸기
-  6. "지금 이 시기 당신이 가야 할 방향이 있어요" 식의 자연스러운 마무리 한 단락 — 전체를 [BLUR]내용[/BLUR]로 감싸기
-- 각 단락은 3~5문장으로 풍성하게
-- 절대로 **굵게**, *기울임*, # 제목 등 마크다운 기호 사용 금지. 순수한 텍스트만 사용할 것
-- 번호 목록이나 불릿 기호 사용 금지`;
+반드시 아래 섹션 마커를 정확히 사용해서 작성하세요. 각 마커는 ===제목=== 형식입니다.
+[BLUR] 태그는 절대 사용하지 마세요. 모든 내용을 완전히 공개해요.
+무료 리딩이므로 각 섹션은 짧지만 완결되게 — 사용자가 자기 자신에 대해 최소 하나의 유용한 이해나 조언을 얻을 수 있도록 써요.
+
+===META===
+키워드: 키워드1, 키워드2, 키워드3, 키워드4
+성격요약: 기질을 담은 첫 번째 문장. 두 번째 문장. 세 번째 문장.
+운세요약: 지금 이 시기 운의 흐름을 한 문장으로.
+
+===성격과 기질===
+헤드라인: 이 사람의 핵심 기질을 담은 결론 한 문장.
+(일간·오행을 바탕으로 타고난 성격과 기질을 3~4단락으로 완결되게. 자미두수·별자리도 자연스럽게 녹여서. 짧지만 읽고 나서 "나 맞아"라고 느낄 수 있게.)
+
+===올해의 운세===
+헤드라인: 올해 운의 핵심 흐름 한 문장.
+(2026년 대운·세운 흐름과 올해 집중해야 할 방향을 3~4단락으로. 막연한 이야기가 아니라 지금 이 시기의 에너지를 구체적으로.)
+
+===연애운===
+헤드라인: 연애운 핵심 결론 한 문장.
+(연애 기질과 올해 흐름을 2~3단락으로. 지금 인연 에너지와 한 가지 실질적인 방향 포함.)
+
+===재물운===
+헤드라인: 재물운 핵심 결론 한 문장.
+(재물 흐름과 핵심 패턴을 2~3단락으로. 올해 재물 에너지와 한 가지 주의할 점 포함.)
+
+===직업운===
+헤드라인: 직업운 핵심 결론 한 문장.
+(타고난 적성과 올해 커리어 흐름을 2~3단락으로. 지금 직업에서 강점으로 쓸 수 있는 것 포함.)
+
+===지금 이 시기===
+헤드라인: 지금 당신에게 가장 중요한 방향 한 문장.
+(전체 사주를 관통하는 지금 이 시기 핵심 방향. 바로 내일부터 실천할 수 있는 대표 조언 1가지를 2~3단락으로.)
+
+공통 규칙:
+- 반드시 해요체
+- 내담자 이름·생년월일을 자연스럽게 언급하며 개인화
+- 마크다운 기호(**굵게** *기울임* # 제목) 사용 금지
+- 번호 목록·불릿 기호 사용 금지
+- [BLUR] 태그 절대 사용 금지`;
 
 async function callAI(messages) {
   const res = await fetch('/api/chat', {
@@ -811,6 +1270,157 @@ async function callAI(messages) {
   const data = await res.json();
   return data.content;
 }
+
+/* ─── 리딩 파서 ─── */
+function parseSajuReading(text) {
+  const result = { meta: null, sections: [] };
+  const parts = text.split(/===(.+?)===/);
+  for (let i = 1; i < parts.length; i += 2) {
+    const title = parts[i].trim();
+    const body  = (parts[i + 1] || '').trim();
+    if (title === 'META') {
+      const kw   = (body.match(/키워드:\s*(.+)/)?.[1] || '').split(',').map(s=>s.trim()).filter(Boolean);
+      const pers = body.match(/성격요약:\s*(.+)/)?.[1]?.trim() || '';
+      const flow = body.match(/운세요약:\s*(.+)/)?.[1]?.trim() || '';
+      result.meta = { keywords: kw, personality: pers, flow };
+    } else {
+      const headline = body.match(/헤드라인:\s*(.+)/)?.[1]?.trim() || '';
+      const content  = body.replace(/^헤드라인:.+$/m, '').trim();
+      const SEC_ID = { '성격과 기질':'sec-personality','올해의 운세':'sec-year','연애운':'sec-love','재물운':'sec-money','직업운':'sec-career','지금 이 시기':'sec-now' };
+      result.sections.push({ title, headline, content, id: SEC_ID[title] || ('sec-' + i) });
+    }
+  }
+  return result;
+}
+
+/* ─── 단락 렌더 (BLUR 지원) ─── */
+function renderParaHtml(text) {
+  return text.split(/\n\n+/).filter(p=>p.trim()).map(p => {
+    if (!p.includes('[BLUR]')) return `<p class="rs-para">${p.trim()}</p>`;
+    const parts = p.split(/\[BLUR\]|\[\/BLUR\]/);
+    let html = '<p class="rs-para">';
+    parts.forEach((part, i) => {
+      if (!part) return;
+      html += i % 2 === 1 ? `<span class="inline-blur">${part}</span>` : part;
+    });
+    return html + '</p>';
+  }).join('');
+}
+
+/* ─── 섹션 렌더 ─── */
+function renderReadingSections(parsed) {
+  const wrap = document.getElementById('reading-sections');
+  if (!parsed.sections.length) { wrap.innerHTML = ''; return; }
+
+  // 요약 카드
+  if (parsed.meta) {
+    const m = parsed.meta;
+    document.getElementById('summary-kw-row').innerHTML = m.keywords.map(k=>`<span class="summary-kw">${k}</span>`).join('');
+    document.getElementById('summary-personality').textContent = m.personality;
+    document.getElementById('summary-flow').textContent = m.flow;
+    document.getElementById('summary-card').style.display = 'block';
+  }
+
+  // 섹션별 카드
+  wrap.innerHTML = parsed.sections.map((sec, idx) => {
+    const paras = sec.content.split(/\n\n+/).filter(p=>p.trim());
+    // 미리보기: BLUR 나오기 전까지 최대 2단락
+    let previewParas = [], restParas = [], hitBlur = false;
+    paras.forEach(p => {
+      if (!hitBlur && previewParas.length < 2 && !p.includes('[BLUR]')) {
+        previewParas.push(p);
+      } else {
+        hitBlur = true;
+        restParas.push(p);
+      }
+    });
+    const hasMore = restParas.length > 0;
+    const previewHtml = renderParaHtml(previewParas.join('\n\n'));
+    const restHtml    = hasMore ? renderParaHtml(restParas.join('\n\n')) : '';
+
+    return `<div class="reading-section" id="${sec.id}" style="scroll-margin-top:48px">
+      <div class="rs-header">
+        <p class="rs-label">✦ 오속의 사주 리딩</p>
+        <h3 class="rs-title">${sec.title}</h3>
+        ${sec.headline ? `<div class="rs-headline">${sec.headline}</div>` : ''}
+      </div>
+      <div class="rs-preview">${previewHtml}</div>
+      ${hasMore ? `<div class="rs-full hidden" id="${sec.id}-full">${restHtml}</div>
+      <button class="rs-toggle-btn" id="${sec.id}-btn" onclick="toggleSection('${sec.id}')" tabindex="0" aria-expanded="false" aria-controls="${sec.id}-full">
+        <span class="rs-toggle-text">자세히 보기</span>
+        <span class="rs-toggle-icon">▾</span>
+      </button>` : ''}
+    </div>`;
+  }).join('');
+
+  // 잠긴 유료 섹션 추가
+  const lockedItems = [
+    { title:'재물운 심층 분석', preview:'돈이 모이는 방식, 지출이 늘어나는 패턴, 재물운이 강해지는 구체적 시기를 확인할 수 있어요.' },
+    { title:'연애·결혼 심층 흐름', preview:'내가 관계에서 반복하는 패턴과 인연이 강해지는 시기, 갈등이 생기는 원인까지 담겨요.' },
+    { title:'타고난 기질 내면 심층 분석', preview:'사주적 근거, 장단점, 실제 생활에서 나타나는 구체적 모습과 개선 방향이 포함돼요.' },
+    { title:'10년 대운 + 2026년 월별 운세', preview:'중요한 기회와 조심해야 할 시기를 달 단위로 — 언제 무엇을 해야 할지 알 수 있어요.' },
+    { title:'분야별 맞춤 행동 조언 + PDF 저장', preview:'성격·재물·직업·연애별 구체적 행동 방법과 전체 리딩 PDF 저장 기능이 포함돼요.' },
+  ];
+  const lockedHtml = lockedItems.map(item => `
+    <div class="locked-section">
+      <div class="locked-header">
+        <span class="locked-title">🔒 ${item.title}</span>
+      </div>
+      <p class="locked-preview">${item.preview}</p>
+      <button class="locked-unlock-btn" onclick="showSajuEmailPopup('premium')" aria-label="${item.title} 잠금 해제">
+        ✦ 상세 리딩에서 확인하기
+      </button>
+    </div>`).join('');
+
+  const lockedWrap = document.createElement('div');
+  lockedWrap.style.display = 'flex';
+  lockedWrap.style.flexDirection = 'column';
+  lockedWrap.style.gap = '12px';
+  lockedWrap.innerHTML = lockedHtml;
+  wrap.appendChild(lockedWrap);
+
+  // 목차 표시
+  document.getElementById('saju-nav').classList.add('visible');
+  initNavObserver();
+}
+
+function toggleSection(id) {
+  const full = document.getElementById(id + '-full');
+  const btn  = document.getElementById(id + '-btn');
+  if (!full) return;
+  const isOpen = !full.classList.contains('hidden');
+  full.classList.toggle('hidden');
+  btn.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(isOpen ? 'false' : 'true'));
+  btn.querySelector('.rs-toggle-text').textContent = isOpen ? '자세히 보기' : '간단히 보기';
+}
+
+/* ─── 목차 활성화 ─── */
+function navScrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function initNavObserver() {
+  const targets = ['sec-summary','sec-pillars','sec-ohaeng','sec-personality','sec-year','sec-love','sec-money','sec-career','sec-upgrade'];
+  const items   = document.querySelectorAll('.sn-item');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const idx = targets.indexOf(e.target.id);
+        items.forEach((it, i) => it.classList.toggle('active', i === idx));
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  targets.forEach(id => { const el=document.getElementById(id); if(el) io.observe(el); });
+}
+
+/* ─── 맨 위로 버튼 ─── */
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scroll-top-btn');
+  if (btn) btn.classList.toggle('visible', window.scrollY > 400);
+});
+function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
 /* ─── 만세력 계산 ─── */
 function getJDN(y,m,d){const a=Math.floor((14-m)/12),yr=y+4800-a,mo=m+12*a-3;return d+Math.floor((153*mo+2)/5)+365*yr+Math.floor(yr/4)-Math.floor(yr/100)+Math.floor(yr/400)-32045}
@@ -891,7 +1501,10 @@ function renderPillars(pillars,knownHour){
   ];
   document.getElementById('pillars-grid').innerHTML=cols.map(c=>{
     if(c.unknown)return`<div class="pillar"><div class="plabel">${c.label}</div><div class="stem" style="font-size:1.2rem;opacity:.3">모름</div><div class="branch" style="font-size:1.2rem;opacity:.3">—</div></div>`;
-    const sipsung=c.isDay?'<div class="sipsung-badge day-badge">일간 (본인)</div>':`<div class="sipsung-badge">${calcSipsung(dayS,c.s)}</div>`;
+    const ss = c.isDay ? null : calcSipsung(dayS, c.s);
+    const sipsung = c.isDay
+      ? `<div class="sipsung-badge day-badge">일간${termBadge('일간')} (본인)</div>`
+      : `<div class="sipsung-badge">${ss}${termBadge(ss)}</div>`;
     return`<div class="pillar${c.isDay?' day-pillar':''}">
       <div class="plabel">${c.label}</div>
       ${sipsung}
@@ -993,6 +1606,8 @@ async function submitSajuEmail(){
     return;
   }
   errEl.style.display='none';
+  const submitBtn=document.getElementById('saju-pay-submit-btn');
+  if(!guardPayBtn(submitBtn))return;
 
   if(!S.sajuData){
     alert('사주 정보가 없어요. 다시 계산해주세요.');
@@ -1043,12 +1658,23 @@ async function calculate(){
   S.chatHistory=[];
   S.sajuData={ name, year, month, day, hourVal, gender, context: buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour) };
 
+  // 출생 정보 바
+  const genderKo=gender==='m'?'남성':'여성';
+  const hourStr=knownHour?` · ${hourVal}시`:'';
+  document.getElementById('birth-info-text').textContent=
+    `${year}년 ${month}월 ${day}일${hourStr} · 양력 · ${genderKo}`;
+
+  // 별 밝기 감소
+  dimStars(true);
+
   // 히어로·랜딩 숨기고 결과로
   document.getElementById('form-sec').classList.add('hidden');
   document.getElementById('result-sec').classList.remove('hidden');
+  document.getElementById('summary-card').style.display='none';
+  document.getElementById('reading-sections').innerHTML='';
+  document.getElementById('saju-nav').classList.remove('visible');
   document.getElementById('category-section').classList.add('hidden');
   document.getElementById('cat-reading-card').classList.add('hidden');
-
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('upgrade-banner').style.display='none';
   document.getElementById('reviews-sec').style.display='none';
@@ -1062,7 +1688,7 @@ async function calculate(){
 
   const aiBody=document.getElementById('ai-reading-body');
   aiBody.innerHTML=`<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> 오속이 사주팔자를 분석하고 있어요...</div>`;
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('result-sec').scrollIntoView({behavior:'smooth'});
 
   const userMsg=buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour);
   S.chatHistory.push({role:'user',content:userMsg});
@@ -1071,56 +1697,277 @@ async function calculate(){
     const reading=await callAI(S.chatHistory);
     S.chatHistory.push({role:'assistant',content:reading});
     aiBody.innerHTML='';
-    const wrap=document.createElement('div');
-    wrap.className='ai-blur-wrap';
-    const paragraphs=reading.split(/\n\n+/).filter(p=>p.trim());
-    paragraphs.forEach(p=>{
-      const div=document.createElement('div');
-      div.className='ai-para';
-      if(p.includes('[BLUR]')){
-        const parts=p.split(/\[BLUR\]|\[\/BLUR\]/);
-        parts.forEach((part,i)=>{
-          if(!part)return;
-          if(i%2===1){
-            const span=document.createElement('span');
-            span.className='inline-blur';
-            span.textContent=part;
-            div.appendChild(span);
-          }else{
-            div.appendChild(document.createTextNode(part));
-          }
-        });
-      }else{
-        div.textContent=p.trim();
-      }
-      wrap.appendChild(div);
-    });
-    const overlay=document.createElement('div');
-    overlay.className='ai-unlock-overlay';
-    overlay.innerHTML=`
-      <p>✨ 상세 리딩이 숨겨져 있어요</p>
-      <button class="ai-unlock-btn" onclick="showSajuEmailPopup()">이메일로 상세 리딩 받기 →</button>
-    `;
-    wrap.appendChild(overlay);
-    aiBody.appendChild(wrap);
+
+    const parsed=parseSajuReading(reading);
+    if(parsed.sections.length>0){
+      renderReadingSections(parsed);
+    } else {
+      // 파싱 실패 시 기존 방식 fallback
+      const wrap=document.createElement('div');
+      wrap.className='ai-blur-wrap';
+      reading.split(/\n\n+/).filter(p=>p.trim()).forEach(p=>{
+        const div=document.createElement('div');
+        div.className='ai-para';
+        if(p.includes('[BLUR]')){
+          p.split(/\[BLUR\]|\[\/BLUR\]/).forEach((part,i)=>{
+            if(!part)return;
+            if(i%2===1){const s=document.createElement('span');s.className='inline-blur';s.textContent=part;div.appendChild(s);}
+            else div.appendChild(document.createTextNode(part));
+          });
+        } else div.textContent=p.trim();
+        wrap.appendChild(div);
+      });
+      const overlay=document.createElement('div');
+      overlay.className='ai-unlock-overlay';
+      overlay.innerHTML=`<p>✨ 상세 리딩이 숨겨져 있어요</p><button class="ai-unlock-btn" onclick="showSajuEmailPopup()">이메일로 상세 리딩 받기 →</button>`;
+      wrap.appendChild(overlay);
+      aiBody.appendChild(wrap);
+    }
 
     document.getElementById('category-section').classList.remove('hidden');
     document.getElementById('upgrade-banner').style.display='block';
+    document.getElementById('upgrade-what-you-get').style.display='block';
+    document.getElementById('trust-section').style.display='block';
     document.getElementById('reviews-sec').style.display='block';
   }catch(e){
-    aiBody.innerHTML=`<div class="ai-text" style="color:var(--sub)">리딩을 불러오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.\n\n오류: ${e.message}</div>`;
+    aiBody.innerHTML=`<div class="error-card">
+      <p>리딩을 불러오는 중 오류가 발생했어요.<br><small style="color:rgba(154,128,96,.5)">${e.message}</small></p>
+      <button class="error-retry-btn" onclick="retryReading()">↺ 다시 시도하기</button>
+    </div>`;
   }
 }
 
-function scrollToCategorySection(){
-  showSajuEmailPopup();
+/* ─── 사주 용어 툴팁 ─── */
+const TERM_DEFS = {
+  '천간':'하늘의 기운을 나타내는 10글자(甲乙丙丁戊己庚辛壬癸). 사람의 기질과 에너지를 보여줘요.',
+  '지지':'땅의 기운을 나타내는 12글자(子丑寅卯辰巳午未申酉戌亥). 계절·환경·인연의 흐름을 담아요.',
+  '십성':'일간(나)과 다른 천간의 관계를 나타내는 10가지 이름. 비견·겁재·식신·상관·편재·정재·편관·정관·편인·정인.',
+  '일간':'사주팔자 중 일주(日柱)의 천간. 나 자신을 상징하는 핵심 에너지예요.',
+  '신강':'일간의 기운이 강한 상태. 에너지가 넘치고 추진력이 강하지만 고집이 세질 수 있어요.',
+  '신약':'일간의 기운이 약한 상태. 유연하고 협조적이지만 자기 중심이 흔들리기 쉬워요.',
+  '용신':'사주의 균형을 맞춰주는 핵심 오행. 내 사주에서 가장 필요한 에너지예요.',
+  '대운':'10년 단위로 바뀌는 큰 운의 흐름. 삶의 큰 방향을 결정하는 에너지예요.',
+  '세운':'매년 바뀌는 그 해의 운. 올해 어떤 에너지가 흐르는지 나타내요.',
+  '비견':'나와 같은 오행·음양의 기운. 독립심과 경쟁심이 강해져요.',
+  '겁재':'나와 같은 오행이지만 음양이 다른 기운. 결단력이 강하지만 충동적일 수 있어요.',
+  '식신':'내가 생(生)하는 기운 중 음양이 같은 것. 표현력·창의력·식복을 나타내요.',
+  '상관':'내가 생하는 기운 중 음양이 다른 것. 재능·언변·반골 기질이에요.',
+  '편재':'내가 극(克)하는 기운 중 음양이 같은 것. 사업 수완과 변동적 재물을 나타내요.',
+  '정재':'내가 극하는 기운 중 음양이 다른 것. 꾸준하고 안정적인 재물을 나타내요.',
+  '편관':'나를 극하는 기운 중 음양이 같은 것. 강한 압박이지만 리더십·경쟁을 나타내요.',
+  '정관':'나를 극하는 기운 중 음양이 다른 것. 명예·직위·규칙을 나타내요.',
+  '편인':'나를 생하는 기운 중 음양이 같은 것. 편향된 학문·종교·직관의 기운이에요.',
+  '정인':'나를 생하는 기운 중 음양이 다른 것. 안정적인 학문·어머니 같은 기운이에요.',
+};
+
+let _ttTarget = null;
+function showTermTooltip(term, el) {
+  const def = TERM_DEFS[term]; if (!def) return;
+  const tt = document.getElementById('term-tooltip');
+  tt.querySelector('.tt-name').textContent = term + '이란?';
+  tt.querySelector('.tt-desc').textContent = def;
+  const r = el.getBoundingClientRect();
+  const top = r.bottom + 8; const left = Math.min(r.left, window.innerWidth - 276);
+  tt.style.top  = top  + 'px';
+  tt.style.left = Math.max(8, left) + 'px';
+  tt.classList.add('visible');
+  el.classList.add('active');
+  _ttTarget = el;
 }
+function hideTermTooltip() {
+  document.getElementById('term-tooltip').classList.remove('visible');
+  if (_ttTarget) { _ttTarget.classList.remove('active'); _ttTarget = null; }
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.term-trigger') && !e.target.closest('#term-tooltip')) hideTermTooltip();
+});
+
+function termBadge(term) {
+  if (!TERM_DEFS[term]) return '';
+  return `<i class="term-trigger" onclick="event.stopPropagation();showTermTooltip('${term}',this)" title="${term}">?</i>`;
+}
+
+/* 결과 영역 별 밝기 감소 */
+function dimStars(on) {
+  const c = document.getElementById('stars');
+  if (c) c.style.opacity = on ? '0.25' : '0.7';
+}
+
+function scrollToCategorySection(){ showSajuEmailPopup(); }
+
 function resetSaju(){
   S.chatHistory=[];
   S.sajuData=null;
+  dimStars(false);
   document.getElementById('result-sec').classList.add('hidden');
+  document.getElementById('saju-nav').classList.remove('visible');
+  document.getElementById('upgrade-what-you-get').style.display='none';
+  document.getElementById('trust-section').style.display='none';
   document.getElementById('form-sec').classList.remove('hidden');
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ─── 재시도 ─── */
+function retryReading(){
+  if(!S.sajuData)return;
+  const d=S.sajuData;
+  const knownHour=d.hourVal>=0;
+  const pillars=calcSaju(d.year,d.month,d.day,knownHour?d.hourVal:-1);
+  const ohaeng=calcOhaeng(pillars);
+  const zodiac=getZodiac(d.month,d.day);
+  const aiBody=document.getElementById('ai-reading-body');
+  aiBody.innerHTML=`<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> 오속이 다시 분석하고 있어요...</div>`;
+  const userMsg=buildSajuContext(d.name,d.year,d.month,d.day,d.hourVal,d.gender,pillars,ohaeng,zodiac,knownHour);
+  S.chatHistory=[{role:'user',content:userMsg}];
+  callAI(S.chatHistory).then(reading=>{
+    S.chatHistory.push({role:'assistant',content:reading});
+    aiBody.innerHTML='';
+    const parsed=parseSajuReading(reading);
+    if(parsed.sections.length>0){renderReadingSections(parsed);}
+    document.getElementById('category-section').classList.remove('hidden');
+    document.getElementById('upgrade-banner').style.display='block';
+    document.getElementById('upgrade-what-you-get').style.display='block';
+    document.getElementById('trust-section').style.display='block';
+    document.getElementById('reviews-sec').style.display='block';
+  }).catch(e=>{
+    aiBody.innerHTML=`<div class="error-card"><p>다시 시도했지만 오류가 발생했어요.<br><small style="color:rgba(154,128,96,.5)">${e.message}</small></p><button class="error-retry-btn" onclick="retryReading()">↺ 다시 시도하기</button></div>`;
+  });
+}
+
+/* ─── 내 정보 삭제 ─── */
+function confirmDeleteMyInfo(){
+  document.getElementById('delete-confirm-modal').classList.add('active');
+}
+function closeDeleteConfirm(){
+  document.getElementById('delete-confirm-modal').classList.remove('active');
+}
+function executeDeleteMyInfo(){
+  S.chatHistory=[];
+  S.sajuData=null;
+  localStorage.removeItem('saju_last_result');
+  closeDeleteConfirm();
+  dimStars(false);
+  document.getElementById('result-sec').classList.add('hidden');
+  document.getElementById('saju-nav').classList.remove('visible');
+  document.getElementById('upgrade-what-you-get').style.display='none';
+  document.getElementById('trust-section').style.display='none';
+  document.getElementById('form-sec').classList.remove('hidden');
+  // 입력 초기화
+  ['inp-name','inp-year'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('inp-month').selectedIndex=0;
+  document.getElementById('inp-day').selectedIndex=0;
+  document.getElementById('inp-hour').selectedIndex=0;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ─── 공유 모달 ─── */
+function openShareModal(){
+  document.getElementById('share-show-birth').checked=false;
+  document.getElementById('share-modal').classList.add('active');
+}
+function closeShareModal(){
+  document.getElementById('share-modal').classList.remove('active');
+}
+
+/* ─── 카카오톡 공유 ─── */
+function shareKakao(){
+  const showBirth=document.getElementById('share-show-birth').checked;
+  const name=S.sajuData?.name||'';
+  let title='오속 사주 — 나의 사주 리딩 결과';
+  let desc='오속에서 사주팔자를 분석했어요. 무료로 내 사주 확인하기 →';
+  if(showBirth&&S.sajuData){
+    const d=S.sajuData;
+    desc=`${d.year}년 ${d.month}월 ${d.day}일생 사주 리딩 결과예요. 당신의 사주도 확인해보세요 →`;
+  }
+  const url='https://osok-tarot.vercel.app/saju.html';
+  if(window.Kakao?.isInitialized?.()&&window.Kakao?.Share){
+    window.Kakao.Share.sendDefault({objectType:'feed',content:{title,description:desc,imageUrl:'https://osok-tarot.vercel.app/osok.png',link:{mobileWebUrl:url,webUrl:url}},buttons:[{title:'내 사주 보기',link:{mobileWebUrl:url,webUrl:url}}]});
+  } else {
+    // 카카오 SDK 미로드 시 Web Share API 또는 링크 복사로 폴백
+    if(navigator.share){
+      navigator.share({title,text:desc,url}).catch(()=>{});
+    } else {
+      navigator.clipboard.writeText(url).then(()=>alert('링크가 복사됐어요! 카카오톡에 붙여넣기 하세요.')).catch(()=>alert('공유 URL: '+url));
+    }
+  }
+  closeShareModal();
+}
+
+/* ─── 링크 복사 ─── */
+function copyShareLink(){
+  const url='https://osok-tarot.vercel.app/saju.html';
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn=document.querySelector('.share-option-btn.link-copy');
+    const orig=btn.innerHTML;
+    btn.innerHTML='<span>✓</span> 복사됐어요!';
+    setTimeout(()=>{btn.innerHTML=orig;closeShareModal();},1500);
+  }).catch(()=>alert('복사 URL: '+url));
+}
+
+/* ─── 결과 이미지 저장 ─── */
+function saveResultImage(fromShare=false){
+  if(fromShare)closeShareModal();
+  // html2canvas가 없으면 안내만
+  if(typeof html2canvas==='undefined'){
+    alert('저장 기능을 사용하려면 상세 리딩(유료)에서 제공되는 PDF 저장 기능을 이용해주세요.\n\n또는 브라우저 스크린샷(윈도우: Win+Shift+S / 맥: Cmd+Shift+4)으로 저장하실 수 있어요.');
+    return;
+  }
+  const showBirth=document.getElementById('share-show-birth')?.checked;
+  const birthBar=document.getElementById('birth-info-text');
+  const origText=birthBar?.textContent||'';
+  if(!showBirth&&birthBar) birthBar.textContent='✦ 오속 사주 리딩 결과';
+  html2canvas(document.getElementById('summary-card'),{backgroundColor:'#06060f',scale:2}).then(canvas=>{
+    const a=document.createElement('a');
+    a.download='오속_사주_요약.png';
+    a.href=canvas.toDataURL('image/png');
+    a.click();
+    if(!showBirth&&birthBar) birthBar.textContent=origText;
+  }).catch(()=>{
+    if(!showBirth&&birthBar) birthBar.textContent=origText;
+    alert('저장 중 오류가 발생했어요. 브라우저 스크린샷 기능을 사용해주세요.');
+  });
+}
+
+/* ─── 개인정보·약관 모달 ─── */
+function showPrivacyPolicy(){document.getElementById('privacy-modal').classList.add('active');}
+function closePrivacyModal(){document.getElementById('privacy-modal').classList.remove('active');}
+function showTerms(){document.getElementById('terms-modal').classList.add('active');}
+function closeTermsModal(){document.getElementById('terms-modal').classList.remove('active');}
+
+/* ─── 모달 외부 클릭 닫기 ─── */
+document.addEventListener('click',e=>{
+  ['delete-confirm-modal','share-modal','privacy-modal','terms-modal'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.classList.contains('active')&&e.target===el) el.classList.remove('active');
+  });
+});
+
+/* ─── ESC 키 모달 닫기 ─── */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    ['delete-confirm-modal','share-modal','privacy-modal','terms-modal'].forEach(id=>{
+      document.getElementById(id)?.classList.remove('active');
+    });
+  }
+});
+
+/* ─── 접기/펼치기 키보드 접근성 ─── */
+document.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('rs-toggle-btn')){
+    e.preventDefault();
+    const id=e.target.id.replace('-btn','');
+    toggleSection(id);
+  }
+});
+
+/* ─── 결제 버튼 중복 클릭 방지 ─── */
+function guardPayBtn(btn){
+  if(btn.disabled)return false;
+  const orig=btn.textContent;
+  btn.disabled=true;
+  btn.textContent='처리 중...';
+  setTimeout(()=>{btn.disabled=false;btn.textContent=orig;},6000);
+  return true;
 }
 </script>
 </body>
