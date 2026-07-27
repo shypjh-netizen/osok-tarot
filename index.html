@@ -335,7 +335,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 <section class="screen hidden" id="payment-screen">
   <div style="max-width:460px;width:100%;text-align:center">
     <h2 style="font-family:'Nanum Myeongjo',serif;font-size:24px;color:var(--gold-l);margin-bottom:6px">✨ 타로 상담 안내</h2>
-    <p style="font-size:13px;color:var(--dim);margin-bottom:24px">결제 시 입력하신 <b style="color:var(--gold-l)">이메일 주소</b>로 바로 시작할 수 있어요</p>
+    <p style="font-size:13px;color:var(--dim);margin-bottom:24px">카카오페이로 결제하면 <b style="color:var(--gold-l)">바로 리딩이 시작</b>돼요</p>
     <div class="price-box">
       <div class="price-title">상담 요금</div>
       <div class="price-item">
@@ -350,7 +350,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span class="price-badge">40% OFF</span>
             <span class="price-amount-main">5,900원</span>
           </div>
-          <a href="#" class="pay-btn-sm" onclick="event.preventDefault();showPayNotice(CFG.payLink)">결제하기</a>
+          <button class="pay-btn-sm" onclick="kakaoPay('basic')">결제하기</button>
         </div>
       </div>
       <div class="price-item" style="cursor:pointer" onclick="alert('심층리딩을 먼저 진행하신 후 이용하실 수 있어요 😊 위의 심층리딩을 먼저 시작해보세요!')">
@@ -380,7 +380,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span class="price-badge">47% OFF</span>
             <span class="price-amount-main">8,900원</span>
           </div>
-          <a href="#" class="pay-btn-sm pay-btn-gold" onclick="event.preventDefault();showPayNotice(CFG.setLink)">결제하기</a>
+          <button class="pay-btn-sm pay-btn-gold" onclick="kakaoPay('set')">결제하기</button>
         </div>
       </div>
     </div>
@@ -388,15 +388,15 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
     <a href="http://pf.kakao.com/_bSudX/chat" target="_blank" style="display:block;font-size:13px;color:var(--dim);text-decoration:none;margin-bottom:20px">💬 결제 문제가 있으신가요? <span style="color:#f9a8d4;text-decoration:underline">카카오 채널로 문의하기</span></a>
     <div id="code-input-row" style="margin-top:0;text-align:left;max-width:420px;width:100%;margin-left:auto;margin-right:auto">
       <div style="background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--dim);text-align:left;line-height:1.7;margin-bottom:10px;word-break:keep-all">
-        💡 결제하실 때 입력하신 <b style="color:var(--gold-l)">이메일 주소</b>를 입력해주세요
+        💡 이전에 결제하셨다면 주문 코드 또는 이메일 주소를 입력해주세요
       </div>
       <div style="display:flex;gap:8px">
-        <input type="email" id="access-code" class="field-input" placeholder="이메일 주소 입력"
+        <input type="text" id="access-code" class="field-input" placeholder="주문 코드 또는 이메일 입력"
           style="margin:0;flex:1" onkeydown="if(event.key==='Enter')submitCode()">
         <button class="followup-send-btn" onclick="submitCode()" style="white-space:nowrap">확인</button>
       </div>
     </div>
-    <p class="code-err" id="code-err">이메일을 찾을 수 없어요. 결제 시 입력하신 이메일을 확인해주세요.<br><a href="http://pf.kakao.com/_bSudX/chat" target="_blank" style="color:#f9a8d4;text-decoration:underline">💬 카카오 채널로 문의하기</a></p>
+    <p class="code-err" id="code-err">확인할 수 없어요. 코드 또는 이메일을 다시 확인해주세요.<br><a href="http://pf.kakao.com/_bSudX/chat" target="_blank" style="color:#f9a8d4;text-decoration:underline">💬 카카오 채널로 문의하기</a></p>
     <button class="btn-sub" onclick="showScreen('intro')">← 돌아가기</button>
   </div>
 </section>
@@ -1255,12 +1255,7 @@ function typeText(el, text, speed=16) {
    코드는 여기서 자유롭게 추가/삭제 가능합니다.
 ══════════════════════════════════════════ */
 const CFG = {
-  payLink:  'https://www.groble.im/payment/zLtadD',   // ← 심층리딩 5,900원
-  extraLink:'https://www.groble.im/payment/MKzubs',   // ← 추가 질문 3,900원
-  setLink:  'https://www.groble.im/payment/RVUzGx',   // ← 세트 8,900원
-  basicCodes: ['TAROT0001','TAROT0002','TAROT0003'], // ← 기본 상담 코드 (결제 후 발급)
-  extraCodes: ['EXTRA0001','EXTRA0002','EXTRA0003'], // ← 추가 질문 코드 (결제 후 발급)
-  freeFollowups: 3,  // 기본 포함 추가질문 횟수
+  freeFollowups: 3,
 };
 
 /* ── 상태 ── */
@@ -1273,16 +1268,51 @@ function showScreen(id) {
   window.scrollTo(0,0);
 }
 
-/* ── 결제 게이트 ── */
-function onPayClick(e) {
-  if(CFG.payLink === 'https://your-payment-link.com') {
-    e.preventDefault();
-    alert('결제 링크를 CFG.payLink에 설정해주세요.');
-    return;
+/* ── 카카오페이 결제 ── */
+async function kakaoPay(product) {
+  try {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const res = await fetch('/api/kakaopay-ready', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error('결제 준비 실패');
+    window.location.href = isMobile ? data.mobile_url : data.pc_url;
+  } catch(e) {
+    alert('결제 준비 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
   }
-  // 결제 링크로 이동 (target=_blank)
-  document.getElementById('pay-link').href = CFG.payLink;
-  setTimeout(()=>toggleCodeInput(), 1500);
+}
+
+/* ── 결제 완료 후 자동 시작 ── */
+async function autoStartFromToken(token) {
+  try {
+    const res = await fetch(`/api/webhook?code=${encodeURIComponent(token)}`);
+    const data = await res.json();
+    if (!data.valid) { showScreen('payment-screen'); return; }
+    S._orderCode = token;
+    if (restoreReadingFromLocal(token)) return;
+    const product = data.product || '';
+    const isSet = product.includes('세트');
+    const isExtra = product.includes('추가질문') || product.includes('추가 질문');
+    if (isSet) {
+      S.freeMode = false; S.extraUnlocked = true; S.followupUsed = 0;
+      S.picked = []; S.chatHistory = [];
+      showScreen('question-screen');
+    } else if (isExtra) {
+      S.extraUnlocked = true; S.followupUsed = 0;
+      document.getElementById('upgrade-banner').classList.add('hidden');
+      document.getElementById('followup-input-row').classList.remove('hidden');
+      updateFollowupCount();
+      showScreen('result-screen');
+    } else {
+      S.freeMode = false; S.picked = []; S.chatHistory = [];
+      showScreen('question-screen');
+    }
+  } catch(e) {
+    showScreen('payment-screen');
+  }
 }
 
 /* ── 후기 ── */
@@ -1443,13 +1473,7 @@ async function submitCode() {
 }
 
 function goUpgrade() {
-  if(CFG.extraLink === 'https://your-extra-payment-link.com') {
-    showScreen('payment-screen');
-    toggleCodeInput();
-    return;
-  }
-  window.open(CFG.extraLink, '_blank');
-  toggleCodeInput();
+  kakaoPay('extra');
 }
 
 function updateFollowupCount() {
@@ -2117,6 +2141,27 @@ function saveReading() {
 }
 
 loadReviews();
+
+/* ── 카카오페이 결제 완료 후 URL 파라미터 처리 ── */
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const kpToken = params.get('kp_token');
+  const payStatus = params.get('payment');
+
+  if (kpToken) {
+    // URL에서 토큰 제거 (보안)
+    window.history.replaceState({}, '', window.location.pathname);
+    autoStartFromToken(kpToken);
+  } else if (payStatus === 'fail' || payStatus === 'cancel') {
+    window.history.replaceState({}, '', window.location.pathname);
+    showScreen('payment-screen');
+    const err = document.getElementById('code-err');
+    if (err) {
+      err.textContent = payStatus === 'cancel' ? '결제가 취소됐어요.' : '결제 중 오류가 발생했어요. 다시 시도해주세요.';
+      err.style.display = 'block';
+    }
+  }
+})();
 </script>
 </body>
 </html>
