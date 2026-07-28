@@ -1504,11 +1504,7 @@ function calcSinsal(pillars,dayCycle,knownHour){
 
 const CFG = {
   /* ── 결제 링크 ── */
-  payLink:          'https://www.groble.im/payment/aWJpJN',
-  premiumPayLink:   'https://www.groble.im/payment/k4TFxq',
-  questionPayLink:  'https://www.groble.im/payment/aWJpJN', // 교체 필요
-
-  /* ── 가격 표시 (화면용, 실제 결제는 Groble) ── */
+  /* ── 가격 표시 ── */
   PRICE_BASIC:      '₩9,900',
   PRICE_SINGLE_Q:   '₩4,900',
   PRICE_PREMIUM:    '₩14,900',
@@ -2109,13 +2105,24 @@ async function submitSajuEmail(){
   }
 
   closeSajuEmailPopup();
-  const payUrl = tier==='premium' ? CFG.premiumPayLink
-               : tier==='single'  ? CFG.questionPayLink
-               : CFG.payLink;
+
   const priceMap2={premium:14900,single:4900,basic:9900};
   pxc('PaymentLinkOpened',{tier,currency:'KRW'});
   px('InitiateCheckout',{value:priceMap2[tier]||9900,currency:'KRW',num_items:1});
-  window.open(payUrl,'_blank');
+
+  try {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const res2 = await fetch('/api/kakaopay-ready-saju', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, tier }),
+    });
+    const data = await res2.json();
+    if (data.error) throw new Error('결제 준비 실패');
+    window.location.href = isMobile ? data.mobile_url : data.pc_url;
+  } catch(e) {
+    alert('결제 준비 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
+  }
 }
 
 async function calculate(){
@@ -2711,6 +2718,28 @@ function guardPayBtn(btn){
   setTimeout(()=>{btn.disabled=false;btn.textContent=orig;},6000);
   return true;
 }
+
+/* ── 카카오페이 결제 완료 후 URL 파라미터 처리 ── */
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const payStatus = params.get('payment');
+  const email = params.get('email');
+  const noData = params.get('no_data');
+
+  if (!payStatus) return;
+  window.history.replaceState({}, '', window.location.pathname);
+
+  if (payStatus === 'success') {
+    const msg = noData
+      ? `결제가 완료됐어요!\n사주 데이터를 찾을 수 없어요. 카카오 채널로 문의해주세요.`
+      : `결제가 완료됐어요! 🎉\n${email ? email + ' 으로 ' : ''}리딩이 발송됐어요.\n이메일이 오지 않으면 스팸함을 확인해주세요.`;
+    alert(msg);
+  } else if (payStatus === 'fail') {
+    alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');
+  } else if (payStatus === 'cancel') {
+    alert('결제가 취소됐어요.');
+  }
+})();
 </script>
 
 <!-- 쿠키 동의 배너 -->
