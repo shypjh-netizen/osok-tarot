@@ -1,5 +1,4 @@
 const USER_ID = '27916228654726680'; // osok.saju
-const SAJU_URL = 'https://osok-tarot.vercel.app/saju.html';
 
 // 천간·지지
 const STEMS   = ['갑','을','병','정','무','기','경','신','임','계'];
@@ -28,6 +27,114 @@ function getTodayIljin() {
     stemElement:   STEM_ELEMENT[stemIdx],
     branchElement: BRANCH_ELEMENT[branchIdx],
     name:          STEMS[stemIdx] + BRANCHES[branchIdx] + '일',
+  };
+}
+
+// ── 지지 관계 (인덱스: 자=0 축=1 인=2 묘=3 진=4 사=5 오=6 미=7 신=8 유=9 술=10 해=11)
+const YUKHAP  = [[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];          // 육합 쌍
+const SAMHAP  = [[8,0,4],[11,3,7],[2,6,10],[5,9,1]];              // 삼합 그룹
+const CHUNG   = [[0,6],[1,7],[2,8],[3,9],[4,10],[5,11]];           // 충 쌍
+
+// ── 천간 관계 (통합 인덱스: 갑=0 을=1 병=2 정=3 무=4 기=5 경=6 신=7 임=8 계=9)
+const STEM_HAP   = [[0,5],[1,6],[2,7],[3,8],[4,9]]; // 갑기 을경 병신 정임 무계
+const STEM_CHUNG = [[0,6],[1,7],[2,8],[3,9]];       // 갑경 을신 병임 정계
+
+// 출생연도 → 천간 통합 인덱스 (1900=경자 기준)
+function getYearStemIdx(year) { return ((year - 1900) % 10 + 6) % 10; }
+// 출생연도 → 지지 인덱스
+function getYearBranchIdx(year) { return ((year - 1900) % 12 + 12) % 12; }
+
+function stemRelation(todayStemIdx, yearStemIdx) {
+  for (const [a, b] of STEM_HAP) {
+    if ((todayStemIdx===a&&yearStemIdx===b)||(todayStemIdx===b&&yearStemIdx===a)) return 'hap';
+  }
+  for (const [a, b] of STEM_CHUNG) {
+    if ((todayStemIdx===a&&yearStemIdx===b)||(todayStemIdx===b&&yearStemIdx===a)) return 'chung';
+  }
+  return 'neutral';
+}
+
+function getBirthYearsForBranch(branchIdx) {
+  const years = [];
+  for (let y = 1970; y <= 2002; y++) {
+    if (getYearBranchIdx(y) === branchIdx) years.push(y);
+  }
+  return years;
+}
+
+function calculateTodayZodiac(iljin) {
+  const todayBranchIdx = BRANCHES.indexOf(iljin.branch);
+  const todayStemIdx   = STEMS.indexOf(iljin.stem);
+  if (todayBranchIdx < 0 || todayStemIdx < 0) {
+    throw new Error(`일진 계산 오류: stem=${iljin.stem}, branch=${iljin.branch}`);
+  }
+
+  // 좋은 띠: 육합 우선, 삼합 보조
+  const goodMap = {};
+  for (const [a, b] of YUKHAP) {
+    if (a === todayBranchIdx) goodMap[b] = '육합';
+    if (b === todayBranchIdx) goodMap[a] = '육합';
+  }
+  for (const group of SAMHAP) {
+    if (group.includes(todayBranchIdx)) {
+      for (const b of group) {
+        if (b !== todayBranchIdx && !goodMap[b]) goodMap[b] = '삼합';
+      }
+    }
+  }
+
+  // 주의 띠: 충
+  const cautionMap = {};
+  for (const [a, b] of CHUNG) {
+    if (a === todayBranchIdx) cautionMap[b] = '충';
+    if (b === todayBranchIdx) cautionMap[a] = '충';
+  }
+
+  // 육합 우선으로 좋은 띠 2개
+  const goodEntries = Object.entries(goodMap)
+    .sort(([,ra],[,rb]) => (ra==='육합'?0:1) - (rb==='육합'?0:1))
+    .slice(0, 2);
+
+  const cautionEntries = Object.entries(cautionMap).slice(0, 1);
+
+  function buildZodiacEntry(branchIdx, reason, isGood) {
+    const years = getBirthYearsForBranch(branchIdx);
+    const yearData = years.map(year => {
+      const yStemIdx = getYearStemIdx(year);
+      return { year, stem: STEMS[yStemIdx], stemIdx: yStemIdx, relation: stemRelation(todayStemIdx, yStemIdx) };
+    });
+    let notable;
+    if (isGood) {
+      const hap = yearData.filter(y => y.relation === 'hap');
+      const neutral = yearData.filter(y => y.relation === 'neutral');
+      notable = [...hap, ...neutral].slice(0, 3);
+    } else {
+      const chung = yearData.filter(y => y.relation === 'chung');
+      notable = chung.length > 0 ? chung.slice(0, 2) : yearData.slice(0, 2);
+    }
+    return {
+      animal: BRANCH_ANIMAL[branchIdx],
+      branch: BRANCHES[branchIdx],
+      branchIdx, reason,
+      notableYears: notable,
+      allYears: years,
+    };
+  }
+
+  const goodZodiacs   = goodEntries.map(([i, r]) => buildZodiacEntry(parseInt(i), r, true));
+  const cautionZodiac = cautionEntries.length > 0
+    ? buildZodiacEntry(parseInt(cautionEntries[0][0]), cautionEntries[0][1], false)
+    : null;
+
+  return {
+    todayIljin: iljin.name, todayStem: iljin.stem, todayBranch: iljin.branch,
+    todayStemIdx, todayBranchIdx,
+    goodZodiacs, cautionZodiac,
+    rationale: {
+      육합: goodEntries.filter(([,r])=>r==='육합').map(([i])=>BRANCH_ANIMAL[parseInt(i)]),
+      삼합: goodEntries.filter(([,r])=>r==='삼합').map(([i])=>BRANCH_ANIMAL[parseInt(i)]),
+      충: cautionEntries.map(([i])=>BRANCH_ANIMAL[parseInt(i)]),
+    },
   };
 }
 
@@ -75,39 +182,80 @@ const MARKETING_THEMES = [
   },
 ];
 
-async function generateMorningPost(iljin) {
+async function generateMorningPost(iljin, zodiacData) {
+  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+  const month = now.getMonth() + 1;
+  const day   = now.getDate();
+
+  // 좋은 띠 데이터 텍스트
+  const goodDesc = zodiacData.goodZodiacs.map(z => {
+    const yrs = z.notableYears.map(y => `${y.year}년생(${y.stem}${z.branch}년·${y.relation})`).join(', ');
+    return `${z.animal}띠 (${z.reason}): 주목생년 ${yrs}`;
+  }).join('\n');
+
+  const cautionDesc = zodiacData.cautionZodiac ? (() => {
+    const z = zodiacData.cautionZodiac;
+    const yrs = z.notableYears.map(y => `${y.year}년생(${y.stem}${z.branch}년·${y.relation})`).join(', ');
+    return `${z.animal}띠 (${z.reason}): 주의생년 ${yrs}`;
+  })() : '없음';
+
+  const goodAnimals = zodiacData.goodZodiacs.map(z => z.animal + '띠').join('와 ');
+  const cautionAnimal = zodiacData.cautionZodiac ? zodiacData.cautionZodiac.animal + '띠' : '';
+
   const prompt = `당신은 사주명리학을 쉽고 따뜻하게 전하는 콘텐츠 작가입니다.
-오늘의 일진을 바탕으로 스레드에 올릴 데일리 사주 포스팅을 작성하세요.
+아래 계산 결과만 사용해 오늘의 띠별 일일 흐름 게시물을 작성하세요.
 
-오늘 일진: ${iljin.name} (${iljin.stemElement}·${iljin.branchElement} 기운, ${iljin.animal}의 날)
+오늘: ${month}월 ${day}일 / 일진: ${zodiacData.todayIljin}
 
-[오전 일진 리딩 규칙]
-- 오늘 날의 에너지와 기운을 중심으로, 어떤 하루가 될 수 있는지 따뜻하게 전합니다.
-- 어려운 사주 용어는 자연스럽게 풀어서 설명합니다.
-- 오늘 이 에너지를 잘 활용하는 방법이나 주의할 점을 한 가지 제안합니다.
-- 모든 날을 좋은 날로 포장하지 않고, 버텨야 하는 날이라면 솔직하게 알려줍니다.
-- 운명론적이거나 과장된 표현 금지. "우주가", "반드시" 같은 표현 금지.
-- 부드럽고 자연스러운 해요체로 작성합니다.
+[계산된 데이터 — 이 데이터 외의 띠·생년을 임의로 추가하지 마세요]
+흐름이 좋은 띠:
+${goodDesc}
 
-[구성]
-도입부(1~2문장): 오늘 일진 이름을 자연스럽게 포함해 오늘의 에너지를 소개합니다.
-1문단: 오늘 날의 기운과 전반적인 흐름을 설명합니다.
-2문단: 이 에너지를 잘 활용하는 방법 또는 주의할 점을 전합니다.
-CTA: 오늘 하루와 연결된 짧은 질문이나 공감 유도로 마무리합니다.
+속도를 조절할 띠:
+${cautionDesc}
 
-[공통 규칙]
-- 이모지 1~2개만 사용합니다.
-- 마크다운 기호(**) 사용 금지.
-- 해시태그 2~3개, 반드시 모든 해시태그 앞에 #을 붙입니다. 예: #오늘의일진 #데일리사주
-- 전체 분량 공백 포함 300~430자 이내.
+[게시물 구성 — 이 순서를 정확히 따르세요]
 
-[최종 확인] 출력 전 확인하세요.
-- 일진 이름이 도입부에 자연스럽게 포함됐는가?
-- 운명론적 표현이 없는가?
-- 해시태그 앞에 모두 #이 붙어 있는가?
+① 첫 문장 (고정):
+"${month}월 ${day}일, 오늘 흐름이 열리는 띠는 ${goodAnimals}예요. ✨"
+
+② 좋은 띠 각각 (2개):
+- 띠 이름 작성 후 줄바꿈
+- 오늘 이 띠가 왜 좋은 흐름인지 1~2문장 (전문용어 없이 쉽게, 같은 표현 반복 금지)
+- 주목생년 각각: 오늘 무엇을 확인하거나 시도하면 좋을지 구체적 행동 1가지
+
+③ 주의 띠:
+"오늘 속도를 조절할 띠는 ${cautionAnimal}예요. ⚠️"
+- 불안 없이, 오늘 특히 확인하면 좋을 구체적 행동 1가지
+- 주의생년 각각: 말·지출·계약·관계·결정 중 하나를 구체적으로 언급
+
+④ 안내 문구 (고정, 변경 금지):
+"태어난 시간이 반영되지 않은 생년 기준의 간단한 흐름이며, 입춘 이전 출생자는 띠가 달라질 수 있어요."
+
+⑤ CTA (고정, 변경 금지):
+"오늘 내 띠가 없었나요? 내일은 당신의 생년이 등장할 수도 있어요.
+매일 오전 8시 30분, 가장 주목해야 할 띠와 생년을 알려드리니 지금 팔로우해두세요. ✨"
+
+[작성 규칙]
+- 계산 데이터에 없는 띠·생년 절대 추가 금지.
+- "돈이 들어온다", "연락이 온다", "사고가 난다" 같은 사건 확정 표현 금지.
+- "천천히 가세요", "마음을 들여다보세요" 같은 두루뭉술 표현 반복 금지.
+- 각 생년마다 오늘 구체적 행동 1가지를 작성합니다.
+- 육합·삼합·충·형·파·해 전문용어 본문 사용 금지.
+- 해시태그 없음.
+- URL, 링크, 도메인 주소 없음.
+- 이모지는 첫 문장의 ✨와 주의 띠의 ⚠️ 딱 2개만.
+- 마크다운(**)  사용 금지.
+- 해요체로 작성합니다.
+
+[최종 확인]
+- 데이터에 없는 띠·생년이 추가됐는가? → 있으면 삭제
+- 사건 확정 표현이 있는가? → 있으면 수정
+- URL·해시태그가 있는가? → 있으면 삭제
+- ✨가 2개 초과인가? → 있으면 첫 문장 하나와 CTA 하나만 남기고 삭제
 
 최종 결과는 반드시 아래 JSON 형식으로만 출력합니다.
-{"iljin":"${iljin.name}","content":"완성된 게시물"}`;
+{"content":"완성된 게시물"}`;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -118,7 +266,7 @@ CTA: 오늘 하루와 연결된 짧은 질문이나 공감 유도로 마무리�
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-6',
-      max_tokens: 1024,
+      max_tokens: 2048,
       messages: [{ role: 'user', content: prompt }],
     }),
   });
@@ -128,16 +276,25 @@ CTA: 오늘 하루와 연결된 짧은 질문이나 공감 유도로 마무리�
   return JSON.parse(raw).content;
 }
 
-async function generateEveningPost(theme) {
+async function generateEveningPost(theme, useProfileCta) {
+  const ctaInstruction = useProfileCta
+    ? `CTA: 사주가 궁금한 독자를 프로필로 자연스럽게 안내합니다. URL을 직접 쓰지 말고 "프로필에서 무료로 확인해보세요" 방식으로만 안내합니다. 게시물당 한 문장만 사용합니다.
+CTA 예시 (매번 같은 표현 반복 금지, 내용에 맞게 변형):
+- 내 사주가 궁금하다면 프로필에서 무료로 확인해보세요. ✨
+- 지금 내 흐름이 궁금하다면 프로필의 무료 사주에서 확인해보세요.
+- 타고난 성향과 올해의 흐름은 프로필에서 무료로 살펴볼 수 있어요.`
+    : `CTA: 독자가 공감하거나 자신을 돌아볼 수 있는 짧은 질문 또는 여운이 남는 문장으로 마무리합니다.
+유형 중 하나를 선택하세요: 공감 질문 / 한 단어 답변 유도 / 선택형 질문 / 여운형 문장
+댓글·좋아요·이모지 반응을 동시에 요구하지 마세요. CTA는 한 문장만 사용합니다.`;
+
   const prompt = `당신은 사주명리학을 쉽고 따뜻하게 전하는 콘텐츠 작가입니다.
-사주 서비스를 자연스럽게 소개하는 저녁 포스팅을 작성하세요.
+사주 이야기를 자연스럽게 전하는 저녁 포스팅을 작성하세요.
 
 타겟: ${theme.hook}
 핵심 메시지: ${theme.angle}
 CTA 방향: ${theme.cta}
-연결 링크: ${SAJU_URL}
 
-[저녁 마케팅 포스팅 규칙]
+[저녁 포스팅 규칙]
 - 광고처럼 느껴지지 않게, 공감에서 시작해 자연스럽게 사주로 연결합니다.
 - 독자가 "나 얘기네"라고 느낄 수 있는 구체적인 상황이나 감정을 짚어줍니다.
 - 사주의 가치를 운명 예언이 아닌 "나를 이해하는 도구"로 전달합니다.
@@ -149,18 +306,22 @@ CTA 방향: ${theme.cta}
 도입부(1~2문장): 타겟의 상황에 공감하며 시작합니다.
 1문단: 핵심 메시지를 전합니다.
 2문단: 사주로 알 수 있는 것을 구체적으로 언급합니다.
-CTA: 링크(${SAJU_URL})로 자연스럽게 안내합니다. 링크는 줄바꿈 후 단독으로 배치합니다.
+${ctaInstruction}
 
 [공통 규칙]
+- 본문에 http:// 또는 https://로 시작하는 URL을 절대 포함하지 마세요.
+- 홈페이지 주소를 텍스트로 직접 작성하지 마세요.
 - 이모지 1~2개만 사용합니다.
 - 마크다운 기호(**) 사용 금지.
 - 해시태그 2~3개, 반드시 모든 해시태그 앞에 #을 붙입니다. 예: #오속사주 #사주리딩
 - 전체 분량 공백 포함 300~450자 이내.
 
 [최종 확인] 출력 전 확인하세요.
+- 본문에 http:// 또는 https://가 포함되지 않았는가?
+- 홈페이지 주소가 텍스트에 포함되지 않았는가?
 - 광고처럼 느껴지지 않는가?
 - 불안 자극이나 조급함 유발 표현이 없는가?
-- 링크가 자연스럽게 포함됐는가?
+- CTA가 한 문장인가?
 - 해시태그 앞에 모두 #이 붙어 있는가?
 
 최종 결과는 반드시 아래 JSON 형식으로만 출력합니다.
@@ -227,19 +388,45 @@ export default async function handler(req, res) {
     const isDry = req.query.dry === 'true';
 
     let content;
+    let morningRationale = null;
+
+    const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
 
     if (!isEvening) {
-      // 오전 — 일진 리딩
-      content = await generateMorningPost(iiljin);
+      // 오전 — 띠별 일일 흐름
+      const zodiacData = calculateTodayZodiac(iiljin);
+      morningRationale = {
+        일진: zodiacData.todayIljin,
+        선정근거: {
+          육합으로_좋은띠: zodiacData.rationale.육합,
+          삼합으로_좋은띠: zodiacData.rationale.삼합,
+          충으로_주의띠: zodiacData.rationale.충,
+        },
+        좋은띠_상세: zodiacData.goodZodiacs.map(z => ({
+          띠: z.animal + '띠',
+          이유: z.reason,
+          주목생년: z.notableYears.map(y => `${y.year}년(${y.stem}${z.branch}, ${y.relation})`),
+        })),
+        주의띠_상세: zodiacData.cautionZodiac ? {
+          띠: zodiacData.cautionZodiac.animal + '띠',
+          이유: zodiacData.cautionZodiac.reason,
+          주의생년: zodiacData.cautionZodiac.notableYears.map(y => `${y.year}년(${y.stem}${zodiacData.cautionZodiac.branch}, ${y.relation})`),
+        } : null,
+      };
+      content = await generateMorningPost(iiljin, zodiacData);
     } else {
-      // 저녁 — 마케팅 콘텐츠 (날짜 기반으로 테마 순환)
-      const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+      // 저녁 — 테마 순환 (날짜 기반)
+      // 프로필 CTA: 5일 중 1회 (20%), 연속 사용 방지를 위해 짝수 dayOfYear 중 5의 배수에만 적용
       const theme = MARKETING_THEMES[dayOfYear % MARKETING_THEMES.length];
-      content = await generateEveningPost(theme);
+      const useProfileCta = (dayOfYear % 5 === 0);
+      content = await generateEveningPost(theme, useProfileCta);
     }
 
     if (isDry) {
-      return res.status(200).json({ dry_run: true, iljin: iiljin.name, isEvening, content });
+      return res.status(200).json({
+        dry_run: true, iljin: iiljin.name, isEvening, content,
+        ...(morningRationale ? { 선정근거: morningRationale } : {}),
+      });
     }
 
     const result = await postToThreads(content);
