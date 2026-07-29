@@ -18,6 +18,10 @@
     {
       "path": "/api/auto-post-saju?secret=osok2026",
       "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/auto-post-saju-afternoon?secret=osok2026",
+      "schedule": "0 4 * * 1,3,5"
     }
   ]
 }
