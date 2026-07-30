@@ -164,7 +164,7 @@ body{background:var(--dark);color:var(--text);font-family:'Noto Serif KR',serif;
 /* ══════════════════════════════════
    입력 폼
 ══════════════════════════════════ */
-#form-sec{padding:24px 0}
+#form-sec{padding:24px 0;scroll-margin-top:16px}
 .form-card{background:var(--card);border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:28px 24px}
 .form-title{text-align:center;margin-bottom:24px}
 .form-title p{font-size:.8rem;color:var(--gold);letter-spacing:.15em;margin-bottom:8px;opacity:.8}
@@ -779,6 +779,67 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   select,input[type=text],input[type=email],input[type=number]{min-height:48px;font-size:16px}
   #saju-pay-submit-btn{min-height:52px!important}
 }
+
+/* ══════════════════════════════════
+   무료 결과 가치 요약
+══════════════════════════════════ */
+.value-summary-sec{padding:8px 0 32px}
+.value-summary-sec .sec-header{text-align:center;margin-bottom:20px}
+.value-cards{display:flex;flex-direction:column;gap:10px}
+.value-card{display:flex;align-items:flex-start;gap:14px;background:var(--card);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:18px 18px}
+.value-card .vc-num{flex-shrink:0;width:28px;height:28px;border:1px solid rgba(201,168,76,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--gold);background:rgba(201,168,76,.07);margin-top:1px}
+.value-card .vc-text{color:var(--text);font-size:1rem;line-height:1.7;letter-spacing:.02em}
+@media(max-width:480px){.value-card .vc-text{font-size:.95rem}}
+
+/* ══════════════════════════════════
+   폼 안내 / 개인정보 노트
+══════════════════════════════════ */
+.form-desc{color:var(--sub);font-size:.88rem;line-height:1.8;margin-top:6px;letter-spacing:.02em}
+.form-privacy-note{font-size:.75rem;color:rgba(154,128,96,.5);line-height:1.7;margin-top:12px;margin-bottom:4px;text-align:center}
+
+/* ══════════════════════════════════
+   왜 흐름을 알아야 하나
+══════════════════════════════════ */
+.why-sec{padding:16px 0 32px}
+.why-sec .sec-header{text-align:center;margin-bottom:16px}
+.why-body{color:var(--sub);font-size:1rem;line-height:2;letter-spacing:.02em;text-align:center;max-width:640px;margin:0 auto}
+@media(max-width:480px){.why-body{font-size:.95rem;text-align:left}}
+
+/* ══════════════════════════════════
+   결과 미리보기
+══════════════════════════════════ */
+.preview-sec{padding:16px 0 40px}
+.preview-sec .sec-header{text-align:center;margin-bottom:16px}
+.preview-card{background:var(--card);border:1px solid rgba(201,168,76,.18);border-radius:16px;padding:22px 20px}
+.preview-label{display:inline-block;font-size:.7rem;color:var(--gold);letter-spacing:.15em;opacity:.75;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.22);border-radius:20px;padding:3px 10px;margin-bottom:14px}
+.preview-body{color:var(--text);font-size:.97rem;line-height:2;margin-bottom:12px;font-style:italic}
+.preview-note{color:rgba(154,128,96,.5);font-size:.78rem;line-height:1.7}
+
+/* ══════════════════════════════════
+   무료→유료 전환 헤더
+══════════════════════════════════ */
+#transition-card{text-align:left!important;padding:26px 22px!important}
+#transition-card .tc-title{font-size:1.05rem;color:var(--text);font-weight:700;line-height:1.6;margin-bottom:10px;letter-spacing:.02em}
+#transition-card .tc-desc{color:var(--sub);font-size:.93rem;line-height:1.95}
+
+/* ══════════════════════════════════
+   상품 비교 요약 테이블
+══════════════════════════════════ */
+.cmp-decide-title{font-size:.95rem;color:var(--text);line-height:1.65;text-align:center;font-weight:600;margin-bottom:18px;letter-spacing:.02em}
+.cmp-decide-title .em{color:var(--gold)}
+.decide-table{display:flex;flex-direction:column;gap:0;border:1px solid rgba(201,168,76,.15);border-radius:14px;overflow:hidden;margin-bottom:4px}
+.decide-row{display:grid;grid-template-columns:1.1fr 1fr 1fr 1.2fr;gap:0;border-bottom:1px solid rgba(201,168,76,.08)}
+.decide-row:last-child{border-bottom:none}
+.decide-row.header{background:rgba(201,168,76,.05)}
+.decide-cell{padding:11px 10px;font-size:.78rem;line-height:1.5;color:var(--sub);border-right:1px solid rgba(201,168,76,.08)}
+.decide-cell:last-child{border-right:none}
+.decide-row.header .decide-cell{color:rgba(201,168,76,.65);font-size:.72rem;letter-spacing:.05em}
+.decide-cell.highlight{color:var(--text)}
+.decide-cell.premium-col{color:#f0c060}
+@media(max-width:480px){
+  .decide-row{grid-template-columns:1fr 1fr 1.3fr}
+  .decide-cell:first-child{display:none}
+}
 </style>
 </head>
 <body>
@@ -802,199 +863,53 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <img src="osok.png" alt="오속">
     </div>
 
-    <p class="hero-kw">당신의 사주를 읽었습니다</p>
+    <p class="hero-kw">열심히 하는데도 자꾸 막히는 기분이 든다면</p>
 
     <h1 class="hero-hook">
-      운명을 알려주는 게 아니라,<br>
-      <span class="em">방향을 찾아드려요.</span>
+      노력이 부족한 게 아니라,<br>
+      지금은 방향과 시기를<br>
+      <span class="em">다시 봐야 할 때일 수 있어요.</span>
     </h1>
 
     <div class="hero-divider"></div>
 
     <p class="hero-sub">
-      막막한 그 질문에, 생각보다 가까운 답이 있어요.<br>
-      오속은 타고난 당신의 에너지로 지금 어디로 가야 하는지 읽어드려요.
+      생년월일을 바탕으로 지금 내 흐름이 어디에 머물러 있는지,<br>
+      무엇을 밀어야 하고 무엇을 기다려야 하는지 확인해보세요.
     </p>
 
-    <button class="cta-scroll-btn" onclick="scrollToFreeForm()" aria-label="무료 사주 입력 영역으로 이동">✦ 무료 사주 바로 보기 ✦</button>
+    <button class="cta-scroll-btn" onclick="scrollToFreeForm()" aria-label="무료 사주 입력 영역으로 이동">내 사주 흐름 무료로 확인하기</button>
+    <p style="margin-top:14px;font-size:.78rem;color:rgba(184,158,126,.48);letter-spacing:.04em">약 1분 소요 · 회원가입 없이 무료</p>
   </section>
 
-  <!-- ══ 3중 분석 ══ -->
-  <section class="triple-sec">
-    <div class="triple-header">
-      <p class="sec-kw">오속이 더 정확한 이유</p>
-      <h2 class="sec-title">세 가지를 동시에 <span class="em">교차 분석해요</span></h2>
-      <p class="triple-desc">하나만 보면 놓치는 게 생겨요.<br>오속은 동양과 서양의 세 관점을 겹쳐서 읽기 때문에<br>더 깊고, 더 정확하게 당신을 파악할 수 있어요.</p>
-    </div>
-    <div class="triple-grid">
-      <div class="triple-card">
-        <div class="triple-icon">☯</div>
-        <h3>사주명리학</h3>
-        <p>태어난 연월일시의 8글자로 타고난 기질, 오행의 강약, 운의 흐름을 읽어요. 동양 최고(最古)의 운명 분석법.</p>
-      </div>
-      <div class="triple-card">
-        <div class="triple-icon">✦</div>
-        <h3>자미두수<br><span>紫微斗數</span></h3>
-        <p>별의 배치로 인생 궤도를 읽는 동양 점성술. 사주보다 더 세밀하게 각 분야별 운의 흐름을 포착해요.</p>
-      </div>
-      <div class="triple-card">
-        <div class="triple-icon">♑</div>
-        <h3>서양 점성술</h3>
-        <p>태양·달·행성의 위치로 본질적인 성격과 감정 패턴, 대인관계 에너지를 분석해요. 동양 사주와 교차 검증.</p>
-      </div>
-    </div>
-    <div class="triple-bottom">
-      <p>세 관점이 <span class="em">일치할 때</span> — 그게 진짜 당신의 이야기예요.</p>
-    </div>
-  </section>
-
-  <!-- ══ 스토리 ══ -->
-  <section class="story-sec">
-    <p class="story-line">열심히 하는데 결과가 안 따라오거나,</p>
-    <p class="story-line">이 선택이 맞는 건지 계속 흔들리거나,</p>
-    <p class="story-line">아니면 그냥 —</p>
-    <p class="story-line big">지금 내가 <span class="em">어디로 가고 있는지</span> 모르겠거나.</p>
-    <div class="ellipsis">· · ·</div>
-    <p class="story-line big">그 답의 실마리가 <span class="em">사주에 있어요.</span></p>
-  </section>
-
-  <!-- ══ 상세 리딩 챕터 ══ -->
-  <section class="detail-sec">
+  <!-- ══ 무료 결과 가치 요약 ══ -->
+  <section class="value-summary-sec">
     <div class="sec-header">
-      <p class="sec-kw">상세 리딩에서 알게 되는 것들</p>
-      <h2 class="sec-title">이런 걸 <span class="em">읽어드려요</span></h2>
+      <h2 class="sec-title">무료 사주에서 <span class="em">먼저 확인해보세요</span></h2>
     </div>
-    <div class="detail-list">
-      <div class="dt-item">
-        <div class="dt-num">1</div>
-        <div class="dt-text">
-          <strong>사주 근간 — 나는 어떤 에너지를 타고났나</strong>
-          <span>불처럼 타오르는 사람인지, 물처럼 깊은 사람인지. 일간의 본질과 오행 분포로 타고난 기질의 핵심을 짚어드려요.</span>
-        </div>
+    <div class="value-cards">
+      <div class="value-card">
+        <div class="vc-num">1</div>
+        <p class="vc-text">나는 어떤 방식으로 움직일 때 잘 풀리는 사람인지</p>
       </div>
-      <div class="dt-item">
-        <div class="dt-num">2</div>
-        <div class="dt-text">
-          <strong>올해 운세 흐름 — 지금 어떤 파도 위에 있나</strong>
-          <span>밀어주는 해인지, 버텨야 하는 해인지. 이 시기를 어떻게 타야 하는지 구체적으로 알려드려요.</span>
-        </div>
+      <div class="value-card">
+        <div class="vc-num">2</div>
+        <p class="vc-text">요즘 일이 막히는 이유가 방향인지, 시기인지</p>
       </div>
-      <div class="dt-item">
-        <div class="dt-num">3</div>
-        <div class="dt-text">
-          <strong>6개 카테고리 심층 분석 — 사랑·직업·재물·건강·운의 흐름·월별</strong>
-          <span>맛보기가 아니라, 각 영역을 사주팔자 기반으로 깊이 있게 풀어드려요. A4 6~8장 분량이에요.</span>
-        </div>
-      </div>
-      <div class="dt-item">
-        <div class="dt-num">4</div>
-        <div class="dt-text">
-          <strong>앞으로 3년의 큰 흐름과 기회의 시기</strong>
-          <span>대운·세운의 흐름으로 언제가 내 인생의 터닝포인트인지, 어떤 준비가 필요한지 읽어드려요.</span>
-        </div>
-      </div>
-      <div class="dt-item highlight">
-        <div class="dt-num">5</div>
-        <div class="dt-text">
-          <strong>내 사주에 맞는 인생 방향 조언</strong>
-          <span>타고난 에너지로 어떤 방향으로 살아야 가장 잘 풀리는지 — 단순 운세가 아니라 실질적인 나침반이에요.</span>
-        </div>
-      </div>
-      <div class="dt-item highlight">
-        <div class="dt-num">6</div>
-        <div class="dt-text">
-          <strong>피해야 할 선택과 지금 당장 해야 할 것</strong>
-          <span>지금 이 시기에 하면 안 되는 것, 반대로 지금 잡아야 하는 것. 구체적이고 실용적인 조언이에요.</span>
-        </div>
+      <div class="value-card">
+        <div class="vc-num">3</div>
+        <p class="vc-text">일·재물·관계에서 지금 주의해야 할 흐름은 무엇인지</p>
       </div>
     </div>
   </section>
-
-  <!-- ══ 무료 vs 상세 비교 ══ -->
-  <section class="compare-sec">
-    <div class="sec-header">
-      <p class="sec-kw">무료 사주 vs 맞춤 풀이</p>
-      <h2 class="sec-title">어떤 내용을 <span class="em">알게 되나요?</span></h2>
-    </div>
-
-    <div class="compare-grid">
-      <!-- 무료 사주 -->
-      <div class="cmp-card free">
-        <div class="cmp-badge free">✦ 무료 사주</div>
-        <div class="cmp-title">지금 바로 확인</div>
-        <div class="cmp-price">로그인·결제 없이 바로</div>
-        <div class="cmp-items">
-          <div class="cmp-item free-item"><span class="ci-icon">✦</span><span>타고난 성향 핵심</span></div>
-          <div class="cmp-item free-item"><span class="ci-icon">✦</span><span>올해의 큰 흐름</span></div>
-          <div class="cmp-item free-item"><span class="ci-icon">✦</span><span>일·재물·관계 핵심 요약</span></div>
-          <div class="cmp-item free-item"><span class="ci-icon">✦</span><span>지금 집중할 행동 한 가지</span></div>
-        </div>
-      </div>
-
-      <!-- 한 가지 질문 집중 풀이 4,900원 -->
-      <div class="cmp-card basic">
-        <div class="cmp-badge basic">✦ 질문 집중 풀이</div>
-        <div class="cmp-title">사주와 내 질문 함께</div>
-        <div class="cmp-price"><strong>₩4,900</strong></div>
-        <div class="cmp-items">
-          <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>사주와 내 질문을 함께 분석</span></div>
-          <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>질문에 대한 핵심 결론</span></div>
-          <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>기회가 움직이는 시기</span></div>
-          <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>피해야 할 선택</span></div>
-          <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>유리한 행동 방향 3가지</span></div>
-        </div>
-        <button class="pay-btn" onclick="showPayModal('single')" style="margin-top:14px;font-size:.83rem;padding:12px">
-          내 질문의 시기와 행동까지 확인하기 — 4,900원
-        </button>
-      </div>
-
-      <!-- 프리미엄 종합 풀이 14,900원 -->
-      <div class="cmp-card premium">
-        <div class="cmp-badge premium">★ 전체 흐름 포함</div>
-        <div class="cmp-title">프리미엄 종합 풀이</div>
-        <div class="cmp-price"><strong>₩14,900</strong></div>
-        <div class="cmp-items">
-          <div class="cmp-item prem-item"><span class="ci-icon">✦</span><span>질문 집중 풀이 전체 포함</span></div>
-          <div class="cmp-item prem-item star"><span class="ci-icon">★</span><span>전체 심층 사주</span></div>
-          <div class="cmp-item prem-item star"><span class="ci-icon">★</span><span>일·재물·관계·건강·운의 흐름</span></div>
-          <div class="cmp-item prem-item star"><span class="ci-icon">★</span><span>대운과 월별 흐름</span></div>
-          <div class="cmp-item prem-item star"><span class="ci-icon">★</span><span>PDF 저장 / 60일 재열람</span></div>
-        </div>
-        <button class="pay-btn" onclick="showPayModal('premium')" style="margin-top:14px;font-size:.83rem;padding:12px;background:linear-gradient(135deg,#b87820,#e8a030);color:#06060f">
-          내 사주 전체와 이 질문 함께 확인하기 — 14,900원
-        </button>
-      </div>
-    </div>
-
-    <!-- ▼ 9,900원 기본 리딩 비활성화 (HTML 보존) ▼
-    <div class="cmp-card basic">
-      <div class="cmp-badge basic">✦ 기본 리딩</div>
-      <div class="cmp-price"><strong>₩9,900</strong></div>
-      <div class="cmp-items">
-        <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>무료 내용 전체 포함</span></div>
-        <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>6개 카테고리 심층 분석</span></div>
-        <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>월별 운세</span></div>
-        <div class="cmp-item basic-item"><span class="ci-icon">✦</span><span>앞으로 3년 흐름과 기회의 시기</span></div>
-      </div>
-    </div>
-    ▲ END 9,900원 비활성화 -->
-  </section>
-
-  <!-- 무료 배지 -->
-  <div class="free-badge-sec">
-    <div class="free-badge">
-      <strong>✦ 생년월일만 입력하면 바로 시작해요 ✦</strong>
-      무료 체험은 로그인·결제 없이 바로 확인 가능해요.<br>
-      상세 리딩은 결제 후 입력하신 이메일로 발송돼요.
-    </div>
-  </div>
 
   <!-- ══ 입력 폼 ══ -->
   <section id="form-sec">
     <div class="form-card">
       <div class="form-title">
         <p>✦ 무료 사주 분석 ✦</p>
-        <h2>생년월일을 알려주세요</h2>
+        <h2>지금 내 흐름을 확인해볼까요?</h2>
+        <p class="form-desc">생년월일과 현재 상태를 입력하면, 나에게 맞는 무료 사주 결과를 보여드려요.</p>
       </div>
 
       <div class="ig">
@@ -1036,7 +951,53 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           <button type="button" class="rel-btn"        data-rel="private"  onclick="selectRelStatus(this)" aria-pressed="false">답변 안 함</button>
         </div>
       </div>
-      <button class="calc-btn" onclick="calculate()">✦ 오속에게 사주 보기 ✦</button>
+      <p class="form-privacy-note">입력한 정보는 사주 결과 생성에만 사용되며, 브라우저에만 임시 저장돼요.</p>
+      <button class="calc-btn" onclick="calculate()">내 무료 사주 결과 보기</button>
+    </div>
+  </section>
+
+  <!-- ══ 왜 흐름을 알아야 할까요 ══ -->
+  <section class="why-sec">
+    <div class="sec-header">
+      <h2 class="sec-title">왜 지금의 <span class="em">흐름을 알아야 할까요?</span></h2>
+    </div>
+    <p class="why-body">같은 노력을 해도 잘 풀리는 때와 잠시 정비해야 하는 때는 다릅니다. 오속은 미래를 단정하기보다, 지금 내 에너지가 어디에 머물러 있는지 살펴보고 다음 선택의 기준을 찾도록 도와드려요.</p>
+  </section>
+
+  <!-- ══ 3중 분석 (혜택 중심) ══ -->
+  <section class="triple-sec">
+    <div class="triple-header">
+      <h2 class="sec-title">한 가지 해석으로 <span class="em">단정하지 않아요</span></h2>
+      <p class="triple-desc">세 가지 분석이 공통으로 가리키는 흐름을 비교해, 지금의 방향을 더 입체적으로 살펴봅니다.</p>
+    </div>
+    <div class="triple-grid">
+      <div class="triple-card">
+        <div class="triple-icon">☯</div>
+        <h3>사주명리학</h3>
+        <p>타고난 기질과 일·재물·관계에서 반복되는 삶의 패턴을 살펴봐요.</p>
+      </div>
+      <div class="triple-card">
+        <div class="triple-icon">✦</div>
+        <h3>자미두수</h3>
+        <p>지금 어느 영역에 변화가 들어오는지, 시기별 흐름을 확인해요.</p>
+      </div>
+      <div class="triple-card">
+        <div class="triple-icon">♑</div>
+        <h3>서양 점성술</h3>
+        <p>감정과 관계, 선택할 때 반복되는 내면의 성향을 함께 살펴봐요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 결과 미리보기 ══ -->
+  <section class="preview-sec">
+    <div class="sec-header">
+      <h2 class="sec-title">결과는 <span class="em">이렇게 알려드려요</span></h2>
+    </div>
+    <div class="preview-card">
+      <p class="preview-label">결과 예시</p>
+      <p class="preview-body">지금은 능력이 부족한 시기라기보다, 기존의 방식이 더 이상 잘 맞지 않아 방향을 조정하는 흐름에 가깝습니다. 특히 앞으로 몇 달은 무리하게 결과를 만들기보다, 일과 수입 구조에서 무엇을 계속 가져갈지 선택하는 것이 중요해요.</p>
+      <p class="preview-note">실제 결과는 입력한 생년월일과 현재 상태에 따라 다르게 제공됩니다.</p>
     </div>
   </section>
 
@@ -1094,17 +1055,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
     <!-- 순서 2: 맞춤 질문 연결 카드 -->
     <div id="transition-card" class="section-card" style="display:none">
-      <p style="color:var(--sub);font-size:.93rem;line-height:2;margin-bottom:14px">
-        여기까지는 당신이 타고난 성향과 지금의 큰 흐름이에요.
-      </p>
-      <p style="color:var(--text);font-size:1rem;line-height:2;margin-bottom:14px">
-        하지만 실제로 마음을 붙잡고 있는 건<br>
-        '그래서 지금 내 고민은 어떻게 될까?'라는 한 가지 질문일 수 있어요.
-      </p>
-      <p style="color:var(--sub);font-size:.93rem;line-height:2">
-        지금 가장 답이 필요한 고민을 골라보세요.<br>
-        당신의 사주와 현재 흐름을 함께 살펴 일부 답을 바로 보여드릴게요.
-      </p>
+      <p class="tc-title">지금 가장 궁금한 한 가지가 남아 있나요?</p>
+      <p class="tc-desc">무료 결과에서 현재의 큰 흐름을 확인했다면, 이제 내 고민에 맞춰 언제 움직여야 하는지와 무엇을 피해야 하는지 더 구체적으로 살펴볼 수 있어요.</p>
     </div>
 
     <!-- 순서 3: 맞춤 사주 질문 -->
@@ -1202,19 +1154,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <!-- 순서 5: 상품 선택 UI -->
     <div id="product-select-sec" style="display:none;scroll-margin-top:48px">
       <div class="ps-grid">
-        <!-- 4,900원 한 가지 질문 집중 풀이 -->
+        <!-- 4,900원 한 가지 질문 집중 분석 -->
         <div class="ps-card single">
-          <p class="ps-card-name">한 가지 질문 집중 풀이</p>
+          <p class="ps-card-name">한 가지 질문 집중 분석</p>
           <p class="ps-card-price">₩4,900</p>
+          <p style="font-size:.83rem;color:var(--sub);line-height:1.7;margin-bottom:14px">가장 답답한 질문 하나의 방향과 시기를 확인해요.</p>
           <ul class="ps-card-items">
-            <li class="ps-card-item"><span class="psi">✦</span>내가 입력한 질문의 전체 풀이</li>
-            <li class="ps-card-item"><span class="psi">✦</span>핵심 결론과 사주 근거</li>
-            <li class="ps-card-item"><span class="psi">✦</span>기회가 움직이는 시기</li>
-            <li class="ps-card-item"><span class="psi">✦</span>지금 피해야 할 선택</li>
-            <li class="ps-card-item"><span class="psi">✦</span>가장 유리한 행동 방향 3가지</li>
+            <li class="ps-card-item"><span class="psi">✦</span>사용자가 직접 작성한 질문 1개</li>
+            <li class="ps-card-item"><span class="psi">✦</span>질문과 관련된 현재 흐름</li>
+            <li class="ps-card-item"><span class="psi">✦</span>움직이기 좋은 시기</li>
+            <li class="ps-card-item"><span class="psi">✦</span>피해야 할 선택</li>
+            <li class="ps-card-item"><span class="psi">✦</span>지금 실천할 행동 한 가지</li>
           </ul>
-          <button onclick="showPayModal('single')" class="pay-btn-primary single-btn" aria-label="한 가지 질문 집중 풀이 4900원 결제">
-            내 질문의 시기와 행동까지 확인하기 — 4,900원
+          <button onclick="showPayModal('single')" class="pay-btn-primary single-btn" aria-label="한 가지 질문 집중 분석 4900원 결제">
+            내 질문 하나 자세히 보기 · 4,900원
           </button>
         </div>
         <!-- 14,900원 프리미엄 종합 풀이 -->
@@ -1222,17 +1175,38 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           <span class="ps-card-badge">전체 흐름 포함</span>
           <p class="ps-card-name">프리미엄 종합 풀이</p>
           <p class="ps-card-price">₩14,900</p>
+          <p style="font-size:.83rem;color:rgba(221,208,184,.7);line-height:1.7;margin-bottom:14px">일·재물·관계의 전체 흐름과 앞으로의 선택 순서를 확인해요.</p>
           <ul class="ps-card-items">
-            <li class="ps-card-item"><span class="psi">✦</span>질문 집중 풀이 전체 포함</li>
-            <li class="ps-card-item"><span class="psi">✦</span>전체 심층 사주</li>
-            <li class="ps-card-item"><span class="psi">✦</span>일·재물·관계·건강·운의 흐름</li>
-            <li class="ps-card-item"><span class="psi">✦</span>대운과 <span class="current-year-label"></span>의 월별 흐름</li>
-            <li class="ps-card-item"><span class="psi">✦</span>PDF 저장</li>
-            <li class="ps-card-item"><span class="psi">✦</span>60일 재열람</li>
+            <li class="ps-card-item"><span class="psi">✦</span>타고난 기질과 반복되는 패턴</li>
+            <li class="ps-card-item"><span class="psi">✦</span>현재 막힘의 원인</li>
+            <li class="ps-card-item"><span class="psi">✦</span>일·재물·관계 종합 분석</li>
+            <li class="ps-card-item"><span class="psi">✦</span>앞으로의 주요 변화 시기</li>
+            <li class="ps-card-item"><span class="psi">✦</span>피해야 할 선택</li>
+            <li class="ps-card-item"><span class="psi">✦</span>지금 먼저 해야 할 행동</li>
+            <li class="ps-card-item"><span class="psi">✦</span>전체 결과 PDF 저장</li>
           </ul>
           <button onclick="showPayModal('premium')" class="pay-btn-primary premium-btn" aria-label="프리미엄 종합 풀이 14900원 결제">
-            내 사주 전체와 이 질문 함께 확인하기 — 14,900원
+            내 사주 전체 흐름 확인하기 · 14,900원
           </button>
+        </div>
+      </div>
+
+      <!-- 무료·유료 결정 비교 -->
+      <div style="margin-top:24px">
+        <p class="cmp-decide-title">얼마나 많이 알려주는지가 아니라,<br><span class="em">어떤 결정을 내려야 하는지까지</span> 달라져요.</p>
+        <div class="decide-table">
+          <div class="decide-row header">
+            <div class="decide-cell"></div>
+            <div class="decide-cell">무료 사주</div>
+            <div class="decide-cell">질문 하나 집중</div>
+            <div class="decide-cell premium-col">프리미엄 종합</div>
+          </div>
+          <div class="decide-row">
+            <div class="decide-cell" style="color:rgba(184,158,126,.5);font-size:.72rem">알게 되는 것</div>
+            <div class="decide-cell">현재 내 성향과 큰 흐름 확인</div>
+            <div class="decide-cell highlight">고민 하나의 방향·시기·행동 확인</div>
+            <div class="decide-cell premium-col">일·재물·관계의 전체 흐름과 선택 순서 확인</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1479,16 +1453,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 </div>
 
 <script>
+/* ─── 페이지 로드 시 스크롤 복원 방지 ─── */
+if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+if (location.hash) { history.replaceState(null, '', location.pathname + location.search); }
+window.scrollTo(0, 0);
+
 /* ─── CTA 스크롤 ─── */
 function scrollToFreeForm() {
   const target = document.getElementById('form-sec');
   if (!target) return;
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const top = target.getBoundingClientRect().top + window.scrollY - 20;
   if (prefersReduced) {
-    window.scrollTo(0, top);
+    target.scrollIntoView();
   } else {
-    window.scrollTo({ top, behavior: 'smooth' });
+    target.scrollIntoView({ behavior: 'smooth' });
   }
 }
 
