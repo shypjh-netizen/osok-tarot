@@ -247,12 +247,14 @@ ${cautionDesc}
 - 이모지는 첫 문장의 ✨와 주의 띠의 ⚠️ 딱 2개만.
 - 마크다운(**)  사용 금지.
 - 해요체로 작성합니다.
+- 전체 글자 수는 공백 포함 490자 이내. 초과하면 각 항목 설명을 한 문장으로 줄여서 맞추세요.
 
 [최종 확인]
 - 데이터에 없는 띠·생년이 추가됐는가? → 있으면 삭제
 - 사건 확정 표현이 있는가? → 있으면 수정
 - URL·해시태그가 있는가? → 있으면 삭제
 - ✨가 2개 초과인가? → 있으면 첫 문장 하나와 CTA 하나만 남기고 삭제
+- 전체 글자 수가 490자를 초과하는가? → 있으면 설명을 줄여서 490자 이하로 맞추세요
 
 최종 결과는 반드시 아래 JSON 형식으로만 출력합니다.
 {"content":"완성된 게시물"}`;
@@ -348,6 +350,11 @@ ${ctaInstruction}
 
 async function postToThreads(text) {
   const token = process.env.THREADS_ACCESS_TOKEN_SAJU;
+
+  // Threads API 500자 제한 안전망
+  if (text.length > 498) {
+    text = text.slice(0, 497) + '…';
+  }
 
   const createRes = await fetch(
     `https://graph.threads.net/v1.0/${USER_ID}/threads`,
