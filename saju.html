@@ -1538,6 +1538,17 @@ function scrollToFreeForm() {
   hs.innerHTML=hours.map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
 })();
 
+/* ─── 시진 표시 레이블 (계산용 대표시간 → 시진 이름) ─── */
+const HOUR_LABEL = {
+  '-1': '출생시간 모름',
+  0:  '자시', 2:  '축시', 4:  '인시', 6:  '묘시',
+  8:  '진시', 10: '사시', 12: '오시', 14: '미시',
+  16: '신시', 18: '유시', 20: '술시', 22: '해시',
+};
+function getHourDisplay(hourVal) {
+  return HOUR_LABEL[hourVal] ?? HOUR_LABEL[String(hourVal)] ?? '출생시간 모름';
+}
+
 /* ─── 상수 ─── */
 const STEMS=['갑','을','병','정','무','기','경','신','임','계'];
 const BRANCHES=['자','축','인','묘','진','사','오','미','신','유','술','해'];
@@ -2214,10 +2225,10 @@ function renderZodiac(z){
       <p>${z.el}의 별자리 · 키워드: ${z.key}</p>
     </div>`;
 }
-function buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus){
+function buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel){
   const tag=name||'내담자';
   const genderKo=gender==='m'?'남성':'여성';
-  const hourStr=knownHour?`${hourVal}시`:'모름';
+  const hourStr=knownHour?(hourLabel||getHourDisplay(hourVal)):'출생시간 모름';
   const pillarDesc=[
     `년주: ${STEMS[pillars.year.stem]}(${STEM_HANJA[pillars.year.stem]}·${STEM_EL[pillars.year.stem]}) ${BRANCHES[pillars.year.branch]}(${BRANCH_HANJA[pillars.year.branch]}·${BRANCH_ANIMAL[pillars.year.branch]})`,
     `월주: ${STEMS[pillars.month.stem]}(${STEM_HANJA[pillars.month.stem]}·${STEM_EL[pillars.month.stem]}) ${BRANCHES[pillars.month.branch]}(${BRANCH_HANJA[pillars.month.branch]}·${BRANCH_ANIMAL[pillars.month.branch]})`,
@@ -2350,12 +2361,13 @@ async function calculate(){
   const tag=name||'내담자';
   const ohaengMsg=ohaeng[maxEl]>=3?OHAENG_EXCESS[maxEl]:`${tag}님의 오행은 비교적 균형 잡혀 있어요. 다양한 상황에 유연하게 대응하는 안정된 에너지를 가지고 있어요. 부족한 ${minEl} 기운을 보완하면 더욱 균형 잡힌 흐름이 만들어져요.`;
   S.chatHistory=[];
-  S.sajuData={ name, year, month, day, hourVal, gender, relationStatus: relStatus,
-    context: buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus) };
+  S.sajuData={ name, year, month, day, hourVal, hourLabel, gender, relationStatus: relStatus,
+    context: buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel) };
 
   // 출생 정보 바
   const genderKo=gender==='m'?'남성':'여성';
-  const hourStr=knownHour?` · ${hourVal}시`:'';
+  const hourLabel=getHourDisplay(hourVal);
+  const hourStr=` · ${hourLabel}`;
   document.getElementById('birth-info-text').textContent=
     `${year}년 ${month}월 ${day}일${hourStr} · 양력 · ${genderKo}`;
 
@@ -2396,7 +2408,7 @@ async function calculate(){
   aiBody.innerHTML=`<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> 오속이 사주팔자를 분석하고 있어요...</div>`;
   document.getElementById('result-sec').scrollIntoView({behavior:'smooth'});
 
-  const userMsg=buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour);
+  const userMsg=buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,undefined,hourLabel);
   S.chatHistory.push({role:'user',content:userMsg});
 
   try{
@@ -2836,7 +2848,7 @@ function retryReading(){
   const zodiac=getZodiac(d.month,d.day);
   const aiBody=document.getElementById('ai-reading-body');
   aiBody.innerHTML=`<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> 오속이 다시 분석하고 있어요...</div>`;
-  const userMsg=buildSajuContext(d.name,d.year,d.month,d.day,d.hourVal,d.gender,pillars,ohaeng,zodiac,knownHour,d.relationStatus);
+  const userMsg=buildSajuContext(d.name,d.year,d.month,d.day,d.hourVal,d.gender,pillars,ohaeng,zodiac,knownHour,d.relationStatus,d.hourLabel);
   S.chatHistory=[{role:'user',content:userMsg}];
   callAI(S.chatHistory).then(reading=>{
     S.chatHistory.push({role:'assistant',content:reading});
@@ -3014,7 +3026,7 @@ function applyRelStatus(newStatus) {
   const pillars = calcSaju(d.year, d.month, d.day, knownHour ? d.hourVal : -1);
   const ohaeng  = calcOhaeng(pillars);
   const zodiac  = getZodiac(d.month, d.day);
-  S.sajuData.context = buildSajuContext(d.name, d.year, d.month, d.day, d.hourVal, d.gender, pillars, ohaeng, zodiac, knownHour, newStatus);
+  S.sajuData.context = buildSajuContext(d.name, d.year, d.month, d.day, d.hourVal, d.gender, pillars, ohaeng, zodiac, knownHour, newStatus, d.hourLabel);
 
   // 상태 바 업데이트
   document.getElementById('rel-status-display').textContent = REL_STATUS[newStatus]?.label || '답변 안 함';
