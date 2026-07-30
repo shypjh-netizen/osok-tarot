@@ -203,7 +203,7 @@ async function generateMorningPost(iljin, zodiacData) {
   const cautionAnimal = zodiacData.cautionZodiac ? zodiacData.cautionZodiac.animal + '띠' : '';
 
   const prompt = `당신은 사주명리학을 쉽고 따뜻하게 전하는 콘텐츠 작가입니다.
-아래 계산 결과만 사용해 오늘의 띠별 일일 흐름 게시물을 작성하세요.
+아래 계산 결과만 사용해 오늘의 띠별 일일 흐름 게시물을 본문과 연결 답글 두 섹션으로 작성하세요.
 
 오늘: ${month}월 ${day}일 / 일진: ${zodiacData.todayIljin}
 
@@ -214,50 +214,68 @@ ${goodDesc}
 속도를 조절할 띠:
 ${cautionDesc}
 
-[게시물 구성 — 이 순서를 정확히 따르세요]
+════════════════════════
+섹션1 — 본문 (main_post)
+════════════════════════
 
-① 첫 문장 (고정):
+아래 구조를 자연스럽게 변형합니다. 매번 같은 문장 반복 금지.
+
+첫 문장 (고정):
 "${month}월 ${day}일, 오늘 흐름이 열리는 띠는 ${goodAnimals}예요. ✨"
 
-② 좋은 띠 각각 (2개):
-- 띠 이름 작성 후 줄바꿈
-- 오늘 이 띠가 왜 좋은 흐름인지 1~2문장 (전문용어 없이 쉽게, 같은 표현 반복 금지)
-- 주목생년 각각: 오늘 무엇을 확인하거나 시도하면 좋을지 구체적 행동 1가지
+이어서:
+- 오늘 흐름이 좋은 이유를 1~2문장으로 자연스럽게 연결합니다 (전문용어 없이).
 
-③ 주의 띠:
-"오늘 속도를 조절할 띠는 ${cautionAnimal}예요. ⚠️"
-- 불안 없이, 오늘 특히 확인하면 좋을 구체적 행동 1가지
-- 주의생년 각각: 말·지출·계약·관계·결정 중 하나를 구체적으로 언급
+주의 띠:
+"오늘 한 번 더 확인해야 할 띠는 ${cautionAnimal}예요. ⚠️"
+- 불안 없이, 오늘 특히 주의할 행동 한 가지를 한 문장으로 씁니다.
 
-④ 안내 문구 (고정, 변경 금지):
-"태어난 시간이 반영되지 않은 생년 기준의 간단한 흐름이며, 입춘 이전 출생자는 띠가 달라질 수 있어요."
+[본문 규칙]
+- 답글·댓글·아래·다음 글·첫 번째·확인해보세요 등 연결 구조를 설명하는 표현 절대 금지.
+- 본문은 주의 띠 안내 문장으로 자연스럽게 끝납니다. 추가 안내 불필요.
+- 이모지는 ✨ 1개, ⚠️ 1개만.
+- 공백 포함 100~200자.
 
-⑤ CTA (고정, 변경 금지):
-"오늘 내 띠가 없었나요? 내일은 당신의 생년이 등장할 수도 있어요.
-매일 오전 7시 30분, 가장 주목해야 할 띠와 생년을 알려드리니 지금 팔로우해두세요. ✨"
+════════════════════════
+섹션2 — 연결 답글 (reply_post)
+════════════════════════
 
-[작성 규칙]
+아래 형식을 정확히 따릅니다. 별도 도입 문장 없이 바로 시작합니다.
+
+"✨ 흐름이 좋은 ${zodiacData.goodZodiacs[0]?.animal}띠${zodiacData.goodZodiacs[1] ? '\n\n✨ 흐름이 좋은 ' + zodiacData.goodZodiacs[1].animal + '띠' : ''}
+
+[각 좋은 띠마다]
+{year}년생 — 구체적 행동 한 가지.
+(주목생년만 작성, 데이터에 없는 생년 추가 금지)
+
+⚠️ 한 번 더 확인할 ${cautionAnimal}
+
+[주의 띠]
+{year}년생 — 말·지출·계약·관계·결정 중 하나를 구체적으로.
+(주의생년만 작성)
+
+※ 태어난 해를 기준으로 살펴본 가벼운 오늘의 흐름이에요.
+내 띠가 나오는 날을 놓치고 싶지 않다면 팔로우해두세요. ✨"
+
+[답글 규칙]
 - 계산 데이터에 없는 띠·생년 절대 추가 금지.
-- "돈이 들어온다", "연락이 온다", "사고가 난다" 같은 사건 확정 표현 금지.
-- "천천히 가세요", "마음을 들여다보세요" 같은 두루뭉술 표현 반복 금지.
-- 각 생년마다 오늘 구체적 행동 1가지를 작성합니다.
-- 육합·삼합·충·형·파·해 전문용어 본문 사용 금지.
-- 해시태그 없음.
-- URL, 링크, 도메인 주소 없음.
-- 이모지는 첫 문장의 ✨와 주의 띠의 ⚠️ 딱 2개만.
-- 마크다운(**)  사용 금지.
-- 해요체로 작성합니다.
-- 전체 글자 수는 공백 포함 490자 이내. 초과하면 각 항목 설명을 한 문장으로 줄여서 맞추세요.
+- 답글·댓글·아래·다음 글·첫 번째 등 연결 구조 설명 표현 금지.
+- "돈이 들어온다", "연락이 온다", "사고가 난다" 사건 확정 표현 금지.
+- 각 생년마다 구체적 행동 1가지, 중복 표현 금지.
+- 육합·삼합·충 전문용어 사용 금지.
+- 이모지는 좋은 띠 제목의 ✨, 주의 띠 제목의 ⚠️, 마지막 CTA의 ✨만.
+- 해시태그, URL 없음. 마크다운(**) 금지. 해요체.
+- 공백·줄바꿈 포함 350~470자.
 
 [최종 확인]
+- 본문에 답글·아래·다음 글 등 연결 설명이 있는가? → 있으면 삭제
 - 데이터에 없는 띠·생년이 추가됐는가? → 있으면 삭제
 - 사건 확정 표현이 있는가? → 있으면 수정
-- URL·해시태그가 있는가? → 있으면 삭제
-- ✨가 2개 초과인가? → 있으면 첫 문장 하나와 CTA 하나만 남기고 삭제
-- 전체 글자 수가 490자를 초과하는가? → 있으면 설명을 줄여서 490자 이하로 맞추세요
+- 본문이 100~200자 범위인가? → 아니면 조정
+- 답글이 350~470자 범위인가? → 아니면 조정
 
 최종 결과는 반드시 아래 JSON 형식으로만 출력합니다.
-{"content":"완성된 게시물"}`;
+{"main_post":"완성된 본문","reply_post":"완성된 연결 답글"}`;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -275,7 +293,7 @@ ${cautionDesc}
 
   const data = await response.json();
   const raw = data.content[0].text.replace(/```json\n?/g, '').replace(/```/g, '').trim();
-  return JSON.parse(raw).content;
+  return JSON.parse(raw); // { main_post, reply_post }
 }
 
 async function generateEveningPost(theme, useProfileCta) {
@@ -348,38 +366,56 @@ ${ctaInstruction}
   return JSON.parse(raw).content;
 }
 
-async function postToThreads(text) {
-  const token = process.env.THREADS_ACCESS_TOKEN_SAJU;
+// 500자 초과 시 자동으로 답글 체인으로 분할해서 게시
+async function postThreadChain(text, token, replyToId = null) {
+  const MAX = 498;
 
-  // Threads API 500자 제한 안전망
-  if (text.length > 498) {
-    text = text.slice(0, 497) + '…';
+  // 텍스트를 500자 단위로 분할 (줄바꿈 기준 우선)
+  const chunks = [];
+  while (text.length > 0) {
+    if (text.length <= MAX) { chunks.push(text); break; }
+    // 분단 구분(\n\n) → 단일 줄바꿈(\n) → 불가피한 경우에만 글자 위치 순으로 시도
+    let splitAt = text.lastIndexOf('\n\n', MAX);
+    if (splitAt <= 0) splitAt = text.lastIndexOf('\n', MAX);
+    if (splitAt <= 0) splitAt = MAX;
+    chunks.push(text.slice(0, splitAt).trimEnd());
+    text = text.slice(splitAt).trimStart();
   }
 
-  const createRes = await fetch(
-    `https://graph.threads.net/v1.0/${USER_ID}/threads`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ media_type: 'TEXT', text, access_token: token }),
-    }
-  );
+  let lastId = replyToId;
+  for (const chunk of chunks) {
+    const body = { media_type: 'TEXT', text: chunk, access_token: token };
+    if (lastId) body.reply_to_id = lastId;
 
-  const createData = await createRes.json();
-  if (!createData.id) throw new Error(`Container 생성 실패: ${JSON.stringify(createData)}`);
+    const createRes = await fetch(
+      `https://graph.threads.net/v1.0/${USER_ID}/threads`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+    );
+    const createData = await createRes.json();
+    if (!createData.id) throw new Error(`Container 생성 실패: ${JSON.stringify(createData)}`);
 
-  await new Promise(r => setTimeout(r, 30000));
+    await new Promise(r => setTimeout(r, 30000));
 
-  const publishRes = await fetch(
-    `https://graph.threads.net/v1.0/${USER_ID}/threads_publish`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ creation_id: createData.id, access_token: token }),
-    }
-  );
+    const publishRes = await fetch(
+      `https://graph.threads.net/v1.0/${USER_ID}/threads_publish`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ creation_id: createData.id, access_token: token }) }
+    );
+    const publishData = await publishRes.json();
+    if (!publishData.id) throw new Error(`Publish 실패: ${JSON.stringify(publishData)}`);
 
-  return await publishRes.json();
+    lastId = publishData.id;
+  }
+  return lastId;
+}
+
+async function postToThreads(text) {
+  const token = process.env.THREADS_ACCESS_TOKEN_SAJU;
+  return postThreadChain(text, token, null);
+}
+
+async function postReplyToThreads(text, replyToId) {
+  const token = process.env.THREADS_ACCESS_TOKEN_SAJU;
+  return postThreadChain(text, token, replyToId);
 }
 
 export default async function handler(req, res) {
@@ -394,13 +430,11 @@ export default async function handler(req, res) {
     const iiljin = getTodayIljin();
     const isDry = req.query.dry === 'true';
 
-    let content;
     let morningRationale = null;
-
     const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
 
     if (!isEvening) {
-      // 오전 — 띠별 일일 흐름
+      // 오전 — 띠별 일일 흐름 (본문 + 연결 답글)
       const zodiacData = calculateTodayZodiac(iiljin);
       morningRationale = {
         일진: zodiacData.todayIljin,
@@ -420,31 +454,47 @@ export default async function handler(req, res) {
           주의생년: zodiacData.cautionZodiac.notableYears.map(y => `${y.year}년(${y.stem}${zodiacData.cautionZodiac.branch}, ${y.relation})`),
         } : null,
       };
-      content = await generateMorningPost(iiljin, zodiacData);
+
+      const { main_post, reply_post } = await generateMorningPost(iiljin, zodiacData);
+
+      if (isDry) {
+        return res.status(200).json({
+          dry_run: true, iljin: iiljin.name, isEvening,
+          main_post, reply_post,
+          글자수: { 본문: main_post.length, 답글: reply_post.length },
+          선정근거: morningRationale,
+        });
+      }
+
+      const mainResult = await postToThreads(main_post);
+      const replyResult = await postReplyToThreads(reply_post, mainResult);
+
+      return res.status(200).json({
+        success: true, iljin: iiljin.name, isEvening,
+        main_post, reply_post,
+        main_threads_id: mainResult,
+        reply_threads_id: replyResult,
+      });
+
     } else {
       // 저녁 — 테마 순환 (날짜 기반)
-      // 프로필 CTA: 5일 중 1회 (20%), 연속 사용 방지를 위해 짝수 dayOfYear 중 5의 배수에만 적용
       const theme = MARKETING_THEMES[dayOfYear % MARKETING_THEMES.length];
       const useProfileCta = (dayOfYear % 5 === 0);
-      content = await generateEveningPost(theme, useProfileCta);
-    }
+      const content = await generateEveningPost(theme, useProfileCta);
 
-    if (isDry) {
+      if (isDry) {
+        return res.status(200).json({
+          dry_run: true, iljin: iiljin.name, isEvening, content,
+        });
+      }
+
+      const result = await postToThreads(content);
+
       return res.status(200).json({
-        dry_run: true, iljin: iiljin.name, isEvening, content,
-        ...(morningRationale ? { 선정근거: morningRationale } : {}),
+        success: true, iljin: iiljin.name, isEvening, content,
+        threads_id: result,
       });
     }
-
-    const result = await postToThreads(content);
-
-    return res.status(200).json({
-      success: true,
-      iljin: iiljin.name,
-      isEvening,
-      content,
-      threads_id: result.id,
-    });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: e.message });

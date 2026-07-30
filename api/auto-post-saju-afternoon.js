@@ -212,63 +212,55 @@ ${digitDesc}
   return JSON.parse(raw);
 }
 
+// 500자 초과 시 자동으로 답글 체인으로 분할해서 게시
+async function postThreadChain(text, token, replyToId = null) {
+  const MAX = 498;
+
+  const chunks = [];
+  while (text.length > 0) {
+    if (text.length <= MAX) { chunks.push(text); break; }
+    // 문단 구분(\n\n) → 단일 줄바꿈(\n) → 불가피한 경우에만 글자 위치 순으로 시도
+    let splitAt = text.lastIndexOf('\n\n', MAX);
+    if (splitAt <= 0) splitAt = text.lastIndexOf('\n', MAX);
+    if (splitAt <= 0) splitAt = MAX;
+    chunks.push(text.slice(0, splitAt).trimEnd());
+    text = text.slice(splitAt).trimStart();
+  }
+
+  let lastId = replyToId;
+  for (const chunk of chunks) {
+    const body = { media_type: 'TEXT', text: chunk, access_token: token };
+    if (lastId) body.reply_to_id = lastId;
+
+    const createRes = await fetch(
+      `https://graph.threads.net/v1.0/${USER_ID}/threads`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+    );
+    const createData = await createRes.json();
+    if (!createData.id) throw new Error(`Container 생성 실패: ${JSON.stringify(createData)}`);
+
+    await new Promise(r => setTimeout(r, 30000));
+
+    const publishRes = await fetch(
+      `https://graph.threads.net/v1.0/${USER_ID}/threads_publish`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ creation_id: createData.id, access_token: token }) }
+    );
+    const publishData = await publishRes.json();
+    if (!publishData.id) throw new Error(`Publish 실패: ${JSON.stringify(publishData)}`);
+
+    lastId = publishData.id;
+  }
+  return lastId;
+}
+
 async function postToThreads(text) {
   const token = process.env.THREADS_ACCESS_TOKEN_SAJU;
-  const createRes = await fetch(
-    `https://graph.threads.net/v1.0/${USER_ID}/threads`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ media_type: 'TEXT', text, access_token: token }),
-    }
-  );
-  const createData = await createRes.json();
-  if (!createData.id) throw new Error(`본문 container 생성 실패: ${JSON.stringify(createData)}`);
-
-  await new Promise(r => setTimeout(r, 30000));
-
-  const publishRes = await fetch(
-    `https://graph.threads.net/v1.0/${USER_ID}/threads_publish`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ creation_id: createData.id, access_token: token }),
-    }
-  );
-  const publishData = await publishRes.json();
-  if (!publishData.id) throw new Error(`본문 publish 실패: ${JSON.stringify(publishData)}`);
-  return publishData;
+  return postThreadChain(text, token, null);
 }
 
 async function postReplyToThreads(text, replyToId) {
   const token = process.env.THREADS_ACCESS_TOKEN_SAJU;
-  const createRes = await fetch(
-    `https://graph.threads.net/v1.0/${USER_ID}/threads`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        media_type: 'TEXT',
-        text,
-        reply_to_id: replyToId,
-        access_token: token,
-      }),
-    }
-  );
-  const createData = await createRes.json();
-  if (!createData.id) throw new Error(`답글 container 생성 실패: ${JSON.stringify(createData)}`);
-
-  await new Promise(r => setTimeout(r, 30000));
-
-  const publishRes = await fetch(
-    `https://graph.threads.net/v1.0/${USER_ID}/threads_publish`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ creation_id: createData.id, access_token: token }),
-    }
-  );
-  return await publishRes.json();
+  return postThreadChain(text, token, replyToId);
 }
 
 export default async function handler(req, res) {
@@ -283,13 +275,6 @@ export default async function handler(req, res) {
     const iljin = getTodayIljin();
     const digitData = calculateAllDigits(iljin);
     const { main_post, reply_post } = await generateAfternoonContent(iljin, digitData);
-
-    // 답글 글자 수 초과 시 게시 중단
-    if (reply_post.length > 500) {
-      const msg = `답글이 500자를 초과합니다 (${reply_post.length}자). 게시를 중단합니다.`;
-      console.error(msg);
-      return res.status(500).json({ error: msg });
-    }
 
     const rationale = digitData.map(d => ({
       digit: d.digit,
