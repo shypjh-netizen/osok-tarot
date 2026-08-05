@@ -690,42 +690,53 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 /* ══════════════════════════════════
    새 무료 결과 구조
 ══════════════════════════════════ */
-.free-core-diagnosis{background:linear-gradient(145deg,#1a0d3e,#0d0c22);border:1px solid rgba(201,168,76,.38);border-radius:20px;padding:26px 22px;position:relative;overflow:hidden}
-.free-core-diagnosis::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.09),transparent 60%);pointer-events:none}
-.fcd-label{font-size:.7rem;color:var(--gold);letter-spacing:.18em;margin-bottom:12px;opacity:.8}
-.fcd-text{font-size:1.08rem;color:var(--text);line-height:1.8;font-weight:600;letter-spacing:.02em}
+/* ── 무료 결과 공통 ── */
+#reading-sections{display:flex;flex-direction:column;gap:28px}
+.free-sec-label{font-size:.68rem;color:var(--gold);letter-spacing:.18em;margin-bottom:14px;opacity:.85;text-transform:uppercase}
 
-.free-traits-sec{display:flex;flex-direction:column;gap:10px}
-.trait-card{background:var(--card);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
-.trait-num{flex-shrink:0;width:26px;height:26px;border:1px solid rgba(201,168,76,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--gold);background:rgba(201,168,76,.07);margin-top:2px}
-.trait-text{color:var(--text);font-size:.97rem;line-height:1.78;letter-spacing:.02em}
+/* 핵심 진단 */
+.free-core-diagnosis{background:linear-gradient(150deg,#111530,#0a0a1e);border:1px solid rgba(201,168,76,.35);border-radius:18px;padding:28px 26px;position:relative;overflow:hidden}
+.free-core-diagnosis::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.08),transparent 65%);pointer-events:none}
+.fcd-label{font-size:.68rem;color:var(--gold);letter-spacing:.2em;margin-bottom:14px;opacity:.85}
+.fcd-text{font-size:1.12rem;color:#f0ead8;line-height:1.85;font-weight:500;letter-spacing:.015em;max-width:66ch}
 
-.basis-sec{background:rgba(255,255,255,.02);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:18px 18px}
-.basis-label{font-size:.72rem;color:var(--gold);letter-spacing:.12em;opacity:.75;margin-bottom:10px}
-.basis-text{color:var(--sub);font-size:.93rem;line-height:1.95;letter-spacing:.02em}
+/* 특징 3개 */
+.free-traits-sec{background:var(--card);border:1px solid rgba(201,168,76,.14);border-radius:18px;padding:24px 22px}
+.trait-cards-grid{display:flex;flex-direction:column;gap:14px}
+@media(min-width:640px){.trait-cards-grid{flex-direction:row;gap:12px}}
+.trait-card{background:rgba(255,255,255,.025);border:1px solid rgba(201,168,76,.14);border-radius:14px;padding:20px 18px;flex:1}
+.trait-num{font-size:.65rem;color:var(--gold);letter-spacing:.16em;opacity:.75;margin-bottom:8px}
+.trait-title{font-size:.97rem;color:#f0ead8;font-weight:600;margin-bottom:8px;line-height:1.45;letter-spacing:.02em}
+.trait-desc{color:var(--sub);font-size:.93rem;line-height:1.85;letter-spacing:.015em}
 
-.flow-sec{background:var(--card);border:1px solid rgba(201,168,76,.15);border-radius:16px;padding:22px 20px}
-.flow-sec-label{font-size:.72rem;color:var(--gold);letter-spacing:.12em;opacity:.75;margin-bottom:12px}
-.flow-body{color:var(--sub);font-size:.95rem;line-height:1.9;letter-spacing:.02em;margin-bottom:16px}
-.flow-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:480px){.flow-actions{grid-template-columns:1fr}}
-.flow-action-box{border-radius:12px;padding:14px 14px}
-.flow-action-box.do-box{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2)}
-.flow-action-box.avoid-box{background:rgba(192,57,43,.04);border:1px solid rgba(192,57,43,.15)}
-.flow-action-label{font-size:.7rem;letter-spacing:.1em;margin-bottom:6px}
-.flow-action-box.do-box .flow-action-label{color:var(--gold)}
-.flow-action-box.avoid-box .flow-action-label{color:rgba(220,80,80,.7)}
-.flow-action-text{font-size:.88rem;line-height:1.65;color:var(--text)}
+/* 분석 근거 */
+.basis-sec{background:rgba(255,255,255,.018);border:1px solid rgba(201,168,76,.11);border-radius:16px;padding:22px 22px}
+.basis-label{font-size:.68rem;color:var(--gold);letter-spacing:.18em;opacity:.8;margin-bottom:12px}
+.basis-text{color:var(--sub);font-size:.95rem;line-height:1.95;letter-spacing:.015em;max-width:68ch}
 
-.details-accordion{background:rgba(255,255,255,.02);border:1px solid rgba(201,168,76,.12);border-radius:16px;overflow:hidden}
-.details-acc-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;color:var(--sub);font-size:.88rem;letter-spacing:.04em;min-height:48px;transition:background .2s;border:none;width:100%;background:transparent;font-family:inherit;text-align:left}
-.details-acc-header:hover{background:rgba(201,168,76,.05);color:var(--text)}
-.details-acc-icon{transition:transform .3s;font-style:normal;color:var(--gold)}
+/* 현재 흐름 */
+.flow-sec{background:var(--card);border:1px solid rgba(201,168,76,.14);border-radius:18px;padding:24px 22px}
+.flow-body{color:var(--sub);font-size:.95rem;line-height:1.95;letter-spacing:.015em;margin-bottom:18px;max-width:68ch}
+.flow-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.flow-actions{grid-template-columns:1fr}}
+.flow-action-box{border-radius:13px;padding:16px 16px}
+.flow-action-box.do-box{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.22)}
+.flow-action-box.avoid-box{background:rgba(140,60,60,.05);border:1px solid rgba(180,80,80,.18)}
+.flow-action-label{font-size:.68rem;letter-spacing:.12em;margin-bottom:8px;font-weight:500}
+.flow-action-box.do-box .flow-action-label{color:rgba(201,168,76,.85)}
+.flow-action-box.avoid-box .flow-action-label{color:rgba(200,90,90,.75)}
+.flow-action-text{font-size:.9rem;line-height:1.7;color:#d8d0c0}
+
+/* 상세 성향 아코디언 */
+.details-accordion{background:rgba(255,255,255,.018);border:1px solid rgba(201,168,76,.11);border-radius:16px;overflow:hidden}
+.details-acc-header{padding:16px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;color:var(--sub);font-size:.93rem;letter-spacing:.03em;min-height:52px;transition:background .2s;border:none;width:100%;background:transparent;font-family:inherit;text-align:left}
+.details-acc-header:hover{background:rgba(201,168,76,.04);color:#f0ead8}
+.details-acc-icon{transition:transform .3s;font-style:normal;color:var(--gold);font-size:.8rem}
 .details-acc-inner{display:none;border-top:1px solid rgba(201,168,76,.08)}
-.detail-item{padding:16px 18px;border-bottom:1px solid rgba(201,168,76,.06)}
+.detail-item{padding:18px 22px;border-bottom:1px solid rgba(201,168,76,.06)}
 .detail-item:last-child{border-bottom:none}
-.detail-item-title{font-size:.73rem;color:rgba(201,168,76,.7);letter-spacing:.1em;margin-bottom:7px}
-.detail-item-text{color:var(--sub);font-size:.92rem;line-height:1.9}
+.detail-item-title{font-size:.7rem;color:rgba(201,168,76,.75);letter-spacing:.14em;margin-bottom:9px;font-weight:500}
+.detail-item-text{color:var(--sub);font-size:.93rem;line-height:1.95;max-width:68ch}
 
 /* ── 고민 선택 (worry) ── */
 .worry-sec-inner{padding:4px 0 0}
@@ -1784,9 +1795,12 @@ const SAJU_SYSTEM = `당신은 사주명리학, 자미두수(紫微斗數), 서�
 
 ===특징===
 이 사람을 "내 이야기다"라고 느낄 수 있게 개인화된 특징 3개를 아래 형식으로 작성하세요.
-각 특징은 1~2문장. 누구에게나 해당되는 보편적 위로 금지.
+각 특징은 제목(10자 이내) + 설명 1~2문장. 누구에게나 해당되는 보편적 위로 금지.
+특징1제목: (겉과 속의 대비를 담은 10자 이내 제목)
 특징1: (겉으로 보이는 모습과 실제 내면의 대비. 단독 형용사로 끝나는 표현 금지)
+특징2제목: (강점의 이면을 담은 10자 이내 제목)
 특징2: (강점이 과해질 때 나타나는 문제, 또는 관계·선택에서 반복되는 반응)
+특징3제목: (일·결과 패턴을 담은 10자 이내 제목)
 특징3: (일을 시작하거나 결과가 늦어질 때 나타나는 이 사람만의 패턴)
 
 ===분석근거===
@@ -1850,8 +1864,11 @@ function parseSajuReading(text) {
   if (coreDiagnosis) {
     const traitsSec = extractSection('특징');
     const traits = ['특징1','특징2','특징3'].map(k => {
-      const m = traitsSec.match(new RegExp(k + ':\\s*([\\s\\S]+?)(?=특징[123]:|$)'));
-      return (m?.[1] || '').trim();
+      const titleM = traitsSec.match(new RegExp(k + '제목:\\s*(.+)'));
+      const title = (titleM?.[1] || '').trim();
+      const bodyM = traitsSec.match(new RegExp(k + ':\\s*([\\s\\S]+?)(?=특징[123]제목:|특징[123]:|$)'));
+      const description = (bodyM?.[1] || '').trim();
+      return description ? { title, description } : null;
     }).filter(Boolean);
 
     const flowSec = extractSection('현재흐름');
@@ -1930,12 +1947,20 @@ function renderReadingSections(parsed) {
 
   // 2. 개인화 특징 3개
   if (parsed.traits && parsed.traits.length) {
+    const nums = ['01','02','03'];
     html += `<div class="free-traits-sec">
-      ${parsed.traits.map((t, i) => `
-        <div class="trait-card">
-          <div class="trait-num">${i+1}</div>
-          <div class="trait-text">${escHtmlNl(t)}</div>
-        </div>`).join('')}
+      <p class="free-sec-label">나를 보여주는 특징</p>
+      <div class="trait-cards-grid">
+        ${parsed.traits.map((t, i) => {
+          const title = typeof t === 'object' ? t.title : '';
+          const desc  = typeof t === 'object' ? t.description : t;
+          return `<div class="trait-card">
+            <div class="trait-num">${nums[i]||i+1}</div>
+            ${title ? `<p class="trait-title">${escHtml(title)}</p>` : ''}
+            <p class="trait-desc">${escHtmlNl(desc)}</p>
+          </div>`;
+        }).join('')}
+      </div>
     </div>`;
   }
 
@@ -1950,15 +1975,15 @@ function renderReadingSections(parsed) {
   // 4. 현재 흐름 + 행동
   if (parsed.flow || parsed.firstAction) {
     html += `<div class="flow-sec">
-      <p class="flow-sec-label">지금은 어떤 흐름에 있을까요?</p>
+      <p class="free-sec-label">지금의 흐름</p>
       ${parsed.flow ? `<p class="flow-body">${escHtmlNl(parsed.flow)}</p>` : ''}
       <div class="flow-actions">
         ${parsed.firstAction ? `<div class="flow-action-box do-box">
-          <p class="flow-action-label">✦ 지금 먼저 할 행동</p>
+          <p class="flow-action-label">지금 먼저 해볼 일</p>
           <p class="flow-action-text">${escHtml(parsed.firstAction)}</p>
         </div>` : ''}
         ${parsed.avoidAction ? `<div class="flow-action-box avoid-box">
-          <p class="flow-action-label">⚠ 지금 피할 행동</p>
+          <p class="flow-action-label">지금은 피할 일</p>
           <p class="flow-action-text">${escHtml(parsed.avoidAction)}</p>
         </div>` : ''}
       </div>
@@ -2416,29 +2441,11 @@ async function calculate(){
     aiBody.innerHTML='';
 
     const parsed=parseSajuReading(reading);
-    if(parsed.sections && parsed.sections.length>0){
+    if(parsed._format==='new' || (parsed.sections && parsed.sections.length>0)){
       renderReadingSections(parsed);
     } else {
-      // 파싱 실패 시 기존 방식 fallback
-      const wrap=document.createElement('div');
-      wrap.className='ai-blur-wrap';
-      reading.split(/\n\n+/).filter(p=>p.trim()).forEach(p=>{
-        const div=document.createElement('div');
-        div.className='ai-para';
-        if(p.includes('[BLUR]')){
-          p.split(/\[BLUR\]|\[\/BLUR\]/).forEach((part,i)=>{
-            if(!part)return;
-            if(i%2===1){const s=document.createElement('span');s.className='inline-blur';s.textContent=part;div.appendChild(s);}
-            else div.appendChild(document.createTextNode(part));
-          });
-        } else div.textContent=p.trim();
-        wrap.appendChild(div);
-      });
-      const overlay=document.createElement('div');
-      overlay.className='ai-unlock-overlay';
-      overlay.innerHTML=`<p>✨ 상세 리딩이 숨겨져 있어요</p><button class="ai-unlock-btn" onclick="showSajuEmailPopup()">이메일로 상세 리딩 받기 →</button>`;
-      wrap.appendChild(overlay);
-      aiBody.appendChild(wrap);
+      // 파싱 실패 시 재시도 안내
+      aiBody.innerHTML=`<div class="error-card"><p>결과를 불러오는 중 문제가 발생했어요.</p><button class="error-retry-btn" onclick="retryReading()">↺ 다시 시도하기</button></div>`;
     }
 
     showCustomQuestionSec();
@@ -2853,7 +2860,7 @@ function retryReading(){
     S.chatHistory.push({role:'assistant',content:reading});
     aiBody.innerHTML='';
     const parsed=parseSajuReading(reading);
-    if(parsed.sections && parsed.sections.length>0){renderReadingSections(parsed);}
+    if(parsed._format==='new' || (parsed.sections && parsed.sections.length>0)){renderReadingSections(parsed);}
     showCustomQuestionSec();
     document.getElementById('transition-card').style.display='block';
     document.getElementById('saju-details-wrap').style.display='block';
