@@ -178,7 +178,7 @@ body{background:var(--dark);color:var(--text);font-family:'Noto Serif KR',serif;
 .input-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .radio-row{display:flex;gap:24px;padding:10px 0}
 .radio-row label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.93rem;color:var(--text)}
-.radio-row input[type=radio]{accent-color:var(--gold);width:16px;height:16px}
+.radio-row input[type=radio]{accent-color:var(--gold);width:16px;height:16px;-webkit-appearance:auto;appearance:auto;background:unset;border:unset;padding:unset;border-radius:unset}
 
 .calc-btn{display:block;width:100%;margin-top:8px;padding:16px;background:linear-gradient(135deg,#3d2476,#7c5cbf);border:1px solid rgba(201,168,76,.5);border-radius:14px;color:var(--gold);font-size:1rem;font-family:inherit;letter-spacing:.12em;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
 .calc-btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(201,168,76,.15),transparent 60%)}
@@ -2416,7 +2416,7 @@ async function calculate(){
     aiBody.innerHTML='';
 
     const parsed=parseSajuReading(reading);
-    if(parsed.sections.length>0){
+    if(parsed.sections && parsed.sections.length>0){
       renderReadingSections(parsed);
     } else {
       // 파싱 실패 시 기존 방식 fallback
@@ -2853,7 +2853,7 @@ function retryReading(){
     S.chatHistory.push({role:'assistant',content:reading});
     aiBody.innerHTML='';
     const parsed=parseSajuReading(reading);
-    if(parsed.sections.length>0){renderReadingSections(parsed);}
+    if(parsed.sections && parsed.sections.length>0){renderReadingSections(parsed);}
     showCustomQuestionSec();
     document.getElementById('transition-card').style.display='block';
     document.getElementById('saju-details-wrap').style.display='block';
