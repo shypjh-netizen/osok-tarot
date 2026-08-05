@@ -135,15 +135,26 @@ ${digitDesc}
 섹션1 — 본문 (main_post):
 아래 구조를 자연스럽게 변형합니다. 매번 같은 문장 반복 금지.
 
-"태어난 연도의 마지막 숫자를 확인해보세요.
+[본문 필수 구성]
+① 시선을 끄는 짧은 도입 (1문장)
+② 오늘은 태어난 해의 마지막 숫자로 흐름을 확인한다는 안내
+③ 0~9 중 자신의 숫자를 댓글로 남기라는 참여 문구
+④ 결과는 첫 번째 답글에서 확인하라는 안내
+⑤ 팔로우 또는 하트 CTA
 
-1984년생이라면 4,
-1990년생이라면 0이에요.
+[본문 예시 — 매번 그대로 반복 금지, 자연스럽게 변형]
+"오늘은 태어난 해의 마지막 숫자로
+지금 내 흐름을 확인해볼게요.
+0부터 9까지,
+내 숫자 하나를 댓글로 남겨주세요.
+숫자별 결과는 첫 번째 답글에 적어둘게요. ✨
+이런 흐름이 자주 궁금하다면 팔로우해두세요."
 
-오늘 내 숫자에 맞는 흐름을
-첫 번째 답글에 정리해두었어요.
-
-결과를 보기 전에 내 숫자부터 정해보세요. ✨"
+[본문 절대 금지]
+- "1984년생이라면 4", "1990년생이라면 0" 등 끝자리 계산 예시 삽입 금지
+- 출생연도 끝자리를 구하는 방법 설명 금지 (사용자는 이미 알고 있음)
+- 0~9 숫자별 결과 본문 삽입 금지
+- 본문 분량: 공백 포함 80~150자
 
 섹션2 — 첫 번째 답글 (reply_post):
 아래 형식을 정확히 따릅니다.
@@ -183,7 +194,10 @@ ${digitDesc}
 - 분량 초과 시 중복 수식어와 불필요한 연결 표현을 줄입니다. 구체적 행동은 삭제하지 않습니다.
 
 [최종 확인]
-- 0~9 모두 작성됐는가?
+- main_post에 "1984년생이라면 4" 같은 끝자리 계산 예시가 있는가? → 반드시 삭제
+- main_post에 0~9 결과가 포함됐는가? → 반드시 삭제 (결과는 reply_post에만)
+- main_post에 댓글 참여 유도 문구가 있는가? → 없으면 추가
+- 0~9 모두 reply_post에 작성됐는가?
 - 같은 오행 쌍(0&1, 2&3, 4&5, 6&7, 8&9) 키워드와 행동이 다른가?
 - 동일 답글 안에서 키워드가 중복되는가? → 교체
 - 특정 사건을 확정한 표현이 있는가? → 수정
@@ -298,17 +312,18 @@ export default async function handler(req, res) {
     }
 
     // 본문 게시
-    const mainResult = await postToThreads(main_post);
-    const mainPostId = mainResult.id;
+    const mainPostId = await postToThreads(main_post);
+    if (!mainPostId) throw new Error('본문 게시 실패: 게시글 ID를 받지 못했어요. 답글을 발행하지 않습니다.');
 
-    // 답글 게시 (본문 ID 사용)
-    const replyResult = await postReplyToThreads(reply_post, mainPostId);
+    // 첫 번째 답글 게시 (본문 ID를 reply_to_id로 전달)
+    const replyId = await postReplyToThreads(reply_post, mainPostId);
+    if (!replyId) throw new Error(`첫 번째 답글 게시 실패 (본문 ID: ${mainPostId}). 별도 게시글로 대체 발행하지 않습니다.`);
 
     return res.status(200).json({
       success: true,
       iljin: iljin.name,
       main_post_id: mainPostId,
-      reply_id: replyResult.id,
+      reply_id: replyId,
     });
 
   } catch (e) {

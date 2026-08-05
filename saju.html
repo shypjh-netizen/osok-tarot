@@ -2360,16 +2360,15 @@ async function calculate(){
   };
   const tag=name||'내담자';
   const ohaengMsg=ohaeng[maxEl]>=3?OHAENG_EXCESS[maxEl]:`${tag}님의 오행은 비교적 균형 잡혀 있어요. 다양한 상황에 유연하게 대응하는 안정된 에너지를 가지고 있어요. 부족한 ${minEl} 기운을 보완하면 더욱 균형 잡힌 흐름이 만들어져요.`;
+  const hourLabel=getHourDisplay(hourVal);
   S.chatHistory=[];
   S.sajuData={ name, year, month, day, hourVal, hourLabel, gender, relationStatus: relStatus,
     context: buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel) };
 
   // 출생 정보 바
   const genderKo=gender==='m'?'남성':'여성';
-  const hourLabel=getHourDisplay(hourVal);
-  const hourStr=` · ${hourLabel}`;
   document.getElementById('birth-info-text').textContent=
-    `${year}년 ${month}월 ${day}일${hourStr} · 양력 · ${genderKo}`;
+    `${year}년 ${month}월 ${day}일 · ${hourLabel} · 양력 · ${genderKo}`;
 
   // 관계 상태 바
   const relLabel = REL_STATUS[relStatus]?.label || '답변 안 함';
