@@ -910,6 +910,29 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .form-privacy-note{font-size:.75rem;color:rgba(154,128,96,.5);line-height:1.7;margin-top:12px;margin-bottom:4px;text-align:center}
 
 /* ══════════════════════════════════
+   고민 선택 스텝 (입력 폼 내)
+══════════════════════════════════ */
+.concern-step{margin-top:22px;padding-top:20px;border-top:1px solid rgba(201,168,76,.12)}
+.concern-step-label{font-size:.68rem;color:var(--gold);letter-spacing:.18em;opacity:.8;margin-bottom:6px;text-transform:uppercase}
+.concern-step-title{font-size:.95rem;color:var(--text);font-weight:600;margin-bottom:14px;line-height:1.55}
+.concern-btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+@media(min-width:480px){.concern-btn-grid{grid-template-columns:repeat(4,1fr)}}
+.concern-btn{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.18);border-radius:11px;padding:11px 10px 10px;text-align:left;cursor:pointer;transition:border-color .18s,background .18s;display:flex;flex-direction:column;gap:5px;position:relative;width:100%;font-family:inherit}
+.concern-btn:hover{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.06)}
+.concern-btn.active{border-color:rgba(201,168,76,.75);background:rgba(201,168,76,.1)}
+.concern-btn.active::after{content:'✓';position:absolute;top:7px;right:9px;font-size:.65rem;color:var(--gold);font-weight:700}
+.cb-icon{font-size:1.15rem;line-height:1}
+.cb-label{font-size:.8rem;color:var(--text);font-weight:500;line-height:1.35}
+.concern-skip-btn{display:block;width:100%;border:none;background:transparent;color:rgba(184,158,126,.4);font-size:.76rem;cursor:pointer;padding:8px 0 2px;text-align:center;font-family:inherit;transition:color .15s}
+.concern-skip-btn:hover{color:rgba(184,158,126,.7)}
+.concern-skip-btn.active{color:var(--gold);font-weight:600}
+.concern-custom-wrap{margin-top:10px;display:none}
+.concern-custom-wrap.visible{display:block}
+.concern-custom-hint{font-size:.75rem;color:var(--sub);margin-bottom:7px}
+.concern-custom-textarea{width:100%;min-height:72px;background:rgba(255,255,255,.04);border:1px solid rgba(184,158,126,.25);border-radius:10px;padding:11px 13px;color:var(--text);font-size:.87rem;line-height:1.7;resize:vertical;font-family:inherit;box-sizing:border-box}
+.concern-custom-textarea:focus{outline:none;border-color:rgba(201,168,76,.6)}
+
+/* ══════════════════════════════════
    왜 흐름을 알아야 하나
 ══════════════════════════════════ */
 .why-sec{padding:16px 0 32px}
@@ -1063,6 +1086,22 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           <button type="button" class="rel-btn"        data-rel="private"  onclick="selectRelStatus(this)" aria-pressed="false">답변 안 함</button>
         </div>
       </div>
+      <!-- 고민 선택 스텝 -->
+      <div class="concern-step" id="concern-step">
+        <p class="concern-step-label">✦ 선택사항</p>
+        <p class="concern-step-title">현재 가장 궁금한 고민이 있나요?</p>
+        <div class="concern-btn-grid" id="concern-btn-grid">
+          <!-- JS: renderConcernButtons()로 채워짐 -->
+        </div>
+        <div class="concern-custom-wrap" id="concern-custom-wrap">
+          <p class="concern-custom-hint">궁금한 질문을 짧게 적어주세요</p>
+          <textarea class="concern-custom-textarea" id="concern-custom-input" maxlength="200"
+            placeholder="예: 올해 이직을 준비 중인데 언제 움직이면 좋을까요?"
+            oninput="onConcernCustomInput()"></textarea>
+        </div>
+        <button type="button" class="concern-skip-btn" id="concern-skip-btn" onclick="selectConcern('none')">아직 특별한 고민 없음 →</button>
+      </div>
+
       <p class="form-privacy-note">입력한 정보는 사주 결과 생성에만 사용되며, 브라우저에만 임시 저장돼요.</p>
       <button class="calc-btn" onclick="calculate()">내 무료 사주 결과 보기</button>
     </div>
@@ -1744,9 +1783,61 @@ function selectRelStatus(btn) {
   });
   btn.classList.add('active');
   btn.setAttribute('aria-pressed', 'true');
+  renderConcernButtons();
 }
 
 let S = { chatHistory: [], sajuData: null };
+
+/* ─── 고민 선택 상태 ─── */
+let concernSel = { category: null, question: '' };
+
+function renderConcernButtons() {
+  const grid = document.getElementById('concern-btn-grid');
+  if (!grid) return;
+  const relStatus = document.querySelector('.rel-status-group .rel-btn.active')?.dataset.rel || 'private';
+  const isMarried = relStatus === 'married';
+  const order = isMarried
+    ? ['marriage','work','money','business','love','family','year','custom']
+    : ['work','money','business','love','marriage','family','year','custom'];
+  const prevCat = concernSel.category;
+  grid.innerHTML = order.map(key => {
+    const t = WORRY_TOPICS[key];
+    const isActive = key === prevCat;
+    return `<button type="button" class="concern-btn${isActive?' active':''}" data-concern="${key}" onclick="selectConcern('${key}')" aria-pressed="${isActive}">
+      <span class="cb-icon">${t.icon}</span>
+      <span class="cb-label">${escHtml(t.label)}</span>
+    </button>`;
+  }).join('');
+}
+
+function selectConcern(category) {
+  concernSel.category = category;
+
+  document.querySelectorAll('.concern-btn').forEach(b => {
+    const active = b.dataset.concern === category;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-pressed', String(active));
+  });
+
+  const skipBtn = document.getElementById('concern-skip-btn');
+  if (skipBtn) skipBtn.classList.toggle('active', category === 'none');
+
+  const customWrap = document.getElementById('concern-custom-wrap');
+  if (customWrap) {
+    const show = category === 'custom';
+    customWrap.classList.toggle('visible', show);
+    if (!show) {
+      concernSel.question = '';
+      const ta = document.getElementById('concern-custom-input');
+      if (ta) ta.value = '';
+    }
+  }
+}
+
+function onConcernCustomInput() {
+  const ta = document.getElementById('concern-custom-input');
+  if (ta) concernSel.question = ta.value;
+}
 
 /* ─── UTM 파라미터 보존 ─── */
 (function(){
@@ -1940,7 +2031,7 @@ function renderReadingSections(parsed) {
   // 1. 핵심 진단
   if (parsed.coreDiagnosis) {
     html += `<div class="free-core-diagnosis" id="summary-card" style="scroll-margin-top:48px">
-      <p class="fcd-label">✦ ${escHtml(name) ? escHtml(name) + '님의 ' : ''}지금 흐름</p>
+      <p class="fcd-label">✦ ${escHtml(name) ? escHtml(name) + '님의 ' : ''}${S.sajuData?.concern?.selectedBeforeAnalysis && S.sajuData.concern.label ? escHtml(S.sajuData.concern.label) + ' 흐름' : '지금 흐름'}</p>
       <p class="fcd-text">${escHtmlNl(parsed.coreDiagnosis)}</p>
     </div>`;
   }
@@ -2250,7 +2341,7 @@ function renderZodiac(z){
       <p>${z.el}의 별자리 · 키워드: ${z.key}</p>
     </div>`;
 }
-function buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel){
+function buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel,concern){
   const tag=name||'내담자';
   const genderKo=gender==='m'?'남성':'여성';
   const hourStr=knownHour?(hourLabel||getHourDisplay(hourVal)):'출생시간 모름';
@@ -2276,7 +2367,7 @@ ${pillarDesc.join('\n')}
 
 별자리: ${zodiac.name} (${zodiac.dates}) — ${zodiac.el}의 별자리, 키워드: ${zodiac.key}
 
-위 사주팔자와 별자리를 바탕으로 ${tag}님만을 위한 깊이 있는 종합 리딩을 해주세요. 일간의 본질적 성격, 오행의 강약이 삶에 미치는 영향, 사주와 별자리 에너지의 조화, 사랑·직업·재물 각 영역별 흐름, 지금 이 시기의 에너지, 그리고 앞으로의 흐름을 구체적으로 담아주세요.`;
+위 사주팔자와 별자리를 바탕으로 ${tag}님만을 위한 깊이 있는 종합 리딩을 해주세요. 일간의 본질적 성격, 오행의 강약이 삶에 미치는 영향, 사주와 별자리 에너지의 조화, 사랑·직업·재물 각 영역별 흐름, 지금 이 시기의 에너지, 그리고 앞으로의 흐름을 구체적으로 담아주세요.${concern?.selectedBeforeAnalysis && concern.label ? `\n\n특히 이 분은 지금 [${concern.label}]에 대해 가장 관심이 높습니다. 해석 전반에서 이 영역의 흐름을 더 구체적으로 짚어주세요.${concern.question ? ` 관련 질문: "${concern.question}"` : ''}` : ''}`;
 }
 
 const CATEGORY_INFO = {
@@ -2386,9 +2477,22 @@ async function calculate(){
   const tag=name||'내담자';
   const ohaengMsg=ohaeng[maxEl]>=3?OHAENG_EXCESS[maxEl]:`${tag}님의 오행은 비교적 균형 잡혀 있어요. 다양한 상황에 유연하게 대응하는 안정된 에너지를 가지고 있어요. 부족한 ${minEl} 기운을 보완하면 더욱 균형 잡힌 흐름이 만들어져요.`;
   const hourLabel=getHourDisplay(hourVal);
+  // 고민 선택 정보 수집
+  const concernCategory = concernSel.category || 'none';
+  const concernTopic = WORRY_TOPICS[concernCategory];
+  const concernLabel = concernTopic ? concernTopic.label : '';
+  const concernQuestion = concernSel.question || '';
+  const concern = {
+    category: concernCategory,
+    label: concernLabel,
+    question: concernQuestion,
+    selectedBeforeAnalysis: concernCategory !== 'none'
+  };
+
   S.chatHistory=[];
   S.sajuData={ name, year, month, day, hourVal, hourLabel, gender, relationStatus: relStatus,
-    context: buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel) };
+    concern,
+    context: buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel,concern) };
 
   // 출생 정보 바
   const genderKo=gender==='m'?'남성':'여성';
@@ -2429,10 +2533,13 @@ async function calculate(){
   renderSinsal(calcSinsal(pillars,dayCycle,knownHour));
 
   const aiBody=document.getElementById('ai-reading-body');
-  aiBody.innerHTML=`<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> 오속이 사주팔자를 분석하고 있어요...</div>`;
+  const loadingMsg = concern.selectedBeforeAnalysis && concern.label
+    ? `오속이 ${concern.label} 흐름을 중심으로 분석하고 있어요...`
+    : '오속이 사주팔자를 분석하고 있어요...';
+  aiBody.innerHTML=`<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> ${loadingMsg}</div>`;
   document.getElementById('result-sec').scrollIntoView({behavior:'smooth'});
 
-  const userMsg=buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,undefined,hourLabel);
+  const userMsg=buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,undefined,hourLabel,concern);
   S.chatHistory.push({role:'user',content:userMsg});
 
   try{
@@ -2449,6 +2556,17 @@ async function calculate(){
     }
 
     showCustomQuestionSec();
+    // 분석 전 고민 선택 시 하단 worry 버튼 자동 pre-select
+    if (S.sajuData?.concern?.selectedBeforeAnalysis && S.sajuData.concern.category !== 'none') {
+      const preCat = S.sajuData.concern.category;
+      if (WORRY_TOPICS[preCat]) {
+        selectWorry(preCat);
+        if (preCat === 'custom' && S.sajuData.concern.question) {
+          const ta = document.getElementById('cq-question-input');
+          if (ta) { ta.value = S.sajuData.concern.question; updateCqCharCount(); }
+        }
+      }
+    }
     document.getElementById('transition-card').style.display='block';
     document.getElementById('saju-details-wrap').style.display='block';
     // product-select-sec / trust-info-sec은 질문 미리보기 완료 후 표시됨
@@ -2553,6 +2671,7 @@ const WORRY_TOPICS = {
   year:     { label:'올해의 흐름',   icon:'📅' },
   custom:   { label:'직접 질문하기', icon:'✏️' },
 };
+renderConcernButtons(); // 폼 로드 시 고민 버튼 초기 렌더
 
 const WORRY_LOCKED = {
   work:     ['지금 자리를 유지할 때의 흐름','변화를 준비하기 좋은 시기','이직 전에 먼저 갖춰야 할 조건','현재 피해야 할 성급한 선택','앞으로 30일 동안 먼저 할 행동'],
@@ -2854,7 +2973,7 @@ function retryReading(){
   const zodiac=getZodiac(d.month,d.day);
   const aiBody=document.getElementById('ai-reading-body');
   aiBody.innerHTML=`<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> 오속이 다시 분석하고 있어요...</div>`;
-  const userMsg=buildSajuContext(d.name,d.year,d.month,d.day,d.hourVal,d.gender,pillars,ohaeng,zodiac,knownHour,d.relationStatus,d.hourLabel);
+  const userMsg=buildSajuContext(d.name,d.year,d.month,d.day,d.hourVal,d.gender,pillars,ohaeng,zodiac,knownHour,d.relationStatus,d.hourLabel,d.concern);
   S.chatHistory=[{role:'user',content:userMsg}];
   callAI(S.chatHistory).then(reading=>{
     S.chatHistory.push({role:'assistant',content:reading});
@@ -3032,7 +3151,7 @@ function applyRelStatus(newStatus) {
   const pillars = calcSaju(d.year, d.month, d.day, knownHour ? d.hourVal : -1);
   const ohaeng  = calcOhaeng(pillars);
   const zodiac  = getZodiac(d.month, d.day);
-  S.sajuData.context = buildSajuContext(d.name, d.year, d.month, d.day, d.hourVal, d.gender, pillars, ohaeng, zodiac, knownHour, newStatus, d.hourLabel);
+  S.sajuData.context = buildSajuContext(d.name, d.year, d.month, d.day, d.hourVal, d.gender, pillars, ohaeng, zodiac, knownHour, newStatus, d.hourLabel, d.concern);
 
   // 상태 바 업데이트
   document.getElementById('rel-status-display').textContent = REL_STATUS[newStatus]?.label || '답변 안 함';
