@@ -975,6 +975,292 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   .decide-row{grid-template-columns:1fr 1fr 1.3fr}
   .decide-cell:first-child{display:none}
 }
+
+/* ══════════════════════════════════
+   가독성 개선 — 텍스트 색상·크기·행간
+   (구조·기능·색상 분위기 변경 없음)
+══════════════════════════════════ */
+
+/* ── 0. 핵심 색상 변수 재정의 ── */
+:root{
+  --sub:#C4B49A;           /* #b89e7e → 더 밝은 워밍 베이지 */
+  --gold:#D4A84E;          /* #c9a84c → 소형 라벨에도 읽히는 밝기 */
+  --gold2:#EDD07E;         /* 기존 대비 약간 밝게 */
+  --text-primary:#F6F0E4;
+  --text-secondary:#D4C9B5;
+  --text-muted:#B8AB97;
+  --text-gold:#D4A84E;
+  --text-placeholder:#96877B;
+}
+
+/* ── 1. 히어로 ── */
+.hero-kw{opacity:1;color:var(--gold);font-size:.88rem}
+.hero-sub{color:var(--text-secondary);font-size:1.05rem;line-height:1.9}
+/* "약 1분 소요" 안내 */
+.hero p[style]{color:rgba(200,182,148,.72)!important}
+
+/* ── 2. 섹션 공통 키워드 라벨 ── */
+.sec-kw{opacity:1;color:var(--gold);font-size:.78rem}
+.sec-title{font-size:1.25rem}
+.triple-icon{opacity:1}
+.triple-card h3{font-size:1rem}
+.triple-card h3 span{opacity:1;color:var(--gold)}
+.triple-card p{color:var(--text-secondary);font-size:15px;line-height:1.85}
+.triple-desc{color:var(--text-secondary);font-size:15px;line-height:1.85}
+.triple-bottom{color:var(--text-secondary);font-size:15px}
+
+/* ── 3. 스토리·비교 ── */
+.story-line{color:var(--text-secondary)}
+.why-body{color:var(--text-secondary);font-size:16px;line-height:2}
+@media(max-width:480px){.why-body{font-size:16px}}
+.cmp-item.free-item{color:var(--text-muted)}
+.cmp-price{color:var(--text-muted)}
+.decide-cell{color:var(--text-secondary)}
+.decide-row.header .decide-cell{color:var(--gold);opacity:1}
+
+/* ── 4. 가치 요약 카드 ── */
+.value-card .vc-text{color:var(--text-primary);font-size:16px;line-height:1.8}
+@media(max-width:480px){.value-card .vc-text{font-size:16px}}
+
+/* ── 5. 입력 폼 ── */
+.form-title p{opacity:1;color:var(--gold)}
+.form-title h2{font-size:1.3rem;color:var(--text-primary)}
+.form-desc{color:var(--text-secondary);font-size:15px;line-height:1.85}
+.ig label{font-size:14px;color:var(--text-muted);letter-spacing:.03em}
+@media(min-width:481px){.ig label{font-size:15px}}
+.ig input{color:var(--text-primary);border-color:rgba(201,168,76,.35)}
+.ig select{color:var(--text-primary);border-color:rgba(201,168,76,.35)}
+.ig input::placeholder{color:var(--text-placeholder)}
+.radio-row label{color:var(--text-primary);font-size:15px}
+
+/* 관계 상태 */
+.rel-btn{color:var(--text-secondary);font-size:14px;border-color:rgba(201,168,76,.3)}
+.rel-btn:hover{color:var(--text-primary)}
+.rel-btn.active{color:var(--gold)}
+.rel-edit-panel p{color:var(--text-secondary)}
+.rel-edit-panel .rel-regen-note{color:var(--text-muted);opacity:1}
+
+/* 고민 선택 (폼) */
+.concern-step-label{opacity:1;color:var(--gold)}
+.concern-step-title{font-size:1.05rem;color:var(--text-primary)}
+.cb-label{font-size:14px;color:var(--text-secondary);font-weight:500}
+.concern-btn{border-color:rgba(201,168,76,.28)}
+.concern-skip-btn{color:var(--text-muted);opacity:1;font-size:13px}
+.concern-skip-btn.active{color:var(--gold)}
+.concern-custom-hint{color:var(--text-secondary)}
+.concern-custom-textarea{color:var(--text-primary);border-color:rgba(201,168,76,.35)}
+.concern-custom-textarea::placeholder{color:var(--text-placeholder)}
+@media(max-width:480px){.cb-label{font-size:15px}}
+
+/* 개인정보 안내 */
+.form-privacy-note{color:var(--text-muted);opacity:1;font-size:13px}
+@media(max-width:480px){.form-privacy-note{font-size:14px}}
+
+/* ── 6. 출생 정보 바 ── */
+.birth-info-text{color:var(--text-secondary);font-size:14px}
+.rel-status-bar .rs-label{color:var(--text-muted);opacity:1}
+.rel-status-bar .rs-value{color:var(--gold)}
+
+/* ── 7. 사주팔자·신살 ── */
+.pillars-label{opacity:1;color:var(--gold)}
+.pillar .plabel{color:var(--text-muted);font-size:12px}
+.pillar .stem-name,.pillar .branch-name{color:var(--text-muted)}
+.sinsal-name{color:var(--gold);opacity:1}
+.sinsal-desc{color:var(--text-secondary);font-size:13px}
+
+/* ── 8. 오행·별자리 ── */
+.ohaeng-msg-text{color:var(--text-secondary);font-size:15px;line-height:1.95}
+.ohaeng-count{color:var(--text-secondary)}
+.section-card h3{opacity:1}
+.zodiac-info h4{color:var(--gold);opacity:1}
+.zodiac-info p{color:var(--text-secondary);font-size:14px;line-height:1.7}
+
+/* ── 9. 무료 결과 핵심 ── */
+.free-sec-label{opacity:1;color:var(--gold);font-size:12px}
+.fcd-label{opacity:1;color:var(--gold)}
+.fcd-text{font-size:1.18rem;color:var(--text-primary);line-height:1.9}
+@media(max-width:480px){.fcd-text{font-size:1.12rem}}
+
+.trait-num{opacity:1;color:var(--gold)}
+.trait-title{color:var(--text-primary)}
+.trait-desc{color:var(--text-secondary);font-size:15px;line-height:1.9}
+@media(max-width:480px){.trait-desc{font-size:15px}}
+
+.basis-label{opacity:1;color:var(--gold)}
+.basis-text{color:var(--text-secondary);font-size:16px;line-height:2}
+
+.flow-body{color:var(--text-secondary);font-size:16px;line-height:2}
+.flow-action-text{font-size:15px;line-height:1.8;color:var(--text-secondary)}
+.flow-action-box.do-box .flow-action-label{opacity:1}
+.flow-action-box.avoid-box .flow-action-label{opacity:1}
+
+.details-acc-header{color:var(--text-secondary);font-size:15px}
+.detail-item-title{opacity:1;color:var(--gold)}
+.detail-item-text{color:var(--text-secondary);font-size:15px;line-height:2}
+
+/* ── 10. AI 리딩 ── */
+.ai-loading{color:var(--text-secondary)}
+.ai-text{color:var(--text-primary);font-size:16px}
+.rs-para{color:var(--text-secondary);font-size:16px;line-height:1.9}
+.rs-label{opacity:1;color:var(--gold)}
+.rs-title{opacity:1;color:var(--gold)}
+.rs-headline{color:var(--text-primary);font-size:16px}
+
+/* ── 11. 고민 선택 (결과 화면) ── */
+.worry-sec-title{color:var(--text-primary);font-size:1.05rem}
+.worry-sec-desc{color:var(--text-secondary);font-size:15px;line-height:1.85}
+.worry-btn{color:var(--text-secondary);font-size:14px;border-color:rgba(201,168,76,.3)}
+.worry-btn:hover{color:var(--text-primary)}
+.worry-btn.active{color:var(--gold)}
+@media(max-width:480px){.worry-btn{font-size:15px}}
+.worry-preview-label{opacity:1;color:var(--gold)}
+.worry-preview-body{color:var(--text-secondary);font-size:15px;line-height:1.95}
+
+/* ── 12. 잠금 / 유료 유도 ── */
+.locked-title{color:rgba(232,201,122,.82)}
+.locked-preview{color:var(--text-muted);font-size:14px}
+.unlock-zone-title{opacity:1;color:var(--gold)}
+.unlock-item-text{color:var(--text-secondary);font-size:14px}
+.pli-label{color:rgba(201,168,76,.8)!important;opacity:1!important}
+
+/* ── 13. 전환 카드 ── */
+#transition-card .tc-title{color:var(--text-primary)}
+#transition-card .tc-desc{color:var(--text-secondary);font-size:15px}
+
+/* ── 14. 질문 입력 (cq) ── */
+.cq-intro-desc{color:var(--text-secondary);font-size:15px}
+.cq-intro-q{color:var(--text-primary)}
+.cq-input-label{opacity:1;color:var(--gold)}
+.cq-textarea{color:var(--text-primary)}
+.cq-textarea::placeholder{color:var(--text-placeholder);font-size:14px}
+.cq-privacy-note{color:var(--text-muted);opacity:1;font-size:12px}
+.cq-char-count{color:var(--text-muted);opacity:1}
+.cq-context-toggle{color:var(--text-muted);opacity:1}
+.cq-confirm-label{opacity:1;color:var(--gold)}
+.cq-confirm-ctx{color:var(--text-secondary)}
+.cq-preview-label{opacity:1;color:var(--gold)}
+.cq-prev-body{color:var(--text-secondary);font-size:15px;line-height:1.95}
+.topic-btn{color:var(--text-secondary);font-size:14px}
+.topic-btn.active{color:var(--gold)}
+.rec-q-btn{color:var(--text-secondary);font-size:14px}
+
+/* ── 15. 상품 카드 ── */
+.ps-card-name{color:var(--text-muted)}
+.ps-card.single .ps-card-item{color:var(--text-secondary)}
+.ps-card.single .ps-card-item .psi{color:rgba(201,168,76,.72)}
+.single-cta-name{color:var(--text-primary)}
+.single-cta-desc{color:var(--text-secondary)}
+.single-cta-item{color:var(--text-secondary)}
+.single-cta-item .sci{color:rgba(201,168,76,.72)}
+.premium-sub-intro{color:var(--text-secondary)}
+.upgrade-banner .up-kw{opacity:1;color:var(--gold)}
+.upgrade-banner .up-sub{color:var(--text-secondary);font-size:15px}
+.up-item{color:var(--text-secondary)}
+.up-item::before{opacity:1}
+.pay-note{color:var(--text-muted);opacity:1}
+.product-meta{color:var(--text-muted);opacity:1}
+.product-refund{color:var(--text-muted);opacity:1}
+.q-product-desc{color:var(--text-muted);opacity:1}
+.q-pay-note{color:var(--text-muted);opacity:1}
+.q-product-card.single .q-product-item{color:var(--text-secondary)}
+.upgrade-diff-item{color:var(--text-secondary)}
+.upgrade-diff-item .udi-dot{opacity:1}
+.upgrade-sep span{color:var(--text-muted);opacity:1}
+.free-badge{color:var(--text-secondary)}
+.chc-body{color:var(--text-secondary);font-size:15px}
+
+/* ── 16. 신뢰 섹션 ── */
+.trust-section h4{opacity:1;color:rgba(212,168,78,.85)}
+.trust-dl dt{opacity:1;color:rgba(212,168,78,.85)}
+.trust-dl dd{color:var(--text-muted)}
+.trust-note{color:var(--text-muted);opacity:1}
+
+/* ── 17. 후기·투명성 카드 ── */
+.review-text{color:var(--text-primary)}
+.review-meta{color:var(--text-muted);opacity:1}
+.tran-card p{color:var(--text-secondary)}
+
+/* ── 18. 사주 상세 토글 ── */
+#saju-details-toggle-btn{color:var(--text-secondary)}
+
+/* ── 19. 결제 신뢰 배지 ── */
+.pay-trust-strip span{color:var(--text-muted);opacity:1}
+
+/* ── 20. 쿠키 배너 ── */
+.cookie-banner p{color:var(--text-secondary)}
+
+/* ── 21. 푸터 ── */
+footer,.footer-biz{color:var(--text-muted);opacity:1}
+.footer-links a{color:var(--text-muted)}
+
+/* ── 22. placeholder 통일 ── */
+input::placeholder,select::placeholder{color:var(--text-placeholder)}
+.ig input::placeholder{color:var(--text-placeholder)}
+
+/* ── 23. 모바일 강화 ── */
+@media(max-width:480px){
+  .ig label{font-size:15px}
+  .rel-btn{font-size:14px}
+  .worry-btn{font-size:15px}
+  .cb-label{font-size:15px}
+  .concern-step-title{font-size:1rem}
+  .fcd-text{font-size:1.12rem}
+  .triple-card p{font-size:15px}
+  .trait-desc{font-size:15px}
+  .basis-text{font-size:15px}
+  .flow-body{font-size:15px}
+  .rs-para{font-size:15px}
+  .detail-item-text{font-size:14px}
+  .form-title h2{font-size:1.15rem}
+}
+
+/* ── 결과 화면 재구성 신규 요소 ── */
+
+/* 선택 고민 표시 카드 */
+.concern-display-card{display:flex;align-items:center;gap:14px;background:rgba(212,168,78,.08);border:1px solid rgba(212,168,78,.3);border-radius:14px;padding:16px 18px;margin-bottom:6px}
+.cdc-icon{font-size:1.6rem;flex-shrink:0;line-height:1}
+.cdc-body{flex:1;min-width:0}
+.cdc-label{font-size:.7rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;opacity:.85}
+.cdc-topic{font-size:1.05rem;color:var(--text-primary);font-weight:700;margin:0}
+.cdc-question{font-size:.84rem;color:var(--text-secondary);margin-top:5px;line-height:1.55}
+
+/* 핵심 진단 — 더 크고 두드러지게 */
+.free-core-diagnosis{background:linear-gradient(135deg,rgba(212,168,78,.12),rgba(212,168,78,.04));border:1px solid rgba(212,168,78,.28);border-radius:16px;padding:22px 20px;margin-bottom:6px}
+.fcd-label{font-size:.72rem;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
+.fcd-text{font-size:1.18rem;color:var(--text-primary);line-height:1.75;font-weight:600;margin:0}
+
+/* 지금의 결론 — 3개 카드 */
+.quick-conclusions-sec{margin-bottom:6px}
+.quick-conclusions-sec .free-sec-label{margin-bottom:12px}
+.qc-grid{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:480px){.qc-grid{grid-template-columns:repeat(3,1fr)}}
+.qc-card{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:14px 14px 12px}
+.qc-push{border-color:rgba(100,200,120,.25);background:rgba(100,200,120,.05)}
+.qc-organize{border-color:rgba(201,168,76,.22);background:rgba(201,168,76,.05)}
+.qc-wait{border-color:rgba(120,160,220,.22);background:rgba(120,160,220,.05)}
+.qc-type-label{font-size:.72rem;color:var(--text-muted);letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.qc-push .qc-type-label{color:rgba(100,200,120,.8)}
+.qc-organize .qc-type-label{color:var(--gold)}
+.qc-wait .qc-type-label{color:rgba(140,180,230,.8)}
+.qc-icon{font-size:.9rem}
+.qc-content{font-size:.9rem;color:var(--text-primary);line-height:1.65;margin:0;font-weight:500}
+
+/* 현재 흐름 — 분석 근거 박스 */
+.flow-basis-wrap{margin-top:14px;padding:12px 14px;background:rgba(255,255,255,.03);border-left:2px solid rgba(201,168,76,.3);border-radius:0 8px 8px 0}
+.flow-basis-label{font-size:.73rem;color:var(--gold);letter-spacing:.1em;margin-bottom:6px;opacity:.85}
+.flow-basis-text{font-size:.88rem;color:var(--text-secondary);line-height:1.7;margin:0}
+
+/* 행동 카드 섹션 */
+.action-cards-sec{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:6px}
+@media(min-width:480px){.action-cards-sec{grid-template-columns:1fr 1fr}}
+
+/* 고민 미리보기 */
+.topic-preview-sec{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.18);border-radius:14px;padding:18px 18px 14px;margin-bottom:6px;position:relative;overflow:hidden}
+.tp-label{font-size:.72rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+.tp-body{font-size:.92rem;color:var(--text-primary);line-height:1.75;margin-bottom:14px}
+.tp-blur-bar{background:rgba(30,26,50,.85);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:11px 14px;font-size:.8rem;color:var(--gold);text-align:center;letter-spacing:.04em}
+
+
 </style>
 </head>
 <body>
@@ -1184,7 +1470,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <nav class="saju-nav" id="saju-nav">
       <div class="saju-nav-inner">
         <a class="sn-item" onclick="navScrollTo('sec-summary')">한눈에 보기</a>
-        <a class="sn-item" onclick="navScrollTo('summary-card')">사주 리딩</a>
+        <a class="sn-item" onclick="navScrollTo('ai-reading-anchor')">사주 리딩</a>
         <a class="sn-item" onclick="navScrollTo('custom-question-sec')">내 질문</a>
         <a class="sn-item" onclick="navScrollTo('product-select-sec')">상품 선택</a>
         <a class="sn-item" onclick="navScrollTo('saju-details-wrap')">사주 상세</a>
@@ -1884,6 +2170,12 @@ const SAJU_SYSTEM = `당신은 사주명리학, 자미두수(紫微斗數), 서�
 지금 이 사람의 현재 상태와 핵심 방향을 1~2문장으로 제시하세요.
 기준: 가장 중요한 결론부터 / 추상적 위로보다 현재 상태와 선택을 구체적으로 / 불행·사건 확정 금지 / 실제 계산 근거 없는 특정 미래 만들어내기 금지 / 모든 사람에게 같은 문장 사용 금지
 
+===결론===
+지금 이 사람에게 3가지 결론을 아래 형식 그대로 작성하세요. 각 항목은 반드시 한 문장, 구체적으로.
+밀것: (지금 밀어야 할 것 — 행동·영역·방향을 구체적으로 한 문장)
+정리할것: (지금 내려놓거나 정리해야 할 것 — 구체적으로 한 문장)
+기다릴것: (지금 기다리거나 먼저 확인해야 할 것 — 구체적으로 한 문장)
+
 ===특징===
 이 사람을 "내 이야기다"라고 느낄 수 있게 개인화된 특징 3개를 아래 형식으로 작성하세요.
 각 특징은 제목(10자 이내) + 설명 1~2문장. 누구에게나 해당되는 보편적 위로 금지.
@@ -1894,14 +2186,14 @@ const SAJU_SYSTEM = `당신은 사주명리학, 자미두수(紫微斗數), 서�
 특징3제목: (일·결과 패턴을 담은 10자 이내 제목)
 특징3: (일을 시작하거나 결과가 늦어질 때 나타나는 이 사람만의 패턴)
 
-===분석근거===
-왜 이런 성향이 나타나는지 사주·자미두수·점성술 근거를 2~4문장으로 연결하세요.
-실제 계산된 내용만 사용. 세 분석법을 억지로 모두 언급하지 말고 공통으로 나타나는 특징 우선. 전문용어는 꼭 필요할 때만 쉬운 설명과 함께.
-
 ===현재흐름===
 현재흐름: (지금 어떤 흐름에 있는지 2~4문장. 구체적 시기를 계산할 수 없으면 "현재", "가까운 흐름" 표현 사용)
+분석근거: (왜 이런 흐름이 나타나는지 사주·자미두수·점성술 근거를 1~2문장으로. 실제 계산된 내용만. 전문용어는 쉬운 설명과 함께)
 먼저할행동: (지금 먼저 할 행동 1개를 한 문장으로. 구체적이고 실행 가능하게)
 피할행동: (지금 피할 행동 1개를 한 문장으로. 구체적이고 실질적으로)
+
+===고민미리보기===
+고민 주제가 있으면 그 주제와 관련된 이 사주의 흐름을 2~4문장으로 작성하세요. 고민 주제가 없으면 지금 가장 많이 막히는 영역이 어디인지 파악해 2~4문장으로 작성하세요. 이 내용은 유료 분석 전 미리보기입니다.
 
 ===상세성향===
 타고난성향: (타고난 기질과 성격 패턴을 2~3문장)
@@ -1962,10 +2254,21 @@ function parseSajuReading(text) {
       return description ? { title, description } : null;
     }).filter(Boolean);
 
+    // 결론 3개
+    const conclusionSec = extractSection('결론');
+    const quickConclusions = [
+      { type: 'push',     label: '지금 밀어야 할 것',     content: (conclusionSec.match(/밀것:\s*(.+)/)?.[1] || '').trim() },
+      { type: 'organize', label: '지금 정리해야 할 것',   content: (conclusionSec.match(/정리할것:\s*(.+)/)?.[1] || '').trim() },
+      { type: 'wait',     label: '지금 기다려야 할 것',   content: (conclusionSec.match(/기다릴것:\s*(.+)/)?.[1] || '').trim() },
+    ].filter(c => c.content);
+
     const flowSec = extractSection('현재흐름');
-    const flow        = (flowSec.match(/현재흐름:\s*([\s\S]+?)(?=먼저할행동:|$)/)?.[1] || '').trim();
-    const firstAction = (flowSec.match(/먼저할행동:\s*(.+)/)?.[1] || '').trim();
-    const avoidAction = (flowSec.match(/피할행동:\s*(.+)/)?.[1] || '').trim();
+    const flow          = (flowSec.match(/현재흐름:\s*([\s\S]+?)(?=분석근거:|먼저할행동:|$)/)?.[1] || '').trim();
+    const analysisBasis = (flowSec.match(/분석근거:\s*([\s\S]+?)(?=먼저할행동:|$)/)?.[1] || '').trim();
+    const firstAction   = (flowSec.match(/먼저할행동:\s*(.+)/)?.[1] || '').trim();
+    const avoidAction   = (flowSec.match(/피할행동:\s*(.+)/)?.[1] || '').trim();
+
+    const topicPreview = extractSection('고민미리보기');
 
     const detailSec = extractSection('상세성향');
     const details = {
@@ -1979,9 +2282,10 @@ function parseSajuReading(text) {
     return {
       _format: 'new',
       coreDiagnosis,
+      quickConclusions,
       traits,
-      basis: extractSection('분석근거'),
-      flow, firstAction, avoidAction,
+      flow, analysisBasis, firstAction, avoidAction,
+      topicPreview,
       details,
     };
   }
@@ -2025,22 +2329,56 @@ function renderReadingSections(parsed) {
     return;
   }
 
-  const name = S.sajuData?.name || '';
+  const name    = S.sajuData?.name || '';
+  const concern = S.sajuData?.concern || {};
   let html = '';
 
-  // 1. 핵심 진단
+  // 1. 선택한 고민 표시 카드 (anchor: ai-reading-anchor)
+  if (concern.selectedBeforeAnalysis && concern.label) {
+    const icon = (typeof WORRY_TOPICS !== 'undefined' && WORRY_TOPICS[concern.category])
+      ? WORRY_TOPICS[concern.category].icon : '✦';
+    const customQ = (concern.category === 'custom' && concern.question)
+      ? `<p class="cdc-question">"${escHtml(concern.question)}"</p>` : '';
+    html += `<div class="concern-display-card" id="ai-reading-anchor" style="scroll-margin-top:48px">
+      <span class="cdc-icon">${icon}</span>
+      <div class="cdc-body">
+        <p class="cdc-label">이 분석에서 중점적으로 살펴본 고민</p>
+        <p class="cdc-topic">${escHtml(concern.label)}</p>
+        ${customQ}
+      </div>
+    </div>`;
+  }
+
+  // 2. 핵심 진단
   if (parsed.coreDiagnosis) {
-    html += `<div class="free-core-diagnosis" id="summary-card" style="scroll-margin-top:48px">
-      <p class="fcd-label">✦ ${escHtml(name) ? escHtml(name) + '님의 ' : ''}${S.sajuData?.concern?.selectedBeforeAnalysis && S.sajuData.concern.label ? escHtml(S.sajuData.concern.label) + ' 흐름' : '지금 흐름'}</p>
+    const anchorId = concern.selectedBeforeAnalysis ? '' : ' id="ai-reading-anchor"';
+    html += `<div class="free-core-diagnosis"${anchorId} style="scroll-margin-top:48px">
+      <p class="fcd-label">✦ ${escHtml(name) ? escHtml(name) + '님의 ' : ''}핵심 진단</p>
       <p class="fcd-text">${escHtmlNl(parsed.coreDiagnosis)}</p>
     </div>`;
   }
 
-  // 2. 개인화 특징 3개
+  // 3. 지금의 결론 3개
+  if (parsed.quickConclusions && parsed.quickConclusions.length) {
+    const typeClass = { push: 'qc-push', organize: 'qc-organize', wait: 'qc-wait' };
+    const typeIcon  = { push: '→', organize: '↓', wait: '◎' };
+    html += `<div class="quick-conclusions-sec">
+      <p class="free-sec-label">지금의 결론</p>
+      <div class="qc-grid">
+        ${parsed.quickConclusions.map(c => `
+          <div class="qc-card ${typeClass[c.type] || ''}">
+            <p class="qc-type-label"><span class="qc-icon">${typeIcon[c.type] || '✦'}</span>${escHtml(c.label)}</p>
+            <p class="qc-content">${escHtml(c.content)}</p>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // 4. 나를 보여주는 특징 3개
   if (parsed.traits && parsed.traits.length) {
     const nums = ['01','02','03'];
     html += `<div class="free-traits-sec">
-      <p class="free-sec-label">나를 보여주는 특징</p>
+      <p class="free-sec-label">내 사주에서 반복되는 모습</p>
       <div class="trait-cards-grid">
         ${parsed.traits.map((t, i) => {
           const title = typeof t === 'object' ? t.title : '';
@@ -2055,46 +2393,58 @@ function renderReadingSections(parsed) {
     </div>`;
   }
 
-  // 3. 분석 근거
-  if (parsed.basis) {
-    html += `<div class="basis-sec">
-      <p class="basis-label">왜 이런 성향이 나타날까요?</p>
-      <p class="basis-text">${escHtmlNl(parsed.basis)}</p>
-    </div>`;
-  }
-
-  // 4. 현재 흐름 + 행동
-  if (parsed.flow || parsed.firstAction) {
+  // 5. 현재 흐름 (A) + 분석 근거 (B)
+  if (parsed.flow || parsed.analysisBasis) {
     html += `<div class="flow-sec">
       <p class="free-sec-label">지금의 흐름</p>
       ${parsed.flow ? `<p class="flow-body">${escHtmlNl(parsed.flow)}</p>` : ''}
-      <div class="flow-actions">
-        ${parsed.firstAction ? `<div class="flow-action-box do-box">
-          <p class="flow-action-label">지금 먼저 해볼 일</p>
-          <p class="flow-action-text">${escHtml(parsed.firstAction)}</p>
-        </div>` : ''}
-        ${parsed.avoidAction ? `<div class="flow-action-box avoid-box">
-          <p class="flow-action-label">지금은 피할 일</p>
-          <p class="flow-action-text">${escHtml(parsed.avoidAction)}</p>
-        </div>` : ''}
-      </div>
+      ${parsed.analysisBasis ? `<div class="flow-basis-wrap">
+        <p class="flow-basis-label">왜 이런 흐름이 나타날까요?</p>
+        <p class="flow-basis-text">${escHtmlNl(parsed.analysisBasis)}</p>
+      </div>` : ''}
     </div>`;
   }
 
-  // 5. 상세 성향 아코디언 (기본 접힘)
+  // 6. 행동 카드
+  if (parsed.firstAction || parsed.avoidAction) {
+    html += `<div class="action-cards-sec">
+      ${parsed.firstAction ? `<div class="flow-action-box do-box">
+        <p class="flow-action-label">지금 먼저 해볼 일</p>
+        <p class="flow-action-text">${escHtml(parsed.firstAction)}</p>
+      </div>` : ''}
+      ${parsed.avoidAction ? `<div class="flow-action-box avoid-box">
+        <p class="flow-action-label">지금은 피할 일</p>
+        <p class="flow-action-text">${escHtml(parsed.avoidAction)}</p>
+      </div>` : ''}
+    </div>`;
+  }
+
+  // 7. 고민 미리보기 (유료 예고)
+  if (parsed.topicPreview) {
+    const previewLabel = concern.selectedBeforeAnalysis && concern.label
+      ? `${escHtml(concern.label)} 관련 흐름 미리보기`
+      : '지금 가장 막히는 영역';
+    html += `<div class="topic-preview-sec">
+      <p class="tp-label">✦ ${previewLabel}</p>
+      <p class="tp-body">${escHtmlNl(parsed.topicPreview)}</p>
+      <div class="tp-blur-bar">나머지 내용은 질문 집중 분석에서 확인할 수 있어요</div>
+    </div>`;
+  }
+
+  // 8. 상세 성향 아코디언
   const det = parsed.details || {};
   const detItems = [
-    { label: '타고난 성향',          text: det.personality },
-    { label: '일할 때 나타나는 패턴', text: det.work },
-    { label: '재물과 소비 성향',      text: det.money },
-    { label: '관계에서 반복되는 모습',text: det.relationship },
-    { label: '감정과 선택 방식',      text: det.emotion },
+    { label: '타고난 성향',           text: det.personality },
+    { label: '일할 때 나타나는 패턴',  text: det.work },
+    { label: '재물과 소비 성향',       text: det.money },
+    { label: '관계에서 반복되는 모습', text: det.relationship },
+    { label: '감정과 선택 방식',       text: det.emotion },
   ].filter(d => d.text);
 
   if (detItems.length) {
     html += `<div class="details-accordion" id="details-accordion">
       <button class="details-acc-header" onclick="toggleDetailsAccordion()" aria-expanded="false" aria-controls="details-acc-inner">
-        <span>내 성향을 더 자세히 읽어보기</span>
+        <span>내 사주를 더 자세히 읽어보기</span>
         <em class="details-acc-icon" id="details-acc-icon">▾</em>
       </button>
       <div class="details-acc-inner" id="details-acc-inner">
@@ -2196,7 +2546,7 @@ function navScrollTo(id) {
 }
 
 function initNavObserver() {
-  const targets = ['sec-summary','summary-card','custom-question-sec','product-select-sec','saju-details-wrap'];
+  const targets = ['sec-summary','ai-reading-anchor','custom-question-sec','product-select-sec','saju-details-wrap'];
   const items   = document.querySelectorAll('.sn-item');
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
@@ -2556,6 +2906,7 @@ async function calculate(){
     }
 
     showCustomQuestionSec();
+    updateSingleProductLabel();
     // 분석 전 고민 선택 시 하단 worry 버튼 자동 pre-select
     if (S.sajuData?.concern?.selectedBeforeAnalysis && S.sajuData.concern.category !== 'none') {
       const preCat = S.sajuData.concern.category;
@@ -2711,7 +3062,24 @@ function showCustomQuestionSec() {
   const sec = document.getElementById('custom-question-sec');
   if (!sec) return;
   sec.style.display = 'block';
+  // 사전 고민 선택 여부에 따라 섹션 제목 변경
+  const titleEl = sec.querySelector('.worry-sec-title');
+  const descEl  = sec.querySelector('.worry-sec-desc');
+  if (S.sajuData?.concern?.selectedBeforeAnalysis && titleEl) {
+    titleEl.textContent = '다른 고민도 살펴볼까요?';
+    if (descEl) descEl.textContent = '다른 주제의 흐름도 확인하고 싶다면 선택해보세요.';
+  }
   renderWorryButtons();
+}
+
+/* ─── 4900원 상품 레이블 동적 업데이트 ─── */
+function updateSingleProductLabel() {
+  const concern = S.sajuData?.concern;
+  if (!concern?.selectedBeforeAnalysis || !concern.label) return;
+  const btn = document.querySelector('.pay-btn-primary.single-btn');
+  if (btn) btn.textContent = `내 ${concern.label} 집중 분석하기 · 4,900원`;
+  const desc = document.querySelector('.ps-card.single > p[style]');
+  if (desc) desc.textContent = `${concern.label}의 방향과 시기를 사주에서 집중적으로 확인해요.`;
 }
 
 /* ─── 고민 버튼 렌더 (관계 상태 반영) ─── */
