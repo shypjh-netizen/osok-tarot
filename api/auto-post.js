@@ -222,8 +222,11 @@ async function callAI(prompt) {
 
   const data = await response.json();
   if (!data.content?.[0]?.text) throw new Error(`AI 응답 오류: ${JSON.stringify(data)}`);
-  const raw = data.content[0].text.replace(/```json\n?/g, '').replace(/```/g, '').trim();
-  return JSON.parse(raw);
+  const text = data.content[0].text;
+  // JSON 블록만 추출 (코드펜스, 앞뒤 텍스트 제거)
+  const match = text.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error(`JSON 추출 실패: ${text.slice(0, 200)}`);
+  return JSON.parse(match[0]);
 }
 
 /* ── Threads 게시 ── */
