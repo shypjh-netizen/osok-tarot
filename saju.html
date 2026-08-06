@@ -799,9 +799,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .worry-custom-submit-btn{display:block;width:100%;margin-top:12px;padding:13px;background:linear-gradient(135deg,#2a1a4e,#7c5cbf);border:1px solid rgba(201,168,76,.38);border-radius:12px;color:var(--gold);font-family:inherit;font-size:.9rem;cursor:pointer;min-height:44px;transition:all .3s;letter-spacing:.04em}
 .worry-custom-submit-btn:disabled{opacity:.45;cursor:not-allowed}
 
-/* ── 전환 카드 ── */
-#transition-card{text-align:center;padding:28px 24px!important}
-
 /* ── 상품 선택 섹션 ── */
 #product-select-sec .ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:520px){#product-select-sec .ps-grid{grid-template-columns:1fr}}
@@ -953,10 +950,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 /* ══════════════════════════════════
    무료→유료 전환 헤더
 ══════════════════════════════════ */
-#transition-card{text-align:left!important;padding:26px 22px!important}
-#transition-card .tc-title{font-size:1.05rem;color:var(--text);font-weight:700;line-height:1.6;margin-bottom:10px;letter-spacing:.02em}
-#transition-card .tc-desc{color:var(--sub);font-size:.93rem;line-height:1.95}
-
 /* ══════════════════════════════════
    상품 비교 요약 테이블
 ══════════════════════════════════ */
@@ -1124,9 +1117,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .pli-label{color:rgba(201,168,76,.8)!important;opacity:1!important}
 
 /* ── 13. 전환 카드 ── */
-#transition-card .tc-title{color:var(--text-primary)}
-#transition-card .tc-desc{color:var(--text-secondary);font-size:15px}
-
 /* ── 14. 질문 입력 (cq) ── */
 .cq-intro-desc{color:var(--text-secondary);font-size:15px}
 .cq-intro-q{color:var(--text-primary)}
@@ -1217,48 +1207,73 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
 /* ── 결과 화면 재구성 신규 요소 ── */
 
 /* 선택 고민 표시 카드 */
-.concern-display-card{display:flex;align-items:center;gap:14px;background:rgba(212,168,78,.08);border:1px solid rgba(212,168,78,.3);border-radius:14px;padding:16px 18px;margin-bottom:6px}
-.cdc-icon{font-size:1.6rem;flex-shrink:0;line-height:1}
+.concern-display-card{display:flex;align-items:center;gap:14px;background:rgba(212,168,78,.06);border:1px solid rgba(212,168,78,.25);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.cdc-icon{font-size:1.5rem;flex-shrink:0;line-height:1}
 .cdc-body{flex:1;min-width:0}
-.cdc-label{font-size:.7rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;opacity:.85}
-.cdc-topic{font-size:1.05rem;color:var(--text-primary);font-weight:700;margin:0}
-.cdc-question{font-size:.84rem;color:var(--text-secondary);margin-top:5px;line-height:1.55}
+.cdc-label{font-size:.68rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px;opacity:.8}
+.cdc-topic{font-size:1rem;color:var(--text-primary);font-weight:700;margin:0}
+.cdc-question{font-size:.82rem;color:var(--text-secondary);margin-top:4px;line-height:1.5}
 
-/* 핵심 진단 — 더 크고 두드러지게 */
-.free-core-diagnosis{background:linear-gradient(135deg,rgba(212,168,78,.12),rgba(212,168,78,.04));border:1px solid rgba(212,168,78,.28);border-radius:16px;padding:22px 20px;margin-bottom:6px}
-.fcd-label{font-size:.72rem;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
-.fcd-text{font-size:1.18rem;color:var(--text-primary);line-height:1.75;font-weight:600;margin:0}
+/* ── 핵심 진단 — 가장 강한 강조 ── */
+.free-core-diagnosis{background:linear-gradient(160deg,rgba(22,16,8,.98),rgba(10,8,22,.98));border:1.5px solid rgba(212,168,78,.55);border-radius:16px;padding:22px 20px;margin-bottom:10px}
+.fcd-label{font-size:.7rem;color:rgba(212,168,78,.85);letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
+.fcd-text{font-size:1.18rem;color:#f5eedf;line-height:1.8;font-weight:600;margin:0}
 
-/* 지금의 결론 — 3개 카드 */
-.quick-conclusions-sec{margin-bottom:6px}
-.quick-conclusions-sec .free-sec-label{margin-bottom:12px}
+/* ── 지금의 결론 — 포인트 컬러는 테두리·라벨만 ── */
+.quick-conclusions-sec{margin-bottom:10px}
+.quick-conclusions-sec .free-sec-label{margin-bottom:10px}
 .qc-grid{display:grid;grid-template-columns:1fr;gap:8px}
 @media(min-width:480px){.qc-grid{grid-template-columns:repeat(3,1fr)}}
-.qc-card{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:14px 14px 12px}
-.qc-push{border-color:rgba(100,200,120,.25);background:rgba(100,200,120,.05)}
-.qc-organize{border-color:rgba(201,168,76,.22);background:rgba(201,168,76,.05)}
-.qc-wait{border-color:rgba(120,160,220,.22);background:rgba(120,160,220,.05)}
-.qc-type-label{font-size:.72rem;color:var(--text-muted);letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.qc-push .qc-type-label{color:rgba(100,200,120,.8)}
-.qc-organize .qc-type-label{color:var(--gold)}
-.qc-wait .qc-type-label{color:rgba(140,180,230,.8)}
-.qc-icon{font-size:.9rem}
-.qc-content{font-size:.9rem;color:var(--text-primary);line-height:1.65;margin:0;font-weight:500}
+.qc-card{background:rgba(255,255,255,.025);border:1px solid rgba(201,168,76,.12);border-radius:12px;padding:13px 14px 12px;border-left-width:3px}
+.qc-push{border-left-color:rgba(70,170,90,.65);background:rgba(50,130,65,.04)}
+.qc-organize{border-left-color:rgba(210,145,50,.65);background:rgba(180,120,40,.04)}
+.qc-wait{border-left-color:rgba(80,140,215,.65);background:rgba(60,110,190,.04)}
+.qc-type-label{font-size:.7rem;letter-spacing:.06em;margin-bottom:7px;display:flex;align-items:center;gap:5px;font-weight:600}
+.qc-push .qc-type-label{color:rgba(90,195,110,.9)}
+.qc-organize .qc-type-label{color:rgba(215,150,55,.9)}
+.qc-wait .qc-type-label{color:rgba(110,165,230,.9)}
+.qc-icon{font-size:.85rem}
+.qc-content{font-size:.88rem;color:var(--text-primary);line-height:1.65;margin:0}
 
-/* 현재 흐름 — 분석 근거 박스 */
-.flow-basis-wrap{margin-top:14px;padding:12px 14px;background:rgba(255,255,255,.03);border-left:2px solid rgba(201,168,76,.3);border-radius:0 8px 8px 0}
-.flow-basis-label{font-size:.73rem;color:var(--gold);letter-spacing:.1em;margin-bottom:6px;opacity:.85}
-.flow-basis-text{font-size:.88rem;color:var(--text-secondary);line-height:1.7;margin:0}
+/* ── 현재 흐름 — 분석 근거 박스 ── */
+.flow-basis-wrap{margin-top:12px;padding:11px 14px;background:rgba(255,255,255,.025);border-left:2px solid rgba(201,168,76,.28);border-radius:0 8px 8px 0}
+.flow-basis-label{font-size:.7rem;color:rgba(201,168,76,.8);letter-spacing:.1em;margin-bottom:5px}
+.flow-basis-text{font-size:.87rem;color:var(--text-secondary);line-height:1.7;margin:0}
 
-/* 행동 카드 섹션 */
-.action-cards-sec{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:6px}
+/* ── 행동 카드 — 왼쪽 강조선으로 구분 ── */
+.action-cards-sec{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:10px}
 @media(min-width:480px){.action-cards-sec{grid-template-columns:1fr 1fr}}
+.flow-action-box.do-box{background:rgba(40,100,55,.05);border:1px solid rgba(55,140,70,.2);border-left:3px solid rgba(65,170,85,.55)}
+.flow-action-box.avoid-box{background:rgba(100,45,75,.05);border:1px solid rgba(150,65,100,.2);border-left:3px solid rgba(170,75,110,.5)}
+.flow-action-box.do-box .flow-action-label{color:rgba(90,195,110,.9)}
+.flow-action-box.avoid-box .flow-action-label{color:rgba(205,100,135,.85)}
 
-/* 고민 미리보기 */
-.topic-preview-sec{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.18);border-radius:14px;padding:18px 18px 14px;margin-bottom:6px;position:relative;overflow:hidden}
-.tp-label{font-size:.72rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
-.tp-body{font-size:.92rem;color:var(--text-primary);line-height:1.75;margin-bottom:14px}
-.tp-blur-bar{background:rgba(30,26,50,.85);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:11px 14px;font-size:.8rem;color:var(--gold);text-align:center;letter-spacing:.04em}
+/* ── 고민 미리보기 — 핵심 진단보다 약하게 ── */
+.topic-preview-sec{background:rgba(255,255,255,.02);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:16px 18px 13px;margin-bottom:10px}
+.tp-label{font-size:.7rem;color:rgba(201,168,76,.8);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.tp-body{font-size:.9rem;color:var(--text-primary);line-height:1.75;margin-bottom:12px}
+.tp-blur-bar{background:rgba(20,18,38,.9);border:1px solid rgba(201,168,76,.18);border-radius:8px;padding:10px 14px;font-size:.78rem;color:rgba(201,168,76,.75);text-align:center;letter-spacing:.04em}
+
+/* ── 섹션 레이블 공통 ── */
+.free-sec-label{margin-bottom:10px}
+
+/* ── 모바일 카드 간격 압축 ── */
+@media(max-width:600px){
+  .concern-display-card{margin-bottom:8px;padding:12px 14px}
+  .free-core-diagnosis{margin-bottom:8px;padding:18px 16px}
+  .quick-conclusions-sec{margin-bottom:8px}
+  .free-traits-sec{margin-bottom:8px}
+  .flow-sec{margin-bottom:8px}
+  .action-cards-sec{margin-bottom:8px;gap:8px}
+  .topic-preview-sec{margin-bottom:8px;padding:14px 16px 11px}
+  .details-accordion{margin-bottom:8px}
+  .worry-preview-card{padding:16px 14px}
+  .unlock-zone{margin-top:10px;padding:14px 13px}
+  .single-cta-card{padding:16px 14px}
+  #custom-question-sec.section-card{padding:18px 16px}
+  #product-select-sec .ps-grid{gap:10px}
+  .ps-card{padding:18px 15px}
+}
 
 
 </style>
@@ -1490,19 +1505,13 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
     <!-- AI 리딩 섹션들 (파싱 후 동적 생성) -->
     <div id="reading-sections"></div>
 
-    <!-- 순서 2: 맞춤 질문 연결 카드 -->
-    <div id="transition-card" class="section-card" style="display:none">
-      <p class="tc-title">지금 가장 궁금한 한 가지가 남아 있나요?</p>
-      <p class="tc-desc">무료 결과에서 현재의 큰 흐름을 확인했다면, 이제 내 고민에 맞춰 언제 움직여야 하는지와 무엇을 피해야 하는지 더 구체적으로 살펴볼 수 있어요.</p>
-    </div>
-
     <!-- 순서 3: 맞춤 사주 질문 -->
     <div id="custom-question-sec" class="section-card" style="display:none;scroll-margin-top:48px">
 
       <!-- 고민 주제 선택 -->
       <div class="worry-sec-inner">
-        <p class="worry-sec-title">지금 가장 답을 알고 싶은 고민이 무엇인가요?</p>
-        <p class="worry-sec-desc">주제를 선택하면 이 사주에서 그 방향이 어떻게 보이는지 바로 확인할 수 있어요.</p>
+        <p class="worry-sec-title">다른 고민도 살펴볼까요?</p>
+        <p class="worry-sec-desc">다른 주제를 선택하면, 현재 사주 흐름을 그 고민의 관점에서 먼저 보여드려요.</p>
         <div class="worry-btn-grid" id="worry-btn-grid">
           <!-- JS: renderWorryButtons() 로 채워짐 -->
         </div>
@@ -1839,6 +1848,9 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
 </div>
 
 <script>
+/* ─── 전역 상태 (TDZ 방지용 최상단 선언) ─── */
+let concernSel = { category: null, question: '' };
+
 /* ─── 페이지 로드 시 스크롤 복원 방지 ─── */
 if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
 if (location.hash) { history.replaceState(null, '', location.pathname + location.search); }
@@ -1954,6 +1966,303 @@ function calcSinsal(pillars,dayCycle,knownHour){
   found.push({name:'공망(空亡)',emoji:'🕳️',desc:gongDesc});
 
   return found;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   오속 신살 계산 엔진 v1 — 계산 계층만 구현, 해석 계층 없음
+   입력: pillars(숫자 인덱스), knownHour(boolean)
+   출력: 구조화된 신살 데이터 (UI 표시 없음)
+   ══════════════════════════════════════════════════════════ */
+const OSOK_SHINSAL_VERSION = 'osok-shinsal-v1';
+
+// 도화살: 연지/일지 인덱스 → 도화 목표 지지 인덱스
+// 인(2)·오(6)·술(10)→묘(3) / 신(8)·자(0)·진(4)→유(9)
+// 해(11)·묘(3)·미(7)→자(0) / 사(5)·유(9)·축(1)→오(6)
+const _DOHWA_MAP = {2:3,6:3,10:3,8:9,0:9,4:9,11:0,3:0,7:0,5:6,9:6,1:6};
+
+// 화개살: 연지/일지 인덱스 → 화개 목표 지지 인덱스
+// 인(2)·오(6)·술(10)→술(10) / 신(8)·자(0)·진(4)→진(4)
+// 해(11)·묘(3)·미(7)→미(7) / 사(5)·유(9)·축(1)→축(1)
+const _HWAGAE_MAP = {2:10,6:10,10:10,8:4,0:4,4:4,11:7,3:7,7:7,5:1,9:1,1:1};
+
+// 홍염살: "dayStem_dayBranch" 키 집합 (오속 v1 보수적 일주 기준)
+// 甲午(0,6) 丙寅(2,2) 丁未(3,7) 戊辰(4,4) 庚戌(6,10) 辛酉(7,9) 壬子(8,0)
+const _HONGYEOM_KEYS = new Set(['0_6','2_2','3_7','4_4','6_10','7_9','8_0']);
+
+// 천을귀인: 일간 인덱스 → 귀인 지지 인덱스 배열
+// 甲(0)·戊(4)·庚(6)→[丑(1),未(7)] / 乙(1)·己(5)→[子(0),申(8)]
+// 丙(2)·丁(3)→[亥(11),酉(9)] / 辛(7)→[寅(2),午(6)] / 壬(8)·癸(9)→[卯(3),巳(5)]
+const _CHEONEUL_MAP = {
+  0:[1,7],4:[1,7],6:[1,7],
+  1:[0,8],5:[0,8],
+  2:[11,9],3:[11,9],
+  7:[2,6],
+  8:[3,5],9:[3,5]
+};
+
+const _VALID_BRANCH = new Set([0,1,2,3,4,5,6,7,8,9,10,11]);
+const _VALID_STEM   = new Set([0,1,2,3,4,5,6,7,8,9]);
+
+// 판정에 사용할 위치별 지지 인덱스 반환 (knownHour=false 시 시주 제외)
+function _shinsalBranches(pillars, knownHour) {
+  const r = {
+    year:  pillars.year.branch,
+    month: pillars.month.branch,
+    day:   pillars.day.branch,
+  };
+  if (knownHour) r.hour = pillars.hour.branch;
+  return r;
+}
+
+// 도화살 판정
+function calculateDohwa(pillars, knownHour) {
+  const yB = pillars.year.branch;
+  const dB = pillars.day.branch;
+  const branches = _shinsalBranches(pillars, knownHour);
+  const evidence = [];
+  const matched  = new Set(); // 위치 중복 제거
+
+  if (!_VALID_BRANCH.has(yB) || !_VALID_BRANCH.has(dB)) {
+    return {id:'dohwa',name:'도화살',present:false,count:0,matchedPositions:[],evidence:[],ruleVersion:OSOK_SHINSAL_VERSION};
+  }
+
+  for (const basePos of ['year','day']) {
+    const baseBranch = basePos === 'year' ? yB : dB;
+    const targetIdx  = _DOHWA_MAP[baseBranch];
+    if (targetIdx === undefined) continue;
+    for (const [pos, branchIdx] of Object.entries(branches)) {
+      if (branchIdx === targetIdx) {
+        matched.add(pos);
+        evidence.push({
+          basePosition: basePos,
+          baseBranch:   BRANCH_HANJA[baseBranch],
+          targetBranch: BRANCH_HANJA[targetIdx],
+          matchedPosition: pos
+        });
+      }
+    }
+  }
+
+  const matchedPositions = [...matched];
+  return {
+    id:'dohwa', name:'도화살',
+    present: matchedPositions.length > 0,
+    count:   matchedPositions.length,
+    matchedPositions, evidence,
+    ruleVersion: OSOK_SHINSAL_VERSION
+  };
+}
+
+// 화개살 판정
+function calculateHwagae(pillars, knownHour) {
+  const yB = pillars.year.branch;
+  const dB = pillars.day.branch;
+  const branches = _shinsalBranches(pillars, knownHour);
+  const evidence = [];
+  const matched  = new Set();
+
+  if (!_VALID_BRANCH.has(yB) || !_VALID_BRANCH.has(dB)) {
+    return {id:'hwagae',name:'화개살',present:false,count:0,matchedPositions:[],evidence:[],ruleVersion:OSOK_SHINSAL_VERSION};
+  }
+
+  for (const basePos of ['year','day']) {
+    const baseBranch = basePos === 'year' ? yB : dB;
+    const targetIdx  = _HWAGAE_MAP[baseBranch];
+    if (targetIdx === undefined) continue;
+    for (const [pos, branchIdx] of Object.entries(branches)) {
+      if (branchIdx === targetIdx) {
+        matched.add(pos);
+        evidence.push({
+          basePosition: basePos,
+          baseBranch:   BRANCH_HANJA[baseBranch],
+          targetBranch: BRANCH_HANJA[targetIdx],
+          matchedPosition: pos
+        });
+      }
+    }
+  }
+
+  const matchedPositions = [...matched];
+  return {
+    id:'hwagae', name:'화개살',
+    present: matchedPositions.length > 0,
+    count:   matchedPositions.length,
+    matchedPositions, evidence,
+    ruleVersion: OSOK_SHINSAL_VERSION
+  };
+}
+
+// 홍염살 판정 (일주 기준 엄격 적용, v1)
+function calculateHongyeom(pillars) {
+  const dS = pillars.day.stem;
+  const dB = pillars.day.branch;
+
+  if (!_VALID_STEM.has(dS) || !_VALID_BRANCH.has(dB)) {
+    return {id:'hongyeom',name:'홍염살',present:false,count:0,matchedPositions:[],dayPillar:'',evidence:[],ruleVersion:'osok-shinsal-v1-strict'};
+  }
+
+  const key     = `${dS}_${dB}`;
+  const present = _HONGYEOM_KEYS.has(key);
+  const dayPillar = STEM_HANJA[dS] + BRANCH_HANJA[dB];
+
+  return {
+    id:'hongyeom', name:'홍염살',
+    present, count: present ? 1 : 0,
+    matchedPositions: present ? ['day'] : [],
+    dayPillar,
+    evidence: present ? [{rule:'dayPillar', matchedValue: dayPillar}] : [],
+    ruleVersion: 'osok-shinsal-v1-strict'
+  };
+}
+
+// 천을귀인 판정
+function calculateCheoneul(pillars, knownHour) {
+  const dS = pillars.day.stem;
+  const branches = _shinsalBranches(pillars, knownHour);
+  const evidence = [];
+  const matched  = new Set();
+  const matchedBranchSet = new Set();
+
+  if (!_VALID_STEM.has(dS)) {
+    return {id:'cheoneul',name:'천을귀인',present:false,count:0,matchedPositions:[],matchedBranches:[],evidence:[],ruleVersion:OSOK_SHINSAL_VERSION};
+  }
+
+  const targetIdxArr = _CHEONEUL_MAP[dS];
+  if (!targetIdxArr) {
+    return {id:'cheoneul',name:'천을귀인',present:false,count:0,matchedPositions:[],matchedBranches:[],evidence:[],ruleVersion:OSOK_SHINSAL_VERSION};
+  }
+
+  for (const [pos, branchIdx] of Object.entries(branches)) {
+    if (targetIdxArr.includes(branchIdx)) {
+      matched.add(pos);
+      matchedBranchSet.add(BRANCH_HANJA[branchIdx]);
+      evidence.push({
+        baseStem:      STEM_HANJA[dS],
+        targetBranches: targetIdxArr.map(i => BRANCH_HANJA[i]),
+        matchedBranch: BRANCH_HANJA[branchIdx],
+        matchedPosition: pos
+      });
+    }
+  }
+
+  const matchedPositions = [...matched];
+  return {
+    id:'cheoneul', name:'천을귀인',
+    present: matchedPositions.length > 0,
+    count:   matchedPositions.length,
+    matchedPositions,
+    matchedBranches: [...matchedBranchSet],
+    evidence,
+    ruleVersion: OSOK_SHINSAL_VERSION
+  };
+}
+
+// 통합 신살 계산 함수
+function calculateOsokShinsal(pillars, knownHour) {
+  if (!pillars || !pillars.year || !pillars.month || !pillars.day || !pillars.hour) {
+    return {available:false, reason:'insufficient_chart_data'};
+  }
+  return {
+    ruleVersion:      OSOK_SHINSAL_VERSION,
+    birthTimeKnown:   !!knownHour,
+    excludedPositions: knownHour ? [] : ['hour'],
+    dohwa:    calculateDohwa(pillars, knownHour),
+    hwagae:   calculateHwagae(pillars, knownHour),
+    hongyeom: calculateHongyeom(pillars),
+    cheoneul: calculateCheoneul(pillars, knownHour),
+  };
+}
+
+/* ─── 오속 신살 단위 테스트 (개발 전용, ?debugSaju=1 에서만 실행) ─── */
+function _runShinsalTests() {
+  let pass = 0, fail = 0;
+  function assert(label, cond) {
+    if (cond) { pass++; console.log('  ✅ ' + label); }
+    else       { fail++; console.warn('❌ FAIL: ' + label); }
+  }
+  console.group('오속 신살 단위 테스트 v1');
+
+  // A. 도화살 — 연지 子(0) 목표 酉(9), 월지 酉(9) 일치
+  {
+    const p = {year:{stem:8,branch:0},month:{stem:7,branch:9},day:{stem:6,branch:6},hour:{stem:9,branch:11}};
+    const r = calculateDohwa(p, true);
+    assert('A-1 도화살 present:true', r.present === true);
+    assert('A-2 도화살 matchedPositions에 month 포함', r.matchedPositions.includes('month'));
+    const ev = r.evidence.find(e => e.basePosition === 'year');
+    assert('A-3 연지 Sub 근거: baseBranch=子 targetBranch=酉', !!ev && ev.baseBranch === '子' && ev.targetBranch === '酉');
+  }
+
+  // B. 화개살 — 일지 午(6) 목표 戌(10), 시지 戌(10) 일치
+  {
+    const p = {year:{stem:8,branch:0},month:{stem:7,branch:9},day:{stem:6,branch:6},hour:{stem:4,branch:10}};
+    const r = calculateHwagae(p, true);
+    assert('B-1 화개살 present:true', r.present === true);
+    assert('B-2 화개살 matchedPositions에 hour 포함', r.matchedPositions.includes('hour'));
+  }
+
+  // C. 홍염살 존재 — 甲午(0,6)
+  {
+    const p = {year:{stem:0,branch:0},month:{stem:0,branch:0},day:{stem:0,branch:6},hour:{stem:0,branch:0}};
+    const r = calculateHongyeom(p);
+    assert('C-1 홍염살 甲午 present:true', r.present === true);
+    assert('C-2 홍염살 dayPillar 甲午', r.dayPillar === '甲午');
+    assert('C-3 홍염살 count:1', r.count === 1);
+  }
+
+  // D. 홍염살 부재 — 甲子(0,0)
+  {
+    const p = {year:{stem:0,branch:0},month:{stem:0,branch:0},day:{stem:0,branch:0},hour:{stem:0,branch:0}};
+    const r = calculateHongyeom(p);
+    assert('D-1 홍염살 甲子 present:false', r.present === false);
+    assert('D-2 홍염살 dayPillar 甲子', r.dayPillar === '甲子');
+    assert('D-3 홍염살 count:0', r.count === 0);
+  }
+
+  // E. 천을귀인 — 甲(0) 일간, 월지 未(7) 일치
+  {
+    const p = {year:{stem:0,branch:0},month:{stem:0,branch:7},day:{stem:0,branch:6},hour:{stem:0,branch:11}};
+    const r = calculateCheoneul(p, true);
+    assert('E-1 천을귀인 present:true', r.present === true);
+    assert('E-2 천을귀인 month 포함', r.matchedPositions.includes('month'));
+    assert('E-3 천을귀인 matchedBranches에 未 포함', r.matchedBranches.includes('未'));
+  }
+
+  // F. 출생시간 모름 — 시지 酉(9)에만 도화 해당 (연지 子(0) 기준), 나머지 없음
+  {
+    const p = {year:{stem:8,branch:0},month:{stem:0,branch:2},day:{stem:0,branch:4},hour:{stem:7,branch:9}};
+    const r = calculateDohwa(p, false); // knownHour=false
+    assert('F-1 시간모름 matchedPositions에 hour 없음', !r.matchedPositions.includes('hour'));
+    assert('F-2 시간모름 present:false (다른 기둥 없음)', r.present === false);
+  }
+
+  // G. 중복 제거 — 연지 子(0)·일지 辰(4) 모두 목표 酉(9), 월지 酉(9) 한 번만
+  {
+    const p = {year:{stem:8,branch:0},month:{stem:7,branch:9},day:{stem:4,branch:4},hour:{stem:0,branch:0}};
+    const r = calculateDohwa(p, true);
+    assert('G-1 matchedPositions month 1회만', r.matchedPositions.filter(x=>x==='month').length === 1);
+    assert('G-2 count:1', r.count === 1);
+    assert('G-3 evidence 복수(연지+일지 각각)', r.evidence.length >= 2);
+  }
+
+  // H. 잘못된 입력 — NaN 값
+  {
+    const p = {year:{stem:NaN,branch:NaN},month:{stem:0,branch:0},day:{stem:NaN,branch:NaN},hour:{stem:0,branch:0}};
+    let threw = false;
+    try {
+      const r = calculateOsokShinsal(p, true);
+      assert('H-1 잘못된 입력 예외 없음', true);
+      assert('H-2 홍염살 present:false (NaN 일주)', r.hongyeom.present === false);
+      assert('H-3 도화살 present:false (NaN 지지)', r.dohwa.present === false);
+    } catch(e) {
+      threw = true;
+      assert('H-1 잘못된 입력 예외 없음', false);
+    }
+  }
+
+  const total = pass + fail;
+  console.log('\n결과: ' + total + '건 중 ✅ ' + pass + '건 통과 / ❌ ' + fail + '건 실패');
+  console.groupEnd();
+  return {pass, fail, total};
 }
 
 const CFG = {
@@ -2073,9 +2382,6 @@ function selectRelStatus(btn) {
 }
 
 let S = { chatHistory: [], sajuData: null };
-
-/* ─── 고민 선택 상태 ─── */
-let concernSel = { category: null, question: '' };
 
 function renderConcernButtons() {
   const grid = document.getElementById('concern-btn-grid');
@@ -2865,7 +3171,6 @@ async function calculate(){
   document.getElementById('reading-sections').innerHTML='';
   document.getElementById('saju-nav').classList.remove('visible');
   // 새 섹션 초기화
-  document.getElementById('transition-card').style.display='none';
   document.getElementById('product-select-sec').style.display='none';
   document.getElementById('trust-info-sec').style.display='none';
   document.getElementById('saju-details-wrap').style.display='none';
@@ -2881,6 +3186,17 @@ async function calculate(){
   renderZodiac(zodiac);
   const dayCycle=getDayCycle(year,month,day);
   renderSinsal(calcSinsal(pillars,dayCycle,knownHour));
+  // 오속 신살 v1 계산 — 결과 저장만, UI 표시 없음
+  const shinsalResult = calculateOsokShinsal(pillars, knownHour);
+  S.sajuData.shinsal = shinsalResult;
+  if (new URLSearchParams(location.search).get('debugSaju') === '1') {
+    console.group('[debugSaju] 오속 신살 v1 계산 결과');
+    console.log('입력 pillars:', JSON.stringify(pillars));
+    console.log('birthTimeKnown:', knownHour);
+    console.log('결과:', JSON.stringify(shinsalResult, null, 2));
+    console.groupEnd();
+    _runShinsalTests();
+  }
 
   const aiBody=document.getElementById('ai-reading-body');
   const loadingMsg = concern.selectedBeforeAnalysis && concern.label
@@ -2918,7 +3234,6 @@ async function calculate(){
         }
       }
     }
-    document.getElementById('transition-card').style.display='block';
     document.getElementById('saju-details-wrap').style.display='block';
     // product-select-sec / trust-info-sec은 질문 미리보기 완료 후 표시됨
     pxc('FreeReadingCompleted');
@@ -3001,7 +3316,7 @@ function resetSaju(){
   const cqSec=document.getElementById('custom-question-sec');
   if(cqSec)cqSec.style.display='none';
   // 새 섹션 초기화
-  ['transition-card','product-select-sec','trust-info-sec','saju-details-wrap'].forEach(id=>{
+  ['product-select-sec','trust-info-sec','saju-details-wrap'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display='none';
   });
   const di=document.getElementById('saju-details-inner'); if(di) di.style.display='none';
@@ -3062,13 +3377,6 @@ function showCustomQuestionSec() {
   const sec = document.getElementById('custom-question-sec');
   if (!sec) return;
   sec.style.display = 'block';
-  // 사전 고민 선택 여부에 따라 섹션 제목 변경
-  const titleEl = sec.querySelector('.worry-sec-title');
-  const descEl  = sec.querySelector('.worry-sec-desc');
-  if (S.sajuData?.concern?.selectedBeforeAnalysis && titleEl) {
-    titleEl.textContent = '다른 고민도 살펴볼까요?';
-    if (descEl) descEl.textContent = '다른 주제의 흐름도 확인하고 싶다면 선택해보세요.';
-  }
   renderWorryButtons();
 }
 
@@ -3202,25 +3510,23 @@ async function loadWorryPreview(topic) {
 ${S.sajuData?.context || ''}
 
 선택한 고민 분야: ${worryInfo.label}
-${question ? '질문: ' + question : ''}
+${question ? '직접 질문: ' + question : ''}
 
 위 분야에 대해 이 사람의 사주를 바탕으로 아래 형식으로 작성해주세요.
-무료 결과와 같은 내용을 반복하지 마세요.
-실제 계산되지 않은 구체적 날짜·사건을 만들어내지 마세요.
+앞에서 제공한 핵심 진단·현재 흐름과 같은 내용을 반복하지 마세요.
+실제 계산되지 않은 날짜·연도를 만들어내지 마세요.
 
 ===미리보기===
-연결: (선택한 고민과 이 사람의 현재 사주 흐름의 연결. 1~2문장)
-놓친지점: (이 사람이 놓치고 있을 가능성이 높은 지점. 1~2문장)
-확인질문: (더 정확한 결정을 위해 확인해야 할 핵심 질문 또는 방향. 1문장)
+첫째문단: (선택한 고민과 현재 사주 흐름의 연결, 지금 가장 중요한 판단 기준. 2~3문장)
+둘째문단: (이 사람이 놓치기 쉬운 지점, 더 정확한 결정을 위해 확인해야 할 부분. 2~3문장)
 
-반드시 해요체. 마크다운·번호목록 금지. 각 항목 한 줄로.`;
+규칙: 두 문단 합쳐 4~6문장. 한 문단 최대 3문장. 반드시 해요체. 마크다운·번호목록 금지. 계산하지 않은 날짜 금지.`;
 
   try {
     const reading = await callAI([{ role:'user', content: prompt }]);
-    const conn  = (reading.match(/연결:\s*(.+)/)?.[1] || '').trim();
-    const miss  = (reading.match(/놓친지점:\s*(.+)/)?.[1] || '').trim();
-    const qst   = (reading.match(/확인질문:\s*(.+)/)?.[1] || '').trim();
-    const bodyText = [conn, miss, qst].filter(Boolean).join('\n\n');
+    const para1 = (reading.match(/첫째문단:\s*([\s\S]+?)(?=둘째문단:|===|$)/)?.[1] || '').trim();
+    const para2 = (reading.match(/둘째문단:\s*([\s\S]+?)(?====|$)/)?.[1] || '').trim();
+    const bodyText = [para1, para2].filter(Boolean).join('\n\n');
 
     const lockedItems = WORRY_LOCKED[topic] || WORRY_LOCKED.custom;
     const ctaLabel = WORRY_CTA[topic] || '내 질문의 답 자세히 확인하기';
@@ -3232,7 +3538,7 @@ ${question ? '질문: ' + question : ''}
         <div class="worry-preview-body">${bodyText.split('\n\n').map(p=>`<p>${escHtmlNl(p)}</p>`).join('')}</div>
       </div>
       <div class="unlock-zone">
-        <p class="unlock-zone-title">이 질문의 답을 결정하려면 다음 흐름까지 확인해야 해요</p>
+        <p class="unlock-zone-title">이 질문에 답하려면 다음 흐름까지 확인해야 해요</p>
         <div class="unlock-items">
           ${lockedItems.map(item=>`<div class="unlock-item">
             <span class="unlock-item-dot">🔒</span>
@@ -3349,7 +3655,6 @@ function retryReading(){
     const parsed=parseSajuReading(reading);
     if(parsed._format==='new' || (parsed.sections && parsed.sections.length>0)){renderReadingSections(parsed);}
     showCustomQuestionSec();
-    document.getElementById('transition-card').style.display='block';
     document.getElementById('saju-details-wrap').style.display='block';
     pxc('FreeReadingCompleted');
   }).catch(e=>{
@@ -3377,7 +3682,7 @@ function executeDeleteMyInfo(){
   const rsb=document.getElementById('rel-status-bar'); if(rsb) rsb.style.display='none';
   const rep=document.getElementById('rel-edit-panel'); if(rep) rep.style.display='none';
   // 새 섹션 초기화
-  ['transition-card','product-select-sec','trust-info-sec','saju-details-wrap'].forEach(id=>{
+  ['product-select-sec','trust-info-sec','saju-details-wrap'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display='none';
   });
   const di=document.getElementById('saju-details-inner'); if(di) di.style.display='none';
