@@ -1257,12 +1257,98 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
 /* ── 섹션 레이블 공통 ── */
 .free-sec-label{margin-bottom:10px}
 
+/* ── 매력살 섹션 ── */
+.shinsal-sec{margin-bottom:10px}
+.shinsal-sec-sub{font-size:.8rem;color:var(--sub);margin-bottom:12px;line-height:1.6}
+.shinsal-combo-box{background:rgba(60,35,105,.22);border:1px solid rgba(150,110,220,.28);border-radius:12px;padding:13px 15px;margin-bottom:12px}
+.scb-badge{display:inline-block;font-size:.68rem;color:rgba(185,155,255,.85);background:rgba(110,75,195,.2);border:1px solid rgba(150,110,220,.3);border-radius:20px;padding:2px 10px;margin-bottom:6px;letter-spacing:.03em}
+.scb-title{font-size:.92rem;color:#ddd0ff;font-weight:600;line-height:1.5;margin-bottom:5px}
+.scb-desc{font-size:.8rem;color:var(--sub);line-height:1.7;margin:0}
+.shinsal-none-box{background:rgba(255,255,255,.02);border:1px solid rgba(150,130,200,.15);border-radius:11px;padding:13px 15px;margin-bottom:12px}
+.snb-title{font-size:.85rem;font-weight:600;color:rgba(180,165,220,.8);margin-bottom:6px}
+.snb-desc{font-size:.78rem;color:var(--sub);line-height:1.7;margin:0}
+.shinsal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:0}
+.sic{background:rgba(18,13,42,.7);border:1px solid rgba(100,80,175,.2);border-radius:12px;padding:13px 12px;display:flex;flex-direction:column;gap:5px}
+.sic.present{border-color:rgba(165,125,255,.42);background:rgba(50,28,100,.32)}
+.sic-name{font-size:.78rem;font-weight:700;color:rgba(185,155,240,.85);letter-spacing:.04em}
+.sic.absent .sic-name{color:rgba(145,125,190,.65)}
+.sic-status{font-size:.66rem;border-radius:20px;padding:2px 8px;display:inline-block;width:fit-content;line-height:1.5}
+.sic.present .sic-status{color:rgba(195,168,255,.85);background:rgba(120,85,205,.22);border:1px solid rgba(160,125,255,.28)}
+.sic.absent .sic-status{color:rgba(130,112,170,.7);background:rgba(55,45,90,.2);border:1px solid rgba(95,78,148,.2)}
+.sic-where{font-size:.72rem;color:rgba(170,148,220,.72);min-height:16px;line-height:1.4}
+.sic.absent .sic-where{color:rgba(110,95,155,.55)}
+.sic-desc{font-size:.76rem;color:var(--sub);line-height:1.65;margin-top:3px;flex:1}
+.sic.absent .sic-desc{color:rgba(125,110,158,.68)}
+.sic-evidence-wrap{margin-top:5px}
+.sic-evidence-wrap details{margin:0}
+.sic-evidence-wrap summary{font-size:.68rem;color:rgba(148,122,210,.65);cursor:pointer;list-style:none;display:flex;align-items:center;gap:3px;user-select:none}
+.sic-evidence-wrap summary::-webkit-details-marker{display:none}
+.sic-evidence-wrap summary::before{content:'▸';font-size:.58rem;transition:transform .15s}
+.sic-evidence-wrap details[open] summary::before{content:'▾'}
+.sic-evidence-wrap .ev-body{font-size:.7rem;color:rgba(138,118,192,.65);line-height:1.65;margin-top:5px;padding-top:5px;border-top:1px solid rgba(95,75,158,.15)}
+/* 귀인 카드 */
+.cheoneul-sec{margin-bottom:10px}
+.cheoneul-card{background:linear-gradient(148deg,rgba(8,14,40,.97),rgba(6,16,52,.92));border:1px solid rgba(140,165,255,.18);border-radius:14px;padding:16px 17px 13px}
+.cheoneul-card.present{border-color:rgba(120,160,255,.42)}
+.cc-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cc-icon{font-size:1.3rem;flex-shrink:0}
+.cc-name{font-size:.85rem;font-weight:700;color:#9ec4ff;letter-spacing:.04em}
+.cheoneul-card.absent .cc-name{color:rgba(130,155,220,.65)}
+.cc-status{font-size:.68rem;border-radius:20px;padding:2px 9px;display:inline-block;margin-top:3px;line-height:1.5}
+.cheoneul-card.present .cc-status{color:rgba(168,200,255,.85);background:rgba(50,85,195,.22);border:1px solid rgba(120,165,255,.28)}
+.cheoneul-card.absent .cc-status{color:rgba(115,135,200,.68);background:rgba(35,45,100,.2);border:1px solid rgba(75,98,170,.2)}
+.cc-where{font-size:.76rem;color:rgba(148,178,240,.7);margin-bottom:9px}
+.cc-desc,.cc-absent-desc{font-size:.81rem;color:var(--sub);line-height:1.72}
+.cc-evidence-wrap{margin-top:10px}
+.cc-evidence-wrap details{margin:0}
+.cc-evidence-wrap summary{font-size:.7rem;color:rgba(120,148,218,.62);cursor:pointer;list-style:none;display:flex;align-items:center;gap:3px;user-select:none}
+.cc-evidence-wrap summary::-webkit-details-marker{display:none}
+.cc-evidence-wrap summary::before{content:'▸';font-size:.58rem}
+.cc-evidence-wrap details[open] summary::before{content:'▾'}
+.cc-evidence-wrap .ev-body{font-size:.71rem;color:rgba(128,152,218,.62);line-height:1.65;margin-top:6px;padding-top:6px;border-top:1px solid rgba(90,115,200,.14)}
+
+/* ── 오속 사주 유형 카드 ── */
+.osok-type-card{margin-bottom:10px}
+.otc-body{padding:0}
+.otc-icon-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+.otc-icon{font-size:1.6rem;color:var(--gold);line-height:1;flex-shrink:0;margin-top:2px}
+.otc-title{font-size:1.08rem;font-weight:700;color:#f0e8cc;line-height:1.45;margin-bottom:3px}
+.otc-short{font-size:.72rem;color:rgba(212,168,78,.7);letter-spacing:.08em;background:rgba(212,168,78,.1);border:1px solid rgba(212,168,78,.2);border-radius:20px;padding:2px 10px;display:inline-block}
+.otc-kw-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.ot-kw{font-size:.75rem;color:rgba(212,168,78,.85);background:rgba(212,168,78,.07);border:1px solid rgba(212,168,78,.2);border-radius:20px;padding:3px 10px;letter-spacing:.03em}
+.otc-summary{font-size:.88rem;color:var(--sub);line-height:1.72;margin-bottom:12px}
+.otc-evidence{border-top:1px solid rgba(212,168,78,.12);padding-top:10px;margin-top:4px}
+.otc-evidence summary{font-size:.72rem;color:rgba(170,140,90,.7);cursor:pointer;list-style:none;display:flex;align-items:center;gap:4px;user-select:none}
+.otc-evidence summary::-webkit-details-marker{display:none}
+.otc-evidence summary::before{content:'▸';font-size:.6rem}
+.otc-evidence[open] summary::before{content:'▾'}
+.otc-ev-body{font-size:.78rem;color:rgba(160,140,100,.7);line-height:1.7;margin-top:8px}
+
+/* ── 능력치 카드 ── */
+.ability-card{margin-bottom:10px}
+.ability-sub{font-size:.8rem;color:var(--sub);margin-bottom:14px;line-height:1.6}
+.ab-list{display:flex;flex-direction:column;gap:2px}
+.ab-row{border-radius:10px;padding:11px 12px;cursor:pointer;transition:background .15s}
+.ab-row:hover{background:rgba(212,168,78,.05)}
+.ab-main{display:flex;align-items:center;gap:8px}
+.ab-icon{font-size:.85rem;color:rgba(212,168,78,.55);flex-shrink:0;width:16px;text-align:center}
+.ab-label{font-size:.87rem;color:var(--text-primary);flex:1;min-width:0}
+.ab-dots{font-size:.95rem;letter-spacing:2px;color:rgba(212,168,78,.35);flex-shrink:0}
+.ab-dots .filled{color:var(--gold)}
+.ab-level-tag{font-size:.66rem;color:rgba(160,135,85,.7);white-space:nowrap;flex-shrink:0}
+.ab-detail{margin-top:8px;padding:0 0 4px 24px}
+.ab-desc{font-size:.78rem;color:rgba(150,130,90,.75);line-height:1.65}
+
 /* ── 모바일 카드 간격 압축 ── */
 @media(max-width:600px){
   .concern-display-card{margin-bottom:8px;padding:12px 14px}
   .free-core-diagnosis{margin-bottom:8px;padding:18px 16px}
   .quick-conclusions-sec{margin-bottom:8px}
   .free-traits-sec{margin-bottom:8px}
+  .osok-type-card{margin-bottom:8px}
+  .ability-card{margin-bottom:8px}
+  .shinsal-sec{margin-bottom:8px}
+  .cheoneul-sec{margin-bottom:8px}
   .flow-sec{margin-bottom:8px}
   .action-cards-sec{margin-bottom:8px;gap:8px}
   .topic-preview-sec{margin-bottom:8px;padding:14px 16px 11px}
@@ -1273,6 +1359,9 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
   #custom-question-sec.section-card{padding:18px 16px}
   #product-select-sec .ps-grid{gap:10px}
   .ps-card{padding:18px 15px}
+  .shinsal-grid{gap:7px}
+  .sic{padding:11px 10px}
+  .sic-desc{font-size:.74rem}
 }
 
 
@@ -2625,6 +2714,639 @@ function renderParaHtml(text) {
 }
 
 /* ─── 섹션 렌더 (새 형식) ─── */
+/* ═══════════════════════════════════════════════════════════
+   오속 사주 유형 & 능력치 엔진 v1
+   ══════════════════════════════════════════════════════════ */
+const OSOK_TYPE_VERSION = 'osok-type-v1';
+
+const OSOK_TYPES = {
+  strategic_builder:      { title:'판을 읽고 길을 만드는 설계자',            shortTitle:'전략 설계자형',   icon:'◈' },
+  steady_accumulator:     { title:'느리지만 끝내 쌓아 올리는 사람',            shortTitle:'꾸준한 축적형',   icon:'◉' },
+  intuitive_explorer:     { title:'감각으로 가능성을 먼저 발견하는 탐험가',     shortTitle:'직감 탐험가형',   icon:'◎' },
+  warm_connector:         { title:'사람과 사람 사이의 온도를 읽는 연결자',      shortTitle:'따뜻한 연결자형', icon:'✦' },
+  focused_executor:       { title:'결정한 것을 현실로 옮기는 실행가',          shortTitle:'집중 실행가형',   icon:'▶' },
+  quiet_observer:         { title:'말보다 깊게 보고 늦게 움직이는 관찰자',      shortTitle:'깊은 관찰자형',   icon:'◎' },
+  resilient_pioneer:      { title:'막혀도 새로운 길을 찾아내는 개척자',        shortTitle:'회복형 개척자',   icon:'◈' },
+  expressive_creator:     { title:'생각과 감정을 자기 방식으로 바꾸는 창작자',   shortTitle:'표현 창작자형',   icon:'◉' },
+  balanced_mediator:      { title:'서로 다른 입장을 현실적으로 연결하는 조율자', shortTitle:'현실 조율자형',   icon:'◎' },
+  independent_specialist: { title:'혼자서도 자기 기준을 완성하는 전문가',       shortTitle:'독립 전문가형',   icon:'◈' },
+};
+
+const TYPE_MAIN_ABILITY = {
+  strategic_builder:      'practicality',
+  steady_accumulator:     'practicality',
+  intuitive_explorer:     'expression',
+  warm_connector:         'mediation',
+  focused_executor:       'drive',
+  quiet_observer:         'resilience',
+  resilient_pioneer:      'drive',
+  expressive_creator:     'expression',
+  balanced_mediator:      'mediation',
+  independent_specialist: 'resilience',
+};
+
+const TYPE_BACKUP = {
+  strategic_builder:      'balanced_mediator',
+  steady_accumulator:     'quiet_observer',
+  intuitive_explorer:     'expressive_creator',
+  warm_connector:         'balanced_mediator',
+  focused_executor:       'resilient_pioneer',
+  quiet_observer:         'independent_specialist',
+  resilient_pioneer:      'focused_executor',
+  expressive_creator:     'intuitive_explorer',
+  balanced_mediator:      'warm_connector',
+  independent_specialist: 'quiet_observer',
+};
+
+const TYPE_KEYWORDS = {
+  strategic_builder:      ['판단력','구조화','지속력'],
+  steady_accumulator:     ['꾸준함','안정','축적'],
+  intuitive_explorer:     ['직감','호기심','가능성'],
+  warm_connector:         ['공감','연결','온도'],
+  focused_executor:       ['집중력','실행','완수'],
+  quiet_observer:         ['관찰','깊이','분석'],
+  resilient_pioneer:      ['회복력','개척','독립'],
+  expressive_creator:     ['표현','창의','감각'],
+  balanced_mediator:      ['균형','조율','현실'],
+  independent_specialist: ['전문성','자기기준','독립'],
+};
+
+const TYPE_SUMMARY = {
+  strategic_builder:      '가능성을 넓게 살펴보지만, 결국 오래 가져갈 한 가지를 정했을 때 가장 강해지는 유형이에요.',
+  steady_accumulator:     '빠르게 움직이기보다 일관된 방향으로 꾸준히 쌓아가는 것이 강점인 유형이에요.',
+  intuitive_explorer:     '감각으로 먼저 가능성을 발견하고, 이후에 논리를 붙이는 방식이 더 자연스러운 유형이에요.',
+  warm_connector:         '사람 사이의 온도 차이를 민감하게 읽고, 연결이 필요한 지점을 먼저 발견하는 유형이에요.',
+  focused_executor:       '방향이 정해지면 흔들리지 않고 끝까지 옮기는 힘이 자연스럽게 나타나는 유형이에요.',
+  quiet_observer:         '말보다 관찰이 먼저이고, 충분히 이해한 뒤에 자신의 방식으로 움직이는 유형이에요.',
+  resilient_pioneer:      '막히면 방향을 바꿔 새로운 길을 찾는 힘이 자연스럽게 나타나는 유형이에요.',
+  expressive_creator:     '생각과 감정을 자기만의 방식으로 바꾸는 것이 자연스러운 유형이에요.',
+  balanced_mediator:      '서로 다른 입장을 현실적으로 연결하는 감각이 자연스럽게 작동하는 유형이에요.',
+  independent_specialist: '혼자서도 자기 기준을 완성하는 힘이 있고, 깊이 탐구할 때 가장 강해지는 유형이에요.',
+};
+
+const ABILITY_LEVEL_LABEL = {1:'천천히 발휘되는 힘', 2:'상황에 따라 살아나는 힘', 3:'비교적 자연스럽게 쓰는 힘'};
+
+/* ── 십성 분포 계산 ── */
+function _calcSipsungDist(pillars, knownHour) {
+  const dayS = pillars.day.stem;
+  const dist = { 비견:0,겁재:0,식신:0,상관:0,편재:0,정재:0,편관:0,정관:0,편인:0,정인:0 };
+  const positions = ['year','month'];
+  if (knownHour) positions.push('hour');
+  for (const pos of positions) {
+    const s = pillars[pos].stem;
+    if (s >= 0 && _VALID_STEM.has(s)) {
+      const ss = calcSipsung(dayS, s);
+      if (ss in dist) dist[ss]++;
+    }
+  }
+  return dist;
+}
+
+/* ── 신강/신약 판정 ── */
+function _calcStrength(dist) {
+  const sup = (dist['비견']||0)+(dist['겁재']||0)+(dist['편인']||0)+(dist['정인']||0);
+  const tot = Object.values(dist).reduce((a,b)=>a+b,0);
+  if (tot === 0) return '균형';
+  if (sup >= 2)  return '신강';
+  if (sup === 0) return '신약';
+  return '균형';
+}
+
+/* ── 일간 통근 (일간 오행이 원국 지지에 존재) ── */
+function _calcDayRoot(pillars, knownHour) {
+  const dayEl = STEM_EL[pillars.day.stem];
+  const positions = ['year','month','day'];
+  if (knownHour) positions.push('hour');
+  for (const pos of positions) {
+    const b = pillars[pos].branch;
+    if (b >= 0 && BRANCH_EL[b] === dayEl) return true;
+  }
+  return false;
+}
+
+/* ── 유형 판정 ── */
+function calculateOsokType(pillars, ohaeng, knownHour, shinsal) {
+  if (!pillars) return null;
+  const dayEl   = STEM_EL[pillars.day.stem] || '토';
+  const dist    = _calcSipsungDist(pillars, knownHour);
+  const strength = _calcStrength(dist);
+
+  const bk  = (dist['비견']||0)+(dist['겁재']||0);
+  const ss  = (dist['식신']||0)+(dist['상관']||0);
+  const re  = (dist['편재']||0)+(dist['정재']||0);
+  const ks  = (dist['편관']||0)+(dist['정관']||0);
+  const in_ = (dist['편인']||0)+(dist['정인']||0);
+
+  // 우세 카테고리 (동률 시 dayEl 기반 우선순위)
+  const EL_CATPRIO = {
+    목:['식상','비겁','재성','관성','인성'],
+    화:['식상','재성','비겁','관성','인성'],
+    토:['재성','관성','인성','비겁','식상'],
+    금:['관성','비겁','재성','인성','식상'],
+    수:['인성','관성','비겁','식상','재성'],
+  };
+  const catPrio = EL_CATPRIO[dayEl] || ['비겁','식상','재성','관성','인성'];
+  const catVals = {비겁:bk, 식상:ss, 재성:re, 관성:ks, 인성:in_};
+  const maxVal  = Math.max(bk, ss, re, ks, in_);
+  const domCat  = maxVal === 0
+    ? catPrio[0]
+    : catPrio.find(c => catVals[c] === maxVal) || catPrio[0];
+
+  // 월지 계절
+  const mb = pillars.month.branch;
+  const season = (mb>=2&&mb<=4)?'spring':(mb>=5&&mb<=7)?'summer':(mb>=8&&mb<=10)?'autumn':'winter';
+
+  // 후보 선택
+  const CAND = {
+    비겁: {신강:'resilient_pioneer',      신약:'independent_specialist', 균형:'independent_specialist'},
+    식상: {신강:'expressive_creator',     신약:'intuitive_explorer',     균형:'expressive_creator'},
+    재성: {신강:'strategic_builder',      신약:'steady_accumulator',     균형:'steady_accumulator'},
+    관성: {신강:'focused_executor',       신약:'balanced_mediator',      균형:'focused_executor'},
+    인성: {신강:'independent_specialist', 신약:'quiet_observer',         균형:'quiet_observer'},
+  };
+  let typeCode = CAND[domCat]?.[strength] || 'balanced_mediator';
+
+  // 계절 미세 보정 (maxVal≤1일 때만)
+  if (maxVal <= 1) {
+    if (season==='winter' && domCat==='인성') typeCode = 'quiet_observer';
+    if (season==='spring' && domCat==='식상') typeCode = 'expressive_creator';
+  }
+
+  // 신살 보조 보정 (maxVal≤1, 주도권 없음)
+  if (maxVal <= 1) {
+    if (shinsal?.hwagae?.present   && domCat==='인성') typeCode = 'quiet_observer';
+    if (shinsal?.hwagae?.present   && domCat==='식상') typeCode = 'expressive_creator';
+    if (shinsal?.dohwa?.present    && domCat==='재성') typeCode = 'warm_connector';
+    if (shinsal?.cheoneul?.present && domCat==='관성') typeCode = 'balanced_mediator';
+  }
+
+  // 근거 목록
+  const evidence = [
+    {source:'dayElement', value:dayEl},
+    {source:'dominantCategory', value:domCat},
+    {source:'dominantCount', value:maxVal},
+    {source:'strength', value:strength},
+    {source:'season', value:season},
+  ];
+  if (shinsal?.dohwa?.present)    evidence.push({source:'dohwa',    value:'있음'});
+  if (shinsal?.hwagae?.present)   evidence.push({source:'hwagae',   value:'있음'});
+  if (shinsal?.hongyeom?.present) evidence.push({source:'hongyeom', value:'있음'});
+  if (shinsal?.cheoneul?.present) evidence.push({source:'cheoneul', value:'있음'});
+
+  const CAT_SSNAME = {비겁:'비견·겁재', 식상:'식신·상관', 재성:'편재·정재', 관성:'편관·정관', 인성:'편인·정인'};
+
+  return {
+    typeCode, evidence,
+    title:      OSOK_TYPES[typeCode]?.title      || '',
+    shortTitle: OSOK_TYPES[typeCode]?.shortTitle || '',
+    icon:       OSOK_TYPES[typeCode]?.icon       || '◈',
+    keywords:   TYPE_KEYWORDS[typeCode] || [],
+    dayEl, domCat,
+    dominantSipsungName: maxVal>0 ? CAT_SSNAME[domCat]||domCat : null,
+    strength, season, maxVal,
+    ruleVersion: OSOK_TYPE_VERSION,
+  };
+}
+
+/* ── 능력치 계산 ── */
+function calculateOsokAbilities(pillars, ohaeng, knownHour, shinsal) {
+  if (!pillars) return null;
+  const dist     = _calcSipsungDist(pillars, knownHour);
+  const strength = _calcStrength(dist);
+  const dayRoot  = _calcDayRoot(pillars, knownHour);
+
+  const bk  = (dist['비견']||0)+(dist['겁재']||0);
+  const ss  = (dist['식신']||0)+(dist['상관']||0);
+  const re  = (dist['편재']||0)+(dist['정재']||0);
+  const ks  = (dist['편관']||0)+(dist['정관']||0);
+  const in_ = (dist['편인']||0)+(dist['정인']||0);
+  const 토cnt = ohaeng['토']||0;
+  const 화cnt = ohaeng['화']||0;
+
+  const dB = shinsal?.dohwa?.present    ? 1 : 0;
+  const hB = shinsal?.hongyeom?.present ? 1 : 0;
+  const cB = shinsal?.cheoneul?.present ? 1 : 0;
+  const sB = strength==='신강' ? 1 : strength==='신약' ? -1 : 0;
+
+  function clamp01(v)  { return Math.max(0, Math.min(1, v)); }
+  function toLevel(n)  { return n < 0.34 ? 1 : n < 0.67 ? 2 : 3; }
+  function makeDots(lv) {
+    return '<span style="color:var(--gold)">' + '●'.repeat(lv) + '</span>'
+         + '<span style="color:rgba(212,168,78,.22)">' + '○'.repeat(3-lv) + '</span>';
+  }
+
+  // ── 추진력 (drive) ──
+  const driveRaw  = bk*2 + ks*1.5 + ss*0.5 + sB*0.9;
+  const driveNorm = clamp01(driveRaw / 6);
+  const driveLevel = toLevel(driveNorm);
+
+  // ── 현실 감각 (practicality) ──
+  const practRaw  = re*2.5 + ks*0.5 + 토cnt*0.5;
+  const practNorm = clamp01(practRaw / 8);
+  const practLevel = toLevel(practNorm);
+
+  // ── 표현력 (expression) ──
+  const exprRaw  = ss*2.5 + 화cnt*0.4 + dB*0.6 + hB*0.6;
+  const exprNorm = clamp01(exprRaw / 9);
+  const exprLevel = toLevel(exprNorm);
+
+  // ── 관계 조율력 (mediation) ──
+  const medRaw  = ks*1.5 + in_*1.0 + re*0.5 + dB*0.5 + hB*0.5 + cB*0.7;
+  const medNorm = clamp01(medRaw / 7);
+  const medLevel = toLevel(medNorm);
+
+  // ── 회복력 (resilience) ──
+  const resRaw  = in_*1.8 + bk*0.7 + (dayRoot?0.8:0) + cB*0.7 + (strength==='신강'?1.0:0);
+  const resNorm = clamp01(resRaw / 10);
+  const resLevel = toLevel(resNorm);
+
+  // 근거 텍스트
+  const CAT = {비겁:'비견·겁재',식상:'식신·상관',재성:'편재·정재',관성:'편관·정관',인성:'편인·정인'};
+  const driveEv = [bk>0&&CAT.비겁, ks>0&&CAT.관성, ss>0&&CAT.식상, sB!==0&&(strength==='신강'?'신강':'신약')].filter(Boolean).join('·') || '활성 근거 없음';
+  const practEv = [re>0&&CAT.재성, ks>0&&CAT.관성, 토cnt>0&&'토(土)'].filter(Boolean).join('·') || '활성 근거 없음';
+  const exprEv  = [ss>0&&CAT.식상, 화cnt>0&&'화(火)', dB&&'도화살', hB&&'홍염살'].filter(Boolean).join('·') || '활성 근거 없음';
+  const medEv   = [ks>0&&CAT.관성, in_>0&&CAT.인성, re>0&&CAT.재성, dB&&'도화살', hB&&'홍염살', cB&&'천을귀인'].filter(Boolean).join('·') || '활성 근거 없음';
+  const resEv   = [in_>0&&CAT.인성, bk>0&&CAT.비겁, dayRoot&&'일간통근', cB&&'천을귀인', strength==='신강'&&'신강'].filter(Boolean).join('·') || '활성 근거 없음';
+
+  // 단계별 설명
+  const DESCS = {
+    drive:{
+      1:'행동보다 먼저 충분히 생각하는 편이에요. 한 번 방향을 정하면 꾸준히 움직이는 방식으로 이 힘을 활용할 수 있어요.',
+      2:'상황이 명확하거나 동기가 뚜렷할 때 행동이 살아나는 유형이에요. 방향을 먼저 정한 뒤 움직이는 게 더 효과적이에요.',
+      3:'결정한 것을 행동으로 옮기는 힘이 비교적 자연스럽게 나타나요. 시작과 실행에서 에너지 소모가 적은 편이에요.',
+    },
+    practicality:{
+      1:'큰 그림을 먼저 보는 편이라 가능성을 우선하는 경향이 있어요. 중요한 결정 전에 현실 조건을 한 번 더 확인하면 도움이 돼요.',
+      2:'필요한 순간에 현실적인 판단이 작동하는 편이에요. 여러 목표를 동시에 잡으면 자원이 분산될 수 있어요.',
+      3:'재원과 시간을 현실적으로 다루는 감각이 비교적 뚜렷하게 나타나요. 계획을 생활에 적용하는 힘이 있어요.',
+    },
+    expression:{
+      1:'내면에 많은 것을 갖고 있지만 겉으로 드러내는 것이 조심스러울 수 있어요. 작은 표현부터 시작하면 이 힘이 자연스럽게 커질 수 있어요.',
+      2:'필요한 상황에서는 생각과 감정을 잘 전달하는 편이에요. 표현 방식을 다양하게 시도해볼수록 이 힘이 더 살아나요.',
+      3:'생각과 감정을 자기 방식으로 전달하는 힘이 비교적 자연스럽게 나타나요. 말, 글, 행동 모두에서 표현이 드러나는 편이에요.',
+    },
+    mediation:{
+      1:'관계 안에서 자신의 입장을 우선 살피는 편이에요. 먼저 자신의 기준을 세우면 타인과의 연결이 더 자연스러워질 수 있어요.',
+      2:'상황에 따라 여러 입장을 이해하고 연결하는 힘이 나타나요. 친한 관계 안에서 이 강점이 더 잘 드러나는 편이에요.',
+      3:'서로 다른 입장을 연결하고 균형을 찾는 힘이 비교적 자연스럽게 나타나요. 관계의 흐름을 읽는 감각이 있어요.',
+    },
+    resilience:{
+      1:'어려운 상황 후 회복에 시간이 필요한 편이에요. 충분히 쉬고 정리하는 과정을 허용하는 것 자체가 이 힘을 키우는 방법이에요.',
+      2:'경험을 정리하고 다음으로 넘어가는 힘이 상황에 따라 작동해요. 혼자만의 시간이 회복에 도움이 되는 편이에요.',
+      3:'어려운 상황 후 중심을 다시 잡는 힘이 비교적 자연스럽게 나타나요. 경험을 다음 선택의 재료로 삼는 경향이 있어요.',
+    },
+  };
+
+  function makeAb(key, level, rawScore, evidence, dots) {
+    return { level, rawScore, label: ABILITY_LEVEL_LABEL[level], evidence, dots, desc: DESCS[key][level] };
+  }
+
+  return {
+    ruleVersion: OSOK_TYPE_VERSION,
+    drive:        makeAb('drive',        driveLevel, driveRaw, driveEv, makeDots(driveLevel)),
+    practicality: makeAb('practicality', practLevel, practRaw, practEv, makeDots(practLevel)),
+    expression:   makeAb('expression',  exprLevel,  exprRaw,  exprEv,  makeDots(exprLevel)),
+    mediation:    makeAb('mediation',   medLevel,   medRaw,   medEv,   makeDots(medLevel)),
+    resilience:   makeAb('resilience',  resLevel,   resRaw,   resEv,   makeDots(resLevel)),
+  };
+}
+
+/* ── 유형·능력치 일관성 검증 및 타입 확정 ── */
+function finalizeOsokType(typeResult, abilities) {
+  if (!typeResult || !abilities) return typeResult;
+  const mainAb = TYPE_MAIN_ABILITY[typeResult.typeCode];
+  if (abilities[mainAb]?.level >= 2) return typeResult; // 일관성 OK
+
+  // backup 시도
+  const backup = TYPE_BACKUP[typeResult.typeCode];
+  if (backup && abilities[TYPE_MAIN_ABILITY[backup]]?.level >= 2) {
+    return { ...typeResult, typeCode: backup,
+      title: OSOK_TYPES[backup].title, shortTitle: OSOK_TYPES[backup].shortTitle,
+      icon: OSOK_TYPES[backup].icon, keywords: TYPE_KEYWORDS[backup] };
+  }
+
+  // 모든 타입 중 main ability ≥ 2 탐색 (입력 데이터 기반 우선순위 유지)
+  for (const code of Object.keys(OSOK_TYPES)) {
+    if (abilities[TYPE_MAIN_ABILITY[code]]?.level >= 2) {
+      return { ...typeResult, typeCode: code,
+        title: OSOK_TYPES[code].title, shortTitle: OSOK_TYPES[code].shortTitle,
+        icon: OSOK_TYPES[code].icon, keywords: TYPE_KEYWORDS[code] };
+    }
+  }
+  return typeResult; // fallback: 원본 유지
+}
+
+/* ── 유형 카드 렌더 ── */
+function renderTypeCard(typeResult) {
+  if (!typeResult) return '';
+  const EL_KO   = {목:'목(木)',화:'화(火)',토:'토(土)',금:'금(金)',수:'수(水)'};
+  const STR_KO  = {신강:'신강(身强)',신약:'신약(身弱)',균형:'균형'};
+  const SEA_KO  = {spring:'봄(2~4월)',summer:'여름(5~7월)',autumn:'가을(8~10월)',winter:'겨울(11~1월)'};
+  const elTxt   = EL_KO[typeResult.dayEl]  || typeResult.dayEl;
+  const strTxt  = STR_KO[typeResult.strength] || typeResult.strength;
+  const seasonTxt = SEA_KO[typeResult.season] || '';
+  const domTxt  = typeResult.dominantSipsungName
+    ? `${typeResult.dominantSipsungName}이 두드러진 구성이에요.`
+    : '특정 십성이 두드러지지 않는 비교적 균형 구성이에요.';
+
+  const shinsalParts = [];
+  const ev = typeResult.evidence || [];
+  if (ev.find(e=>e.source==='hwagae'))   shinsalParts.push('화개살은 탐구·깊이 키워드를 보조하는 요소로만 반영했습니다');
+  if (ev.find(e=>e.source==='dohwa'))    shinsalParts.push('도화살은 표현·연결 키워드를 보조하는 요소로만 반영했습니다');
+  if (ev.find(e=>e.source==='hongyeom')) shinsalParts.push('홍염살은 관계 감각 키워드를 보조하는 요소로만 반영했습니다');
+  if (ev.find(e=>e.source==='cheoneul')) shinsalParts.push('천을귀인은 연결·조율 성향을 보조하는 요소로만 반영했습니다');
+
+  const evText = `${elTxt} 일간을 기본 성향 축으로 하고, ${strTxt} 상태가 확인됐어요. ${domTxt}${seasonTxt ? ' 월지는 ' + seasonTxt + '에 해당해 표현 방식에 반영했어요.' : ''}${shinsalParts.length ? ' ' + shinsalParts[0] + '.' : ''}`;
+
+  const kws = typeResult.keywords.map(k=>`<span class="ot-kw">#${escHtml(k)}</span>`).join('');
+  const summary = TYPE_SUMMARY[typeResult.typeCode] || '';
+
+  return `<div class="osok-type-card section-card" id="osok-type-sec">
+    <p class="free-sec-label">오속 사주 유형</p>
+    <div class="otc-body">
+      <div class="otc-icon-row">
+        <span class="otc-icon">${escHtml(typeResult.icon)}</span>
+        <div>
+          <p class="otc-title">${escHtml(typeResult.title)}</p>
+          <p class="otc-short">${escHtml(typeResult.shortTitle)}</p>
+        </div>
+      </div>
+      <div class="otc-kw-row">${kws}</div>
+      <p class="otc-summary">${escHtml(summary)}</p>
+      <details class="otc-evidence">
+        <summary>이 유형이 나온 이유</summary>
+        <p class="otc-ev-body">${escHtml(evText)}</p>
+      </details>
+    </div>
+  </div>`;
+}
+
+/* ── 능력치 카드 렌더 ── */
+function renderAbilityCard(abilities) {
+  if (!abilities) return '';
+  const ITEMS = [
+    {key:'drive',        label:'추진력',      icon:'▶'},
+    {key:'practicality', label:'현실 감각',   icon:'◉'},
+    {key:'expression',   label:'표현력',      icon:'◎'},
+    {key:'mediation',    label:'관계 조율력', icon:'◈'},
+    {key:'resilience',   label:'회복력',      icon:'◑'},
+  ];
+  const rows = ITEMS.map(item => {
+    const ab = abilities[item.key];
+    if (!ab) return '';
+    const id = 'ab-detail-' + item.key;
+    return `<div class="ab-row" onclick="toggleAbilityDetail('${item.key}')">
+      <div class="ab-main">
+        <span class="ab-icon">${item.icon}</span>
+        <span class="ab-label">${item.label}</span>
+        <span class="ab-dots">${ab.dots}</span>
+        <span class="ab-level-tag">${ab.level}단계</span>
+      </div>
+      <div class="ab-detail" id="${id}" style="display:none">
+        <p class="ab-desc">${escHtml(ab.desc)}</p>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="ability-card section-card" id="ability-sec">
+    <p class="free-sec-label">나의 사주 능력치</p>
+    <p class="ability-sub">좋고 나쁨의 점수가 아니라, 어떤 힘을 더 자연스럽게 사용하는지 보여주는 지표예요.</p>
+    <div class="ab-list">${rows}</div>
+  </div>`;
+}
+
+function toggleAbilityDetail(key) {
+  const el = document.getElementById('ab-detail-' + key);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+/* ─── 매력살·귀인 카드 렌더 ─── */
+function renderShinsalCards(shinsal, name, knownHour) {
+  const POS_KO = {year:'년주', month:'월주', day:'일주', hour:'시주'};
+
+  // 한자 → 한글 변환 (기존 STEM_HANJA/BRANCH_HANJA 배열 사용)
+  const h2koBranch = {};
+  BRANCH_HANJA.forEach((h,i) => { h2koBranch[h] = BRANCHES[i]; });
+  const h2koStem = {};
+  STEM_HANJA.forEach((h,i)  => { h2koStem[h]  = STEMS[i]; });
+
+  function posLabel(positions) {
+    return [...new Set(positions)].map(p => POS_KO[p] || p).join(' · ');
+  }
+  function bKo(h) { return h2koBranch[h] || h; }
+  function sKo(h) { return h2koStem[h]  || h; }
+  function esc(s) { return escHtml(s); }
+
+  // 데이터 없음 가드
+  if (!shinsal || shinsal.available === false) {
+    return `<div class="shinsal-sec section-card"><p style="color:var(--sub);font-size:.82rem;text-align:center;padding:8px 0">분석 정보를 확인할 수 없어요</p></div>`;
+  }
+
+  const dohwa    = shinsal.dohwa    || {present:false,count:0,matchedPositions:[],evidence:[]};
+  const hongyeom = shinsal.hongyeom || {present:false,count:0,matchedPositions:[],evidence:[],dayPillar:''};
+  const hwagae   = shinsal.hwagae   || {present:false,count:0,matchedPositions:[],evidence:[]};
+  const cheoneul = shinsal.cheoneul || {present:false,count:0,matchedPositions:[],matchedBranches:[],evidence:[]};
+
+  const presentList = [
+    dohwa.present    && 'dohwa',
+    hongyeom.present && 'hongyeom',
+    hwagae.present   && 'hwagae',
+  ].filter(Boolean);
+
+  // ── 조합 박스 ──
+  const COMBO_TITLE = {
+    'dohwa+hongyeom':         '눈에 띄는 첫인상과 가까워질수록 느껴지는 호감',
+    'dohwa+hwagae':           '눈에 띄지만 쉽게 다 읽히지 않는 분위기',
+    'hongyeom+hwagae':        '대화할수록 깊어지는 은은한 매력',
+    'dohwa+hongyeom+hwagae':  '첫인상·관계·내면에서 서로 다르게 드러나는 매력',
+  };
+  const COMBO_DESC = {
+    'dohwa+hongyeom':         '첫인상에서 눈에 띄는 힘과 가까이 대화할수록 느껴지는 친근함이 함께 나타나요. 넓은 관계와 깊은 관계 모두에서 자연스럽게 존재감이 드러날 수 있어요.',
+    'dohwa+hwagae':           '처음에는 시선을 끄는 힘이 있고, 알아갈수록 쉽게 읽히지 않는 깊이가 있어요. 강한 첫인상과 이후에 드러나는 내면의 세계가 독특한 분위기를 만들어요.',
+    'hongyeom+hwagae':        '넓은 무대보다 가까운 대화 안에서 호감이 느껴지고, 알아갈수록 더 궁금해지는 매력이 함께 있어요. 관계가 깊어질수록 빛나는 유형이에요.',
+    'dohwa+hongyeom+hwagae':  '처음 만남에서 드러나는 존재감, 가까워지며 느껴지는 친근함, 그리고 알아갈수록 더 궁금해지는 내면이 모두 나타나요. 세 가지 매력이 각기 다른 장면에서 드러날 수 있어요.',
+  };
+
+  let comboHtml = '';
+  if (presentList.length >= 2) {
+    const key = [...presentList].sort().join('+');
+    const badge = presentList.length === 3 ? '서로 다른 세 가지 매력이 함께 나타나요' : '두 가지 매력이 함께 나타나요';
+    comboHtml = `<div class="shinsal-combo-box">
+      <span class="scb-badge">${badge}</span>
+      <p class="scb-title">${COMBO_TITLE[key] || ''}</p>
+      ${COMBO_DESC[key] ? `<p class="scb-desc">${COMBO_DESC[key]}</p>` : ''}
+    </div>`;
+  } else if (presentList.length === 1) {
+    const singleLabel = {dohwa:'도화형', hongyeom:'홍염형', hwagae:'화개형'};
+    comboHtml = `<div class="shinsal-combo-box">
+      <span class="scb-badge">한 가지 매력이 확인됐어요</span>
+      <p class="scb-title">내 사주에서 확인된 매력은 ${singleLabel[presentList[0]]}이에요</p>
+    </div>`;
+  }
+
+  // 없는 경우 안내
+  const noneHtml = presentList.length === 0
+    ? `<div class="shinsal-none-box">
+        <p class="snb-title">세 가지 매력살은 원국에서 확인되지 않았어요</p>
+        <p class="snb-desc">도화·홍염·화개는 매력을 분류하는 여러 기준 중 일부예요. 세 신살이 없다는 것이 매력이 없다는 뜻은 아니며, 이번 결과에서는 확인되지 않았다는 의미입니다.</p>
+      </div>` : '';
+
+  // ── 상태 텍스트 ──
+  function statusTxt(sal, type) {
+    if (!sal.present) return '원국에서 확인되지 않음';
+    if (type === 'hongyeom') return '일주에서 확인';
+    return sal.count > 1 ? `${sal.count}곳에서 확인` : '1곳에서 확인';
+  }
+  function whereTxt(sal, type) {
+    if (!sal.present) return '';
+    return (type === 'hongyeom' ? '일주' : posLabel(sal.matchedPositions)) + '에서 확인';
+  }
+
+  // ── 카드별 해설 ──
+  const DESC = {
+    dohwa: dohwa.present
+      ? `${posLabel(dohwa.matchedPositions)}에서 도화 기운이 확인돼요. 첫인상이나 외부 활동에서 자연스럽게 시선을 끄는 힘이 있고, 사람들의 관심이 모이는 분위기가 만들어질 수 있어요. 관심을 많이 받을 때 타인의 반응에 영향을 받기 쉬운 면도 함께 살펴볼 필요가 있어요.`
+      : `원국의 지지에서 도화 조건이 확인되지 않았어요. 이 결과는 첫인상의 매력이 약하다는 뜻이 아니라, 이번 원국에서 이 조건이 충족되지 않았다는 의미예요.`,
+
+    hongyeom: hongyeom.present
+      ? `일주에서 홍염 기운이 확인돼요. 가까이 대화할수록 느껴지는 친근함과 은은한 호감이 강점이에요. 넓은 대중보다 가까운 관계에서 이 매력이 더 두드러질 수 있어요. 감정 표현과 관계의 경계를 함께 살펴보면 도움이 돼요.`
+      : `원국의 일주에서 홍염 조건이 확인되지 않았어요. 이 결과는 가까운 관계에서의 매력이 없다는 뜻이 아니라, 이번 일주가 홍염 기준에 해당하지 않는다는 의미예요.`,
+
+    hwagae: hwagae.present
+      ? `${posLabel(hwagae.matchedPositions)}에서 화개 기운이 확인돼요. 혼자만의 분위기와 생각의 깊이에서 드러나는 매력으로, 처음보다 알아갈수록 궁금해지는 유형이에요. 혼자 생각하는 시간이 길어지면 거리감으로 느껴질 수 있는 면도 함께 있어요.`
+      : `원국의 지지에서 화개 조건이 확인되지 않았어요. 이 결과는 내면의 깊이가 없다는 뜻이 아니라, 이번 원국에서 이 조건이 충족되지 않았다는 의미예요.`,
+  };
+
+  // ── 계산 근거 텍스트 ──
+  function dohwaEv() {
+    if (!dohwa.present) {
+      return `연지와 일지를 기준으로 삼합에서 도화에 해당하는 지지를 원국과 비교했어요. 년주·월주·일주${knownHour ? '·시주' : ''}에서 조건이 확인되지 않았어요.`;
+    }
+    const ev = dohwa.evidence[0];
+    if (!ev) return '';
+    const where = posLabel(dohwa.matchedPositions);
+    return `연지와 일지의 삼합을 기준으로 원국의 지지를 확인했어요. ${name ? esc(name) + '님의 ' : ''}원국에서 ${where}의 ${ev.targetBranch}(${bKo(ev.targetBranch)})가 도화 조건과 일치합니다.`;
+  }
+  function hwagaeEv() {
+    if (!hwagae.present) {
+      return `연지와 일지를 기준으로 삼합의 고지(庫地)에 해당하는 지지를 원국과 비교했어요. 년주·월주·일주${knownHour ? '·시주' : ''}에서 조건이 확인되지 않았어요.`;
+    }
+    const ev = hwagae.evidence[0];
+    if (!ev) return '';
+    const where = posLabel(hwagae.matchedPositions);
+    return `연지와 일지의 삼합을 기준으로 화개에 해당하는 지지를 확인했어요. ${name ? esc(name) + '님의 ' : ''}원국의 ${where}에서 ${ev.targetBranch}(${bKo(ev.targetBranch)}) 조건이 확인됩니다.`;
+  }
+  function hongyeomEv() {
+    const dp = hongyeom.dayPillar || '';
+    const dS = dp.charAt(0), dB = dp.charAt(1);
+    const dpKo = (dS ? sKo(dS) : '') + (dB ? bKo(dB) : '');
+    if (!hongyeom.present) {
+      return `홍염은 오속의 일주 기준으로 확인해요. 갑오·병인·정미·무진·경술·신유·임자 중 하나일 때 표시됩니다. ${name ? esc(name) + '님의 ' : ''}일주 ${dp}(${dpKo})는 해당하지 않아요.`;
+    }
+    return `홍염은 오속의 일주 기준으로 확인해요. 일주가 갑오·병인·정미·무진·경술·신유·임자 중 하나일 때 표시됩니다. ${name ? esc(name) + '님의 ' : ''}일주 ${dp}(${dpKo})가 홍염 일주에 해당합니다.`;
+  }
+  function cheoneulEv() {
+    const ev = cheoneul.evidence[0];
+    if (!ev) {
+      // 일간 정보를 S.sajuData에서 직접 참조
+      const pillars = S.sajuData && S.sajuData._pillars;
+      const dS = pillars && STEM_HANJA[pillars.day.stem];
+      const targets = dS && _CHEONEUL_MAP[pillars && pillars.day.stem];
+      const targetStr = targets ? targets.map(i => BRANCH_HANJA[i] + '(' + BRANCHES[i] + ')').join('·') : '';
+      let txt = dS ? `천을귀인은 일간 ${dS}(${sKo(dS)})을 기준으로 원국의 ${targetStr}를 확인합니다.` : '천을귀인은 일간을 기준으로 원국의 지지를 확인합니다.';
+      if (!knownHour) txt += ' 출생시간을 모르기 때문에 시주에 해당하는 귀인은 판정에서 제외했어요.';
+      txt += ` ${name ? esc(name) + '님의 ' : ''}원국에서는 조건이 일치하는 지지가 확인되지 않았어요.`;
+      return txt;
+    }
+    const stem = ev.baseStem;
+    const targets = ev.targetBranches.map(h => `${h}(${bKo(h)})`).join('·');
+    let txt = `천을귀인은 태어난 날의 천간인 일간을 기준으로 확인합니다. ${stem}(${sKo(stem)}) 일간은 원국의 ${targets}를 확인합니다.`;
+    if (cheoneul.present) {
+      const where = posLabel(cheoneul.matchedPositions);
+      const mb = cheoneul.matchedBranches.map(h => `${h}(${bKo(h)})`).join('·');
+      txt += ` ${name ? esc(name) + '님의 ' : ''}${where}에서 ${mb}가 확인되었어요.`;
+    } else {
+      txt += ` ${name ? esc(name) + '님의 ' : ''}원국에서는 조건이 일치하는 지지가 확인되지 않았어요.`;
+    }
+    if (!knownHour) txt += ' 출생시간을 모르기 때문에 시주에 해당하는 귀인은 판정에서 제외했어요.';
+    return txt;
+  }
+
+  // ── 귀인 해설 ──
+  function cheoneulDesc() {
+    if (!cheoneul.present) return '';
+    const where = posLabel(cheoneul.matchedPositions);
+    const mb = cheoneul.matchedBranches.map(h => `${h}(${bKo(h)})`).join('·');
+    const timeNote = !knownHour ? ' 출생시간을 선택하지 않아 시주는 판정에서 제외했어요.' : '';
+    return `천을귀인은 어려운 순간에 사람이나 정보, 기회를 통해 해결의 실마리를 얻는 흐름으로 해석해요. ${name ? esc(name) + '님은 ' : ''}${where}에서 ${mb}가 확인됐어요. 도움을 기다리기보다 필요한 순간에 연결을 시도할 때 이 장점이 더 잘 드러날 수 있어요.${timeNote}`;
+  }
+
+  // ── 개별 살 카드 ──
+  function salCard(sal, type, icon, nameko) {
+    const cls = sal.present ? 'present' : 'absent';
+    const wt  = whereTxt(sal, type);
+    const evFn = type === 'dohwa' ? dohwaEv : type === 'hongyeom' ? hongyeomEv : hwagaeEv;
+    return `<div class="sic ${cls}">
+      <div class="sic-name">${icon} ${nameko}</div>
+      <span class="sic-status">${statusTxt(sal, type)}</span>
+      <div class="sic-where">${wt || '<span style="opacity:.45">—</span>'}</div>
+      <p class="sic-desc">${DESC[type]}</p>
+      <div class="sic-evidence-wrap"><details>
+        <summary>어떻게 확인했나요?</summary>
+        <p class="ev-body">${evFn()}</p>
+      </details></div>
+    </div>`;
+  }
+
+  // ── 귀인 카드 ──
+  const ccHtml = cheoneul.present
+    ? `<div class="cheoneul-card present">
+        <div class="cc-header">
+          <span class="cc-icon">✦</span>
+          <div class="cc-name-wrap">
+            <div class="cc-name">천을귀인</div>
+            <span class="cc-status">${cheoneul.count > 1 ? cheoneul.count + '곳에서 확인' : '1곳에서 확인'}</span>
+          </div>
+        </div>
+        <div class="cc-where">${posLabel(cheoneul.matchedPositions)}에서 확인</div>
+        <p class="cc-desc">${cheoneulDesc()}</p>
+        <div class="cc-evidence-wrap"><details>
+          <summary>어떻게 확인했나요?</summary>
+          <p class="ev-body">${cheoneulEv()}</p>
+        </details></div>
+      </div>`
+    : `<div class="cheoneul-card absent">
+        <div class="cc-header">
+          <span class="cc-icon" style="opacity:.45">✦</span>
+          <div class="cc-name-wrap">
+            <div class="cc-name">천을귀인</div>
+            <span class="cc-status">원국에서 확인되지 않았어요</span>
+          </div>
+        </div>
+        <p class="cc-absent-desc">천을귀인이 없다고 사람의 도움이나 인복이 없다는 뜻은 아니에요. 이번 원국에서 이 귀인 조건이 확인되지 않았다는 의미이며, 관계와 기회는 다른 사주 요소와 현재의 선택에서도 달라질 수 있습니다.</p>
+        <div class="cc-evidence-wrap"><details>
+          <summary>어떻게 확인했나요?</summary>
+          <p class="ev-body">${cheoneulEv()}</p>
+        </details></div>
+      </div>`;
+
+  return `
+    <div class="shinsal-sec section-card" id="shinsal-sec">
+      <p class="free-sec-label">내 사주에 숨은 매력</p>
+      <p class="shinsal-sec-sub">도화·홍염·화개는 모두 같은 매력을 뜻하지 않아요. 내 사주에서 실제로 확인된 기운만 보여드려요.</p>
+      ${comboHtml}${noneHtml}
+      <div class="shinsal-grid">
+        ${salCard(dohwa,    'dohwa',    '✨', '도화살')}
+        ${salCard(hongyeom, 'hongyeom', '🌹', '홍염살')}
+        ${salCard(hwagae,   'hwagae',   '🎭', '화개살')}
+      </div>
+    </div>
+    <div class="cheoneul-sec section-card" id="cheoneul-sec">
+      <p class="free-sec-label">내 사주의 귀인 코드</p>
+      ${ccHtml}
+    </div>`;
+}
+
 function renderReadingSections(parsed) {
   const wrap = document.getElementById('reading-sections');
   wrap.innerHTML = '';
@@ -2680,6 +3402,9 @@ function renderReadingSections(parsed) {
     </div>`;
   }
 
+  // 3-B. 오속 사주 유형 카드
+  html += renderTypeCard(S.sajuData?.osokType);
+
   // 4. 나를 보여주는 특징 3개
   if (parsed.traits && parsed.traits.length) {
     const nums = ['01','02','03'];
@@ -2699,7 +3424,17 @@ function renderReadingSections(parsed) {
     </div>`;
   }
 
-  // 5. 현재 흐름 (A) + 분석 근거 (B)
+  // 5. 매력살 · 귀인 카드 (S.sajuData.shinsal 사용)
+  {
+    const shinsal = S.sajuData?.shinsal;
+    const knownHour = S.sajuData ? (S.sajuData.hourVal >= 0) : true;
+    html += renderShinsalCards(shinsal, name, knownHour);
+  }
+
+  // 5-B. 나의 사주 능력치 카드
+  html += renderAbilityCard(S.sajuData?.osokAbilities);
+
+  // 6. 현재 흐름 (A) + 분석 근거 (B)
   if (parsed.flow || parsed.analysisBasis) {
     html += `<div class="flow-sec">
       <p class="free-sec-label">지금의 흐름</p>
@@ -3189,11 +3924,25 @@ async function calculate(){
   // 오속 신살 v1 계산 — 결과 저장만, UI 표시 없음
   const shinsalResult = calculateOsokShinsal(pillars, knownHour);
   S.sajuData.shinsal = shinsalResult;
+
+  // 오속 사주 유형 & 능력치 계산
+  const _typeRaw = calculateOsokType(pillars, ohaeng, knownHour, shinsalResult);
+  const _abilities = calculateOsokAbilities(pillars, ohaeng, knownHour, shinsalResult);
+  S.sajuData.osokType = finalizeOsokType(_typeRaw, _abilities);
+  S.sajuData.osokAbilities = _abilities;
+  S.sajuData._pillars = pillars;
+
   if (new URLSearchParams(location.search).get('debugSaju') === '1') {
     console.group('[debugSaju] 오속 신살 v1 계산 결과');
     console.log('입력 pillars:', JSON.stringify(pillars));
     console.log('birthTimeKnown:', knownHour);
     console.log('결과:', JSON.stringify(shinsalResult, null, 2));
+    console.groupEnd();
+    console.group('[debugSaju] 오속 사주 유형');
+    console.log(JSON.stringify(S.sajuData.osokType, null, 2));
+    console.groupEnd();
+    console.group('[debugSaju] 능력치');
+    console.log(JSON.stringify(S.sajuData.osokAbilities, null, 2));
     console.groupEnd();
     _runShinsalTests();
   }
