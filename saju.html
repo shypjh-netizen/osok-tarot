@@ -1307,6 +1307,36 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
 .cc-evidence-wrap details[open] summary::before{content:'▾'}
 .cc-evidence-wrap .ev-body{font-size:.71rem;color:rgba(128,152,218,.62);line-height:1.65;margin-top:6px;padding-top:6px;border-top:1px solid rgba(90,115,200,.14)}
 
+/* ── 귀인·길신 통합 카드 ── */
+.gwinin-sec{margin-bottom:10px}
+.gi-subtitle{font-size:.8rem;color:var(--sub);margin-bottom:10px;line-height:1.65}
+.gi-count-summary{font-size:.82rem;color:rgba(180,155,100,.85);background:rgba(212,168,78,.07);border:1px solid rgba(212,168,78,.15);border-radius:20px;padding:5px 14px;display:inline-block;margin-bottom:14px}
+.gi-present-grid{display:grid;gap:10px;margin-bottom:10px}
+.gi-present-grid.gi-cols-2{grid-template-columns:1fr 1fr}
+.gi-present-grid.gi-cols-1{grid-template-columns:1fr}
+.gi-item-card{background:rgba(30,50,90,.35);border:1px solid rgba(120,160,220,.22);border-radius:12px;padding:14px 14px 10px}
+.gi-item-card.present{border-color:rgba(140,170,230,.3)}
+.gi-item-header{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap}
+.gi-icon{font-size:.95rem;color:rgba(140,180,240,.75);flex-shrink:0}
+.gi-name-wrap{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+.gi-name{font-size:.9rem;font-weight:700;color:#d8e8ff;white-space:nowrap}
+.gi-cat-badge{font-size:.62rem;color:rgba(140,180,240,.6);background:rgba(80,120,200,.12);border:1px solid rgba(100,150,220,.2);border-radius:20px;padding:2px 7px;white-space:nowrap}
+.gi-where-badge{font-size:.72rem;color:rgba(212,168,78,.85);background:rgba(212,168,78,.1);border:1px solid rgba(212,168,78,.2);border-radius:20px;padding:3px 9px;white-space:nowrap;margin-left:auto}
+.gi-desc{font-size:.83rem;color:rgba(200,215,240,.75);line-height:1.7;margin-bottom:10px}
+.gi-ev-wrap{border-top:1px solid rgba(100,140,210,.12);padding-top:8px;margin-top:2px}
+.gi-ev-wrap summary{font-size:.72rem;color:rgba(140,170,220,.6);cursor:pointer;list-style:none;display:flex;align-items:center;gap:4px;user-select:none;min-height:44px}
+.gi-ev-wrap summary::-webkit-details-marker{display:none}
+.gi-ev-wrap summary::before{content:'▸';font-size:.6rem}
+.gi-ev-wrap[open] summary::before{content:'▾'}
+.gi-ev-body{font-size:.78rem;color:rgba(160,180,220,.65);line-height:1.7;margin-top:6px}
+.gi-none-desc{font-size:.8rem;color:rgba(160,145,110,.65);line-height:1.7;margin-bottom:10px}
+.gi-absent-wrap{margin-top:8px}
+.gi-absent-wrap summary{font-size:.78rem;color:rgba(180,165,125,.7);cursor:pointer;list-style:none;display:flex;align-items:center;gap:5px;user-select:none;min-height:44px;border-top:1px solid rgba(100,130,180,.1);padding-top:8px}
+.gi-absent-wrap summary::-webkit-details-marker{display:none}
+.gi-absent-wrap summary::before{content:'▸';font-size:.6rem}
+.gi-absent-wrap[open] summary::before{content:'▾'}
+.gi-absent-list{font-size:.8rem;color:rgba(180,165,125,.7);margin-top:8px;line-height:1.7}
+
 /* ── 오속 사주 유형 카드 ── */
 .osok-type-card{margin-bottom:10px}
 .otc-body{padding:0}
@@ -1345,6 +1375,9 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
   .free-core-diagnosis{margin-bottom:8px;padding:18px 16px}
   .quick-conclusions-sec{margin-bottom:8px}
   .free-traits-sec{margin-bottom:8px}
+  .gwinin-sec{margin-bottom:8px}
+  .gi-present-grid.gi-cols-2{grid-template-columns:1fr}
+  .gi-where-badge{margin-left:0}
   .osok-type-card{margin-bottom:8px}
   .ability-card{margin-bottom:8px}
   .shinsal-sec{margin-bottom:8px}
@@ -2103,6 +2136,59 @@ function _shinsalBranches(pillars, knownHour) {
   return r;
 }
 
+// 위치별 천간 인덱스 반환 (knownHour=false 시 시주 제외)
+function _gwininStems(pillars, knownHour) {
+  const r = {
+    year:  pillars.year.stem,
+    month: pillars.month.stem,
+    day:   pillars.day.stem,
+  };
+  if (knownHour) r.hour = pillars.hour.stem;
+  return r;
+}
+
+/* ── 귀인·길신 상수 (osok-gwinin-v1) ── */
+const OSOK_GWININ_VERSION = 'osok-gwinin-v1';
+
+// 천덕귀인: 월지 한자 → { type:'stem'|'branch', value:한자 }
+const _CHEONDEOK_MAP = {
+  '寅':{type:'stem',  value:'丁'},
+  '卯':{type:'branch',value:'申'},
+  '辰':{type:'stem',  value:'壬'},
+  '巳':{type:'stem',  value:'辛'},
+  '午':{type:'branch',value:'亥'},
+  '未':{type:'stem',  value:'甲'},
+  '申':{type:'stem',  value:'癸'},
+  '酉':{type:'branch',value:'寅'},
+  '戌':{type:'stem',  value:'丙'},
+  '亥':{type:'stem',  value:'乙'},
+  '子':{type:'branch',value:'巳'},
+  '丑':{type:'stem',  value:'庚'},
+};
+
+// 월덕귀인: 월지 한자 → 목표 천간 한자
+const _WOLDEOK_MAP = {
+  '寅':'丙','午':'丙','戌':'丙',
+  '申':'壬','子':'壬','辰':'壬',
+  '亥':'甲','卯':'甲','未':'甲',
+  '巳':'庚','酉':'庚','丑':'庚',
+};
+
+// 문창귀인: 일간 인덱스 → 목표 지지 인덱스
+// 甲(0)→巳(5) 乙(1)→午(6) 丙(2)→申(8) 丁(3)→酉(9) 戊(4)→申(8) 己(5)→酉(9)
+// 庚(6)→亥(11) 辛(7)→子(0) 壬(8)→寅(2) 癸(9)→卯(3)
+const _MUNCHANG_MAP = {0:5,1:6,2:8,3:9,4:8,5:9,6:11,7:0,8:2,9:3};
+
+// 태극귀인: 일간 인덱스 → 목표 지지 인덱스 배열 (연지·일지만 확인)
+// 甲·乙→子·午 / 丙·丁→卯·酉 / 戊·己→辰·戌·丑·未 / 庚·辛→寅·亥 / 壬·癸→巳·申
+const _TAEGEUK_MAP = {
+  0:[0,6], 1:[0,6],
+  2:[3,9], 3:[3,9],
+  4:[4,10,1,7], 5:[4,10,1,7],
+  6:[2,11], 7:[2,11],
+  8:[5,8],  9:[5,8],
+};
+
 // 도화살 판정
 function calculateDohwa(pillars, knownHour) {
   const yB = pillars.year.branch;
@@ -2246,6 +2332,111 @@ function calculateCheoneul(pillars, knownHour) {
   };
 }
 
+/* ── 천덕귀인 ── */
+function calculateCheondeok(pillars, knownHour) {
+  const mB  = pillars.month.branch;
+  const mBH = BRANCH_HANJA[mB];
+  const tgt = _CHEONDEOK_MAP[mBH];
+  const base = {type:'monthBranch', value:mBH};
+  const empty = {id:'cheondeok',name:'천덕귀인',category:'auspicious',present:false,count:0,base,target:tgt||null,matchedPositions:[],evidence:[],ruleVersion:OSOK_GWININ_VERSION};
+  if (!_VALID_BRANCH.has(mB) || !tgt) return empty;
+
+  const matched = new Set();
+  const evidence = [];
+  if (tgt.type === 'stem') {
+    const tgtIdx = STEM_HANJA.indexOf(tgt.value);
+    const stems  = _gwininStems(pillars, knownHour);
+    for (const [pos, sIdx] of Object.entries(stems)) {
+      if (sIdx === tgtIdx) { matched.add(pos); evidence.push({baseBranch:mBH,targetType:'stem',targetValue:tgt.value,matchedPosition:pos}); }
+    }
+  } else {
+    const tgtIdx  = BRANCH_HANJA.indexOf(tgt.value);
+    const branches = _shinsalBranches(pillars, knownHour);
+    for (const [pos, bIdx] of Object.entries(branches)) {
+      if (bIdx === tgtIdx) { matched.add(pos); evidence.push({baseBranch:mBH,targetType:'branch',targetValue:tgt.value,matchedPosition:pos}); }
+    }
+  }
+  const matchedPositions = [...matched];
+  return {...empty, present:matchedPositions.length>0, count:matchedPositions.length, matchedPositions, evidence};
+}
+
+/* ── 월덕귀인 ── */
+function calculateWoldeok(pillars, knownHour) {
+  const mB     = pillars.month.branch;
+  const mBH    = BRANCH_HANJA[mB];
+  const tgtH   = _WOLDEOK_MAP[mBH];
+  const base   = {type:'monthBranch', value:mBH};
+  const target = {type:'stem', value:tgtH||''};
+  const empty  = {id:'woldeok',name:'월덕귀인',category:'auspicious',present:false,count:0,base,target,matchedPositions:[],evidence:[],ruleVersion:OSOK_GWININ_VERSION};
+  if (!_VALID_BRANCH.has(mB) || !tgtH) return empty;
+
+  const tgtIdx = STEM_HANJA.indexOf(tgtH);
+  const stems  = _gwininStems(pillars, knownHour);
+  const matched = new Set();
+  for (const [pos, sIdx] of Object.entries(stems)) {
+    if (sIdx === tgtIdx) matched.add(pos);
+  }
+  const matchedPositions = [...matched];
+  return {...empty, present:matchedPositions.length>0, count:matchedPositions.length, matchedPositions};
+}
+
+/* ── 문창귀인 ── */
+function calculateMunchang(pillars, knownHour) {
+  const dS    = pillars.day.stem;
+  const dSH   = STEM_HANJA[dS];
+  const tgtBI = _MUNCHANG_MAP[dS];
+  const tgtH  = tgtBI !== undefined ? BRANCH_HANJA[tgtBI] : '';
+  const base  = {type:'dayStem', value:dSH};
+  const target = {type:'branch', value:tgtH};
+  const empty  = {id:'munchang',name:'문창귀인',category:'gwinin',present:false,count:0,base,target,matchedPositions:[],evidence:[],ruleVersion:OSOK_GWININ_VERSION};
+  if (!_VALID_STEM.has(dS) || tgtBI === undefined) return empty;
+
+  const branches = _shinsalBranches(pillars, knownHour);
+  const matched  = new Set();
+  for (const [pos, bIdx] of Object.entries(branches)) {
+    if (bIdx === tgtBI) matched.add(pos);
+  }
+  const matchedPositions = [...matched];
+  return {...empty, present:matchedPositions.length>0, count:matchedPositions.length, matchedPositions};
+}
+
+/* ── 태극귀인 (연지·일지만) ── */
+function calculateTaegeuk(pillars) {
+  const dS    = pillars.day.stem;
+  const dSH   = STEM_HANJA[dS];
+  const tgtArr = _TAEGEUK_MAP[dS];
+  const tgtH  = tgtArr ? tgtArr.map(i => BRANCH_HANJA[i]) : [];
+  const base  = {type:'dayStem', value:dSH};
+  const target = {type:'branches', value:tgtH};
+  const empty  = {id:'taegeuk',name:'태극귀인',category:'gwinin',present:false,count:0,base,target,matchedPositions:[],evidence:[],ruleVersion:'osok-gwinin-v1-strict'};
+  if (!_VALID_STEM.has(dS) || !tgtArr) return empty;
+
+  const matched = new Set();
+  for (const {position, branch} of [{position:'year',branch:pillars.year.branch},{position:'day',branch:pillars.day.branch}]) {
+    if (_VALID_BRANCH.has(branch) && tgtArr.includes(branch)) matched.add(position);
+  }
+  const matchedPositions = [...matched];
+  return {...empty, present:matchedPositions.length>0, count:matchedPositions.length, matchedPositions};
+}
+
+/* ── 통합 귀인·길신 계산 ── */
+function calculateOsokAuspicious(pillars, knownHour, existingCheoneul) {
+  if (!pillars) return null;
+  const cheoneul  = existingCheoneul || calculateCheoneul(pillars, knownHour);
+  const cheondeok = calculateCheondeok(pillars, knownHour);
+  const woldeok   = calculateWoldeok(pillars, knownHour);
+  const munchang  = calculateMunchang(pillars, knownHour);
+  const taegeuk   = calculateTaegeuk(pillars);
+  const allItems  = [cheoneul, cheondeok, woldeok, munchang, taegeuk];
+  return {
+    ruleVersion:    OSOK_GWININ_VERSION,
+    birthTimeKnown: !!knownHour,
+    items:         { cheoneul, cheondeok, woldeok, munchang, taegeuk },
+    presentItems:   allItems.filter(i => i.present).map(i => i.id),
+    absentItems:    allItems.filter(i => !i.present).map(i => i.id),
+  };
+}
+
 // 통합 신살 계산 함수
 function calculateOsokShinsal(pillars, knownHour) {
   if (!pillars || !pillars.year || !pillars.month || !pillars.day || !pillars.hour) {
@@ -2349,7 +2540,146 @@ function _runShinsalTests() {
   }
 
   const total = pass + fail;
-  console.log('\n결과: ' + total + '건 중 ✅ ' + pass + '건 통과 / ❌ ' + fail + '건 실패');
+  console.log('\n신살 결과: ' + total + '건 중 ✅ ' + pass + '건 통과 / ❌ ' + fail + '건 실패');
+  console.groupEnd();
+
+  _runGwininTests();
+  return {pass, fail, total};
+}
+
+/* ─── 귀인·길신 단위 테스트 (개발 전용) ─── */
+function _runGwininTests() {
+  let pass = 0, fail = 0;
+  function assert(label, cond) {
+    if (cond) { pass++; console.log('  ✅ ' + label); }
+    else       { fail++; console.warn('❌ FAIL: ' + label); }
+  }
+  console.group('오속 귀인·길신 단위 테스트 v1');
+
+  // B. 천덕귀인 — 월지 寅(2)→丁(3) 일간, day stem=丁(3)
+  {
+    const p = {year:{stem:0,branch:0},month:{stem:0,branch:2},day:{stem:3,branch:0},hour:{stem:0,branch:0}};
+    const r = calculateCheondeok(p, true);
+    assert('B-1 천덕귀인 present:true (월지寅→丁, 일간丁)', r.present === true);
+    assert('B-2 천덕귀인 matchedPositions에 day 포함', r.matchedPositions.includes('day'));
+  }
+
+  // B2. 천덕귀인 부재 — 월지 寅(2)→丁 필요, 일간 갑(0)
+  {
+    const p = {year:{stem:0,branch:0},month:{stem:0,branch:2},day:{stem:0,branch:0},hour:{stem:0,branch:0}};
+    const r = calculateCheondeok(p, true);
+    assert('B2-1 천덕귀인 present:false (조건 불일치)', r.present === false);
+  }
+
+  // B3. 천덕귀인 — 월지 卯(3)→申(branch), 연지 申(8) 일치
+  {
+    const p = {year:{stem:0,branch:8},month:{stem:0,branch:3},day:{stem:0,branch:0},hour:{stem:0,branch:0}};
+    const r = calculateCheondeok(p, true);
+    assert('B3-1 천덕귀인 branch 타입 present:true (월지卯→申지지)', r.present === true);
+    assert('B3-2 천덕귀인 year 포함', r.matchedPositions.includes('year'));
+  }
+
+  // C. 월덕귀인 — 월지 卯(3)→甲(0), 연간 甲(0) 일치
+  {
+    const p = {year:{stem:0,branch:0},month:{stem:0,branch:3},day:{stem:3,branch:0},hour:{stem:0,branch:0}};
+    const r = calculateWoldeok(p, true);
+    assert('C-1 월덕귀인 present:true (월지卯→甲, 연간甲)', r.present === true);
+    assert('C-2 월덕귀인 year 포함', r.matchedPositions.includes('year'));
+  }
+
+  // C2. 월덕귀인 부재 — 월지 卯(3)→甲 필요, 모든 천간 丁(3)
+  {
+    const p = {year:{stem:3,branch:0},month:{stem:3,branch:3},day:{stem:3,branch:0},hour:{stem:3,branch:0}};
+    const r = calculateWoldeok(p, true);
+    assert('C2-1 월덕귀인 present:false (甲 없음)', r.present === false);
+  }
+
+  // D. 문창귀인 — 일간 丁(3)→酉(9), 일지 酉(9) 일치
+  {
+    const p = {year:{stem:0,branch:0},month:{stem:0,branch:0},day:{stem:3,branch:9},hour:{stem:0,branch:0}};
+    const r = calculateMunchang(p, true);
+    assert('D-1 문창귀인 present:true (일간丁→酉, 일지酉)', r.present === true);
+    assert('D-2 문창귀인 day 포함', r.matchedPositions.includes('day'));
+  }
+
+  // D2. 문창귀인 — 출생시간 모름, 조건이 시지에만 있음
+  {
+    const p = {year:{stem:0,branch:0},month:{stem:0,branch:0},day:{stem:3,branch:0},hour:{stem:0,branch:9}};
+    const rKnown   = calculateMunchang(p, true);
+    const rUnknown = calculateMunchang(p, false);
+    assert('D2-1 시간알때 present:true (시지酉)', rKnown.present === true);
+    assert('D2-2 시간모름 present:false (시지 제외)', rUnknown.present === false);
+  }
+
+  // E. 태극귀인 — 일간 甲(0)→子·午, 연지 子(0) 일치
+  {
+    const p = {year:{stem:0,branch:0},month:{stem:0,branch:0},day:{stem:0,branch:6},hour:{stem:0,branch:0}};
+    const r = calculateTaegeuk(p);
+    assert('E-1 태극귀인 present:true (일간甲, 연지子)', r.present === true);
+    assert('E-2 태극귀인 year 포함', r.matchedPositions.includes('year'));
+  }
+
+  // E2. 태극귀인 — 월지는 확인 안 함
+  {
+    // 일간 甲(0)→子·午, 연지子가 아닌 다른 값, 월지子(0), 일지午(6)
+    const p = {year:{stem:0,branch:2},month:{stem:0,branch:0},day:{stem:0,branch:6},hour:{stem:0,branch:0}};
+    const r = calculateTaegeuk(p);
+    assert('E2-1 태극귀인 일지午 포함', r.matchedPositions.includes('day'));
+    assert('E2-2 태극귀인 month 미포함 (월지 확인 안 함)', !r.matchedPositions.includes('month'));
+  }
+
+  // E3. 태극귀인 출생시간 모름 무관 확인
+  {
+    const p = {year:{stem:0,branch:0},month:{stem:0,branch:0},day:{stem:0,branch:0},hour:{stem:0,branch:6}};
+    const rKnown   = calculateTaegeuk(p);
+    const rUnknown = calculateTaegeuk(p);
+    assert('E3-1 태극귀인 knownHour 무관 동일 결과', rKnown.present === rUnknown.present);
+  }
+
+  // F. 복합 — 천을+문창 둘 다 있는 원국
+  {
+    // 甲일간: 천을→丑·未(1,7), 문창→巳(5) / 월지未(7), 연지巳(5)
+    const p = {year:{stem:0,branch:5},month:{stem:0,branch:7},day:{stem:0,branch:0},hour:{stem:0,branch:0}};
+    const au = calculateOsokAuspicious(p, true);
+    assert('F-1 천을귀인 present:true', au.items.cheoneul.present === true);
+    assert('F-2 문창귀인 present:true', au.items.munchang.present === true);
+    assert('F-3 presentItems에 cheoneul·munchang 포함', au.presentItems.includes('cheoneul') && au.presentItems.includes('munchang'));
+  }
+
+  // G. 모두 없는 원국
+  {
+    // 壬(8)일간: 천을→卯·巳(3,5), 문창→寅(2), 태극→巳·申(5,8)
+    // 월지 亥(11)→月德甲, 천덕→乙(stem)
+    // 모든 천간 丁(3), 모든 지지 亥(11) → 어떤 조건도 불일치
+    const p = {year:{stem:3,branch:11},month:{stem:3,branch:11},day:{stem:8,branch:11},hour:{stem:3,branch:11}};
+    const au = calculateOsokAuspicious(p, true);
+    assert('G-1 모두 없음 presentItems 길이 0', au.presentItems.length === 0);
+    assert('G-2 모두 없음 absentItems 길이 5', au.absentItems.length === 5);
+  }
+
+  // H. 출생시간 모름 — 천을·천덕·월덕·문창에서 시주 제외, 태극 무관
+  {
+    // 甲(0)일간: 천을→丑·未, 丑(1)이 시지에만 있는 경우
+    const p = {year:{stem:0,branch:5},month:{stem:0,branch:0},day:{stem:0,branch:0},hour:{stem:0,branch:1}};
+    const rK = calculateCheoneul(p, true);
+    const rU = calculateCheoneul(p, false);
+    assert('H-1 시간알때 천을귀인 hour 포함', rK.matchedPositions.includes('hour'));
+    assert('H-2 시간모름 천을귀인 hour 제외', !rU.matchedPositions.includes('hour'));
+  }
+
+  // I. 기존 저장 결과 호환 — cheoneul만 있을 때 fallback 동작 (구조 확인)
+  {
+    const cheoneulOnly = {present:true,matchedPositions:['month'],matchedBranches:['未'],evidence:[{baseStem:'甲',targetBranches:['丑','未'],matchedBranch:'未',matchedPosition:'month'}]};
+    const au = calculateOsokAuspicious(
+      {year:{stem:0,branch:5},month:{stem:0,branch:7},day:{stem:0,branch:0},hour:{stem:0,branch:0}},
+      true, cheoneulOnly
+    );
+    assert('I-1 기존 cheoneul 재사용 (present:true)', au.items.cheoneul.present === true);
+    assert('I-2 통합 구조 유효', !!au.items.cheondeok && !!au.items.woldeok && !!au.items.munchang && !!au.items.taegeuk);
+  }
+
+  const total = pass + fail;
+  console.log('\n귀인·길신 결과: ' + total + '건 중 ✅ ' + pass + '건 통과 / ❌ ' + fail + '건 실패');
   console.groupEnd();
   return {pass, fail, total};
 }
@@ -3121,7 +3451,7 @@ function toggleAbilityDetail(key) {
 }
 
 /* ─── 매력살·귀인 카드 렌더 ─── */
-function renderShinsalCards(shinsal, name, knownHour) {
+function renderShinsalCards(shinsal, name, knownHour, auspicious) {
   const POS_KO = {year:'년주', month:'월주', day:'일주', hour:'시주'};
 
   // 한자 → 한글 변환 (기존 STEM_HANJA/BRANCH_HANJA 배열 사용)
@@ -3272,15 +3602,6 @@ function renderShinsalCards(shinsal, name, knownHour) {
     return txt;
   }
 
-  // ── 귀인 해설 ──
-  function cheoneulDesc() {
-    if (!cheoneul.present) return '';
-    const where = posLabel(cheoneul.matchedPositions);
-    const mb = cheoneul.matchedBranches.map(h => `${h}(${bKo(h)})`).join('·');
-    const timeNote = !knownHour ? ' 출생시간을 선택하지 않아 시주는 판정에서 제외했어요.' : '';
-    return `천을귀인은 어려운 순간에 사람이나 정보, 기회를 통해 해결의 실마리를 얻는 흐름으로 해석해요. ${name ? esc(name) + '님은 ' : ''}${where}에서 ${mb}가 확인됐어요. 도움을 기다리기보다 필요한 순간에 연결을 시도할 때 이 장점이 더 잘 드러날 수 있어요.${timeNote}`;
-  }
-
   // ── 개별 살 카드 ──
   function salCard(sal, type, icon, nameko) {
     const cls = sal.present ? 'present' : 'absent';
@@ -3298,37 +3619,146 @@ function renderShinsalCards(shinsal, name, knownHour) {
     </div>`;
   }
 
-  // ── 귀인 카드 ──
-  const ccHtml = cheoneul.present
-    ? `<div class="cheoneul-card present">
-        <div class="cc-header">
-          <span class="cc-icon">✦</span>
-          <div class="cc-name-wrap">
-            <div class="cc-name">천을귀인</div>
-            <span class="cc-status">${cheoneul.count > 1 ? cheoneul.count + '곳에서 확인' : '1곳에서 확인'}</span>
-          </div>
+  // ── 귀인·길신 통합 카드 ──
+  const GWININ_ORDER = ['cheoneul','cheondeok','woldeok','munchang','taegeuk'];
+  const GWININ_INFO = {
+    cheoneul:  { icon:'✦', label:'천을귀인', category:'귀인' },
+    cheondeok: { icon:'◈', label:'천덕귀인', category:'길신' },
+    woldeok:   { icon:'◉', label:'월덕귀인', category:'길신' },
+    munchang:  { icon:'◎', label:'문창귀인', category:'귀인' },
+    taegeuk:   { icon:'✧', label:'태극귀인', category:'귀인' },
+  };
+  const GWININ_DESC_PRESENT = {
+    cheoneul:  '어려운 순간에 사람이나 정보, 기회를 통해 해결의 실마리를 얻는 흐름으로 해석해요. 도움을 기다리기보다 필요한 순간에 연결을 시도할 때 이 장점이 더 잘 드러날 수 있어요.',
+    cheondeok: '갈등이나 어려움이 극단으로 치닫지 않도록 완화하는 성향과 연결돼요. 자신의 태도와 주변 관계를 통해 문제를 부드럽게 정리하는 방식이 자연스러울 수 있어요.',
+    woldeok:   '사회적 관계에서 조화와 신뢰를 형성하는 방식과 연결돼요. 갈등을 중재하거나 협력 구조를 만드는 성향이 드러날 때 이 기운이 작용할 수 있어요.',
+    munchang:  '생각을 글과 말로 정리하고, 복잡한 내용을 자기 방식으로 이해하는 힘과 연결되는 귀인이에요. 표현과 기획이 필요한 상황에서 이 장점이 나타날 수 있어요.',
+    taegeuk:   '원리와 의미를 깊이 이해하려는 성향과 연결돼요. 경험을 통해 자기 기준과 통찰을 만드는 방식이 자연스러울 수 있어요.',
+  };
+
+  // auspicious 데이터 우선 사용, 없으면 cheoneul만 fallback
+  let ausp = auspicious;
+  if (!ausp) {
+    // 기존 저장 결과 호환: shinsal.cheoneul만 있는 경우
+    ausp = {
+      ruleVersion: OSOK_GWININ_VERSION,
+      birthTimeKnown: !!knownHour,
+      items: {
+        cheoneul,
+        cheondeok: {id:'cheondeok',name:'천덕귀인',present:false,matchedPositions:[],evidence:[]},
+        woldeok:   {id:'woldeok',  name:'월덕귀인',present:false,matchedPositions:[],evidence:[]},
+        munchang:  {id:'munchang', name:'문창귀인',present:false,matchedPositions:[],evidence:[]},
+        taegeuk:   {id:'taegeuk',  name:'태극귀인',present:false,matchedPositions:[],evidence:[]},
+      },
+      presentItems:  cheoneul.present ? ['cheoneul'] : [],
+      absentItems:   cheoneul.present ? ['cheondeok','woldeok','munchang','taegeuk'] : GWININ_ORDER,
+    };
+  }
+
+  const aItems = ausp.items || {};
+  const presentIds = [...(ausp.presentItems || [])];
+  const absentIds  = [...(ausp.absentItems  || [])];
+  const presentCount = presentIds.length;
+
+  // 개수 요약
+  let countSummary;
+  if (presentCount === 0) countSummary = '이번 기준의 귀인·길신은 원국에서 확인되지 않았어요';
+  else if (presentCount === 1) countSummary = '원국에서 1개의 귀인·길신이 확인되었어요';
+  else countSummary = `서로 다른 ${presentCount}개의 귀인·길신이 확인되었어요`;
+
+  // 근거 텍스트 생성
+  function gwininEv(item, id) {
+    if (!item) return '';
+    const timeNote = !knownHour && id !== 'taegeuk' ? ' 출생시간을 모르기 때문에 시주에 해당하는 항목은 판정에서 제외했어요.' : '';
+    const where = item.matchedPositions && item.matchedPositions.length ? posLabel(item.matchedPositions) : '';
+    if (id === 'cheoneul') {
+      const ev = item.evidence && item.evidence[0];
+      if (!ev) {
+        const pillars2 = S.sajuData && S.sajuData._pillars;
+        const dSIdx = pillars2 && pillars2.day.stem;
+        const dSH2  = dSIdx !== undefined ? STEM_HANJA[dSIdx] : '';
+        const tgts  = dSIdx !== undefined ? (_CHEONEUL_MAP[dSIdx]||[]).map(i=>BRANCH_HANJA[i]+'('+BRANCHES[i]+')').join('·') : '';
+        return (dSH2 ? `천을귀인은 일간 ${dSH2}(${sKo(dSH2)})을 기준으로 원국의 ${tgts}를 확인합니다.` : '천을귀인은 일간을 기준으로 원국의 지지를 확인합니다.') + ` 원국에서 조건이 일치하는 지지가 확인되지 않았어요.${timeNote}`;
+      }
+      const stem = ev.baseStem;
+      const targets = ev.targetBranches ? ev.targetBranches.map(h=>`${h}(${bKo(h)})`).join('·') : '';
+      return `천을귀인은 태어난 날의 천간인 일간을 기준으로 확인합니다. ${stem}(${sKo(stem)}) 일간은 원국의 ${targets}를 확인합니다. ${name?esc(name)+'님의 ':''} ${where}에서 조건이 확인되었어요.${timeNote}`;
+    }
+    if (id === 'cheondeok') {
+      const tgt = item.target;
+      const bH = item.base && item.base.value ? item.base.value : '';
+      const bKo2 = bH ? `${bH}(${bKo(bH)})` : '';
+      if (!item.present) return `절기 기준 월지인 ${bKo2}을 기준으로 원국에서 조건이 확인되지 않았어요.${timeNote}`;
+      const tgtStr = tgt ? (tgt.type==='stem' ? `${tgt.value}(${sKo(tgt.value)}) 천간` : `${tgt.value}(${bKo(tgt.value)}) 지지`) : '';
+      return `절기 기준 월지인 ${bKo2}을 기준으로 원국의 ${tgtStr}를 확인했어요. ${where}에서 조건과 일치합니다.${timeNote}`;
+    }
+    if (id === 'woldeok') {
+      const bH = item.base && item.base.value ? item.base.value : '';
+      const bKo2 = bH ? `${bH}(${bKo(bH)})` : '';
+      const tH  = item.target && item.target.value ? item.target.value : '';
+      const tKo2 = tH ? `${tH}(${sKo(tH)})` : '';
+      if (!item.present) return `절기 기준 월지인 ${bKo2}은 ${tKo2} 천간을 월덕으로 봅니다. 원국에서 조건이 확인되지 않았어요.${timeNote}`;
+      return `절기 기준 월지인 ${bKo2}은 ${tKo2} 천간을 월덕으로 봅니다. ${name?esc(name)+'님의 ':''}${where}에서 ${tKo2}이 조건과 일치합니다.${timeNote}`;
+    }
+    if (id === 'munchang') {
+      const dSH2 = item.base && item.base.value ? item.base.value : '';
+      const tH   = item.target && item.target.value ? item.target.value : '';
+      const tKo2 = tH ? `${tH}(${bKo(tH)})` : '';
+      if (!item.present) return `태어난 날의 천간인 ${dSH2}(${sKo(dSH2)})을 기준으로 ${tKo2} 지지를 확인해요. 원국에서 조건이 확인되지 않았어요.${timeNote}`;
+      return `태어난 날의 천간인 ${dSH2}(${sKo(dSH2)})을 기준으로 ${tKo2} 지지를 확인했어요. ${name?esc(name)+'님의 ':''}${where}에서 ${tKo2}가 조건과 일치합니다.${timeNote}`;
+    }
+    if (id === 'taegeuk') {
+      const dSH2 = item.base && item.base.value ? item.base.value : '';
+      const tHArr = item.target && item.target.value ? item.target.value : [];
+      const tStr  = tHArr.map(h=>`${h}(${bKo(h)})`).join('·');
+      if (!item.present) return `태어난 날의 천간인 ${dSH2}(${sKo(dSH2)})은 연지와 일지에서 ${tStr}를 확인해요. 원국에서 조건이 확인되지 않았어요.`;
+      return `태어난 날의 천간인 ${dSH2}(${sKo(dSH2)})은 연지와 일지에서 ${tStr}를 확인해요. ${name?esc(name)+'님의 ':''}${where}에서 조건과 일치합니다.`;
+    }
+    return '';
+  }
+
+  // 확인된 항목 카드
+  function presentItemCard(id) {
+    const item = aItems[id];
+    if (!item) return '';
+    const info  = GWININ_INFO[id];
+    const where = posLabel(item.matchedPositions);
+    const desc  = GWININ_DESC_PRESENT[id] || '';
+    return `<div class="gi-item-card present">
+      <div class="gi-item-header">
+        <span class="gi-icon">${info.icon}</span>
+        <div class="gi-name-wrap">
+          <span class="gi-name">${info.label}</span>
+          <span class="gi-cat-badge">${info.category}</span>
         </div>
-        <div class="cc-where">${posLabel(cheoneul.matchedPositions)}에서 확인</div>
-        <p class="cc-desc">${cheoneulDesc()}</p>
-        <div class="cc-evidence-wrap"><details>
-          <summary>어떻게 확인했나요?</summary>
-          <p class="ev-body">${cheoneulEv()}</p>
-        </details></div>
-      </div>`
-    : `<div class="cheoneul-card absent">
-        <div class="cc-header">
-          <span class="cc-icon" style="opacity:.45">✦</span>
-          <div class="cc-name-wrap">
-            <div class="cc-name">천을귀인</div>
-            <span class="cc-status">원국에서 확인되지 않았어요</span>
-          </div>
-        </div>
-        <p class="cc-absent-desc">천을귀인이 없다고 사람의 도움이나 인복이 없다는 뜻은 아니에요. 이번 원국에서 이 귀인 조건이 확인되지 않았다는 의미이며, 관계와 기회는 다른 사주 요소와 현재의 선택에서도 달라질 수 있습니다.</p>
-        <div class="cc-evidence-wrap"><details>
-          <summary>어떻게 확인했나요?</summary>
-          <p class="ev-body">${cheoneulEv()}</p>
-        </details></div>
-      </div>`;
+        <span class="gi-where-badge">${where}에서 확인</span>
+      </div>
+      <p class="gi-desc">${esc(desc)}</p>
+      <details class="gi-ev-wrap">
+        <summary>어떻게 확인했나요?</summary>
+        <p class="gi-ev-body">${gwininEv(item, id)}</p>
+      </details>
+    </div>`;
+  }
+
+  // 확인된 항목 그리드
+  const presentHtml = presentIds.length === 0 ? '' :
+    `<div class="gi-present-grid gi-cols-${presentIds.length >= 2 ? '2' : '1'}">
+      ${presentIds.map(id => presentItemCard(id)).join('')}
+    </div>`;
+
+  // 없는 경우 본문
+  const noneGwininHtml = presentIds.length === 0
+    ? `<p class="gi-none-desc">귀인·길신은 사주를 살펴보는 여러 보조 기준 중 일부예요. 이 항목들이 확인되지 않았다고 사람의 도움이나 가능성이 없다는 뜻은 아닙니다.</p>`
+    : '';
+
+  // 없는 항목 목록 (접힌 형태)
+  const absentLabels = absentIds.map(id => GWININ_INFO[id]?.label || id).join(' · ');
+  const absentHtml = absentIds.length === 0 ? '' :
+    `<details class="gi-absent-wrap">
+      <summary class="gi-absent-summary">이번 원국에서 확인되지 않은 항목</summary>
+      <p class="gi-absent-list">${esc(absentLabels)}</p>
+    </details>`;
 
   return `
     <div class="shinsal-sec section-card" id="shinsal-sec">
@@ -3341,9 +3771,13 @@ function renderShinsalCards(shinsal, name, knownHour) {
         ${salCard(hwagae,   'hwagae',   '🎭', '화개살')}
       </div>
     </div>
-    <div class="cheoneul-sec section-card" id="cheoneul-sec">
-      <p class="free-sec-label">내 사주의 귀인 코드</p>
-      ${ccHtml}
+    <div class="gwinin-sec section-card" id="gwinin-sec">
+      <p class="free-sec-label">내 사주의 귀인과 길신</p>
+      <p class="gi-subtitle">귀인과 길신은 모두 같은 도움을 뜻하지 않아요. 내 원국에서 실제로 확인된 기운과 그 작용 방식을 보여드려요.</p>
+      <p class="gi-count-summary">${esc(countSummary)}</p>
+      ${presentHtml}
+      ${noneGwininHtml}
+      ${absentHtml}
     </div>`;
 }
 
@@ -3428,7 +3862,7 @@ function renderReadingSections(parsed) {
   {
     const shinsal = S.sajuData?.shinsal;
     const knownHour = S.sajuData ? (S.sajuData.hourVal >= 0) : true;
-    html += renderShinsalCards(shinsal, name, knownHour);
+    html += renderShinsalCards(shinsal, name, knownHour, S.sajuData?.auspicious);
   }
 
   // 5-B. 나의 사주 능력치 카드
@@ -3924,6 +4358,10 @@ async function calculate(){
   // 오속 신살 v1 계산 — 결과 저장만, UI 표시 없음
   const shinsalResult = calculateOsokShinsal(pillars, knownHour);
   S.sajuData.shinsal = shinsalResult;
+
+  // 귀인·길신 통합 계산
+  const auspiciousResult = calculateOsokAuspicious(pillars, knownHour, shinsalResult.cheoneul);
+  S.sajuData.auspicious = auspiciousResult;
 
   // 오속 사주 유형 & 능력치 계산
   const _typeRaw = calculateOsokType(pillars, ohaeng, knownHour, shinsalResult);
