@@ -4,7 +4,7 @@ import crypto from 'crypto';
 const redis = Redis.fromEnv();
 
 const CID = 'CT23756943';
-const BASE_URL = 'https://osok-tarot.vercel.app';
+const BASE_URL = 'https://www.osok.kr';
 const PRODUCTS = {
   basic: { name: '오속타로 심층리딩',        amount: 5900 },
   extra: { name: '오속타로 추가질문',         amount: 3900 },

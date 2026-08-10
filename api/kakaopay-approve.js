@@ -2,7 +2,7 @@ import { Redis } from '@upstash/redis';
 
 const redis = Redis.fromEnv();
 const CID = 'CT23756943';
-const BASE_URL = 'https://osok-tarot.vercel.app';
+const BASE_URL = 'https://www.osok.kr';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end();

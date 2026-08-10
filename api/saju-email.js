@@ -283,7 +283,7 @@ function buildEmailHtml(name, sajuInfoLine, sections, closingMsg) {
 
     <!-- 푸터 -->
     <div style="text-align:center;color:rgba(184,158,126,0.5);font-size:12px;line-height:2;margin-top:32px;padding-top:24px;border-top:1px solid rgba(201,168,76,0.08)">
-      <p style="margin:0">오속 사주 · osok-tarot.vercel.app/saju.html</p>
+      <p style="margin:0">오속 사주 · www.osok.kr/saju.html</p>
       <p style="margin:0">궁금한 점은 <a href="http://pf.kakao.com/_bSudX/chat" style="color:#c9a84c">카카오 채널</a>로 문의해주세요</p>
       <p style="margin:4px 0 0;font-size:11px">상호: 온나라 · 대표: 박지현 · 사업자등록번호: 602-23-61592</p>
     </div>
