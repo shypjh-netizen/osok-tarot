@@ -815,7 +815,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .ps-card.premium::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(230,150,40,.07),transparent 60%);pointer-events:none}
 .ps-card-badge{display:inline-block;background:rgba(230,150,40,.2);border:1px solid rgba(230,150,40,.6);border-radius:20px;color:#f0c060;font-size:.65rem;letter-spacing:.12em;padding:3px 10px;margin-bottom:10px}
 .ps-card-name{font-size:.76rem;color:var(--sub);letter-spacing:.06em;margin-bottom:5px}
-.ps-card-price{font-weight:700;margin-bottom:14px}
+.ps-card-price{font-weight:700;margin-bottom:6px}
+.ps-card-target{font-size:.72rem;color:rgba(180,200,240,.5);margin-bottom:10px}
+.ps-guide-line{font-size:.78rem;color:rgba(180,200,240,.55);text-align:center;margin-bottom:14px;line-height:1.7}
+.ps-guide-line strong{color:rgba(212,168,78,.85)}
 .ps-card.single .ps-card-price{font-size:1.55rem;color:var(--gold)}
 .ps-card.premium .ps-card-price{font-size:1.55rem;color:#f0c060}
 .ps-card-items{list-style:none;padding:0;display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
@@ -1767,36 +1770,39 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
 
     <!-- 순서 5: 상품 선택 UI -->
     <div id="product-select-sec" style="display:none;scroll-margin-top:48px">
+      <p class="ps-guide-line">질문 하나가 분명하다면 <strong>4,900원</strong> &nbsp;·&nbsp; 전체 흐름이 궁금하다면 <strong>14,900원</strong></p>
       <div class="ps-grid">
-        <!-- 4,900원 한 가지 질문 집중 분석 -->
+        <!-- 4,900원 내 질문 하나 집중 리딩 -->
         <div class="ps-card single">
-          <p class="ps-card-name">한 가지 질문 집중 분석</p>
+          <p class="ps-card-name">내 질문 하나 집중 리딩</p>
           <p class="ps-card-price">₩4,900</p>
-          <p style="font-size:.83rem;color:var(--sub);line-height:1.7;margin-bottom:14px">가장 답답한 질문 하나의 방향과 시기를 확인해요.</p>
+          <p class="ps-card-target">질문 하나가 분명하다면</p>
+          <p style="font-size:.83rem;color:var(--sub);line-height:1.7;margin-bottom:14px">지금 가장 답답한 질문 하나를 기준으로, 현재 흐름과 선택의 방향을 구체적으로 살펴봅니다.</p>
           <ul class="ps-card-items">
-            <li class="ps-card-item"><span class="psi">✦</span>사용자가 직접 작성한 질문 1개</li>
-            <li class="ps-card-item"><span class="psi">✦</span>질문과 관련된 현재 흐름</li>
-            <li class="ps-card-item"><span class="psi">✦</span>움직이기 좋은 시기</li>
-            <li class="ps-card-item"><span class="psi">✦</span>피해야 할 선택</li>
-            <li class="ps-card-item"><span class="psi">✦</span>지금 실천할 행동 한 가지</li>
+            <li class="ps-card-item"><span class="psi">✦</span>선택한 질문 하나 집중 분석</li>
+            <li class="ps-card-item"><span class="psi">✦</span>질문과 현재 흐름의 연결</li>
+            <li class="ps-card-item"><span class="psi">✦</span>선택 가능한 방향 비교</li>
+            <li class="ps-card-item"><span class="psi">✦</span>현재 피해야 할 선택</li>
+            <li class="ps-card-item"><span class="psi">✦</span>먼저 실행할 행동 순서</li>
           </ul>
-          <button onclick="showPayModal('single')" class="pay-btn-primary single-btn" aria-label="한 가지 질문 집중 분석 4900원 결제">
-            내 질문 하나 자세히 보기 · 4,900원
+          <button onclick="showPayModal('single')" class="pay-btn-primary single-btn" aria-label="내 질문 하나 집중 리딩 4900원 결제">
+            내 질문 집중 리딩 · 4,900원
           </button>
         </div>
         <!-- 14,900원 프리미엄 종합 풀이 -->
         <div class="ps-card premium">
-          <span class="ps-card-badge">전체 흐름 포함</span>
+          <span class="ps-card-badge">종합 분석</span>
           <p class="ps-card-name">프리미엄 종합 풀이</p>
           <p class="ps-card-price">₩14,900</p>
-          <p style="font-size:.83rem;color:rgba(221,208,184,.7);line-height:1.7;margin-bottom:14px">일·재물·관계의 전체 흐름과 앞으로의 선택 순서를 확인해요.</p>
+          <p class="ps-card-target" style="color:rgba(221,208,184,.6)">일·재물·관계의 전체 흐름이 궁금하다면</p>
+          <p style="font-size:.83rem;color:rgba(221,208,184,.7);line-height:1.7;margin-bottom:14px">타고난 강점과 전체 흐름의 연결 고리, 영역별 우선순위와 선택의 지도를 확인해요.</p>
           <ul class="ps-card-items">
-            <li class="ps-card-item"><span class="psi">✦</span>타고난 기질과 반복되는 패턴</li>
-            <li class="ps-card-item"><span class="psi">✦</span>현재 막힘의 원인</li>
+            <li class="ps-card-item"><span class="psi">✦</span>타고난 강점과 반복되는 패턴</li>
+            <li class="ps-card-item"><span class="psi">✦</span>실제 확인된 매력살 전체 분석</li>
+            <li class="ps-card-item"><span class="psi">✦</span>실제 확인된 귀인·길신 전체 분석</li>
             <li class="ps-card-item"><span class="psi">✦</span>일·재물·관계 종합 분석</li>
-            <li class="ps-card-item"><span class="psi">✦</span>앞으로의 주요 변화 시기</li>
-            <li class="ps-card-item"><span class="psi">✦</span>피해야 할 선택</li>
-            <li class="ps-card-item"><span class="psi">✦</span>지금 먼저 해야 할 행동</li>
+            <li class="ps-card-item"><span class="psi">✦</span>대운·세운의 전체 흐름</li>
+            <li class="ps-card-item"><span class="psi">✦</span>영역별 변화 순서와 선택 지도</li>
             <li class="ps-card-item"><span class="psi">✦</span>전체 결과 PDF 저장</li>
           </ul>
           <button onclick="showPayModal('premium')" class="pay-btn-primary premium-btn" aria-label="프리미엄 종합 풀이 14900원 결제">
@@ -3009,7 +3015,7 @@ const SAJU_SYSTEM = `당신은 사주명리학, 자미두수(紫微斗數), 서�
 특징3: (일을 시작하거나 결과가 늦어질 때 나타나는 이 사람만의 패턴)
 
 ===현재흐름===
-현재흐름: (지금 어떤 흐름에 있는지 2~4문장. 구체적 시기를 계산할 수 없으면 "현재", "가까운 흐름" 표현 사용)
+현재흐름: (지금 사용자가 느끼는 상태 + 선택한 고민과 현재 흐름의 연결 + 지금 중요한 판단 기준을 2~4문장으로. 총 160~260자. 대운 간지·대운 시작일·연도별 세운 설명은 반복하지 마세요. 같은 조언을 표현만 바꿔 반복하지 마세요. 필요하면 2개 문단으로 나눠도 됩니다.)
 분석근거: (왜 이런 흐름이 나타나는지 사주·자미두수·점성술 근거를 1~2문장으로. 실제 계산된 내용만. 전문용어는 쉬운 설명과 함께)
 먼저할행동: (지금 먼저 할 행동 1개를 한 문장으로. 구체적이고 실행 가능하게)
 피할행동: (지금 피할 행동 1개를 한 문장으로. 구체적이고 실질적으로)
@@ -3693,17 +3699,41 @@ function renderConcernConnectionText(concern) {
   const customQ = concern?.question || '';
 
   const TEXTS = {
-    work:     { title:'일·이직에서 확인해야 할 것', body:'지금 확인해야 할 것은 이직의 타이밍보다, 현재 하는 일 중 무엇이 실제 방향이 되어야 하는가예요. 무료 결과에서 큰 흐름을 확인했다면, 질문 집중 리딩에서는 지금 유지해야 할 것과 준비해야 할 것, 현재 피해야 할 선택과 먼저 실행할 행동을 구체적으로 살펴봅니다.' },
-    money:    { title:'재물·수입에서 확인해야 할 것', body:'지금 확인해야 할 것은 돈복의 유무보다, 현재 하는 일 중 무엇이 실제 수입으로 이어질 수 있는가예요. 무료 결과에서 재물 흐름의 큰 방향을 확인했다면, 질문 집중 리딩에서는 남겨야 할 일과 줄여야 할 일, 피해야 할 선택과 먼저 실행할 행동을 구체적으로 살펴봅니다.' },
-    business: { title:'사업·부업에서 확인해야 할 것', body:'지금 확인해야 할 것은 아이디어의 성공 여부보다, 지금 어디에 에너지를 집중해야 하는가예요. 무료 결과에서 방향의 큰 흐름을 확인했다면, 질문 집중 리딩에서는 지금 밀어야 할 것과 기다려야 할 것, 먼저 실행할 행동 순서를 구체적으로 살펴봅니다.' },
-    love:     { title:'관계·연애에서 확인해야 할 것', body:'지금 확인해야 할 것은 관계의 미래보다, 현재 반복되는 감정 패턴과 선택의 의미예요. 무료 결과에서 흐름을 확인했다면, 질문 집중 리딩에서는 지금 대화하거나 기다려야 할 시기, 선택의 방향을 구체적으로 살펴봅니다.' },
-    marriage: { title:'결혼생활에서 확인해야 할 것', body:'지금 확인해야 할 것은 갈등의 원인보다, 반복되는 패턴이 어디서 시작하는지예요. 무료 결과에서 흐름을 확인했다면, 질문 집중 리딩에서는 지금 대화하기 좋은 방식과 피해야 할 반응, 먼저 할 행동을 구체적으로 살펴봅니다.' },
-    family:   { title:'가족 관계에서 확인해야 할 것', body:'지금 확인해야 할 것은 문제의 원인보다, 내가 맡고 있는 역할과 그 무게를 조정하는 방식이에요. 무료 결과에서 흐름을 확인했다면, 질문 집중 리딩에서는 지금 대화하거나 기다려야 할 시기, 실질적인 대응 방향을 살펴봅니다.' },
-    year:     { title:'올해 흐름에서 확인해야 할 것', body:'지금 확인해야 할 것은 올해의 운세가 좋은지 나쁜지보다, 언제 밀고 언제 기다려야 하는가예요. 무료 결과에서 큰 흐름을 확인했다면, 질문 집중 리딩에서는 일·재물·관계가 움직이는 순서와 먼저 할 행동을 구체적으로 살펴봅니다.' },
-    custom:   { title:'이 질문에서 확인해야 할 것', body:'무료 결과에서 현재 흐름의 방향을 확인했다면, 질문 집중 리딩에서는 이 질문과 관련된 구체적인 선택지 비교, 먼저 실행할 행동, 피해야 할 선택을 살펴봅니다.' },
+    work: {
+      title: '일·이직에서 확인해야 할 것',
+      body:  '지금 필요한 것은 단순히 회사를 옮길지 말지를 결정하는 일이 아니라, 현재 자리를 유지했을 때와 변화를 준비했을 때의 차이를 비교하는 것입니다. 질문 집중 리딩에서는 지금 밀어야 할 방향과 이직 전에 갖춰야 할 조건, 성급하게 결정하지 말아야 할 부분과 먼저 준비할 행동을 구체적으로 살펴봅니다.',
+    },
+    money: {
+      title: '재물·수입에서 확인해야 할 것',
+      body:  '지금 확인해야 할 것은 돈복의 유무보다, 현재 하는 일 중 무엇이 실제 수입으로 이어질 수 있는가입니다. 질문 집중 리딩에서는 남겨야 할 일과 줄여야 할 일, 현재 피해야 할 재물 선택과 수입 구조를 만들기 위해 먼저 실행할 행동을 구체적으로 살펴봅니다.',
+    },
+    business: {
+      title: '사업·부업에서 확인해야 할 것',
+      body:  '지금 필요한 것은 아이디어를 더 찾는 일이 아니라, 여러 가능성 중 무엇을 실제 수익 구조로 만들 것인지 정하는 것입니다. 질문 집중 리딩에서는 오래 가져갈 방향과 먼저 시험할 일, 수익화 전에 정리해야 할 문제와 실행 순서를 구체적으로 살펴봅니다.',
+    },
+    love: {
+      title: '관계·연애에서 확인해야 할 것',
+      body:  '지금 필요한 것은 상대의 마음을 단정하는 일이 아니라, 이 관계에서 대화해야 할지 기다려야 할지 판단할 기준을 찾는 것입니다. 질문 집중 리딩에서는 반복되는 감정 패턴과 현재 피해야 할 반응, 관계를 위해 먼저 할 행동을 구체적으로 살펴봅니다.',
+    },
+    marriage: {
+      title: '결혼생활에서 확인해야 할 것',
+      body:  '지금 확인해야 할 것은 누가 옳은지보다, 갈등이 반복해서 시작되는 지점과 서로 다르게 받아들이는 표현 방식입니다. 질문 집중 리딩에서는 내가 과하게 맡고 있는 역할과 피해야 할 반응, 관계를 풀기 위한 대화 방향과 먼저 할 행동을 구체적으로 살펴봅니다.',
+    },
+    family: {
+      title: '가족 관계에서 확인해야 할 것',
+      body:  '지금 필요한 것은 가족 문제를 혼자 해결하는 일이 아니라, 내가 맡아야 할 책임과 내려놓아야 할 부담을 구분하는 것입니다. 질문 집중 리딩에서는 반복되는 역할과 갈등의 시작점, 현재 피해야 할 대응과 관계의 균형을 위해 먼저 할 행동을 살펴봅니다.',
+    },
+    year: {
+      title: '올해 흐름에서 확인해야 할 것',
+      body:  '지금 필요한 것은 올해가 좋은지 나쁜지를 단정하는 일이 아니라, 확장과 정비 중 무엇을 우선해야 하는지 판단하는 것입니다. 질문 집중 리딩에서는 일·재물·관계 중 먼저 움직이는 영역과 밀어야 할 선택, 주의할 판단과 앞으로의 행동 순서를 구체적으로 살펴봅니다.',
+    },
+    custom: {
+      title: '이 질문에서 확인해야 할 것',
+      body:  '지금 필요한 것은 답을 빨리 찾는 일이 아니라, 이 질문에서 비교해야 할 선택지와 현재 흐름에서 중요한 판단 기준을 정하는 것입니다. 질문 집중 리딩에서는 현재 피해야 할 반응이나 선택, 이 질문의 방향과 먼저 실행할 행동 순서를 구체적으로 살펴봅니다.',
+    },
   };
 
-  const txt = TEXTS[cat] || { title:'지금 이 질문에서 확인해야 할 것', body:'무료 결과에서 현재 흐름을 확인했다면, 질문 집중 리딩에서는 선택의 방향과 먼저 할 행동을 구체적으로 살펴봅니다.' };
+  const txt = TEXTS[cat] || { title:'지금 이 질문에서 확인해야 할 것', body:'지금 필요한 것은 흐름을 단정하는 일이 아니라, 비교해야 할 선택의 방향과 먼저 실행할 행동을 정하는 것입니다. 질문 집중 리딩에서는 현재 피해야 할 판단과 먼저 실행할 행동 순서를 구체적으로 살펴봅니다.' };
   const customQLine = (cat === 'custom' && customQ)
     ? `<p class="cct-question">"${escHtml(customQ.slice(0,80))}${customQ.length>80?'…':''}"</p>` : '';
 
@@ -5793,18 +5823,22 @@ function updateSingleCTAByCategory(category) {
   if (category && category !== 'none' && WORRY_CTA[category]) {
     btn.textContent = `${WORRY_CTA[category]} · 4,900원`;
   } else {
-    btn.textContent = '내 질문 하나 자세히 보기 · 4,900원';
+    btn.textContent = '내 질문 집중 리딩 · 4,900원';
   }
 }
 
 /* ─── 4900원 상품 레이블 동적 업데이트 ─── */
 function updateSingleProductLabel() {
   const concern = S.sajuData?.concern;
-  if (!concern?.selectedBeforeAnalysis || !concern.label) return;
   const btn = document.querySelector('.pay-btn-primary.single-btn');
-  if (btn) btn.textContent = `내 ${concern.label} 집중 분석하기 · 4,900원`;
-  const desc = document.querySelector('.ps-card.single > p[style]');
-  if (desc) desc.textContent = `${concern.label}의 방향과 시기를 사주에서 집중적으로 확인해요.`;
+  if (!btn) return;
+  if (concern?.selectedBeforeAnalysis && concern.label) {
+    btn.textContent = `내 ${concern.label} 집중 리딩 · 4,900원`;
+    const desc = document.querySelector('.ps-card.single > p[style]');
+    if (desc) desc.textContent = `지금 가장 답답한 ${concern.label} 질문을 기준으로, 현재 흐름과 선택의 방향을 구체적으로 살펴봅니다.`;
+  } else {
+    btn.textContent = `내 질문 집중 리딩 · 4,900원`;
+  }
 }
 
 /* ─── 고민 버튼 렌더 (관계 상태 반영) ─── */
