@@ -287,46 +287,95 @@ function renderTimelineHtml(raw) {
     </table>`;
 }
 
-/* 집중 리딩용 연도 테이블 (3년, 5열) */
-function parseFocusYearRow(line) {
-  const parts = line.split('|').map(s => s.trim()).filter(Boolean);
-  if (parts.length < 3) return null;
-  return { year: parts[0], sewoon: parts[1], role: parts[2], push: parts[3] || '', avoid: parts[4] || '' };
+/* ─── 문장 완결성 검증 ─── */
+const SENTENCE_ENDINGS = ['요', '다', '죠', '세요', '하세요', '됩니다', '입니다', '.', '!', '?', '~'];
+const BAD_ENDINGS = ['을', '를', '이', '가', '은', '는', '에', '에서', '로', '으로', '와', '과', '그리고', '하지만', '때문에', '이런 구조', '어떤 형태로', '관련된', '1주차에', '2주차에', '3주차에'];
+
+function validateContent(content, fieldName = '') {
+  if (!content || typeof content !== 'string') return { ok: false, reason: `${fieldName}:empty` };
+  const trimmed = content.trim();
+  if (trimmed.length < 60) return { ok: false, reason: `${fieldName}:too_short(${trimmed.length})` };
+
+  const openParens  = (trimmed.match(/\(/g)  || []).length;
+  const closeParens = (trimmed.match(/\)/g)  || []).length;
+  if (openParens > closeParens) return { ok: false, reason: `${fieldName}:unclosed_paren` };
+
+  const goodEnd = SENTENCE_ENDINGS.some(e => trimmed.endsWith(e));
+  const badEnd  = BAD_ENDINGS.some(e => trimmed.endsWith(e));
+
+  if (badEnd)  return { ok: false, reason: `${fieldName}:bad_ending("${trimmed.slice(-6)}")` };
+  if (!goodEnd) return { ok: false, reason: `${fieldName}:suspicious_ending("${trimmed.slice(-4)}")` };
+
+  return { ok: true };
 }
 
-function renderFocusYearTableHtml(raw) {
-  const rows = raw.split('\n')
-    .map(l => l.trim())
-    .filter(l => l.includes('|'))
-    .map(parseFocusYearRow)
-    .filter(Boolean);
-
-  if (!rows.length) {
-    return `<div style="color:#b89e7e;font-size:15px;line-height:2;white-space:pre-wrap">${raw}</div>`;
+function validate30DayPlan(content) {
+  if (!content) return { ok: false, reason: '30day:empty' };
+  const weeks = ['1주차', '2주차', '3주차', '4주차'];
+  const missing = weeks.filter(w => !content.includes(w));
+  if (missing.length > 0) return { ok: false, reason: `30day:missing(${missing.join(',')})` };
+  if (!content.includes('22~30') && !content.includes('22일') && !content.includes('4주')) {
+    return { ok: false, reason: '30day:4th_week_incomplete' };
   }
+  return validateContent(content, '30day');
+}
 
-  const tableRows = rows.map(r => `
-    <tr>
-      <td style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:14px;color:#ede0c8;font-weight:600;white-space:nowrap">${r.year}</td>
-      <td style="padding:10px 8px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:#c9a84c;white-space:nowrap">${r.sewoon}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:#b89e7e;line-height:1.6">${r.role}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:#8ecfc0;line-height:1.6">${r.push}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:#e8a060;line-height:1.6">${r.avoid}</td>
-    </tr>`).join('');
+/* ─── 생성 + 재시도 래퍼 ─── */
+async function generateWithRetry(ctx, prompt, systemPrompt, maxTokens, validator, maxRetries = 2) {
+  let lastContent = null;
+  let lastReason  = 'unknown';
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const tryPrompt = attempt > 0
+        ? prompt + '\n\n[주의] 모든 문장을 반드시 완결해주세요. 단락 마지막이 조사(을/를/이/가 등)나 연결어로 끊기지 않게 해주세요.'
+        : prompt;
+      const content = await generateReading(ctx, tryPrompt, systemPrompt, maxTokens);
+      const result  = validator ? validator(content) : { ok: true };
+      if (result.ok) return { content, ok: true };
+      lastContent = content;
+      lastReason  = result.reason;
+      console.error(`[saju-email][retry] attempt=${attempt} reason=${result.reason} len=${content?.length}`);
+    } catch (e) {
+      lastReason = e.message;
+      console.error(`[saju-email][retry] attempt=${attempt} error=${e.message}`);
+    }
+  }
+  return { content: lastContent, ok: false, reason: lastReason };
+}
 
-  return `
-    <table style="width:100%;border-collapse:collapse;background:rgba(255,255,255,0.02);border-radius:10px;overflow:hidden;font-size:13px">
-      <thead>
-        <tr style="background:rgba(201,168,76,0.07)">
-          <th style="padding:8px 12px;color:#c9a84c;text-align:left;font-size:12px;font-weight:600">연도</th>
-          <th style="padding:8px 8px;color:#c9a84c;text-align:left;font-size:12px;font-weight:600">세운</th>
-          <th style="padding:8px 12px;color:#c9a84c;text-align:left;font-size:12px;font-weight:600">이 고민에서의 역할</th>
-          <th style="padding:8px 12px;color:#8ecfc0;text-align:left;font-size:12px;font-weight:600">밀어야 할 행동</th>
-          <th style="padding:8px 12px;color:#e8a060;text-align:left;font-size:12px;font-weight:600">주의할 선택</th>
-        </tr>
-      </thead>
-      <tbody>${tableRows}</tbody>
-    </table>`;
+/* ─── 연도별 흐름 카드 렌더 (JSON 파싱, 모바일 카드 레이아웃) ─── */
+function parseYearFlowsJson(raw) {
+  try {
+    const m = raw.match(/\[[\s\S]*\]/);
+    if (!m) return null;
+    const arr = JSON.parse(m[0]);
+    if (!Array.isArray(arr) || arr.length < 1) return null;
+    return arr;
+  } catch {
+    return null;
+  }
+}
+
+function renderFocusYearCards(raw) {
+  const rows = parseYearFlowsJson(raw);
+  if (!rows) {
+    return `<div style="color:#b89e7e;font-size:15px;line-height:2;white-space:pre-wrap;word-break:keep-all;overflow-wrap:break-word">${raw}</div>`;
+  }
+  return rows.map(r => `
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.18);border-radius:12px;padding:18px 20px;margin-bottom:16px;word-break:keep-all;overflow-wrap:break-word">
+      <p style="color:#c9a84c;font-size:15px;font-weight:700;margin:0 0 12px">${escHtml(String(r.year))}년 · ${escHtml(r.sewoon || '')}</p>
+      <p style="color:#b89e7e;font-size:13px;margin:0 0 6px;font-weight:600">이 고민에서의 역할</p>
+      <p style="color:#ede0c8;font-size:14px;line-height:1.75;margin:0 0 10px">${escHtml(r.flow || '')}</p>
+      <p style="color:#8ecfc0;font-size:13px;margin:0 0 4px;font-weight:600">밀어야 할 행동</p>
+      <p style="color:#ede0c8;font-size:14px;line-height:1.75;margin:0 0 10px">${escHtml(r.action || '')}</p>
+      <p style="color:#e8a060;font-size:13px;margin:0 0 4px;font-weight:600">주의할 선택</p>
+      <p style="color:#ede0c8;font-size:14px;line-height:1.75;margin:0">${escHtml(r.caution || '')}</p>
+    </div>`).join('');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -338,9 +387,9 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel) {
     if (isTimeline) {
       bodyHtml = renderTimelineHtml(content);
     } else if (isFocusTimeline) {
-      bodyHtml = renderFocusYearTableHtml(content);
+      bodyHtml = renderFocusYearCards(content);
     } else {
-      bodyHtml = `<div style="color:#ede0c8;font-size:15px;line-height:2;white-space:pre-wrap">${content}</div>`;
+      bodyHtml = `<div style="color:#ede0c8;font-size:15px;line-height:2;white-space:pre-wrap;word-break:keep-all;overflow-wrap:break-word">${content}</div>`;
     }
 
     // 밀어야 할 방향 / 피해야 할 선택 — 색상 카드
@@ -413,20 +462,22 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel) {
    집중 리딩 생성 (single 티어 4,900원)
 ───────────────────────────────────────────────────────────── */
 async function generateFocusReading(sajuData, ctx, name, currentYear, currentSewoon, systemPrompt) {
-  const concern   = sajuData.concern || {};
-  const cat       = concern.category || 'year';
+  const concern    = sajuData.concern || {};
+  const cat        = concern.category || 'year';
   const topicLabel = concern.label || FOCUS_TOPIC_MAP[cat] || cat;
-  const question  = concern.question || '';
-  const relStatus = sajuData.relationStatus || sajuData.relationStatus || 'private';
-  const sections  = [];
+  const question   = concern.question || '';
+  const relStatus  = sajuData.relationStatus || 'private';
+  const sections   = [];
+  const failedSections = [];
 
   const yr = currentYear;
   const sw = currentSewoon || `${yr}년 세운`;
-  const yearNote = `※ 분석 기준: ${yr}년 ${sw}. ${yr}년만 "올해"로 사용하세요. 2025년·을사를 절대 현재로 표현하지 마세요.`;
+  const yearNote = `※ 분석 기준: ${yr}년 ${sw}. "${yr}년"만 "올해"로 사용하세요. 2025년·을사를 절대 현재로 표현하지 마세요.`;
   const relNote  = `관계 상태(${relStatus})는 보조 맥락으로만 참고하세요. 사용자가 선택한 [${topicLabel}]이 분석의 중심이어야 합니다.`;
   const qNote    = question ? `직접 질문: "${question}"` : '';
+  const completeNote = `\n[필수] 모든 문장을 완전하게 끝내주세요. 단락 마지막이 조사(을/를/이/가/에서 등)나 연결어로 끊기지 않도록 하세요.`;
 
-  /* 섹션 1+2: 핵심 답변 + 고민이 답답한 이유 */
+  /* ── 섹션 1+2: 핵심 답변 + 고민 원인 ── */
   const p1 = `${name}님의 선택 고민: [${topicLabel}]
 ${qNote}
 ${yearNote}
@@ -435,11 +486,16 @@ ${relNote}
 1단락: 이 고민에 대한 핵심 답변을 강렬하고 명확한 한 문장으로 시작해주세요.
 2~3단락: 지금 이 고민이 답답하게 느껴지는 이유를 ${name}님의 사주 기질과 ${yr}년 ${sw} 흐름에서 구체적으로 찾아주세요.
 
-총 3~4단락. 반드시 해요체, 마크다운 금지.`;
-  const c1 = await generateReading(ctx, p1, systemPrompt, 1200);
-  sections.push({ icon: '💬', label: `${topicLabel} — 핵심 답변`, content: c1 });
+총 3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+  const r1 = await generateWithRetry(ctx, p1, systemPrompt, 2500, c => validateContent(c, '핵심답변'));
+  if (r1.ok) {
+    sections.push({ icon: '💬', label: `${topicLabel} — 핵심 답변`, content: r1.content });
+  } else {
+    failedSections.push({ name: '핵심 답변', reason: r1.reason });
+    sections.push({ icon: '💬', label: `${topicLabel} — 핵심 답변`, content: r1.content || '(생성 오류)' });
+  }
 
-  /* 섹션 3: 선택지 비교 */
+  /* ── 섹션 3: 선택지 비교 ── */
   const p2 = `${name}님의 고민 [${topicLabel}]에서 지금 실제로 고민하는 선택지들을 비교해주세요.
 ${qNote}
 ${yearNote}
@@ -450,72 +506,126 @@ ${relNote}
 중간 결론: ${yr}년 지금 어느 쪽이 더 맞는지 한 문장
 
 고정된 틀이 아니라 ${name}님의 실제 상황에 맞게 선택지 이름을 정하세요.
-4~5단락. 반드시 해요체, 마크다운 금지.`;
-  const c2 = await generateReading(ctx, p2, systemPrompt, 1000);
-  sections.push({ icon: '⚖️', label: '현재 선택지 비교', content: c2, focusType: 'choices' });
+4~5단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+  const r2 = await generateWithRetry(ctx, p2, systemPrompt, 2500, c => validateContent(c, '선택지비교'));
+  if (r2.ok) {
+    sections.push({ icon: '⚖️', label: '현재 선택지 비교', content: r2.content, focusType: 'choices' });
+  } else {
+    failedSections.push({ name: '선택지 비교', reason: r2.reason });
+    sections.push({ icon: '⚖️', label: '현재 선택지 비교', content: r2.content || '(생성 오류)', focusType: 'choices' });
+  }
 
-  /* 섹션 4: 밀어야 할 방향 */
+  /* ── 섹션 4: 밀어야 할 방향 ── */
   const p3 = `${name}님의 고민 [${topicLabel}]에서 ${yr}년 지금 실제로 밀어야 할 방향을 알려주세요.
 ${yearNote}
 ${relNote}
 
 ${name}님의 사주 기질과 ${yr}년 ${sw} 에너지에서 가장 잘 맞는 방향, 그 이유, 지금 당장 시작할 수 있는 구체적 행동 1~2가지.
 
-3~4단락. 반드시 해요체, 마크다운 금지.`;
-  const c3 = await generateReading(ctx, p3, systemPrompt, 900);
-  sections.push({ icon: '🟢', label: '지금 밀어야 할 방향', content: c3, focusType: 'push' });
+3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+  const r3 = await generateWithRetry(ctx, p3, systemPrompt, 2000, c => validateContent(c, '밀어야할방향'));
+  if (r3.ok) {
+    sections.push({ icon: '🟢', label: '지금 밀어야 할 방향', content: r3.content, focusType: 'push' });
+  } else {
+    failedSections.push({ name: '밀어야 할 방향', reason: r3.reason });
+    sections.push({ icon: '🟢', label: '지금 밀어야 할 방향', content: r3.content || '(생성 오류)', focusType: 'push' });
+  }
 
-  /* 섹션 5: 피해야 할 선택 */
+  /* ── 섹션 5: 피해야 할 선택 ── */
   const p4 = `${name}님의 고민 [${topicLabel}]에서 ${yr}년 지금 피해야 할 선택을 알려주세요.
 ${yearNote}
 ${relNote}
 
 사주에서 보이는 반복적 실수 패턴, ${yr}년 ${sw}에서 특히 조심해야 할 결정, 에너지를 소진시키는 방향. 두렵게 만들지 말고 따뜻하고 실용적으로.
 
-3~4단락. 반드시 해요체, 마크다운 금지.`;
-  const c4 = await generateReading(ctx, p4, systemPrompt, 900);
-  sections.push({ icon: '🔴', label: '지금 피해야 할 선택', content: c4, focusType: 'avoid' });
+3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+  const r4 = await generateWithRetry(ctx, p4, systemPrompt, 2000, c => validateContent(c, '피해야할선택'));
+  if (r4.ok) {
+    sections.push({ icon: '🔴', label: '지금 피해야 할 선택', content: r4.content, focusType: 'avoid' });
+  } else {
+    failedSections.push({ name: '피해야 할 선택', reason: r4.reason });
+    sections.push({ icon: '🔴', label: '지금 피해야 할 선택', content: r4.content || '(생성 오류)', focusType: 'avoid' });
+  }
 
-  /* 섹션 6: 연도별 흐름 (3년) */
+  /* ── 섹션 6: 연도별 흐름 3년 (JSON 형식) ── */
   const yr2 = yr + 1, yr3 = yr + 2;
   const p5 = `${name}님의 고민 [${topicLabel}]을 중심으로 ${yr}년, ${yr2}년, ${yr3}년 흐름을 분석해주세요.
 ${yearNote}
 
-각 연도를 아래 형식으로 정확히 3행 작성 (파이프로 구분):
-${yr}년 | 세운간지 | 이 고민에서의 역할 | 밀어야 할 행동 | 주의할 선택
-${yr2}년 | ... | ... | ... | ...
-${yr3}년 | ... | ... | ... | ...
+아래 JSON 배열 형식으로만 정확히 작성하세요. 다른 텍스트 없이 JSON만:
+[
+  {"year":${yr},"sewoon":"${sw}","flow":"이 고민에서의 역할 (2~3문장)","action":"밀어야 할 행동 (1~2문장)","caution":"주의할 선택 (1~2문장)"},
+  {"year":${yr2},"sewoon":"세운간지","flow":"...","action":"...","caution":"..."},
+  {"year":${yr3},"sewoon":"세운간지","flow":"...","action":"...","caution":"..."}
+]
 
-${yr}년을 "지난해"로 쓰지 마세요. ${yr}년 세운은 ${sw}예요.
-대운 전환이 실제 계산된 경우에만 "대운전환" 명시하세요.
-3행만 작성. 다른 텍스트 없이 표 형식만.`;
-  const c5 = await generateReading(ctx, p5, systemPrompt, 600);
-  sections.push({ icon: '📅', label: `${yr}~${yr3} 연도별 흐름`, content: c5, isFocusTimeline: true });
+${yr}년을 "지난해"로 쓰지 마세요. 각 항목은 완성된 문장으로 작성하세요.`;
+  const validateYearFlows = (c) => {
+    const parsed = parseYearFlowsJson(c);
+    if (!parsed || parsed.length < 3) return { ok: false, reason: 'yearflows:parse_failed' };
+    for (const row of parsed) {
+      for (const key of ['flow', 'action', 'caution']) {
+        const v = validateContent(row[key] || '', `yearflows.${key}`);
+        if (!v.ok) return v;
+      }
+    }
+    return { ok: true };
+  };
+  const r5 = await generateWithRetry(ctx, p5, systemPrompt, 1200, validateYearFlows);
+  if (r5.ok) {
+    sections.push({ icon: '📅', label: `${yr}~${yr3} 연도별 흐름`, content: r5.content, isFocusTimeline: true });
+  } else {
+    failedSections.push({ name: '연도별 흐름', reason: r5.reason });
+    sections.push({ icon: '📅', label: `${yr}~${yr3} 연도별 흐름`, content: r5.content || '(생성 오류)', isFocusTimeline: true });
+  }
 
-  /* 섹션 7: 30일 행동 순서 */
+  /* ── 섹션 7: 30일 행동 순서 ── */
   const p6 = `${name}님의 고민 [${topicLabel}]에서 앞으로 30일 행동 순서를 짜주세요.
 ${yearNote}
 ${relNote}
 
+반드시 아래 4개 주차를 모두 포함하세요:
 1주차 (1~7일): 실행할 행동 1~2가지
 2주차 (8~14일): 실행할 행동 1~2가지
 3주차 (15~21일): 실행할 행동 1~2가지
 4주차 (22~30일): 실행할 행동 1~2가지
 
 미래 사건 예측이 아니라 ${name}님이 실제 실행할 수 있는 행동 계획으로 작성하세요.
-각 주차는 짧고 명확하게. 반드시 해요체, 마크다운 금지.`;
-  const c6 = await generateReading(ctx, p6, systemPrompt, 900);
-  sections.push({ icon: '🗓️', label: '앞으로 30일 행동 순서', content: c6 });
+반드시 해요체, 마크다운 금지.${completeNote}`;
+  const r6 = await generateWithRetry(ctx, p6, systemPrompt, 2500, validate30DayPlan);
+  if (r6.ok) {
+    sections.push({ icon: '🗓️', label: '앞으로 30일 행동 순서', content: r6.content });
+  } else {
+    failedSections.push({ name: '30일 행동 순서', reason: r6.reason });
+    sections.push({ icon: '🗓️', label: '앞으로 30일 행동 순서', content: r6.content || '(생성 오류)' });
+  }
 
-  /* 섹션 8+9: 매력살·귀인 + 최종 정리 */
-  const p7 = `${name}님의 고민 [${topicLabel}]과 직접 관련된 매력살·귀인 에너지를 해석하고, 마지막에 따뜻한 정리 메시지(3~4문장)로 마무리해주세요.
+  /* ── 섹션 8+9: 매력살·귀인 + 따뜻한 마무리 ── */
+  const p7 = `${name}님의 고민 [${topicLabel}]과 직접 관련된 매력살·귀인 에너지를 해석해주세요.
 ${yearNote}
 
 사주에서 실제 확인된 매력살·귀인만 사용하세요. 확인되지 않은 것은 만들지 마세요.
-[${topicLabel}]에서의 역할을 중심으로. 전체 3~5단락.
-반드시 해요체, 마크다운 금지.`;
-  const c7 = await generateReading(ctx, p7, systemPrompt, 1000);
-  sections.push({ icon: '✨', label: '나의 매력살·귀인 에너지 & 최종 정리', content: c7 });
+[${topicLabel}]에서의 역할을 중심으로 2~3단락 작성하세요.
+
+그리고 마지막 단락으로 따뜻한 마무리 메시지를 3~4문장으로 작성해주세요. ${name}님이 이 고민을 잘 헤쳐나갈 수 있다는 따뜻하고 구체적인 응원으로 마무리하세요.
+
+전체 4~6단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+  const r7 = await generateWithRetry(ctx, p7, systemPrompt, 2500, c => validateContent(c, '마무리'));
+  if (r7.ok) {
+    sections.push({ icon: '✨', label: '나의 매력살·귀인 에너지 & 최종 정리', content: r7.content });
+  } else {
+    failedSections.push({ name: '매력살·마무리', reason: r7.reason });
+    sections.push({ icon: '✨', label: '나의 매력살·귀인 에너지 & 최종 정리', content: r7.content || '(생성 오류)' });
+  }
+
+  /* ── 불완전 섹션 있으면 예외 던지기 (이메일 차단) ── */
+  const criticalFailed = failedSections.filter(f =>
+    ['핵심 답변', '30일 행동 순서', '매력살·마무리'].includes(f.name)
+  );
+  if (criticalFailed.length > 0) {
+    const details = criticalFailed.map(f => `${f.name}(${f.reason})`).join(', ');
+    throw new Error(`generation_incomplete: ${details}`);
+  }
 
   return sections;
 }
