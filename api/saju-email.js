@@ -1,6 +1,27 @@
 import { Redis } from '@upstash/redis';
 
 const redis = Redis.fromEnv();
+const ADMIN_EMAIL = 'shypjh@gmail.com';
+
+async function notifyAdmin(subject, body) {
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: process.env.RESEND_FROM || 'onboarding@resend.dev',
+        to: [ADMIN_EMAIL],
+        subject,
+        html: `<pre style="font-family:sans-serif;font-size:14px;line-height:1.8">${body}</pre>`,
+      }),
+    });
+  } catch (e) {
+    console.error('[saju-email][notifyAdmin] failed:', e.message);
+  }
+}
 
 /* ─────────────────────────────────────────────────────────────
    고민 카테고리 매핑
@@ -566,6 +587,10 @@ async function sendSajuEmail(email, sajuData, isPremium) {
       throw new Error(JSON.stringify(err));
     }
     await redis.del(`saju_pending:${email.toLowerCase().trim()}`);
+    await notifyAdmin(
+      `[오속 사주] ✅ 발송 완료 — ${name}님`,
+      `리딩 이메일 발송 완료!\n\n고객: ${name}님\n이메일: ${email}\n상품: 내 질문 하나 집중 리딩 (4,900원)\n고민: ${sajuData.concern?.label || '-'}`
+    );
     return;
   }
 
@@ -666,6 +691,10 @@ ${name}님의 기질과 ${currentYear}년 대운·세운 에너지에 맞는 구
   }
 
   await redis.del(`saju_pending:${email.toLowerCase().trim()}`);
+  await notifyAdmin(
+    `[오속 사주] ✅ 발송 완료 — ${name}님`,
+    `리딩 이메일 발송 완료!\n\n고객: ${name}님\n이메일: ${email}\n상품: ${tier === 'premium' ? '프리미엄 종합 풀이 (14,900원)' : '기본 리딩'}`
+  );
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -691,14 +720,25 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') return res.status(405).end();
 
-  const { email, sajuData, isPremium } = req.body;
-  if (!email || !sajuData) return res.status(400).json({ error: 'missing fields' });
+  let { email, sajuData, isPremium } = req.body;
+  if (!email) return res.status(400).json({ error: 'missing email' });
+
+  // sajuData가 없으면 Redis에서 조회 (클라이언트 트리거 방식)
+  if (!sajuData) {
+    sajuData = await redis.get(`saju_pending:${email.toLowerCase().trim()}`);
+    if (!sajuData) return res.status(404).json({ error: 'saju_data_not_found' });
+    isPremium = (sajuData.tier || 'basic') === 'premium';
+  }
 
   try {
     await sendSajuEmail(email, sajuData, isPremium);
     return res.status(200).json({ ok: true });
   } catch (e) {
     console.error(`[saju-email][error] email=${email} error=${e.message}`);
+    await notifyAdmin(
+      `[오속 사주] ❌ 발송 실패 — ${email}`,
+      `이메일 발송에 실패했어요!\n\n고객 이메일: ${email}\n상품: ${sajuData.tier || 'basic'}\n이름: ${sajuData.name || '미확인'}\n오류: ${e.message}\n\n수동 재발송:\nhttps://www.osok.kr/api/saju-email?secret=osok2026&email=${encodeURIComponent(email)}`
+    );
     return res.status(500).json({ error: e.message });
   }
 }
