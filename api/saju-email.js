@@ -294,48 +294,40 @@ function buildEmailHtml(name, sajuInfoLine, sections, closingMsg) {
 }
 
 /* ────────────────────────────────────────
-   핸들러
+   이메일 발송 핵심 로직
 ──────────────────────────────────────── */
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
+async function sendSajuEmail(email, sajuData, isPremium) {
+  const name = sajuData.name || '내담자';
+  const sajuInfoLine = `${sajuData.year}년 ${sajuData.month}월 ${sajuData.day}일생 · ${sajuData.gender === 'm' ? '남성' : '여성'}`;
+  const tier = sajuData.tier || (isPremium ? 'premium' : 'basic');
+  const sections = [];
 
-  const { email, sajuData, isPremium } = req.body;
-  if (!email || !sajuData) return res.status(400).json({ error: 'missing fields' });
-
-  try {
-    const name = sajuData.name || '내담자';
-    const sajuInfoLine = `${sajuData.year}년 ${sajuData.month}월 ${sajuData.day}일생 · ${sajuData.gender === 'm' ? '남성' : '여성'}`;
-    const tier = sajuData.tier || (isPremium ? 'premium' : 'basic');
-
-    const sections = [];
-
-    /* 1. 질문 맞춤 답변 (customQuestion 있을 때만, 제일 먼저) */
-    if (sajuData.customQuestion) {
-      const questionTopic = sajuData.questionTopic ? `[${sajuData.questionTopic}] ` : '';
-      const qPrompt = `${name}님의 질문: ${sajuData.customQuestion}
+  /* 1. 질문 맞춤 답변 */
+  if (sajuData.customQuestion) {
+    const questionTopic = sajuData.questionTopic ? `[${sajuData.questionTopic}] ` : '';
+    const qPrompt = `${name}님의 질문: ${sajuData.customQuestion}
 
 이 질문에 대해 ${name}님의 사주팔자를 바탕으로 깊이 있고 구체적인 답변을 작성해주세요.
 
 먼저 이 질문과 관련된 사주 영역을 짚고, 현재 흐름에서 어떤 방향성이 보이는지, 구체적인 시기가 있다면 명확하게, 그리고 지금 당장 실천할 수 있는 행동 방향 1~2가지로 마무리해주세요.
 
 4~5단락. 반드시 해요체, 마크다운 금지.`;
-      const content = await generateReading(sajuData.context, qPrompt);
-      sections.push({ icon: '💬', label: `${questionTopic}${name}님의 질문 맞춤 풀이`, content });
-    }
+    const content = await generateReading(sajuData.context, qPrompt);
+    sections.push({ icon: '💬', label: `${questionTopic}${name}님의 질문 맞춤 풀이`, content });
+  }
 
-    /* 2. 기본 카테고리 (순서: 연애 → 직업 → 재물 → 건강 → 운흐름) */
-    const relStatus = sajuData.relationStatus || 'private';
-    const loveCfg   = REL_LOVE_CONFIG[relStatus] || REL_LOVE_CONFIG.private;
+  /* 2. 기본 카테고리 */
+  const relStatus = sajuData.relationStatus || 'private';
+  const loveCfg   = REL_LOVE_CONFIG[relStatus] || REL_LOVE_CONFIG.private;
 
-    for (const cat of CATEGORY_PROMPTS) {
-      let prompt = cat.prompt;
-      let label  = cat.label;
-      let icon   = cat.icon;
+  for (const cat of CATEGORY_PROMPTS) {
+    let prompt = cat.prompt;
+    let label  = cat.label;
+    let icon   = cat.icon;
 
-      // 연애 섹션: 관계 상태별 프롬프트·라벨 동적 생성
-      if (cat.key === 'love') {
-        label  = loveCfg.label;
-        prompt = `${loveCfg.interp}
+    if (cat.key === 'love') {
+      label  = loveCfg.label;
+      prompt = `${loveCfg.interp}
 
 ${name}님의 사주에서 관계·인연 영역을 깊이 분석해주세요.
 
@@ -348,78 +340,101 @@ ${name}님의 사주에서 관계·인연 영역을 깊이 분석해주세요.
 행동 방향 — 지금 당장 실천할 수 있는 구체적 방향
 
 4~6단락으로 충분히 깊이 있게. 반드시 해요체, 마크다운 금지.`;
-      }
-
-      const content = await generateReading(sajuData.context, prompt);
-      sections.push({ icon, label, content });
     }
 
-    /* 3. 2026 핵심 시기 요약표 */
-    const now = new Date();
-    const startYear = now.getFullYear();
-    const startMonth = now.getMonth() + 1;
-    const timelinePrompt = `${name}님의 사주팔자를 바탕으로 ${startYear}년 ${startMonth}월부터 12개월간 핵심 시기를 분석해주세요.
+    const content = await generateReading(sajuData.context, prompt);
+    sections.push({ icon, label, content });
+  }
+
+  /* 3. 시기 요약표 */
+  const now = new Date();
+  const startYear = now.getFullYear();
+  const startMonth = now.getMonth() + 1;
+  const timelinePrompt = `${name}님의 사주팔자를 바탕으로 ${startYear}년 ${startMonth}월부터 12개월간 핵심 시기를 분석해주세요.
 
 각 달을 아래 형식으로 정확히 작성해주세요 (파이프 기호로 구분):
 YYYY년 MM월 | 에너지 | 한 줄 설명
 
 에너지는 반드시 다음 4가지 중 하나만 사용하세요: 기회, 안정, 전환, 주의
 
-예시:
-2026년 7월 | 기회 | 새로운 흐름이 시작되는 달이에요. 적극적으로 움직이면 결실이 생겨요.
-2026년 8월 | 안정 | 내실을 다지기에 좋은 달이에요. 무리하지 않는 것이 이득이에요.
-2026년 9월 | 주의 | 의사결정에 신중해야 하는 달이에요. 감정보다 냉정한 판단이 필요해요.
-
 12개월 전부 작성. 다른 텍스트 없이 표 형식만.`;
-    const timelineRaw = await generateReading(sajuData.context, timelinePrompt);
-    sections.push({ icon: '📅', label: '2026 핵심 시기 요약', content: timelineRaw, isTimeline: true });
+  const timelineRaw = await generateReading(sajuData.context, timelinePrompt);
+  sections.push({ icon: '📅', label: `${startYear} 핵심 시기 요약`, content: timelineRaw, isTimeline: true });
 
-    /* 4. 지금부터 준비해야 할 것 */
-    const actionPrompt = `${name}님의 사주팔자와 지금 시기의 운의 흐름을 바탕으로 "지금부터 준비해야 할 것"을 작성해주세요.
+  /* 4. 지금부터 준비해야 할 것 */
+  const actionPrompt = `${name}님의 사주팔자와 지금 시기의 운의 흐름을 바탕으로 "지금부터 준비해야 할 것"을 작성해주세요.
 
 막연한 격려가 아닌, ${name}님의 기질과 지금 대운·세운 에너지에 딱 맞는 구체적 준비 방향을 담아주세요. 재물·관계·일·내면 등 중요한 영역에서 지금 당장 시작할 수 있는 것과 올해 안에 준비해야 할 것을 나눠서 이야기해주세요.
 
 5~6단락. 반드시 해요체, 마크다운 금지.`;
-    const actionContent = await generateReading(sajuData.context, actionPrompt);
-    sections.push({ icon: '🚀', label: '지금부터 준비해야 할 것', content: actionContent });
+  const actionContent = await generateReading(sajuData.context, actionPrompt);
+  sections.push({ icon: '🚀', label: '지금부터 준비해야 할 것', content: actionContent });
 
-    /* 5. 프리미엄 전용 추가 섹션 */
-    if (tier === 'premium') {
-      for (const cat of PREMIUM_PROMPTS) {
-        const content = await generateReading(sajuData.context, cat.prompt);
-        sections.push({ icon: cat.icon, label: cat.label, content });
-      }
+  /* 5. 프리미엄 전용 */
+  if (tier === 'premium') {
+    for (const cat of PREMIUM_PROMPTS) {
+      const content = await generateReading(sajuData.context, cat.prompt);
+      sections.push({ icon: cat.icon, label: cat.label, content });
     }
+  }
 
-    /* 6. 마무리 메시지 */
-    const closingPrompt = `${name}님의 사주 리딩을 마무리하는 따뜻한 메시지를 3~4문장으로 작성해주세요. 이 사람의 기질과 지금 시기의 에너지를 담아 개인화되게. 반드시 해요체, 마크다운 금지.`;
-    const closingMsg = await generateReading(sajuData.context, closingPrompt);
+  /* 6. 마무리 메시지 */
+  const closingPrompt = `${name}님의 사주 리딩을 마무리하는 따뜻한 메시지를 3~4문장으로 작성해주세요. 이 사람의 기질과 지금 시기의 에너지를 담아 개인화되게. 반드시 해요체, 마크다운 금지.`;
+  const closingMsg = await generateReading(sajuData.context, closingPrompt);
 
-    const html = buildEmailHtml(name, sajuInfoLine, sections, closingMsg);
+  const html = buildEmailHtml(name, sajuInfoLine, sections, closingMsg);
 
-    /* 이메일 발송 (Resend) */
-    const emailRes = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: process.env.RESEND_FROM || 'onboarding@resend.dev',
-        to: [email],
-        subject: `${name}님의 오속 사주 상세 리딩이 도착했어요 ✦`,
-        html,
-      }),
-    });
+  /* Resend 발송 */
+  const emailRes = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: process.env.RESEND_FROM || 'onboarding@resend.dev',
+      to: [email],
+      subject: `${name}님의 오속 사주 상세 리딩이 도착했어요 ✦`,
+      html,
+    }),
+  });
 
-    if (!emailRes.ok) {
-      const err = await emailRes.json();
-      throw new Error(JSON.stringify(err));
+  if (!emailRes.ok) {
+    const err = await emailRes.json();
+    throw new Error(JSON.stringify(err));
+  }
+
+  /* Redis 정리 */
+  await redis.del(`saju_pending:${email.toLowerCase().trim()}`);
+}
+
+/* ────────────────────────────────────────
+   핸들러
+──────────────────────────────────────── */
+export default async function handler(req, res) {
+  // 관리자 재발송 (GET)
+  if (req.method === 'GET') {
+    const { secret, email, tier } = req.query;
+    if (secret !== process.env.ADMIN_SECRET) return res.status(401).json({ error: 'unauthorized' });
+    if (!email) return res.status(400).json({ error: 'email required' });
+    const sajuData = await redis.get(`saju_pending:${email.toLowerCase().trim()}`);
+    if (!sajuData) return res.status(200).json({ found: false, message: `${email} 데이터 없음 (만료됐거나 저장 안 됨)` });
+    const isPremium = (tier || sajuData.tier || 'basic') === 'premium';
+    try {
+      await sendSajuEmail(email.toLowerCase().trim(), sajuData, isPremium);
+      return res.status(200).json({ found: true, sent: true, name: sajuData.name, message: `${sajuData.name}님(${email}) 이메일 발송 완료` });
+    } catch (e) {
+      return res.status(500).json({ found: true, sent: false, error: e.message });
     }
+  }
 
-    /* Redis 정리 */
-    await redis.del(`saju_pending:${email.toLowerCase().trim()}`);
+  if (req.method !== 'POST') return res.status(405).end();
 
+  const { email, sajuData, isPremium } = req.body;
+  if (!email || !sajuData) return res.status(400).json({ error: 'missing fields' });
+
+  try {
+    await sendSajuEmail(email, sajuData, isPremium);
     return res.status(200).json({ ok: true });
   } catch (e) {
     return res.status(500).json({ error: e.message });
