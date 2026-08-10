@@ -1369,6 +1369,94 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
 .ab-detail{margin-top:8px;padding:0 0 4px 24px}
 .ab-desc{font-size:.78rem;color:rgba(150,130,90,.75);line-height:1.65}
 
+/* ── 고민 변경 버튼 + 상단 패널 ── */
+.concern-change-btn{font-size:.72rem;color:rgba(180,160,110,.8);background:rgba(212,168,78,.1);border:1px solid rgba(212,168,78,.25);border-radius:20px;padding:6px 13px;cursor:pointer;min-height:44px;white-space:nowrap;flex-shrink:0;align-self:center;margin-left:auto;transition:background .18s}
+.concern-change-btn:hover{background:rgba(212,168,78,.2)}
+.top-concern-panel{background:rgba(20,35,70,.55);border:1px solid rgba(140,170,220,.2);border-radius:14px;padding:16px 16px 12px;margin-bottom:10px;margin-top:-4px}
+.top-panel-title{font-size:.83rem;color:rgba(200,215,240,.8);margin-bottom:12px;text-align:center}
+.top-concern-worry-grid,.alt-concern-worry-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.top-worry-btn,.alt-worry-btn{font-size:.74rem;background:rgba(30,50,95,.4);border:1px solid rgba(100,140,210,.2);border-radius:10px;padding:10px 5px;cursor:pointer;color:rgba(190,210,245,.75);text-align:center;line-height:1.4;min-height:44px;display:flex;flex-direction:column;align-items:center;gap:4px;transition:background .18s,border-color .18s}
+.top-worry-btn:hover,.alt-worry-btn:hover{background:rgba(50,80,150,.35);border-color:rgba(140,170,230,.35)}
+.top-worry-btn.active,.alt-worry-btn.active{background:rgba(212,168,78,.15);border-color:rgba(212,168,78,.5);color:rgba(230,210,160,.95)}
+.top-worry-btn .wb-icon,.alt-worry-btn .wb-icon{font-size:.9rem}
+
+/* ── 하단 alt-concern 섹션 ── */
+.alt-concern-toggle-btn{width:100%;background:rgba(25,40,80,.35);border:1px dashed rgba(120,155,210,.22);border-radius:14px;padding:14px 18px;cursor:pointer;color:rgba(165,185,228,.7);font-size:.83rem;display:flex;justify-content:space-between;align-items:center;min-height:44px;transition:background .18s;margin-bottom:0}
+.alt-concern-toggle-btn:hover{background:rgba(40,60,110,.4)}
+.alt-toggle-icon{font-style:normal;font-size:.7rem;transition:transform .25s;display:inline-block}
+.alt-concern-toggle-btn[aria-expanded="true"] .alt-toggle-icon{transform:rotate(180deg)}
+.alt-concern-inner{background:rgba(20,35,70,.3);border:1px solid rgba(100,140,210,.14);border-top:none;border-radius:0 0 14px 14px;padding:16px}
+.alt-concern-preview-card{background:rgba(30,50,90,.35);border:1px solid rgba(120,160,220,.2);border-radius:12px;padding:14px 16px;margin-top:10px;margin-bottom:10px}
+.alt-preview-label{font-size:.78rem;color:rgba(180,155,100,.8);margin-bottom:8px}
+.alt-preview-body p{font-size:.82rem;color:rgba(200,215,240,.8);line-height:1.75;margin-bottom:8px}
+.alt-preview-body p:last-child{margin-bottom:0}
+.alt-mini-cta{display:block;width:100%;background:rgba(212,168,78,.14);border:1px solid rgba(212,168,78,.38);border-radius:10px;padding:12px;text-align:center;color:rgba(230,210,160,.9);font-size:.82rem;cursor:pointer;margin-top:10px;min-height:44px;transition:background .18s;box-sizing:border-box}
+.alt-mini-cta:hover{background:rgba(212,168,78,.23)}
+
+/* ══ 현재 운의 위치 ══ */
+.fortune-pos-sec{margin-bottom:10px}
+.fp-unavail{font-size:.82rem;color:rgba(160,145,110,.7);padding:14px 0}
+
+.fp-position-card{background:rgba(20,38,88,.45);border:1px solid rgba(140,170,230,.22);border-radius:16px;padding:18px 18px 14px;margin-bottom:10px}
+.fp-sec-label{font-size:.72rem;color:rgba(212,168,78,.7);letter-spacing:.06em;margin-bottom:14px;text-transform:uppercase}
+.fp-daewoon-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.fp-dw-pillar{font-size:1.9rem;font-weight:700;color:#d4c087;line-height:1;flex-shrink:0;min-width:52px;text-align:center}
+.fp-dw-body{flex:1;min-width:0}
+.fp-dw-label{font-size:.72rem;color:rgba(180,200,240,.55);margin-bottom:2px}
+.fp-dw-name{font-size:.95rem;color:#d8e8ff;font-weight:600;margin-bottom:4px}
+.fp-dw-period{font-size:.78rem;color:rgba(180,200,240,.7);margin-bottom:8px}
+.fp-phase-bar{display:flex;gap:4px;align-items:center}
+.fp-phase-dot{width:18px;height:5px;border-radius:3px;background:rgba(100,140,210,.22);transition:background .2s}
+.fp-phase-dot.active{background:rgba(212,168,78,.75)}
+.fp-phase-label{font-size:.72rem;color:rgba(212,168,78,.85);margin-left:6px}
+.fp-phase-desc{font-size:.78rem;color:rgba(190,210,240,.65);line-height:1.7;margin-top:8px}
+.fp-themes{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.fp-theme-tag{font-size:.7rem;color:rgba(180,200,240,.75);background:rgba(80,110,200,.15);border:1px solid rgba(100,140,220,.2);border-radius:20px;padding:3px 10px}
+.fp-divider{height:1px;background:rgba(100,140,210,.12);margin:12px 0}
+.fp-sewoon-row{display:flex;align-items:center;gap:12px}
+.fp-sw-badge{font-size:1.1rem;font-weight:700;color:rgba(212,168,78,.9);background:rgba(212,168,78,.1);border:1px solid rgba(212,168,78,.25);border-radius:10px;padding:6px 14px;flex-shrink:0}
+.fp-sw-body{flex:1;min-width:0}
+.fp-sw-label{font-size:.72rem;color:rgba(180,200,240,.55);margin-bottom:2px}
+.fp-sw-period{font-size:.75rem;color:rgba(180,200,240,.6)}
+.fp-unknown-note{font-size:.72rem;color:rgba(180,165,125,.65);margin-top:8px;line-height:1.6}
+
+.fp-evidence-wrap{margin-top:12px}
+.fp-evidence-wrap summary{font-size:.73rem;color:rgba(140,170,220,.6);cursor:pointer;list-style:none;display:flex;align-items:center;gap:5px;min-height:40px;user-select:none}
+.fp-evidence-wrap summary::-webkit-details-marker{display:none}
+.fp-evidence-wrap summary::before{content:'▸';font-size:.6rem}
+.fp-evidence-wrap[open] summary::before{content:'▾'}
+.fp-evidence-body{font-size:.76rem;color:rgba(160,180,220,.65);line-height:1.75;margin-top:6px;padding-top:6px;border-top:1px solid rgba(100,140,200,.12)}
+
+/* ══ 연도별 흐름 ══ */
+.fortune-timeline-sec{margin-bottom:10px}
+.ft-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ft-year-card{background:rgba(22,40,85,.4);border:1px solid rgba(100,140,210,.18);border-radius:12px;padding:12px 10px 10px;position:relative}
+.ft-year-card.is-current{border-color:rgba(212,168,78,.45);background:rgba(212,168,78,.07)}
+.ft-year-card.has-transition{border-color:rgba(160,140,210,.4)}
+.ft-current-badge{position:absolute;top:8px;right:8px;font-size:.6rem;color:rgba(212,168,78,.9);background:rgba(212,168,78,.15);border-radius:20px;padding:2px 7px}
+.ft-year-num{font-size:.72rem;color:rgba(180,200,240,.55);margin-bottom:2px}
+.ft-pillar{font-size:1.05rem;font-weight:700;color:#d4c087;margin-bottom:6px}
+.ft-kw-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
+.ft-kw{font-size:.65rem;color:rgba(180,200,240,.7);background:rgba(70,100,190,.15);border-radius:20px;padding:2px 7px}
+.ft-desc{font-size:.73rem;color:rgba(190,210,240,.65);line-height:1.65}
+.ft-transition-note{font-size:.68rem;color:rgba(170,155,220,.8);margin-top:6px;padding-top:5px;border-top:1px solid rgba(150,130,200,.15)}
+
+/* ══ 영역별 흐름 지표 ══ */
+.fortune-area-sec{margin-bottom:10px}
+.fa-header{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.fa-title{font-size:.88rem;font-weight:600;color:rgba(200,215,240,.85)}
+.fa-note{font-size:.72rem;color:rgba(160,180,220,.6);line-height:1.6}
+.fa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fa-card{background:rgba(22,40,85,.35);border:1px solid rgba(100,140,210,.15);border-radius:12px;padding:12px 10px}
+.fa-card.is-concern{border-color:rgba(212,168,78,.4);background:rgba(212,168,78,.07)}
+.fa-card-label{font-size:.72rem;color:rgba(180,200,240,.6);margin-bottom:6px}
+.fa-concern-badge{font-size:.6rem;color:rgba(212,168,78,.85);background:rgba(212,168,78,.15);border-radius:20px;padding:1px 6px;margin-left:4px;vertical-align:middle}
+.fa-dots{display:flex;gap:4px;margin-bottom:8px}
+.fa-dot{width:10px;height:10px;border-radius:50%;background:rgba(100,140,210,.22)}
+.fa-dot.on{background:rgba(140,180,240,.7)}
+.fa-level-label{font-size:.68rem;color:rgba(140,170,220,.65);margin-bottom:6px}
+.fa-desc{font-size:.73rem;color:rgba(180,200,240,.65);line-height:1.65}
+
 /* ── 모바일 카드 간격 압축 ── */
 @media(max-width:600px){
   .concern-display-card{margin-bottom:8px;padding:12px 14px}
@@ -1395,6 +1483,18 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
   .shinsal-grid{gap:7px}
   .sic{padding:11px 10px}
   .sic-desc{font-size:.74rem}
+  .top-concern-worry-grid,.alt-concern-worry-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+  .top-worry-btn,.alt-worry-btn{font-size:.68rem;padding:8px 4px}
+  .concern-change-btn{font-size:.68rem;padding:5px 10px}
+  .ft-grid{grid-template-columns:1fr;gap:8px}
+  .ft-year-card{display:grid;grid-template-columns:56px 1fr;gap:0 10px;align-items:start}
+  .ft-year-num,.ft-pillar{margin-bottom:2px}
+  .ft-pillar{font-size:.95rem}
+  .ft-kw-row{margin-top:4px}
+  .fa-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+  .fa-card{padding:10px 8px}
+  .fa-desc{display:none}
+  .fp-dw-pillar{font-size:1.5rem;min-width:42px}
 }
 
 
@@ -1725,6 +1825,30 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
             <div class="decide-cell premium-col">일·재물·관계의 전체 흐름과 선택 순서 확인</div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- 순서 5b: 다른 고민으로 살펴보기 -->
+    <div id="alt-concern-sec" style="display:none;scroll-margin-top:48px;margin-bottom:16px">
+      <button class="alt-concern-toggle-btn" id="alt-concern-toggle-btn"
+        onclick="toggleAltConcernPanel()"
+        aria-expanded="false" aria-controls="alt-concern-inner">
+        <span>다른 고민으로도 살펴볼 수 있어요</span>
+        <em class="alt-toggle-icon">▾</em>
+      </button>
+      <div class="alt-concern-inner" id="alt-concern-inner" style="display:none">
+        <div class="alt-concern-worry-grid" id="alt-concern-worry-grid"></div>
+        <div id="alt-concern-custom-wrap" style="display:none">
+          <textarea class="cq-textarea" id="alt-cq-input" maxlength="300"
+            placeholder="지금 가장 궁금한 고민을 한 가지 적어주세요.&#10;예: 현재 준비 중인 일이 올해 안에 수입으로 이어질까요?"
+            oninput="updateAltCqCharCount()" aria-label="직접 질문 입력"></textarea>
+          <div class="cq-char-row">
+            <span class="cq-privacy-note">⚠ 개인 연락처·주민등록번호·계좌번호 등 민감한 정보는 입력하지 마세요.</span>
+            <span class="cq-char-count"><span id="alt-cq-char-num">0</span>/300</span>
+          </div>
+          <button class="cq-submit-btn" id="alt-cq-submit-btn" onclick="submitAltCustomQ()" disabled aria-label="질문 확인">이 질문으로 확인하기 →</button>
+        </div>
+        <div id="alt-concern-preview-wrap"></div>
       </div>
     </div>
 
@@ -3795,6 +3919,13 @@ function renderReadingSections(parsed) {
   const concern = S.sajuData?.concern || {};
   let html = '';
 
+  // 디버그 패널 (개발용, ?debugSaju=1에서만 노출)
+  {
+    const _ft = S.sajuData?.fortuneTiming;
+    const _p  = S.sajuData ? calcSaju(S.sajuData.year, S.sajuData.month, S.sajuData.day, S.sajuData.hourVal >= 0 ? S.sajuData.hourVal : -1) : null;
+    if (_p) html += renderFortuneDebugPanel(_ft, _p);
+  }
+
   // 1. 선택한 고민 표시 카드 (anchor: ai-reading-anchor)
   if (concern.selectedBeforeAnalysis && concern.label) {
     const icon = (typeof WORRY_TOPICS !== 'undefined' && WORRY_TOPICS[concern.category])
@@ -3805,8 +3936,23 @@ function renderReadingSections(parsed) {
       <span class="cdc-icon">${icon}</span>
       <div class="cdc-body">
         <p class="cdc-label">이 분석에서 중점적으로 살펴본 고민</p>
-        <p class="cdc-topic">${escHtml(concern.label)}</p>
+        <p class="cdc-topic" id="cdc-topic-text">${escHtml(concern.label)}</p>
         ${customQ}
+      </div>
+      <button class="concern-change-btn" onclick="toggleTopConcernPanel()" aria-expanded="false" id="top-concern-toggle">고민 변경</button>
+    </div>
+    <div class="top-concern-panel" id="top-concern-panel" style="display:none">
+      <p class="top-panel-title">어떤 고민으로 다시 살펴볼까요?</p>
+      <div class="top-concern-worry-grid" id="top-concern-worry-grid"></div>
+      <div id="top-concern-custom-wrap" style="display:none">
+        <textarea class="cq-textarea" id="top-cq-input" maxlength="300"
+          placeholder="지금 가장 궁금한 고민을 한 가지 적어주세요.&#10;예: 현재 준비 중인 일이 올해 안에 수입으로 이어질까요?"
+          oninput="updateTopCqCharCount()" aria-label="직접 질문 입력"></textarea>
+        <div class="cq-char-row">
+          <span class="cq-privacy-note">⚠ 개인 연락처·주민등록번호·계좌번호 등 민감한 정보는 입력하지 마세요.</span>
+          <span class="cq-char-count"><span id="top-cq-char-num">0</span>/300</span>
+        </div>
+        <button class="cq-submit-btn" id="top-cq-submit-btn" onclick="submitTopCustomQ()" disabled>이 질문으로 확인하기 →</button>
       </div>
     </div>`;
   }
@@ -3868,6 +4014,16 @@ function renderReadingSections(parsed) {
   // 5-B. 나의 사주 능력치 카드
   html += renderAbilityCard(S.sajuData?.osokAbilities);
 
+  // 5-C. 현재 운의 위치 + 연도별 흐름 + 영역 신호
+  {
+    const _ft = S.sajuData?.fortuneTiming;
+    const _ftPillars = S.sajuData
+      ? calcSaju(S.sajuData.year, S.sajuData.month, S.sajuData.day,
+          S.sajuData.hourVal >= 0 ? S.sajuData.hourVal : -1)
+      : null;
+    html += renderFortunePositionSection(_ft, _ftPillars, concern);
+  }
+
   // 6. 현재 흐름 (A) + 분석 근거 (B)
   if (parsed.flow || parsed.analysisBasis) {
     html += `<div class="flow-sec">
@@ -3899,11 +4055,11 @@ function renderReadingSections(parsed) {
     const previewLabel = concern.selectedBeforeAnalysis && concern.label
       ? `${escHtml(concern.label)} 관련 흐름 미리보기`
       : '지금 가장 막히는 영역';
-    html += `<div class="topic-preview-sec">
+    html += `<div id="topic-preview-dynamic"><div class="topic-preview-sec">
       <p class="tp-label">✦ ${previewLabel}</p>
       <p class="tp-body">${escHtmlNl(parsed.topicPreview)}</p>
       <div class="tp-blur-bar">나머지 내용은 질문 집중 분석에서 확인할 수 있어요</div>
-    </div>`;
+    </div></div>`;
   }
 
   // 8. 상세 성향 아코디언
@@ -4166,7 +4322,7 @@ function renderZodiac(z){
       <p>${z.el}의 별자리 · 키워드: ${z.key}</p>
     </div>`;
 }
-function buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel,concern){
+function buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel,concern,fortuneTiming){
   const tag=name||'내담자';
   const genderKo=gender==='m'?'남성':'여성';
   const hourStr=knownHour?(hourLabel||getHourDisplay(hourVal)):'출생시간 모름';
@@ -4192,7 +4348,7 @@ ${pillarDesc.join('\n')}
 
 별자리: ${zodiac.name} (${zodiac.dates}) — ${zodiac.el}의 별자리, 키워드: ${zodiac.key}
 
-위 사주팔자와 별자리를 바탕으로 ${tag}님만을 위한 깊이 있는 종합 리딩을 해주세요. 일간의 본질적 성격, 오행의 강약이 삶에 미치는 영향, 사주와 별자리 에너지의 조화, 사랑·직업·재물 각 영역별 흐름, 지금 이 시기의 에너지, 그리고 앞으로의 흐름을 구체적으로 담아주세요.${concern?.selectedBeforeAnalysis && concern.label ? `\n\n특히 이 분은 지금 [${concern.label}]에 대해 가장 관심이 높습니다. 해석 전반에서 이 영역의 흐름을 더 구체적으로 짚어주세요.${concern.question ? ` 관련 질문: "${concern.question}"` : ''}` : ''}`;
+위 사주팔자와 별자리를 바탕으로 ${tag}님만을 위한 깊이 있는 종합 리딩을 해주세요. 일간의 본질적 성격, 오행의 강약이 삶에 미치는 영향, 사주와 별자리 에너지의 조화, 사랑·직업·재물 각 영역별 흐름, 지금 이 시기의 에너지, 그리고 앞으로의 흐름을 구체적으로 담아주세요.${concern?.selectedBeforeAnalysis && concern.label ? `\n\n특히 이 분은 지금 [${concern.label}]에 대해 가장 관심이 높습니다. 해석 전반에서 이 영역의 흐름을 더 구체적으로 짚어주세요.${concern.question ? ` 관련 질문: "${concern.question}"` : ''}` : ''}${buildFortuneTimingPrompt(fortuneTiming)}`;
 }
 
 const CATEGORY_INFO = {
@@ -4274,6 +4430,976 @@ async function submitSajuEmail(){
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   대운·세운 계산 엔진  osok-fortune-v1
+   ═══════════════════════════════════════════════════════════════ */
+
+const OSOK_FORTUNE_VERSION = 'osok-fortune-v1';
+
+/* ── 천간 음양 ── */
+const STEM_POLARITY = {
+  甲:'yang', 乙:'yin', 丙:'yang', 丁:'yin', 戊:'yang',
+  己:'yin',  庚:'yang', 辛:'yin',  壬:'yang', 癸:'yin'
+};
+
+/* ── 60갑자 전체 (60개, 중복·누락 없음) ── */
+const SEXAGENARY_CYCLE = (function(){
+  const cy=[];
+  for(let i=0;i<60;i++) cy.push(STEM_HANJA[i%10]+BRANCH_HANJA[i%12]);
+  return cy;
+})();
+
+/* ── 12절 (대운 월주 경계) ── */
+const JJEOL_12 = [
+  { name:'소한', lon:285, branch:1  }, // 丑월
+  { name:'입춘', lon:315, branch:2  }, // 寅월 (연도 경계)
+  { name:'경칩', lon:345, branch:3  }, // 卯월
+  { name:'청명', lon:15,  branch:4  }, // 辰월
+  { name:'입하', lon:45,  branch:5  }, // 巳월
+  { name:'망종', lon:75,  branch:6  }, // 午월
+  { name:'소서', lon:105, branch:7  }, // 未월
+  { name:'입추', lon:135, branch:8  }, // 申월
+  { name:'백로', lon:165, branch:9  }, // 酉월
+  { name:'한로', lon:195, branch:10 }, // 戌월
+  { name:'입동', lon:225, branch:11 }, // 亥월
+  { name:'대설', lon:255, branch:0  }, // 子월
+];
+
+/* ── JDN 소수 (KST=UTC+9 반영) ── */
+function getJDFloat(y, m, d, hourKST, minKST) {
+  // KST → UTC: subtract 9 hours
+  const utcHour = (hourKST - 9 + 24) % 24;
+  const dayAdj  = (hourKST - 9) < 0 ? -1 : 0;
+  const utcD    = d + dayAdj;
+  // getJDN은 정수일 기준; 실수 부분은 (utcHour-12)/24 + utcMin/1440
+  const base = getJDN(y, m, d) + dayAdj;
+  return base + (utcHour - 12) / 24 + (minKST || 0) / 1440;
+}
+
+/* ── 태양 황도 경도 계산 (Meeus 간략형, 精度 ≈ ±5분) ── */
+function _sunLon(jd) {
+  const T  = (jd - 2451545.0) / 36525;
+  const L0 = ((280.46646 + 36000.76983 * T + 0.0003032 * T * T) % 360 + 360) % 360;
+  const M  = ((357.52911 + 35999.05029 * T - 0.0001537 * T * T) % 360 + 360) % 360;
+  const Mr = M * Math.PI / 180;
+  const C  = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(Mr)
+           + (0.019993 - 0.000101 * T) * Math.sin(2 * Mr)
+           + 0.000289 * Math.sin(3 * Mr);
+  const omega = 125.04 - 1934.136 * T;
+  const lam   = L0 + C - 0.00569 - 0.00478 * Math.sin(omega * Math.PI / 180);
+  return ((lam % 360) + 360) % 360;
+}
+
+/* ── 특정 경도에 도달하는 JD 이분법 탐색 ── */
+function _findSolarTermJD(targetLon, approxJD) {
+  let lo = approxJD - 16, hi = approxJD + 16;
+  for (let i = 0; i < 60; i++) {
+    const mid  = (lo + hi) / 2;
+    const lon  = _sunLon(mid);
+    // 0° 경계 처리
+    let diff = ((lon - targetLon + 540) % 360) - 180;
+    if (diff > 0) hi = mid; else lo = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+/* ── 연도+경도로 근사 JD 추정 (봄분점 기준) ── */
+function _approxJD(year, lon) {
+  // 봄분점(0°) ≈ 3월 20일
+  const equinoxJD = getJDN(year, 3, 20);
+  // 입춘(315°)·소한(285°) 등 270° 이상은 봄분점 이전에 해당 →
+  // 해당 연도 춘분점에서 음수 방향으로 계산
+  let delta = ((lon + 360) % 360);
+  if (delta > 270) delta -= 360; // 예: 315 → -45 (약 45일 전 = 2월 초)
+  return equinoxJD + (delta / 360) * 365.25;
+}
+
+/* ── JD → KST 날짜 문자열 ── */
+function _jdToKSTString(jd) {
+  // JD → UTC milliseconds
+  const ms = (jd - 2440587.5) * 86400000;
+  const dt = new Date(ms + 9 * 3600000); // KST = UTC+9
+  const y  = dt.getUTCFullYear();
+  const mo = String(dt.getUTCMonth() + 1).padStart(2, '0');
+  const d  = String(dt.getUTCDate()).padStart(2, '0');
+  const h  = String(dt.getUTCHours()).padStart(2, '0');
+  const mi = String(dt.getUTCMinutes()).padStart(2, '0');
+  return `${y}-${mo}-${d}T${h}:${mi}:00+09:00`;
+}
+
+/* ── 날짜 문자열 → JD (KST 입력) ── */
+function _kstStringToJD(isoStr) {
+  // "2000-01-01T12:00:00+09:00" → JD
+  const dt = new Date(isoStr);
+  return dt.getTime() / 86400000 + 2440587.5;
+}
+
+/* ── 출생 JD 계산 (출생시간 KST) ── */
+function _birthJD(year, month, day, hourKST, minKST) {
+  if (hourKST < 0) return getJDN(year, month, day) - 0.5; // 모름: 정오 UTC
+  return getJDFloat(year, month, day, hourKST, minKST || 0);
+}
+
+/* ── 특정 JD 시점의 이전·다음 절 찾기 ── */
+function _getBirthTerms(birthJD) {
+  // 절 목록을 JD 값으로 계산
+  // 해당 연도 ± 1년 범위에서 12개 절 후보 생성
+  const bDate = new Date((birthJD - 2440587.5) * 86400000);
+  const bYear = bDate.getUTCFullYear();
+
+  const candidates = [];
+  for (let yr = bYear - 1; yr <= bYear + 1; yr++) {
+    for (const jj of JJEOL_12) {
+      const approx = _approxJD(yr, jj.lon);
+      const jdv    = _findSolarTermJD(jj.lon, approx);
+      candidates.push({ name: jj.name, lon: jj.lon, branch: jj.branch, jd: jdv });
+    }
+  }
+  candidates.sort((a, b) => a.jd - b.jd);
+
+  let prev = null, next = null;
+  for (const c of candidates) {
+    if (c.jd <= birthJD) prev = c;
+    else if (!next) next = c;
+  }
+  return { prev, next };
+}
+
+/* ── 대운 방향 결정 ── */
+function getDaewoonDirection(yearStemIdx, gender) {
+  const stemHanja = STEM_HANJA[yearStemIdx];
+  const polarity  = STEM_POLARITY[stemHanja] || 'yang';
+  let direction;
+  if ((polarity === 'yang' && gender === 'm') || (polarity === 'yin' && gender === 'f')) {
+    direction = 'forward';
+  } else {
+    direction = 'backward';
+  }
+  return {
+    direction,
+    evidence: { yearStemIdx, stemHanja, polarity, gender }
+  };
+}
+
+/* ── 대운 시작 나이 계산 ── */
+function calcDaewoonStart(birthJD, direction, birthTimeKnown) {
+  if (!birthTimeKnown) {
+    // 범위 계산: 00:00 ~ 23:59 (정오 UTC 기준 ±12h)
+    const jdDay = Math.floor(birthJD - 0.5) + 0.5; // 자정 UTC
+    const jdMin = jdDay;         // 00:00 UTC (근사)
+    const jdMax = jdDay + 23.99 / 24;
+    const startMin = _calcStartAgeFromJD(jdMin, direction);
+    const startMax = _calcStartAgeFromJD(jdMax, direction);
+    return {
+      birthTimeKnown: false,
+      precision: 'date_range',
+      startAgeRange: { minYears: Math.min(startMin.ageExact, startMax.ageExact), maxYears: Math.max(startMin.ageExact, startMax.ageExact) },
+      terms: startMin.terms
+    };
+  }
+  const result = _calcStartAgeFromJD(birthJD, direction);
+  return {
+    birthTimeKnown: true,
+    precision: 'datetime',
+    startAgeExact: result.ageExact,
+    startAge: result.ageParts,
+    referenceTerm: result.terms[direction === 'forward' ? 'next' : 'prev'],
+    termDirection: direction === 'forward' ? 'next' : 'previous',
+    terms: result.terms
+  };
+}
+
+function _calcStartAgeFromJD(birthJD, direction) {
+  const terms = _getBirthTerms(birthJD);
+  const ref   = direction === 'forward' ? terms.next : terms.prev;
+  if (!ref) return { ageExact: 0, ageParts: { years: 0, months: 0, days: 0 }, terms };
+  const diffDays = Math.abs(ref.jd - birthJD);
+  const ageExact = diffDays / 3;
+  const totalDays = ageExact * 365.25;
+  const years  = Math.floor(totalDays / 365.25);
+  const months = Math.floor((totalDays % 365.25) / 30.4375);
+  const days   = Math.round((totalDays % 30.4375));
+  return { ageExact, ageParts: { years, months, days }, terms };
+}
+
+/* ── 날짜 덧셈 (달력 기반) ── */
+function _addYearsToDate(isoDate, years) {
+  const dt  = new Date(isoDate + 'T00:00:00+09:00');
+  const totalDays = years * 365.25;
+  dt.setUTCDate(dt.getUTCDate() + Math.round(totalDays));
+  const y  = dt.getUTCFullYear();
+  const mo = String(dt.getUTCMonth() + 1).padStart(2, '0');
+  const d  = String(dt.getUTCDate()).padStart(2, '0');
+  return `${y}-${mo}-${d}`;
+}
+
+/* ── 60갑자 인덱스 계산 ── */
+function _sexIdx(stem, branch) {
+  for (let n = 0; n < 60; n++) {
+    if (n % 10 === stem && n % 12 === branch) return n;
+  }
+  return 0;
+}
+
+/* ── 대운 간지 배열 생성 ── */
+function generateDaewoonList(monthPillar, direction, startInfo, birthDateISO) {
+  const mIdx    = _sexIdx(monthPillar.stem, monthPillar.branch);
+  const step    = direction === 'forward' ? 1 : -1;
+  const list    = [];
+
+  // 대운 시작 나이 결정
+  let ageStart;
+  if (startInfo.birthTimeKnown) {
+    ageStart = startInfo.startAgeExact;
+  } else {
+    ageStart = (startInfo.startAgeRange.minYears + startInfo.startAgeRange.maxYears) / 2;
+  }
+
+  for (let i = 0; i < 9; i++) {
+    const cycleIdx = ((mIdx + step * (i + 1)) % 60 + 60) % 60;
+    const pillar   = SEXAGENARY_CYCLE[cycleIdx];
+    const stem     = cycleIdx % 10;
+    const branch   = cycleIdx % 12;
+    const dStart   = ageStart + i * 10;
+    const dEnd     = dStart + 10;
+    const startDate = _addYearsToDate(birthDateISO, dStart);
+    const endDate   = _addYearsToDate(birthDateISO, dEnd);
+    list.push({ index: i, pillar, stem, branch, direction, startAge: dStart, endAge: dEnd, startDate, endDate });
+  }
+  return list;
+}
+
+/* ── 입춘 JD (연도별, KST) ── */
+function _ipchunJD(year) {
+  const approx = _approxJD(year, 315); // 입춘 = 315°
+  return _findSolarTermJD(315, approx);
+}
+
+/* ── 세운 간지 계산 (입춘 기준, KST) ── */
+function getSewoonPillar(calendarYear) {
+  // 입춘 JD (UTC)
+  const ipchunJD   = _ipchunJD(calendarYear);
+  const ipchunISO  = _jdToKSTString(ipchunJD);
+  // 입춘 이전이면 이전 해 기준
+  const sajuYear   = calendarYear; // displayYear 자체로 간지 계산
+  const cycleIdx   = ((sajuYear - 4) % 60 + 60) % 60;
+  return {
+    displayYear: calendarYear,
+    pillar:  SEXAGENARY_CYCLE[cycleIdx],
+    stem:    cycleIdx % 10,
+    branch:  cycleIdx % 12,
+    ipchun:  ipchunISO,
+    periodStart: ipchunISO,
+    periodEnd:   _jdToKSTString(_ipchunJD(calendarYear + 1)),
+    verified: true
+  };
+}
+
+/* ── 특정 날짜(ISO)의 세운 ── */
+function getSewoonAtDate(isoDate) {
+  const dtMs  = new Date(isoDate + 'T00:00:00+09:00').getTime();
+  const dtJD  = dtMs / 86400000 + 2440587.5;
+  const year  = new Date(isoDate + 'T00:00:00+09:00').getUTCFullYear();
+  // 해당 해 입춘 JD
+  const ip    = _ipchunJD(year);
+  const sajuYear = dtJD >= ip ? year : year - 1;
+  const cycleIdx = ((sajuYear - 4) % 60 + 60) % 60;
+  const ipISO    = _jdToKSTString(_ipchunJD(sajuYear + 1)); // 이 세운의 종료 = 다음 입춘
+  const ipStart  = _jdToKSTString(_ipchunJD(sajuYear));
+  return {
+    displayYear: year,
+    sajuYear,
+    pillar:  SEXAGENARY_CYCLE[cycleIdx],
+    stem:    cycleIdx % 10,
+    branch:  cycleIdx % 12,
+    periodStart: ipStart,
+    periodEnd:   ipISO,
+    verified: true
+  };
+}
+
+/* ── 특정 날짜의 대운 찾기 ── */
+function findDaewoonAtDate(isoDate, daewoonList, birthDateISO) {
+  if (!daewoonList || !daewoonList.length) return null;
+  const target  = new Date(isoDate + 'T00:00:00+09:00').getTime();
+  // 대운 경계 날짜 기준으로 탐색
+  for (let i = daewoonList.length - 1; i >= 0; i--) {
+    const dw = daewoonList[i];
+    const dwStart = new Date(dw.startDate + 'T00:00:00+09:00').getTime();
+    if (target >= dwStart) return dw;
+  }
+  return null; // 대운 시작 전 (초년 대운 이전)
+}
+
+/* ── 연도별 타임라인 생성 ── */
+function generateYearlyTimeline(daewoonList, birthDateISO, startYear, endYear) {
+  const timeline = [];
+  for (let yr = startYear; yr <= endYear; yr++) {
+    const sewoon = getSewoonPillar(yr);
+    // 해당 연도 1월 1일 기준 대운 찾기
+    const dw1 = findDaewoonAtDate(`${yr}-01-01`, daewoonList, birthDateISO);
+    // 해당 연도 12월 31일 기준 대운 (전환 감지)
+    const dw2 = findDaewoonAtDate(`${yr}-12-31`, daewoonList, birthDateISO);
+    const transition = dw1 && dw2 && dw1.pillar !== dw2.pillar;
+    const row = {
+      year: yr,
+      sewoon: { pillar: sewoon.pillar, stem: sewoon.stem, branch: sewoon.branch, ipchun: sewoon.ipchun },
+      daewoon: dw1 ? { pillar: dw1.pillar, stem: dw1.stem, branch: dw1.branch, startDate: dw1.startDate, endDate: dw1.endDate } : null,
+      calculationBasis: ['daewoon', 'sewoon'],
+      verified: true
+    };
+    if (transition) {
+      row.transitionWithinYear = true;
+      row.periods = [
+        { from: `${yr}-01-01`, to: dw2.startDate, daewoonPillar: dw1?.pillar || '' },
+        { from: dw2.startDate, to: `${yr}-12-31`, daewoonPillar: dw2.pillar }
+      ];
+    }
+    timeline.push(row);
+  }
+  return timeline;
+}
+
+/* ── 주력: 대운·세운 통합 계산 ── */
+function calculateFortuneTiming(sajuData, pillars) {
+  const { year, month, day, hourVal, gender } = sajuData;
+  if (!year || !month || !day) return { available: false, reason: 'insufficient_birth_data' };
+
+  const knownHour = hourVal >= 0;
+  // 시각 → 시간(KST) 환산: 시주 인덱스 → 중간 시각 (0시=자시=23시 근사)
+  let hourKST = 12; // 모름이면 정오 UTC 사용 (대표값, 범위 계산에서는 별도)
+  if (knownHour) {
+    // hourVal은 UI 시간(KST), 시주 branch index가 아님
+    hourKST = hourVal;
+  }
+
+  const birthDateISO = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  const birthJD      = knownHour ? getJDFloat(year, month, day, hourKST, 0) : (getJDN(year, month, day) - 0.5);
+
+  // 대운 방향
+  const dirResult = getDaewoonDirection(pillars.year.stem, gender === 'm' ? 'm' : 'f');
+  const direction = dirResult.direction;
+
+  // 절기 기준
+  const terms = _getBirthTerms(birthJD);
+
+  // 대운 시작 나이
+  const startInfo = calcDaewoonStart(birthJD, direction, knownHour);
+
+  // 대운 간지 배열
+  const daewoonList = generateDaewoonList(
+    { stem: pillars.month.stem, branch: pillars.month.branch },
+    direction, startInfo, birthDateISO
+  );
+
+  // 기준 날짜 (서비스 날짜)
+  const refDate    = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const refYear    = parseInt(refDate.slice(0, 4));
+
+  // 현재 대운·세운
+  const currentDaewoon = findDaewoonAtDate(refDate, daewoonList, birthDateISO);
+  const currentSewoon  = getSewoonAtDate(refDate);
+
+  // 다음 대운
+  const nextDaewoon = currentDaewoon
+    ? (daewoonList[currentDaewoon.index + 1] || null)
+    : (daewoonList[0] || null);
+
+  // 연도별 타임라인 (무료: 현재±2년, 유료: 현재-2~+5년)
+  const freeStart  = refYear - 1;
+  const freeEnd    = refYear + 2;
+  const paidStart  = refYear - 2;
+  const paidEnd    = refYear + 5;
+  const freeTimeline = generateYearlyTimeline(daewoonList, birthDateISO, freeStart, freeEnd);
+  const paidTimeline = generateYearlyTimeline(daewoonList, birthDateISO, paidStart, paidEnd);
+
+  // 대운 전환 연도 목록
+  const transitions = daewoonList.map(dw => ({ pillar: dw.pillar, startDate: dw.startDate, startAge: dw.startAge }));
+
+  const solarTermsInfo = {
+    previousTerm: terms.prev ? { name: terms.prev.name, datetime: _jdToKSTString(terms.prev.jd) } : null,
+    nextTerm:     terms.next ? { name: terms.next.name, datetime: _jdToKSTString(terms.next.jd) } : null,
+    source: 'meeus_simplified',
+    timezone: 'Asia/Seoul',
+    verified: true
+  };
+
+  const precision = {
+    birthTime:    knownHour ? 'exact' : 'unknown',
+    daewoonStart: startInfo.precision,
+    solarTerms:   'verified'
+  };
+
+  // 검증 — 필수 데이터가 모두 있을 때만 verified:true
+  const verifyReason = !currentDaewoon   ? 'missing_current_daewoon'
+                     : !currentSewoon    ? 'missing_current_sewoon'
+                     : !freeTimeline.length ? 'annual_timeline_too_short'
+                     : null;
+
+  const result = {
+    available:       true,
+    verified:        verifyReason === null,
+    verifyReason:    verifyReason || '',
+    ruleVersion:     OSOK_FORTUNE_VERSION,
+    calculatedAt:    new Date().toISOString(),
+    referenceDate:   refDate,
+    direction,
+    directionEvidence: dirResult.evidence,
+    solarTerms:      solarTermsInfo,
+    daewoonStart:    startInfo,
+    daewoonList,
+    currentDaewoon,
+    nextDaewoon,
+    currentSewoon,
+    freeTimeline,
+    paidTimeline,
+    transitions,
+    precision
+  };
+
+  console.debug('[fortuneTiming]', {
+    exists:               true,
+    available:            result.available,
+    verified:             result.verified,
+    hasCurrentDaewoon:    Boolean(result.currentDaewoon),
+    hasCurrentSewoon:     Boolean(result.currentSewoon),
+    yearlyTimelineLength: result.freeTimeline?.length ?? 0,
+    hiddenReason:         result.verifyReason || 'none'
+  });
+
+  return result;
+}
+
+/* ── fortuneTiming → API 프롬프트 삽입 텍스트 생성 ── */
+function buildFortuneTimingPrompt(ft) {
+  if (!ft || !ft.available) return '';
+  const lines = ['\n[대운·세운 계산 데이터 — 아래 값만 사용하세요. 임의로 연도·간지를 생성하지 마세요.]'];
+  if (ft.currentDaewoon) {
+    lines.push(`현재 대운: ${ft.currentDaewoon.pillar} (${ft.currentDaewoon.startDate} ~ ${ft.currentDaewoon.endDate})`);
+  } else {
+    lines.push('현재 대운: 대운 시작 전 (초년 운)');
+  }
+  if (ft.nextDaewoon) {
+    lines.push(`다음 대운: ${ft.nextDaewoon.pillar} (${ft.nextDaewoon.startDate} ~)`);
+  }
+  lines.push(`현재 세운: ${ft.currentSewoon.pillar} (${ft.currentSewoon.periodStart.slice(0,10)} ~ ${ft.currentSewoon.periodEnd.slice(0,10)})`);
+  if (ft.freeTimeline?.length) {
+    lines.push('연도별 세운: ' + ft.freeTimeline.map(r => `${r.year}년=${r.sewoon.pillar}${r.transitionWithinYear ? '(대운전환)' : ''}`).join(', '));
+  }
+  lines.push('');
+  lines.push('※ 규칙: 위 기간 내 간지만 언급. 제공되지 않은 연도 날짜 생성 금지. 사건 확정 금지 — 흐름과 선택의 유리함을 설명.');
+  if (ft.precision?.birthTime === 'unknown') {
+    lines.push('※ 출생시간 모름: 대운 시작 시기를 정확한 날짜 대신 범위(예: "약 X~Y세 무렵")로 표현하세요.');
+  }
+  return lines.join('\n');
+}
+
+/* ── 대운 시작 나이 표시 텍스트 ── */
+function formatDaewoonStartDisplay(startInfo) {
+  if (startInfo.birthTimeKnown) {
+    const { years, months } = startInfo.startAge;
+    return `${years}세 ${months > 0 ? months + '개월' : ''}부터`;
+  } else {
+    const lo = startInfo.startAgeRange.minYears;
+    const hi = startInfo.startAgeRange.maxYears;
+    const loY = Math.floor(lo), hiY = Math.floor(hi);
+    return loY === hiY ? `약 ${loY}세 무렵` : `약 ${loY}~${hiY}세 무렵`;
+  }
+}
+
+/* ── 디버그 패널 (개발용, ?debugSaju=1) ── */
+function renderFortuneDebugPanel(ft, pillars) {
+  if (typeof window === 'undefined') return '';
+  const params = new URLSearchParams(window.location.search);
+  if (!params.get('debugSaju')) return '';
+  if (!ft || !ft.available) return `<div class="fortune-debug-panel"><b>[대운·세운 DEBUG]</b> available: false — ${ft?.reason}</div>`;
+
+  const dw   = ft.currentDaewoon;
+  const sw   = ft.currentSewoon;
+  const si   = ft.daewoonStart;
+  const st   = ft.solarTerms;
+  const rows = [
+    ['규칙 버전', ft.ruleVersion],
+    ['계산 일시', ft.calculatedAt],
+    ['기준 날짜', ft.referenceDate],
+    ['년주', STEM_HANJA[pillars.year.stem]+BRANCH_HANJA[pillars.year.branch]],
+    ['월주', STEM_HANJA[pillars.month.stem]+BRANCH_HANJA[pillars.month.branch]],
+    ['일주', STEM_HANJA[pillars.day.stem]+BRANCH_HANJA[pillars.day.branch]],
+    ['시주', pillars.hour.stem>=0 ? STEM_HANJA[pillars.hour.stem]+BRANCH_HANJA[pillars.hour.branch] : '모름'],
+    ['연간 음양', ft.directionEvidence?.polarity || '-'],
+    ['성별', ft.directionEvidence?.gender || '-'],
+    ['대운 방향', ft.direction === 'forward' ? '순행' : '역행'],
+    ['이전 절기', st?.previousTerm ? `${st.previousTerm.name} (${st.previousTerm.datetime})` : '-'],
+    ['다음 절기', st?.nextTerm ? `${st.nextTerm.name} (${st.nextTerm.datetime})` : '-'],
+    ['대운 시작 나이', formatDaewoonStartDisplay(si)],
+    ['대운 시작 날짜/범위', si.birthTimeKnown ? (si.referenceTerm?.datetime || '-') : `${si.startAgeRange?.minYears?.toFixed(2)}~${si.startAgeRange?.maxYears?.toFixed(2)}년`],
+    ['현재 대운', dw ? `${dw.pillar} (${dw.startDate}~${dw.endDate})` : '대운 前'],
+    ['현재 세운', sw ? `${sw.pillar} (${sw.periodStart.slice(0,10)}~${sw.periodEnd.slice(0,10)})` : '-'],
+    ['입춘 시각', sw?.periodStart || '-'],
+    ['계산 정밀도', JSON.stringify(ft.precision)],
+    ['라이브러리', 'meeus_simplified (내장, JDN+bisection)'],
+    ['대운 배열', (ft.daewoonList||[]).map(d=>`${d.pillar}(${d.startDate})`).join(' → ')],
+  ];
+  const tableRows = rows.map(([k,v]) => `<tr><td style="padding:2px 8px;color:#aaa;white-space:nowrap">${k}</td><td style="padding:2px 8px;color:#ddd;word-break:break-all">${escHtml(String(v||'-'))}</td></tr>`).join('');
+  return `<div class="fortune-debug-panel" style="background:rgba(0,0,50,.85);border:1px solid #446;border-radius:10px;padding:14px;margin:16px 0;font-size:.72rem;font-family:monospace">
+    <b style="color:#8af">[대운·세운 DEBUG — ?debugSaju=1]</b>
+    <table style="margin-top:8px;border-collapse:collapse">${tableRows}</table>
+  </div>`;
+}
+
+/* ── 단위 테스트 ── */
+function _runFortuneTests() {
+  const results = [];
+  function t(name, pass, detail) { results.push({ name, pass, detail: detail||'' }); }
+
+  // A. 60갑자 무결성
+  t('60갑자 개수', SEXAGENARY_CYCLE.length === 60, `count=${SEXAGENARY_CYCLE.length}`);
+  t('60갑자 중복 없음', new Set(SEXAGENARY_CYCLE).size === 60, '');
+  t('60갑자 순환 첫→마지막+1', (() => {
+    const lastIdx = SEXAGENARY_CYCLE.length - 1;
+    const lastStem   = lastIdx % 10;
+    const lastBranch = lastIdx % 12;
+    const nextStem   = (lastStem + 1) % 10;
+    const nextBranch = (lastBranch + 1) % 12;
+    return SEXAGENARY_CYCLE[0] === STEM_HANJA[nextStem] + BRANCH_HANJA[nextBranch];
+  })(), '');
+
+  // A. 대운 방향
+  t('양년 남성→순행', getDaewoonDirection(0/*甲*/, 'm').direction === 'forward', '');  // 甲=yang+male
+  t('음년 여성→순행', getDaewoonDirection(1/*乙*/, 'f').direction === 'forward', '');  // 乙=yin+female
+  t('음년 남성→역행', getDaewoonDirection(1/*乙*/, 'm').direction === 'backward', ''); // 乙=yin+male
+  t('양년 여성→역행', getDaewoonDirection(0/*甲*/, 'f').direction === 'backward', ''); // 甲=yang+female
+
+  // B. 순행 대운 — 첫 대운 = 월주 다음 간지
+  {
+    const monthStem = 0, monthBranch = 0; // 甲子(0번)
+    const mIdx   = _sexIdx(monthStem, monthBranch); // 0
+    const list   = generateDaewoonList({ stem: monthStem, branch: monthBranch }, 'forward',
+      { birthTimeKnown: true, startAgeExact: 7, startAge: { years:7,months:0,days:0 } }, '2000-01-01');
+    t('순행 첫대운 = 월주+1', list[0].pillar === SEXAGENARY_CYCLE[(mIdx+1)%60], `got=${list[0].pillar} expected=${SEXAGENARY_CYCLE[(mIdx+1)%60]}`);
+    t('순행 두번째 대운 순서대로', list[1].pillar === SEXAGENARY_CYCLE[(mIdx+2)%60], '');
+  }
+
+  // C. 역행 대운
+  {
+    const monthStem = 0, monthBranch = 0; // 甲子(0번)
+    const mIdx  = _sexIdx(monthStem, monthBranch);
+    const list  = generateDaewoonList({ stem: monthStem, branch: monthBranch }, 'backward',
+      { birthTimeKnown: true, startAgeExact: 5, startAge: { years:5,months:0,days:0 } }, '2000-01-01');
+    t('역행 첫대운 = 월주-1', list[0].pillar === SEXAGENARY_CYCLE[(mIdx-1+60)%60], `got=${list[0].pillar}`);
+    t('역행 두번째 역순', list[1].pillar === SEXAGENARY_CYCLE[(mIdx-2+60)%60], '');
+  }
+
+  // D. 입춘 경계 세운
+  {
+    // 2024년 입춘 ≈ 2024-02-04
+    const sw_before = getSewoonAtDate('2024-01-30'); // 입춘 前
+    const sw_after  = getSewoonAtDate('2024-02-10'); // 입춘 後
+    t('입춘 前後 세운 간지 다름', sw_before.pillar !== sw_after.pillar, `before=${sw_before.pillar} after=${sw_after.pillar}`);
+    t('입춘 직전은 이전 세운', sw_before.sajuYear === 2023, `sajuYear=${sw_before.sajuYear}`);
+    t('입춘 이후는 해당 세운', sw_after.sajuYear === 2024, `sajuYear=${sw_after.sajuYear}`);
+  }
+
+  // E. 출생시간 모름 범위
+  {
+    const jdNoon  = getJDN(1990, 5, 15);
+    const siRange = calcDaewoonStart(jdNoon, 'forward', false);
+    t('출생시간 모름 precision=date_range', siRange.precision === 'date_range', '');
+    t('minYears <= maxYears', siRange.startAgeRange.minYears <= siRange.startAgeRange.maxYears, '');
+  }
+
+  // F. 절기 계산 합리성 (입춘 ≈ 2월 초)
+  {
+    const ipJD  = _ipchunJD(2024);
+    const ipISO = _jdToKSTString(ipJD);
+    const ipMo  = parseInt(ipISO.slice(5, 7));
+    t('입춘 월=2월', ipMo === 2, `got=${ipISO}`);
+    t('입춘 일=2~6일', parseInt(ipISO.slice(8,10)) >= 2 && parseInt(ipISO.slice(8,10)) <= 6, `got=${ipISO}`);
+  }
+
+  // G. 대운 9개 생성
+  {
+    const list = generateDaewoonList({ stem: 5, branch: 5 }, 'forward',
+      { birthTimeKnown: true, startAgeExact: 8, startAge: { years:8,months:0,days:0 } }, '2000-01-01');
+    t('대운 9개 생성', list.length === 9, `count=${list.length}`);
+    t('대운 시작 나이 순증', list.every((d,i) => i===0 || d.startAge > list[i-1].startAge), '');
+  }
+
+  const pass = results.filter(r=>r.pass).length;
+  const fail = results.filter(r=>!r.pass).length;
+  console.log(`[FortuneTests] ${pass}/${results.length} passed, ${fail} failed`);
+  results.filter(r=>!r.pass).forEach(r => console.warn(`  FAIL: ${r.name}`, r.detail));
+  return results;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   운의 위치·타임라인 렌더링 엔진
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 지장간 주기 (지지별 대표 천간 인덱스) ── */
+const BRANCH_PRIMARY_STEM = [9,5,0,1,4,2,3,5,6,7,4,8]; // 子丑寅卯辰巳午未申酉戌亥
+
+/* ── 대운 단계 ── */
+const DAEWOON_PHASE_LABELS = { entry:'진입 구간', development:'전개 구간', peak:'정점 구간', transition:'정리·전환 구간' };
+const DAEWOON_PHASE_DESC = {
+  entry:      '새로운 10년 흐름에 적응하며 기존 방식과 달라진 조건을 파악하는 구간이에요.',
+  development:'이 대운의 성격이 생활과 선택에서 본격적으로 드러나는 구간이에요.',
+  peak:       '이 대운에서 반복해온 선택과 방향이 가장 선명하게 나타나는 구간이에요.',
+  transition: '현재 대운에서 가져갈 것과 정리할 것을 구분하며 다음 흐름을 준비하는 구간이에요.'
+};
+function getDaewoonPhase(r) {
+  if (r < 0.2) return 'entry';
+  if (r < 0.5) return 'development';
+  if (r < 0.8) return 'peak';
+  return 'transition';
+}
+function getDaewoonProgress(dw, refDate) {
+  if (!dw?.startDate || !dw?.endDate) return 0;
+  const s = new Date(dw.startDate + 'T00:00:00+09:00').getTime();
+  const e = new Date(dw.endDate   + 'T00:00:00+09:00').getTime();
+  const n = new Date(refDate      + 'T00:00:00+09:00').getTime();
+  if (n <= s) return 0;
+  if (n >= e) return 1;
+  return (n - s) / (e - s);
+}
+
+/* ── 십성별 주제 ── */
+const TEN_GOD_THEMES = {
+  비견: ['자기 기준','독립','동료'], 겁재: ['경쟁','분배','주도권'],
+  식신: ['생산','꾸준한 실행','생활'], 상관: ['표현','변화','기존 방식 수정'],
+  편재: ['기회','유동 자원','외부 활동'], 정재: ['축적','관리','안정적인 성과'],
+  편관: ['압박','도전','책임 대응'], 정관: ['질서','책임','사회적 역할'],
+  편인: ['새로운 해석','전문성','전환 학습'], 정인: ['학습','회복','기반 정비']
+};
+
+/* ── 연도별 카드 설명 템플릿 ── */
+const SIPSUNG_YEAR_TPL = {
+  비견: { kw:['자기 기준','독립'], desc:'스스로의 방향과 판단을 중심에 두는 흐름이에요. 기존 관계나 구조보다 나 자신의 기준을 정비하는 것이 중요해져요.' },
+  겁재: { kw:['주도권','분배'],   desc:'경쟁과 분배가 생기는 구간이에요. 자원을 나누거나 협력 방식을 조율하는 선택이 중요해져요.' },
+  식신: { kw:['생산','꾸준한 실행'], desc:'꾸준히 쌓아온 것을 생활로 연결하는 흐름이에요. 새것보다 기존에 시작한 일을 완성하는 쪽에 에너지가 모여요.' },
+  상관: { kw:['표현','변화'],     desc:'기존 방식을 수정하고 새로운 표현을 시도하는 흐름이 나타나요. 고정된 틀보다 유연한 접근이 힘을 발휘해요.' },
+  편재: { kw:['기회','외부 활동'], desc:'다양한 기회와 외부 활동이 활발해지는 흐름이에요. 여러 선택지가 생기는 만큼 우선순위를 잡는 것이 중요해요.' },
+  정재: { kw:['축적','안정 관리'], desc:'수입과 지출을 꼼꼼히 관리하며 안정적인 성과를 만드는 흐름이에요. 크게 벌기보다 관리하는 방식이 결실로 이어져요.' },
+  편관: { kw:['도전','책임'],     desc:'압박과 도전이 있지만 이를 통해 책임 역량이 성장하는 흐름이에요. 부담스러운 역할이 실력 증명의 기회가 될 수 있어요.' },
+  정관: { kw:['질서','사회적 역할'], desc:'사회적 역할과 책임이 강조되는 흐름이에요. 규칙과 약속을 지키며 신뢰를 쌓는 선택이 힘을 발휘해요.' },
+  편인: { kw:['전문성','전환 학습'], desc:'새로운 분야를 탐색하고 전문성을 쌓는 흐름이 나타나요. 기존 방식을 다르게 해석하는 시각이 도움이 돼요.' },
+  정인: { kw:['기반 정비','회복'], desc:'기반을 정비하고 회복하며 다음 단계를 준비하는 흐름이에요. 급하게 성과를 내기보다 내실을 다지는 시간이에요.' }
+};
+
+/* ── 영역별 관련 십성 매핑 ── */
+const AREA_SIPSUNG = {
+  work:         ['정관','편관','식신','상관','편인','정인'],
+  money:        ['정재','편재','식신','상관'],
+  relationship: ['정관','편관','비견','겁재','식신','상관']
+};
+const AREA_LABELS  = { work:'일·활동', money:'재물·자원', relationship:'관계·소통' };
+const AREA_LEVEL_LABELS = { 1:'정비 중심', 2:'변화 신호', 3:'움직임이 큰 편' };
+
+const CONCERN_AREA_MAP = {
+  work:'work', business:'work', money:'money',
+  love:'relationship', marriage:'relationship', family:'relationship',
+  year:'overall', custom:'custom'
+};
+
+/* ── 고민→영역 매핑 ── */
+function getConcernArea(category) { return CONCERN_AREA_MAP[category] || null; }
+
+/* ── 4개 십성 수집 (대운 천간/지지, 세운 천간/지지) ── */
+function collectFortuneSipsung(ft, dayStem) {
+  const list = [];
+  function add(stemIdx) {
+    if (stemIdx >= 0 && stemIdx <= 9) list.push(calcSipsung(dayStem, stemIdx));
+  }
+  if (ft.currentDaewoon) {
+    add(ft.currentDaewoon.stem);
+    add(BRANCH_PRIMARY_STEM[ft.currentDaewoon.branch]);
+  }
+  if (ft.currentSewoon) {
+    add(ft.currentSewoon.stem);
+    add(BRANCH_PRIMARY_STEM[ft.currentSewoon.branch]);
+  }
+  return list;
+}
+
+/* ── 영역별 레벨 계산 ── */
+function calcAreaLevel(sipsungList, area) {
+  const relevant = AREA_SIPSUNG[area] || [];
+  const count = sipsungList.filter(s => relevant.includes(s)).length;
+  if (count === 0) return 1;
+  if (count === 1) return 2;
+  return 3;
+}
+
+/* ── 영역별 해설 ── */
+const AREA_DESCS = {
+  work: [
+    '현재 흐름에서 일·활동 관련 변화 신호는 크지 않아요. 내실을 다지며 기반을 정비하는 시기에 가까워요.',
+    '책임과 실행을 뜻하는 신호가 움직여, 맡은 역할을 구체적인 결과로 만드는 쪽에 초점이 생겨요.',
+    '일·활동 관련 여러 신호가 겹쳐 있어요. 새로운 역할이나 방향 전환이 뚜렷하게 나타나는 흐름이에요.'
+  ],
+  money: [
+    '재물 흐름은 조용한 편이에요. 수입보다 관리와 지출 방식을 정비하는 시기에 가까워요.',
+    '재물 관련 신호가 움직이고 있어요. 기회 자체보다 들어오고 나가는 자원을 관리하는 방식이 중요해요.',
+    '재물·자원 관련 신호가 여럿 겹쳐 있어요. 수입 기회와 지출 결정 모두 신중하게 다루는 것이 중요해요.'
+  ],
+  relationship: [
+    '관계에서 크게 넓히는 흐름보다 기존 관계를 정비하고 조율하는 시기에 가까워요.',
+    '관계·소통 관련 신호가 움직이고 있어요. 역할과 표현 방식을 조율하는 선택이 중요해져요.',
+    '관계·소통 신호가 여럿 겹쳐 있어요. 새로운 관계보다 기존 관계에서의 변화와 선택이 핵심이에요.'
+  ]
+};
+
+/* ── 피해야 할 선택 (십성 기반 주의 사항) ── */
+const SIPSUNG_CAUTION = {
+  비견:'혼자 결정을 내리기 쉬운 상황일수록 신뢰할 수 있는 의견을 확인하세요.',
+  겁재:'자원이나 역할이 분산될 때, 놓치지 말아야 할 핵심을 먼저 확인하세요.',
+  식신:'꾸준함이 중요한 시기이므로 성급한 방향 전환보다 완성에 집중하세요.',
+  상관:'변화와 수정이 활발한 만큼, 기존 관계나 약속을 소홀히 하지 마세요.',
+  편재:'기회가 많아 보이는 시기일수록 투자와 지출 결정에 신중하게 접근하세요.',
+  정재:'관리 능력이 빛나는 시기이지만, 지나친 절약이나 경직된 계획은 조율이 필요해요.',
+  편관:'압박을 무리하게 참기보다 감당할 수 있는 범위를 명확히 하세요.',
+  정관:'규칙과 역할에 과도하게 맞추다가 본인의 방향을 잃지 않도록 주의하세요.',
+  편인:'새로운 것을 탐색할 때, 기존에 진행 중인 일의 완성도를 놓치지 마세요.',
+  정인:'회복과 정비에 집중할 때, 급하게 새로운 성과를 내려는 압박을 내려두세요.'
+};
+
+/* ── 피할 것 1개 추출 (세운 천간 십성 기준) ── */
+function getYearCaution(dayStem, sewoonStem) {
+  const sg = calcSipsung(dayStem, sewoonStem);
+  return SIPSUNG_CAUTION[sg] || '';
+}
+
+/* ── 대운 기간 표시 문자열 ── */
+function formatDwPeriodDisplay(dw, precision) {
+  if (!dw) return '';
+  const s = dw.startDate?.slice(0,7) || '';
+  const e = dw.endDate?.slice(0,7)   || '';
+  if (precision === 'date_range') {
+    return `약 ${s.slice(0,4)}년 무렵 ~ 약 ${e.slice(0,4)}년 무렵`;
+  }
+  const sm = s ? `${s.slice(0,4)}년 ${parseInt(s.slice(5,7))}월경` : '';
+  const em = e ? `${e.slice(0,4)}년 ${parseInt(e.slice(5,7))}월경` : '';
+  return `${sm} ~ ${em}`;
+}
+
+/* ── 대운 현재 위치 카드 렌더 ── */
+function renderCurrentPositionCard(ft, pillars) {
+  const dw  = ft.currentDaewoon;
+  const sw  = ft.currentSewoon;
+  const ref = ft.referenceDate || new Date().toISOString().slice(0,10);
+  const progRatio = getDaewoonProgress(dw, ref);
+  const phase     = getDaewoonPhase(progRatio);
+  const phaseLabel= DAEWOON_PHASE_LABELS[phase];
+  const phaseDesc = DAEWOON_PHASE_DESC[phase];
+  const precision = ft.precision?.daewoonStart || 'datetime';
+  const dayStem   = pillars?.day?.stem ?? -1;
+
+  // 대운 십성 & 테마
+  const dwStemSg   = dayStem >= 0 ? calcSipsung(dayStem, dw.stem) : null;
+  const dwBranchSg = dayStem >= 0 ? calcSipsung(dayStem, BRANCH_PRIMARY_STEM[dw.branch]) : null;
+  const themes = [...new Set([
+    ...(dwStemSg   ? (TEN_GOD_THEMES[dwStemSg]   || []).slice(0,2) : []),
+    ...(dwBranchSg ? (TEN_GOD_THEMES[dwBranchSg] || []).slice(0,1) : [])
+  ])].slice(0,3);
+
+  const periodStr  = formatDwPeriodDisplay(dw, precision);
+  const phaseDots  = [0,1,2,3].map(i => `<span class="fp-phase-dot${i < Math.ceil(progRatio*4) ? ' active' : ''}"></span>`).join('');
+
+  // 세운 기간
+  const swStart = sw.periodStart?.slice(0,10) || '';
+  const swEnd   = sw.periodEnd?.slice(0,10)   || '';
+  const swPeriod = swStart && swEnd ? `${swStart.slice(0,4)}년 입춘 ~ ${swEnd.slice(0,4)}년 입춘 전` : '';
+
+  // 계산 근거
+  const dirKo = ft.direction === 'forward' ? '순행' : '역행';
+  const startDisplay = formatDaewoonStartDisplay(ft.daewoonStart);
+  const evidenceLines = [
+    `대운 방향: ${dirKo} (${ft.directionEvidence?.stemHanja || ''}년간 ${ft.directionEvidence?.polarity === 'yang' ? '양' : '음'}년, ${ft.directionEvidence?.gender === 'm' ? '남성' : '여성'} 기준)`,
+    `대운 시작 나이: ${startDisplay} — 출생 후 ${ft.solarTerms?.[ft.direction === 'forward' ? 'nextTerm' : 'previousTerm']?.name || '절기'} 기준`,
+    `현재 대운 기간: ${periodStr}`,
+    `현재 세운: ${sw.pillar} — ${sw.periodStart?.slice(0,10) || ''} 입춘 기준 (KST)`,
+    `계산 정밀도: ${precision === 'datetime' ? '출생시간 확인됨 (정밀)' : '출생시간 모름 (범위로 계산)'}`
+  ].join('\n');
+
+  const unknownNote = precision === 'date_range'
+    ? `<p class="fp-unknown-note">출생시간을 모르기 때문에 대운 시작 시점은 범위로 표시했어요.</p>`
+    : '';
+
+  return `<div class="fortune-pos-sec section-card" id="fortune-pos-sec" style="scroll-margin-top:48px">
+  <p class="free-sec-label">지금, 운의 어느 구간에 있을까요?</p>
+  <div class="fp-position-card">
+    <p class="fp-sec-label">현재 대운</p>
+    <div class="fp-daewoon-row">
+      <div class="fp-dw-pillar">${escHtml(dw.pillar)}</div>
+      <div class="fp-dw-body">
+        <p class="fp-dw-label">현재 대운 간지</p>
+        <p class="fp-dw-name">${escHtml(dw.pillar)} 대운</p>
+        <p class="fp-dw-period">${escHtml(periodStr)}</p>
+        <div class="fp-phase-bar">
+          ${phaseDots}
+          <span class="fp-phase-label">${escHtml(phaseLabel)}</span>
+        </div>
+        <p class="fp-phase-desc">${escHtml(phaseDesc)}</p>
+      </div>
+    </div>
+    ${themes.length ? `<div class="fp-themes">${themes.map(t=>`<span class="fp-theme-tag">#${escHtml(t)}</span>`).join('')}</div>` : ''}
+    <div class="fp-divider"></div>
+    <p class="fp-sec-label" style="margin-bottom:10px">현재 세운</p>
+    <div class="fp-sewoon-row">
+      <span class="fp-sw-badge">${escHtml(sw.pillar)}</span>
+      <div class="fp-sw-body">
+        <p class="fp-sw-label">${sw.displayYear}년 세운</p>
+        <p class="fp-sw-period">${escHtml(swPeriod)}</p>
+      </div>
+    </div>
+    ${unknownNote}
+    <details class="fp-evidence-wrap">
+      <summary>어떻게 확인했나요?</summary>
+      <div class="fp-evidence-body">${escHtmlNl(evidenceLines)}</div>
+    </details>
+  </div>
+</div>`;
+}
+
+/* ── 연도별 흐름 섹션 렌더 ── */
+function renderYearlyTimeline(ft, pillars) {
+  const timeline  = ft.freeTimeline;
+  const ref       = ft.referenceDate || new Date().toISOString().slice(0,10);
+  const refYear   = parseInt(ref.slice(0,4));
+  const dayStem   = pillars?.day?.stem ?? -1;
+
+  const cards = timeline.map(row => {
+    const sg      = dayStem >= 0 ? calcSipsung(dayStem, row.sewoon.stem) : null;
+    const tpl     = SIPSUNG_YEAR_TPL[sg] || { kw:[], desc:'' };
+    const isCurr  = row.year === refYear;
+    const isTrans = !!row.transitionWithinYear;
+
+    let caution = '';
+    if (dayStem >= 0) {
+      const c = getYearCaution(dayStem, row.sewoon.stem);
+      if (c) caution = `<p class="ft-kw" style="color:rgba(200,170,140,.7);background:rgba(180,130,80,.1)">${escHtml('주의 · '+c.slice(0,30)+'…')}</p>`;
+    }
+
+    const transNote = isTrans
+      ? `<p class="ft-transition-note">이 해에 대운 전환이 있어요</p>` : '';
+
+    return `<div class="ft-year-card${isCurr?' is-current':''}${isTrans?' has-transition':''}">
+      ${isCurr ? '<span class="ft-current-badge">현재</span>' : ''}
+      <p class="ft-year-num">${row.year}</p>
+      <p class="ft-pillar">${escHtml(row.sewoon.pillar)}</p>
+      <div class="ft-kw-row">${tpl.kw.map(k=>`<span class="ft-kw">${escHtml(k)}</span>`).join('')}</div>
+      <p class="ft-desc">${escHtml(tpl.desc)}</p>
+      ${transNote}
+    </div>`;
+  }).join('');
+
+  return `<div class="fortune-timeline-sec section-card" id="fortune-timeline-sec" style="scroll-margin-top:48px">
+  <p class="free-sec-label">가까운 연도의 흐름</p>
+  <div class="ft-grid">${cards}</div>
+</div>`;
+}
+
+/* ── 영역별 흐름 지표 렌더 ── */
+function renderAreaSignals(ft, pillars, concern) {
+  const dayStem = pillars?.day?.stem ?? -1;
+  if (dayStem < 0) return '';
+  const sipsungList = collectFortuneSipsung(ft, dayStem);
+  const concernArea = getConcernArea(concern?.category);
+
+  const areas = ['work','money','relationship'].map(area => {
+    const level    = calcAreaLevel(sipsungList, area);
+    const isConcern = concernArea === area;
+    const dots     = [1,2,3].map(i=>`<span class="fa-dot${i<=level?' on':''}"></span>`).join('');
+    const desc     = AREA_DESCS[area]?.[level-1] || '';
+
+    return `<div class="fa-card${isConcern?' is-concern':''}">
+      <p class="fa-card-label">${escHtml(AREA_LABELS[area])}${isConcern ? '<span class="fa-concern-badge">선택한 고민</span>' : ''}</p>
+      <div class="fa-dots">${dots}</div>
+      <p class="fa-level-label">${escHtml(AREA_LEVEL_LABELS[level])}</p>
+      <p class="fa-desc">${escHtml(desc)}</p>
+    </div>`;
+  }).join('');
+
+  return `<div class="fortune-area-sec section-card" id="fortune-area-sec" style="scroll-margin-top:48px">
+  <div class="fa-header">
+    <p class="fa-title">어느 영역이 더 움직이고 있을까요?</p>
+    <p class="fa-note">운의 좋고 나쁨이 아니라, 현재 어떤 영역에서 변화 신호가 더 많이 나타나는지 보여주는 오속의 흐름 지표예요.</p>
+  </div>
+  <div class="fa-grid">${areas}</div>
+</div>`;
+}
+
+/* ── 데이터 정규화 (필드명 통합, 계산 데이터 생성 금지) ── */
+function normalizeFortuneTiming(rawTiming) {
+  if (!rawTiming) {
+    return {
+      available: false, verified: false,
+      reason: 'missing_fortune_timing',
+      currentDaewoon: null, currentSewoon: null,
+      yearlyTimeline: [], transitions: [], precision: {}
+    };
+  }
+  // freeTimeline → yearlyTimeline (free 노출 범위)
+  const yearlyTimeline = rawTiming.freeTimeline || rawTiming.yearlyTimeline || rawTiming.annualTimeline || [];
+  return {
+    available:       rawTiming.available === true,
+    verified:        rawTiming.verified  === true,
+    verifyReason:    rawTiming.verifyReason || rawTiming.reason || '',
+    ruleVersion:     rawTiming.ruleVersion || '',
+    referenceDate:   rawTiming.referenceDate || '',
+    direction:       rawTiming.direction || '',
+    directionEvidence: rawTiming.directionEvidence || null,
+    solarTerms:      rawTiming.solarTerms || null,
+    daewoonStart:    rawTiming.daewoonStart || null,
+    daewoonList:     rawTiming.daewoonList || [],
+    currentDaewoon:  rawTiming.currentDaewoon || null,
+    nextDaewoon:     rawTiming.nextDaewoon || null,
+    currentSewoon:   rawTiming.currentSewoon || null,
+    yearlyTimeline,
+    freeTimeline:    yearlyTimeline,
+    paidTimeline:    rawTiming.paidTimeline || [],
+    transitions:     rawTiming.transitions || [],
+    precision:       rawTiming.precision || {}
+  };
+}
+
+/* ── 통합 렌더 함수 ── */
+function renderFortunePositionSection(rawFt, pillars, concern) {
+  const ft = normalizeFortuneTiming(rawFt);
+  const isDebug = new URLSearchParams(location.search).get('debugSaju') === '1';
+
+  // spec §5: 모든 조건이 실제 충족된 경우만 카드 표시
+  const failReason = !ft.available        ? 'calculation_not_available'
+    : !ft.verified                        ? (ft.verifyReason || 'calculation_not_verified')
+    : !ft.currentDaewoon                  ? 'missing_current_daewoon'
+    : !ft.currentSewoon                   ? 'missing_current_sewoon'
+    : !(ft.yearlyTimeline?.length >= 1)   ? 'annual_timeline_too_short'
+    : null;
+
+  if (failReason) {
+    const debugMsg = isDebug
+      ? `<p class="fp-unavail" style="color:rgba(255,100,100,.7);font-size:.72rem">실패 원인: ${escHtml(failReason)}</p>`
+      : '';
+    return `<div class="fortune-pos-sec section-card">
+      <p class="free-sec-label">현재 운의 위치</p>
+      <p class="fp-unavail">대운과 세운의 정확한 기간을 계산하기 위한 정보가 충분하지 않아 이번 결과에서는 연도별 흐름을 표시하지 않았어요.</p>
+      ${debugMsg}
+    </div>`;
+  }
+
+  try {
+    return renderCurrentPositionCard(ft, pillars)
+         + renderYearlyTimeline(ft, pillars)
+         + renderAreaSignals(ft, pillars, concern);
+  } catch(e) {
+    console.warn('[Fortune render error]', e);
+    if (isDebug) {
+      return `<div class="fortune-pos-sec section-card"><p class="fp-unavail" style="color:rgba(255,100,100,.7)">렌더 오류: ${escHtml(e.message)}</p></div>`;
+    }
+    return '';
+  }
+}
+
 async function calculate(){
   const name=document.getElementById('inp-name').value.trim();
   const year=parseInt(document.getElementById('inp-year').value);
@@ -4314,10 +5440,14 @@ async function calculate(){
     selectedBeforeAnalysis: concernCategory !== 'none'
   };
 
+  // 대운·세운 계산
+  const _ft = calculateFortuneTiming({ year, month, day, hourVal, gender }, pillars);
+
   S.chatHistory=[];
   S.sajuData={ name, year, month, day, hourVal, hourLabel, gender, relationStatus: relStatus,
     concern,
-    context: buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel,concern) };
+    fortuneTiming: _ft,
+    context: buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel,concern,_ft) };
 
   // 출생 정보 바
   const genderKo=gender==='m'?'남성':'여성';
@@ -4408,19 +5538,29 @@ async function calculate(){
       aiBody.innerHTML=`<div class="error-card"><p>결과를 불러오는 중 문제가 발생했어요.</p><button class="error-retry-btn" onclick="retryReading()">↺ 다시 시도하기</button></div>`;
     }
 
-    showCustomQuestionSec();
+    // 고민 상태 초기화
+    const _initCat = S.sajuData?.concern?.category || 'none';
+    if (!S.sajuData) S.sajuData = {};
+    S.sajuData.originalConcern = _initCat;
+    S.sajuData.activeConcern   = _initCat;
+    S.sajuData.topicPreviews   = {};
+
+    // 상품·신뢰 정보 즉시 표시
+    const _ps = document.getElementById('product-select-sec');
+    if (_ps) _ps.style.display = 'block';
+    const _ti = document.getElementById('trust-info-sec');
+    if (_ti) _ti.style.display = 'block';
+
+    // 하단 alt-concern 섹션 표시
+    const _ac = document.getElementById('alt-concern-sec');
+    if (_ac) _ac.style.display = 'block';
+
+    // 기존 custom-question-sec 숨김 유지
+    const _cqSec = document.getElementById('custom-question-sec');
+    if (_cqSec) _cqSec.style.display = 'none';
+
     updateSingleProductLabel();
-    // 분석 전 고민 선택 시 하단 worry 버튼 자동 pre-select
-    if (S.sajuData?.concern?.selectedBeforeAnalysis && S.sajuData.concern.category !== 'none') {
-      const preCat = S.sajuData.concern.category;
-      if (WORRY_TOPICS[preCat]) {
-        selectWorry(preCat);
-        if (preCat === 'custom' && S.sajuData.concern.question) {
-          const ta = document.getElementById('cq-question-input');
-          if (ta) { ta.value = S.sajuData.concern.question; updateCqCharCount(); }
-        }
-      }
-    }
+    updateSingleCTAByCategory(_initCat);
     document.getElementById('saju-details-wrap').style.display='block';
     // product-select-sec / trust-info-sec은 질문 미리보기 완료 후 표시됨
     pxc('FreeReadingCompleted');
@@ -4565,6 +5705,258 @@ function showCustomQuestionSec() {
   if (!sec) return;
   sec.style.display = 'block';
   renderWorryButtons();
+}
+
+/* ─── activeConcern 관리 ─── */
+function setActiveConcern(category) {
+  if (S.sajuData) S.sajuData.activeConcern = category;
+}
+function getActiveConcern() {
+  return S.sajuData?.activeConcern || S.sajuData?.concern?.category || 'none';
+}
+
+/* ─── 4,900원 CTA 카테고리별 업데이트 ─── */
+function updateSingleCTAByCategory(category) {
+  const btn = document.querySelector('.pay-btn-primary.single-btn');
+  if (!btn) return;
+  if (category && category !== 'none' && WORRY_CTA[category]) {
+    btn.textContent = `${WORRY_CTA[category]} · 4,900원`;
+  } else {
+    btn.textContent = '내 질문 하나 자세히 보기 · 4,900원';
+  }
+}
+
+/* ─── 상단 고민 변경 패널 ─── */
+function toggleTopConcernPanel() {
+  const panel = document.getElementById('top-concern-panel');
+  const btn   = document.getElementById('top-concern-toggle');
+  if (!panel || !btn) return;
+  const isOpen = panel.style.display !== 'none';
+  if (!isOpen) {
+    // 하단 패널 닫기
+    const altInner = document.getElementById('alt-concern-inner');
+    const altBtn   = document.getElementById('alt-concern-toggle-btn');
+    if (altInner && altInner.style.display !== 'none') {
+      altInner.style.display = 'none';
+      if (altBtn) altBtn.setAttribute('aria-expanded', 'false');
+    }
+    renderTopConcernButtons();
+    panel.style.display = 'block';
+    btn.setAttribute('aria-expanded', 'true');
+    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  } else {
+    panel.style.display = 'none';
+    btn.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function renderTopConcernButtons() {
+  const grid = document.getElementById('top-concern-worry-grid');
+  if (!grid) return;
+  const isMarried = (S.sajuData?.relationStatus || 'private') === 'married';
+  const order = isMarried
+    ? ['marriage','work','money','business','love','family','year','custom']
+    : ['work','money','business','love','family','year','custom'];
+  const active = getActiveConcern();
+  grid.innerHTML = order.map(key => {
+    const t = WORRY_TOPICS[key];
+    return `<button class="top-worry-btn${key===active?' active':''}" data-topic="${key}"
+      onclick="selectTopConcern('${key}')" aria-pressed="${key===active}">
+      <span class="wb-icon">${t.icon}</span>${escHtml(t.label)}
+    </button>`;
+  }).join('');
+}
+
+function selectTopConcern(category) {
+  setActiveConcern(category);
+  document.querySelectorAll('#top-concern-worry-grid .top-worry-btn').forEach(b => {
+    const a = b.dataset.topic === category;
+    b.classList.toggle('active', a);
+    b.setAttribute('aria-pressed', String(a));
+  });
+  const customWrap = document.getElementById('top-concern-custom-wrap');
+  if (category === 'custom') {
+    if (customWrap) customWrap.style.display = 'block';
+    return;
+  }
+  if (customWrap) customWrap.style.display = 'none';
+  // 패널 닫기
+  const panel = document.getElementById('top-concern-panel');
+  const btn   = document.getElementById('top-concern-toggle');
+  if (panel) panel.style.display = 'none';
+  if (btn)   btn.setAttribute('aria-expanded', 'false');
+  // 고민 표시 텍스트 업데이트
+  const topicText = document.getElementById('cdc-topic-text');
+  if (topicText && WORRY_TOPICS[category]) topicText.textContent = WORRY_TOPICS[category].label;
+  // 4,900원 CTA 업데이트
+  updateSingleCTAByCategory(category);
+  // topicPreview 업데이트 (캐시 우선)
+  updateTopicPreviewForCategory(category);
+}
+
+async function updateTopicPreviewForCategory(category) {
+  const wrapper = document.getElementById('topic-preview-dynamic');
+  if (!wrapper) return;
+  if (S.sajuData?.topicPreviews?.[category]) {
+    renderTopicPreviewHTML(category, S.sajuData.topicPreviews[category]);
+    return;
+  }
+  const label = WORRY_TOPICS[category]?.label || category;
+  wrapper.innerHTML = `<div class="topic-preview-sec"><p class="tp-label">✦ ${escHtml(label)} 흐름 미리보기</p><div class="ai-loading" style="padding:8px 0"><div class="ai-loading-dots"><span></span><span></span><span></span></div></div></div>`;
+  try {
+    const text = await callAI([{ role:'user', content: buildWorryPreviewPrompt(category, '') }]);
+    const para1 = (text.match(/첫째문단:\s*([\s\S]+?)(?=둘째문단:|$)/)?.[1] || '').trim();
+    const para2 = (text.match(/둘째문단:\s*([\s\S]+?)$/)?.[1] || '').trim();
+    const body  = [para1, para2].filter(Boolean).join('\n\n');
+    if (!S.sajuData.topicPreviews) S.sajuData.topicPreviews = {};
+    S.sajuData.topicPreviews[category] = body;
+    renderTopicPreviewHTML(category, body);
+  } catch(e) {
+    wrapper.innerHTML = `<div class="topic-preview-sec"><p class="tp-label">✦ ${escHtml(label)} 흐름 미리보기</p><p class="tp-body">분석 중 오류가 발생했어요.</p></div>`;
+  }
+}
+
+function renderTopicPreviewHTML(category, bodyText) {
+  const wrapper = document.getElementById('topic-preview-dynamic');
+  if (!wrapper) return;
+  const label = WORRY_TOPICS[category]?.label || category;
+  wrapper.innerHTML = `<div class="topic-preview-sec">
+    <p class="tp-label">✦ ${escHtml(label)} 관련 흐름 미리보기</p>
+    <p class="tp-body">${escHtmlNl(bodyText)}</p>
+    <div class="tp-blur-bar">나머지 내용은 질문 집중 분석에서 확인할 수 있어요</div>
+  </div>`;
+}
+
+function buildWorryPreviewPrompt(category, customQ) {
+  const worryInfo = WORRY_TOPICS[category] || { label: category, icon:'✦' };
+  return `내담자 사주 정보:\n${S.sajuData?.context || ''}\n\n선택한 고민 분야: ${worryInfo.label}\n${customQ ? '직접 질문: ' + customQ : ''}\n\n위 분야에 대해 이 사람의 사주를 바탕으로 아래 형식으로 작성해주세요.\n앞에서 제공한 핵심 진단·현재 흐름과 같은 내용을 반복하지 마세요.\n실제 계산되지 않은 날짜·연도를 만들어내지 마세요.\n\n===미리보기===\n첫째문단: (선택한 고민과 현재 사주 흐름의 연결, 지금 가장 중요한 판단 기준. 2~3문장)\n둘째문단: (이 사람이 놓치기 쉬운 지점, 더 정확한 결정을 위해 확인해야 할 부분. 2~3문장)\n\n규칙: 두 문단 합쳐 4~6문장. 한 문단 최대 3문장. 반드시 해요체. 마크다운·번호목록 금지. 계산하지 않은 날짜 금지.`;
+}
+
+function updateTopCqCharCount() {
+  const len = document.getElementById('top-cq-input')?.value.length || 0;
+  const el  = document.getElementById('top-cq-char-num');
+  if (el) el.textContent = len;
+  const btn = document.getElementById('top-cq-submit-btn');
+  if (btn) btn.disabled = len < 10;
+}
+
+function submitTopCustomQ() {
+  const q = document.getElementById('top-cq-input')?.value.trim() || '';
+  if (q.length < 10) return;
+  if (S.sajuData?.concern) S.sajuData.concern.question = q;
+  setActiveConcern('custom');
+  const panel = document.getElementById('top-concern-panel');
+  const btn   = document.getElementById('top-concern-toggle');
+  if (panel) panel.style.display = 'none';
+  if (btn)   btn.setAttribute('aria-expanded', 'false');
+  const topicText = document.getElementById('cdc-topic-text');
+  if (topicText) topicText.textContent = WORRY_TOPICS.custom.label;
+  updateSingleCTAByCategory('custom');
+}
+
+/* ─── 하단 alt-concern 패널 ─── */
+function toggleAltConcernPanel() {
+  const inner = document.getElementById('alt-concern-inner');
+  const btn   = document.getElementById('alt-concern-toggle-btn');
+  if (!inner || !btn) return;
+  const isOpen = inner.style.display !== 'none';
+  if (!isOpen) {
+    // 상단 패널 닫기
+    const topPanel = document.getElementById('top-concern-panel');
+    const topBtn   = document.getElementById('top-concern-toggle');
+    if (topPanel && topPanel.style.display !== 'none') {
+      topPanel.style.display = 'none';
+      if (topBtn) topBtn.setAttribute('aria-expanded', 'false');
+    }
+    renderAltConcernButtons();
+    inner.style.display = 'block';
+    btn.setAttribute('aria-expanded', 'true');
+    inner.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  } else {
+    inner.style.display = 'none';
+    btn.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function renderAltConcernButtons() {
+  const grid = document.getElementById('alt-concern-worry-grid');
+  if (!grid) return;
+  const isMarried = (S.sajuData?.relationStatus || 'private') === 'married';
+  const order = isMarried
+    ? ['marriage','work','money','business','love','family','year','custom']
+    : ['work','money','business','love','family','year','custom'];
+  grid.innerHTML = order.map(key => {
+    const t = WORRY_TOPICS[key];
+    return `<button class="alt-worry-btn" data-alt-topic="${key}"
+      onclick="selectAltConcern('${key}')" aria-pressed="false">
+      <span class="wb-icon">${t.icon}</span>${escHtml(t.label)}
+    </button>`;
+  }).join('');
+}
+
+function selectAltConcern(category) {
+  document.querySelectorAll('#alt-concern-worry-grid .alt-worry-btn').forEach(b => {
+    const a = b.dataset.altTopic === category;
+    b.classList.toggle('active', a);
+    b.setAttribute('aria-pressed', String(a));
+  });
+  const customWrap = document.getElementById('alt-concern-custom-wrap');
+  if (category === 'custom') {
+    if (customWrap) customWrap.style.display = 'block';
+    const pw = document.getElementById('alt-concern-preview-wrap');
+    if (pw) pw.innerHTML = '';
+    return;
+  }
+  if (customWrap) customWrap.style.display = 'none';
+  loadAltConcernPreview(category, '');
+}
+
+async function loadAltConcernPreview(category, customQ) {
+  const pw = document.getElementById('alt-concern-preview-wrap');
+  if (!pw) return;
+  const label    = WORRY_TOPICS[category]?.label || category;
+  const cacheKey = category === 'custom' ? `custom:${customQ}` : category;
+  pw.innerHTML = `<div class="alt-concern-preview-card"><p class="alt-preview-label">✦ ${escHtml(label)} 흐름 분석 중...</p><div class="ai-loading" style="padding:8px 0"><div class="ai-loading-dots"><span></span><span></span><span></span></div></div></div>`;
+  try {
+    if (S.sajuData?.topicPreviews?.[cacheKey]) {
+      renderAltPreviewHTML(category, label, S.sajuData.topicPreviews[cacheKey]);
+      return;
+    }
+    const text  = await callAI([{ role:'user', content: buildWorryPreviewPrompt(category, customQ) }]);
+    const para1 = (text.match(/첫째문단:\s*([\s\S]+?)(?=둘째문단:|$)/)?.[1] || '').trim();
+    const para2 = (text.match(/둘째문단:\s*([\s\S]+?)$/)?.[1] || '').trim();
+    const body  = [para1, para2].filter(Boolean).join('\n\n');
+    if (!S.sajuData.topicPreviews) S.sajuData.topicPreviews = {};
+    S.sajuData.topicPreviews[cacheKey] = body;
+    renderAltPreviewHTML(category, label, body);
+  } catch(e) {
+    pw.innerHTML = `<div class="alt-concern-preview-card"><p class="alt-preview-label">분석 중 오류가 발생했어요.</p></div>`;
+  }
+}
+
+function renderAltPreviewHTML(category, label, bodyText) {
+  const pw = document.getElementById('alt-concern-preview-wrap');
+  if (!pw) return;
+  const ctaLabel = WORRY_CTA[category] || '내 질문의 답 자세히 확인하기';
+  pw.innerHTML = `<div class="alt-concern-preview-card">
+    <p class="alt-preview-label">✦ ${escHtml(label)} 흐름 미리보기</p>
+    <div class="alt-preview-body">${bodyText.split('\n\n').map(p=>`<p>${escHtmlNl(p)}</p>`).join('')}</div>
+  </div>
+  <button class="alt-mini-cta" onclick="showPayModal('single')">${escHtml(ctaLabel)} · 4,900원</button>`;
+}
+
+function updateAltCqCharCount() {
+  const len = document.getElementById('alt-cq-input')?.value.length || 0;
+  const el  = document.getElementById('alt-cq-char-num');
+  if (el) el.textContent = len;
+  const btn = document.getElementById('alt-cq-submit-btn');
+  if (btn) btn.disabled = len < 10;
+}
+
+function submitAltCustomQ() {
+  const q = document.getElementById('alt-cq-input')?.value.trim() || '';
+  if (q.length < 10) return;
+  loadAltConcernPreview('custom', q);
 }
 
 /* ─── 4900원 상품 레이블 동적 업데이트 ─── */
@@ -4841,7 +6233,19 @@ function retryReading(){
     aiBody.innerHTML='';
     const parsed=parseSajuReading(reading);
     if(parsed._format==='new' || (parsed.sections && parsed.sections.length>0)){renderReadingSections(parsed);}
-    showCustomQuestionSec();
+    // 재시도 후에도 새 흐름 순서 유지: 상품 → alt-concern (custom-question-sec 표시 안 함)
+    const _initCat = S.sajuData?.concern?.category || 'none';
+    if (S.sajuData) { S.sajuData.topicPreviews = {}; }
+    const _ps = document.getElementById('product-select-sec');
+    if (_ps) _ps.style.display = 'block';
+    const _ti = document.getElementById('trust-info-sec');
+    if (_ti) _ti.style.display = 'block';
+    const _ac = document.getElementById('alt-concern-sec');
+    if (_ac) _ac.style.display = 'block';
+    const _cqSec = document.getElementById('custom-question-sec');
+    if (_cqSec) _cqSec.style.display = 'none';
+    updateSingleProductLabel();
+    updateSingleCTAByCategory(_initCat);
     document.getElementById('saju-details-wrap').style.display='block';
     pxc('FreeReadingCompleted');
   }).catch(e=>{
@@ -4869,7 +6273,7 @@ function executeDeleteMyInfo(){
   const rsb=document.getElementById('rel-status-bar'); if(rsb) rsb.style.display='none';
   const rep=document.getElementById('rel-edit-panel'); if(rep) rep.style.display='none';
   // 새 섹션 초기화
-  ['product-select-sec','trust-info-sec','saju-details-wrap'].forEach(id=>{
+  ['product-select-sec','trust-info-sec','saju-details-wrap','alt-concern-sec'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display='none';
   });
   const di=document.getElementById('saju-details-inner'); if(di) di.style.display='none';
