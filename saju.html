@@ -5536,7 +5536,8 @@ async function calculate(){
   const gender=document.querySelector('input[name=gender]:checked')?.value||'f';
   const relStatus=document.querySelector('.rel-status-group .rel-btn.active')?.dataset.rel||'private';
   if(!year||!month||!day){alert('생년월일을 모두 입력해주세요.');return;}
-  if(year<1900||year>2025){alert('1900년~2025년 사이의 연도를 입력해주세요.');return;}
+  const _maxBirthYear = new Date().getFullYear();
+  if(year<1900||year>_maxBirthYear){alert(`1900년~${_maxBirthYear}년 사이의 연도를 입력해주세요.`);return;}
   pxc('ReadingStarted');
   const knownHour=hourVal>=0;
   const pillars=calcSaju(year,month,day,knownHour?hourVal:-1);
@@ -5572,6 +5573,7 @@ async function calculate(){
 
   S.chatHistory=[];
   S.sajuData={ name, year, month, day, hourVal, hourLabel, gender, relationStatus: relStatus,
+    calendarType: 'solar',
     concern,
     fortuneTiming: _ft,
     context: buildSajuContext(name,year,month,day,hourVal,gender,pillars,ohaeng,zodiac,knownHour,relStatus,hourLabel,concern,_ft) };
