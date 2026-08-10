@@ -1457,6 +1457,42 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
 .fa-level-label{font-size:.68rem;color:rgba(140,170,220,.65);margin-bottom:6px}
 .fa-desc{font-size:.73rem;color:rgba(180,200,240,.65);line-height:1.65}
 
+/* ── 매력살 컴팩트 ── */
+.sc-main-label{font-size:.9rem;font-weight:600;color:var(--text-primary);margin-bottom:8px}
+.sc-main-desc{font-size:.85rem;color:var(--sub);line-height:1.75;margin-bottom:12px}
+.sc-none{font-size:.82rem;color:var(--sub);line-height:1.75;margin-bottom:12px}
+.sc-tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.sc-tag{font-size:.72rem;padding:3px 10px;border-radius:20px;border:1px solid}
+.sc-tag-on{color:rgba(212,168,78,.9);background:rgba(212,168,78,.1);border-color:rgba(212,168,78,.3)}
+.sc-tag-off{color:rgba(140,155,180,.5);background:rgba(80,100,140,.08);border-color:rgba(100,130,180,.15)}
+.sc-upsell{font-size:.78rem;color:rgba(140,160,200,.6);line-height:1.65;border-top:1px solid rgba(201,168,76,.1);padding-top:10px;margin-top:4px}
+/* ── 귀인·길신 컴팩트 ── */
+.gc-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.gc-icon{font-size:1.1rem;color:rgba(212,168,78,.8);flex-shrink:0;padding-top:2px}
+.gc-body{flex:1}
+.gc-name{font-size:.82rem;font-weight:600;color:var(--text-primary);margin-bottom:2px}
+.gc-desc{font-size:.8rem;color:var(--sub);line-height:1.7}
+.gc-none{font-size:.82rem;color:var(--sub);line-height:1.75;margin-bottom:10px}
+.gc-count-note{font-size:.75rem;color:rgba(140,160,200,.6);margin-bottom:8px}
+.gc-upsell{font-size:.78rem;color:rgba(140,160,200,.6);line-height:1.65;border-top:1px solid rgba(201,168,76,.1);padding-top:10px;margin-top:4px}
+/* ── 연도별 흐름 컴팩트 ── */
+.ytc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.ytc-card{background:rgba(22,40,85,.4);border:1px solid rgba(100,140,210,.18);border-radius:12px;padding:12px 10px 10px;position:relative}
+.ytc-card.ytc-current{border-color:rgba(212,168,78,.45);background:rgba(212,168,78,.07)}
+.ytc-now{position:absolute;top:8px;right:8px;font-size:.62rem;color:rgba(212,168,78,.9);background:rgba(212,168,78,.15);border:1px solid rgba(212,168,78,.3);border-radius:10px;padding:1px 7px}
+.ytc-year{font-size:.7rem;color:rgba(180,200,240,.55);margin-bottom:2px}
+.ytc-pillar{font-size:1rem;font-weight:700;color:#d4c087;margin-bottom:5px}
+.ytc-kw-row{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px}
+.ytc-kw{font-size:.62rem;color:rgba(180,200,240,.7);background:rgba(70,100,190,.15);border-radius:20px;padding:1px 6px}
+.ytc-desc{font-size:.75rem;color:var(--sub);line-height:1.65}
+.ytc-trans{font-size:.68rem;color:rgba(212,168,78,.7);margin-top:5px}
+.ytc-upsell{font-size:.78rem;color:rgba(140,160,200,.6);line-height:1.65;border-top:1px solid rgba(201,168,76,.1);padding-top:10px}
+/* ── 유료 연결 문장 ── */
+.concern-cta-text{background:rgba(212,168,78,.06);border:1px solid rgba(212,168,78,.2)}
+.cct-title{font-size:.85rem;font-weight:700;color:rgba(212,168,78,.9);margin-bottom:8px;letter-spacing:.02em}
+.cct-question{font-size:.8rem;color:rgba(200,215,240,.6);font-style:italic;margin-bottom:8px}
+.cct-body{font-size:.84rem;color:var(--sub);line-height:1.8}
+
 /* ── 모바일 카드 간격 압축 ── */
 @media(max-width:600px){
   .concern-display-card{margin-bottom:8px;padding:12px 14px}
@@ -1495,6 +1531,9 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
   .fa-card{padding:10px 8px}
   .fa-desc{display:none}
   .fp-dw-pillar{font-size:1.5rem;min-width:42px}
+  .ytc-grid{grid-template-columns:1fr;gap:8px}
+  .ytc-card{display:grid;grid-template-columns:52px 1fr;gap:0 10px;align-items:start}
+  .ytc-year,.ytc-pillar{margin-bottom:2px}
 }
 
 
@@ -1708,7 +1747,6 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
       <div class="saju-nav-inner">
         <a class="sn-item" onclick="navScrollTo('sec-summary')">한눈에 보기</a>
         <a class="sn-item" onclick="navScrollTo('ai-reading-anchor')">사주 리딩</a>
-        <a class="sn-item" onclick="navScrollTo('custom-question-sec')">내 질문</a>
         <a class="sn-item" onclick="navScrollTo('product-select-sec')">상품 선택</a>
         <a class="sn-item" onclick="navScrollTo('saju-details-wrap')">사주 상세</a>
       </div>
@@ -1726,47 +1764,6 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
 
     <!-- AI 리딩 섹션들 (파싱 후 동적 생성) -->
     <div id="reading-sections"></div>
-
-    <!-- 순서 3: 맞춤 사주 질문 -->
-    <div id="custom-question-sec" class="section-card" style="display:none;scroll-margin-top:48px">
-
-      <!-- 고민 주제 선택 -->
-      <div class="worry-sec-inner">
-        <p class="worry-sec-title">다른 고민도 살펴볼까요?</p>
-        <p class="worry-sec-desc">다른 주제를 선택하면, 현재 사주 흐름을 그 고민의 관점에서 먼저 보여드려요.</p>
-        <div class="worry-btn-grid" id="worry-btn-grid">
-          <!-- JS: renderWorryButtons() 로 채워짐 -->
-        </div>
-      </div>
-
-      <!-- 직접 질문 입력 (custom 선택 시만 표시) -->
-      <div id="worry-custom-input-wrap" style="display:none">
-        <div class="cq-divider"></div>
-        <p class="cq-input-label">✦ 가장 답답한 질문을 적어주세요</p>
-        <textarea class="cq-textarea" id="cq-question-input" maxlength="300"
-          placeholder="지금 가장 궁금한 고민을 한 가지 적어주세요.&#10;예: 현재 준비 중인 일이 올해 안에 수입으로 이어질까요?"
-          oninput="updateCqCharCount()" aria-label="질문 입력"></textarea>
-        <div class="cq-char-row">
-          <span class="cq-privacy-note">⚠ 개인 연락처·주민등록번호·계좌번호 등 민감한 정보는 입력하지 마세요.</span>
-          <span class="cq-char-count"><span id="cq-char-num">0</span>/300</span>
-        </div>
-        <div>
-          <button class="cq-context-toggle" onclick="toggleCqContext()" id="cq-ctx-toggle-btn">+ 현재 상황 추가 설명 (선택사항)</button>
-          <div id="cq-context-wrap" style="display:none;margin-top:9px">
-            <textarea class="cq-textarea" id="cq-context-input" maxlength="200" style="min-height:65px"
-              placeholder="현재 상황을 짧게 적어주세요. 선택사항입니다." aria-label="추가 상황 설명"></textarea>
-          </div>
-        </div>
-        <button class="cq-submit-btn" id="cq-submit-btn" onclick="proceedCustomQuestion()" disabled aria-label="질문 확인">이 질문으로 확인하기 →</button>
-      </div>
-
-      <!-- 미리보기 + 잠긴 항목 + CTA (JS가 채움) -->
-      <div id="worry-preview-wrap" style="display:none"></div>
-
-      <!-- 레거시 호환 (숨김) -->
-      <div id="cq-step-confirm" style="display:none"></div>
-      <div id="cq-step-preview" style="display:none"></div>
-    </div>
 
     <!-- 순서 5: 상품 선택 UI -->
     <div id="product-select-sec" style="display:none;scroll-margin-top:48px">
@@ -1825,30 +1822,6 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
             <div class="decide-cell premium-col">일·재물·관계의 전체 흐름과 선택 순서 확인</div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- 순서 5b: 다른 고민으로 살펴보기 -->
-    <div id="alt-concern-sec" style="display:none;scroll-margin-top:48px;margin-bottom:16px">
-      <button class="alt-concern-toggle-btn" id="alt-concern-toggle-btn"
-        onclick="toggleAltConcernPanel()"
-        aria-expanded="false" aria-controls="alt-concern-inner">
-        <span>다른 고민으로도 살펴볼 수 있어요</span>
-        <em class="alt-toggle-icon">▾</em>
-      </button>
-      <div class="alt-concern-inner" id="alt-concern-inner" style="display:none">
-        <div class="alt-concern-worry-grid" id="alt-concern-worry-grid"></div>
-        <div id="alt-concern-custom-wrap" style="display:none">
-          <textarea class="cq-textarea" id="alt-cq-input" maxlength="300"
-            placeholder="지금 가장 궁금한 고민을 한 가지 적어주세요.&#10;예: 현재 준비 중인 일이 올해 안에 수입으로 이어질까요?"
-            oninput="updateAltCqCharCount()" aria-label="직접 질문 입력"></textarea>
-          <div class="cq-char-row">
-            <span class="cq-privacy-note">⚠ 개인 연락처·주민등록번호·계좌번호 등 민감한 정보는 입력하지 마세요.</span>
-            <span class="cq-char-count"><span id="alt-cq-char-num">0</span>/300</span>
-          </div>
-          <button class="cq-submit-btn" id="alt-cq-submit-btn" onclick="submitAltCustomQ()" disabled aria-label="질문 확인">이 질문으로 확인하기 →</button>
-        </div>
-        <div id="alt-concern-preview-wrap"></div>
       </div>
     </div>
 
@@ -3574,6 +3547,173 @@ function toggleAbilityDetail(key) {
   if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
+/* ── 매력살 컴팩트 렌더 (무료: 대표 1개 + 전체 상태 태그) ── */
+function renderShinsalCompact(shinsal, name, knownHour) {
+  if (!shinsal || shinsal.available === false) return '';
+
+  const dohwa    = shinsal.dohwa    || {present:false};
+  const hongyeom = shinsal.hongyeom || {present:false};
+  const hwagae   = shinsal.hwagae   || {present:false};
+
+  const presentList = [
+    dohwa.present    && {key:'dohwa',    label:'도화', icon:'✨'},
+    hongyeom.present && {key:'hongyeom', label:'홍염', icon:'🌹'},
+    hwagae.present   && {key:'hwagae',   label:'화개', icon:'🎭'},
+  ].filter(Boolean);
+
+  const COMPACT_DESC = {
+    dohwa:    '첫인상이나 외부 활동에서 자연스럽게 시선을 끄는 힘이 있어요. 사람들의 관심이 모이는 분위기가 만들어질 수 있어요.',
+    hongyeom: '가까이 대화할수록 느껴지는 친근함과 은은한 호감이 강점이에요. 넓은 대중보다 가까운 관계에서 이 매력이 더 두드러질 수 있어요.',
+    hwagae:   '처음보다 알아갈수록 더 궁금해지는 매력이에요. 생각과 취향이 분명하고 혼자만의 분위기가 있어 오래 기억되는 유형이에요.',
+  };
+  const COMBO_TITLE = {
+    'dohwa+hongyeom':        '눈에 띄는 첫인상과 가까워질수록 느껴지는 호감',
+    'dohwa+hwagae':          '눈에 띄지만 쉽게 다 읽히지 않는 분위기',
+    'hongyeom+hwagae':       '대화할수록 깊어지는 은은한 매력',
+    'dohwa+hongyeom+hwagae': '첫인상·관계·내면에서 서로 다르게 드러나는 매력',
+  };
+
+  let mainHtml = '';
+  if (presentList.length === 0) {
+    mainHtml = `<p class="sc-none">도화·홍염·화개는 이번 원국에서 확인되지 않았어요. 이 신살이 없다고 매력이 없다는 뜻은 아니에요.</p>`;
+  } else if (presentList.length === 1) {
+    const top = presentList[0];
+    mainHtml = `<div class="sc-main-label">${top.icon} ${top.label} 성향이 가장 두드러져요</div>
+    <p class="sc-main-desc">${escHtml(COMPACT_DESC[top.key])}</p>`;
+  } else {
+    const key = presentList.map(p=>p.key).sort().join('+');
+    mainHtml = `<div class="sc-main-label">${presentList.map(p=>p.icon+' '+p.label).join(' · ')} 가 함께 나타나요</div>
+    <p class="sc-main-desc">${escHtml(COMBO_TITLE[key] || presentList.map(p=>COMPACT_DESC[p.key]).join(' '))}</p>`;
+  }
+
+  const allSals = [
+    {key:'dohwa', label:'도화', present:dohwa.present},
+    {key:'hongyeom', label:'홍염', present:hongyeom.present},
+    {key:'hwagae', label:'화개', present:hwagae.present},
+  ];
+  const statusTags = allSals.map(s =>
+    `<span class="sc-tag${s.present?' sc-tag-on':' sc-tag-off'}">${s.label} ${s.present ? '있음' : '없음'}</span>`
+  ).join('');
+
+  return `<div class="shinsal-sec section-card" id="shinsal-sec">
+    <p class="free-sec-label">내 사주에 숨은 매력</p>
+    ${mainHtml}
+    <div class="sc-tag-row">${statusTags}</div>
+    <p class="sc-upsell">관계와 사회생활에서 이 매력이 어떻게 드러나는지는 상세 풀이에서 확인할 수 있어요.</p>
+  </div>`;
+}
+
+/* ── 귀인·길신 컴팩트 렌더 (무료: 대표 1~2개) ── */
+function renderGwininCompact(auspicious, name, knownHour) {
+  if (!auspicious) return '';
+
+  const GWININ_INFO = {
+    cheoneul:  { icon:'✦', label:'천을귀인', shortDesc:'어려운 순간 사람이나 기회를 통해 해결의 실마리를 얻는 흐름이에요.' },
+    cheondeok: { icon:'◈', label:'천덕귀인', shortDesc:'갈등이 극단으로 치닫지 않도록 완화하는 성향과 연결돼요.' },
+    woldeok:   { icon:'◉', label:'월덕귀인', shortDesc:'사회적 관계에서 조화와 신뢰를 형성하는 방식과 연결돼요.' },
+    munchang:  { icon:'◎', label:'문창귀인', shortDesc:'생각을 글과 말로 정리하고 복잡한 내용을 이해하는 힘과 연결돼요.' },
+    taegeuk:   { icon:'✧', label:'태극귀인', shortDesc:'원리와 의미를 깊이 이해하려는 성향과 연결돼요.' },
+  };
+  const PRIORITY = ['cheoneul','munchang','cheondeok','woldeok','taegeuk'];
+
+  const presentIds = auspicious.presentItems || [];
+  const presentCount = presentIds.length;
+  const topIds = PRIORITY.filter(id => presentIds.includes(id)).slice(0, 2);
+
+  let mainHtml = '';
+  if (presentCount === 0) {
+    mainHtml = `<p class="gc-none">이번 기준의 귀인·길신은 원국에서 확인되지 않았어요. 귀인이 없다고 도움을 받을 수 없다는 뜻은 아니에요.</p>`;
+  } else {
+    const topHtml = topIds.map(id => {
+      const info = GWININ_INFO[id];
+      return `<div class="gc-item">
+        <span class="gc-icon">${info.icon}</span>
+        <div class="gc-body">
+          <p class="gc-name">${info.label}</p>
+          <p class="gc-desc">${escHtml(info.shortDesc)}</p>
+        </div>
+      </div>`;
+    }).join('');
+    const countNote = presentCount > 2
+      ? `<p class="gc-count-note">확인된 귀인·길신 ${presentCount}개 · 나머지는 상세 풀이에서 확인할 수 있어요</p>`
+      : `<p class="gc-count-note">확인된 귀인·길신 ${presentCount}개</p>`;
+    mainHtml = topHtml + countNote;
+  }
+
+  return `<div class="gwinin-sec section-card" id="gwinin-sec">
+    <p class="free-sec-label">내 사주의 귀인·길신</p>
+    ${mainHtml}
+    <p class="gc-upsell">이 귀인이 어떤 상황에서 도움과 기회로 작용하는지는 상세 풀이에서 더 자세히 확인할 수 있어요.</p>
+  </div>`;
+}
+
+/* ── 연도별 흐름 컴팩트 (무료: 현재 포함 3개 연도) ── */
+function renderYearlyTimelineCompact(ft, pillars) {
+  if (!ft?.freeTimeline?.length) return '';
+  const ref     = ft.referenceDate || new Date().toISOString().slice(0,10);
+  const refYear = parseInt(ref.slice(0,4));
+  const dayStem = pillars?.day?.stem ?? -1;
+
+  // 현재 연도부터 3개
+  const rows = ft.freeTimeline.filter(r => r.year >= refYear).slice(0, 3);
+  if (!rows.length) return '';
+
+  const cards = rows.map(row => {
+    const sg   = dayStem >= 0 ? calcSipsung(dayStem, row.sewoon.stem) : null;
+    const tpl  = sg && typeof SIPSUNG_YEAR_TPL !== 'undefined' ? (SIPSUNG_YEAR_TPL[sg] || {kw:[],desc:''}) : {kw:[],desc:''};
+    const isCurr = row.year === refYear;
+    const transNote = row.transitionWithinYear
+      ? `<p class="ytc-trans">이 해에 대운 전환이 있어요</p>` : '';
+    const kwHtml = tpl.kw.length
+      ? `<div class="ytc-kw-row">${tpl.kw.slice(0,2).map(k=>`<span class="ytc-kw">${escHtml(k)}</span>`).join('')}</div>`
+      : '';
+    // 1문장 핵심 흐름 (SIPSUNG_YEAR_TPL desc의 첫 문장)
+    const shortDesc = tpl.desc ? tpl.desc.split('. ')[0] + (tpl.desc.includes('. ') ? '.' : '') : '';
+    return `<div class="ytc-card${isCurr?' ytc-current':''}">
+      ${isCurr ? '<span class="ytc-now">현재</span>' : ''}
+      <p class="ytc-year">${row.year}</p>
+      <p class="ytc-pillar">${escHtml(row.sewoon.pillar)}</p>
+      ${kwHtml}
+      <p class="ytc-desc">${escHtml(shortDesc)}</p>
+      ${transNote}
+    </div>`;
+  }).join('');
+
+  return `<div class="fortune-timeline-compact section-card" id="fortune-timeline-sec">
+    <p class="free-sec-label">가까운 연도의 흐름</p>
+    <div class="ytc-grid">${cards}</div>
+    <p class="ytc-upsell">각 연도에 무엇을 밀고 조심해야 하는지는 질문 집중 리딩에서 확인할 수 있어요.</p>
+  </div>`;
+}
+
+/* ── 선택한 고민에 맞춘 유료 연결 문장 ── */
+function renderConcernConnectionText(concern) {
+  const cat = concern?.category || 'none';
+  const label = concern?.label || '';
+  const customQ = concern?.question || '';
+
+  const TEXTS = {
+    work:     { title:'일·이직에서 확인해야 할 것', body:'지금 확인해야 할 것은 이직의 타이밍보다, 현재 하는 일 중 무엇이 실제 방향이 되어야 하는가예요. 무료 결과에서 큰 흐름을 확인했다면, 질문 집중 리딩에서는 지금 유지해야 할 것과 준비해야 할 것, 현재 피해야 할 선택과 먼저 실행할 행동을 구체적으로 살펴봅니다.' },
+    money:    { title:'재물·수입에서 확인해야 할 것', body:'지금 확인해야 할 것은 돈복의 유무보다, 현재 하는 일 중 무엇이 실제 수입으로 이어질 수 있는가예요. 무료 결과에서 재물 흐름의 큰 방향을 확인했다면, 질문 집중 리딩에서는 남겨야 할 일과 줄여야 할 일, 피해야 할 선택과 먼저 실행할 행동을 구체적으로 살펴봅니다.' },
+    business: { title:'사업·부업에서 확인해야 할 것', body:'지금 확인해야 할 것은 아이디어의 성공 여부보다, 지금 어디에 에너지를 집중해야 하는가예요. 무료 결과에서 방향의 큰 흐름을 확인했다면, 질문 집중 리딩에서는 지금 밀어야 할 것과 기다려야 할 것, 먼저 실행할 행동 순서를 구체적으로 살펴봅니다.' },
+    love:     { title:'관계·연애에서 확인해야 할 것', body:'지금 확인해야 할 것은 관계의 미래보다, 현재 반복되는 감정 패턴과 선택의 의미예요. 무료 결과에서 흐름을 확인했다면, 질문 집중 리딩에서는 지금 대화하거나 기다려야 할 시기, 선택의 방향을 구체적으로 살펴봅니다.' },
+    marriage: { title:'결혼생활에서 확인해야 할 것', body:'지금 확인해야 할 것은 갈등의 원인보다, 반복되는 패턴이 어디서 시작하는지예요. 무료 결과에서 흐름을 확인했다면, 질문 집중 리딩에서는 지금 대화하기 좋은 방식과 피해야 할 반응, 먼저 할 행동을 구체적으로 살펴봅니다.' },
+    family:   { title:'가족 관계에서 확인해야 할 것', body:'지금 확인해야 할 것은 문제의 원인보다, 내가 맡고 있는 역할과 그 무게를 조정하는 방식이에요. 무료 결과에서 흐름을 확인했다면, 질문 집중 리딩에서는 지금 대화하거나 기다려야 할 시기, 실질적인 대응 방향을 살펴봅니다.' },
+    year:     { title:'올해 흐름에서 확인해야 할 것', body:'지금 확인해야 할 것은 올해의 운세가 좋은지 나쁜지보다, 언제 밀고 언제 기다려야 하는가예요. 무료 결과에서 큰 흐름을 확인했다면, 질문 집중 리딩에서는 일·재물·관계가 움직이는 순서와 먼저 할 행동을 구체적으로 살펴봅니다.' },
+    custom:   { title:'이 질문에서 확인해야 할 것', body:'무료 결과에서 현재 흐름의 방향을 확인했다면, 질문 집중 리딩에서는 이 질문과 관련된 구체적인 선택지 비교, 먼저 실행할 행동, 피해야 할 선택을 살펴봅니다.' },
+  };
+
+  const txt = TEXTS[cat] || { title:'지금 이 질문에서 확인해야 할 것', body:'무료 결과에서 현재 흐름을 확인했다면, 질문 집중 리딩에서는 선택의 방향과 먼저 할 행동을 구체적으로 살펴봅니다.' };
+  const customQLine = (cat === 'custom' && customQ)
+    ? `<p class="cct-question">"${escHtml(customQ.slice(0,80))}${customQ.length>80?'…':''}"</p>` : '';
+
+  return `<div class="concern-cta-text section-card" id="concern-cta-sec">
+    <p class="cct-title">${escHtml(txt.title)}</p>
+    ${customQLine}
+    <p class="cct-body">${escHtml(txt.body)}</p>
+  </div>`;
+}
+
 /* ─── 매력살·귀인 카드 렌더 ─── */
 function renderShinsalCards(shinsal, name, knownHour, auspicious) {
   const POS_KO = {year:'년주', month:'월주', day:'일주', hour:'시주'};
@@ -3909,7 +4049,6 @@ function renderReadingSections(parsed) {
   const wrap = document.getElementById('reading-sections');
   wrap.innerHTML = '';
 
-  // 레거시 형식 폴백
   if (parsed._format === 'legacy') {
     renderReadingSectionsLegacy(parsed);
     return;
@@ -3919,73 +4058,22 @@ function renderReadingSections(parsed) {
   const concern = S.sajuData?.concern || {};
   let html = '';
 
-  // 디버그 패널 (개발용, ?debugSaju=1에서만 노출)
+  // 디버그 패널 (개발용)
   {
     const _ft = S.sajuData?.fortuneTiming;
     const _p  = S.sajuData ? calcSaju(S.sajuData.year, S.sajuData.month, S.sajuData.day, S.sajuData.hourVal >= 0 ? S.sajuData.hourVal : -1) : null;
     if (_p) html += renderFortuneDebugPanel(_ft, _p);
   }
 
-  // 1. 선택한 고민 표시 카드 (anchor: ai-reading-anchor)
-  if (concern.selectedBeforeAnalysis && concern.label) {
-    const icon = (typeof WORRY_TOPICS !== 'undefined' && WORRY_TOPICS[concern.category])
-      ? WORRY_TOPICS[concern.category].icon : '✦';
-    const customQ = (concern.category === 'custom' && concern.question)
-      ? `<p class="cdc-question">"${escHtml(concern.question)}"</p>` : '';
-    html += `<div class="concern-display-card" id="ai-reading-anchor" style="scroll-margin-top:48px">
-      <span class="cdc-icon">${icon}</span>
-      <div class="cdc-body">
-        <p class="cdc-label">이 분석에서 중점적으로 살펴본 고민</p>
-        <p class="cdc-topic" id="cdc-topic-text">${escHtml(concern.label)}</p>
-        ${customQ}
-      </div>
-      <button class="concern-change-btn" onclick="toggleTopConcernPanel()" aria-expanded="false" id="top-concern-toggle">고민 변경</button>
-    </div>
-    <div class="top-concern-panel" id="top-concern-panel" style="display:none">
-      <p class="top-panel-title">어떤 고민으로 다시 살펴볼까요?</p>
-      <div class="top-concern-worry-grid" id="top-concern-worry-grid"></div>
-      <div id="top-concern-custom-wrap" style="display:none">
-        <textarea class="cq-textarea" id="top-cq-input" maxlength="300"
-          placeholder="지금 가장 궁금한 고민을 한 가지 적어주세요.&#10;예: 현재 준비 중인 일이 올해 안에 수입으로 이어질까요?"
-          oninput="updateTopCqCharCount()" aria-label="직접 질문 입력"></textarea>
-        <div class="cq-char-row">
-          <span class="cq-privacy-note">⚠ 개인 연락처·주민등록번호·계좌번호 등 민감한 정보는 입력하지 마세요.</span>
-          <span class="cq-char-count"><span id="top-cq-char-num">0</span>/300</span>
-        </div>
-        <button class="cq-submit-btn" id="top-cq-submit-btn" onclick="submitTopCustomQ()" disabled>이 질문으로 확인하기 →</button>
-      </div>
-    </div>`;
-  }
-
-  // 2. 핵심 진단
+  // 1. 핵심 진단
   if (parsed.coreDiagnosis) {
-    const anchorId = concern.selectedBeforeAnalysis ? '' : ' id="ai-reading-anchor"';
-    html += `<div class="free-core-diagnosis"${anchorId} style="scroll-margin-top:48px">
+    html += `<div class="free-core-diagnosis" id="ai-reading-anchor" style="scroll-margin-top:48px">
       <p class="fcd-label">✦ ${escHtml(name) ? escHtml(name) + '님의 ' : ''}핵심 진단</p>
       <p class="fcd-text">${escHtmlNl(parsed.coreDiagnosis)}</p>
     </div>`;
   }
 
-  // 3. 지금의 결론 3개
-  if (parsed.quickConclusions && parsed.quickConclusions.length) {
-    const typeClass = { push: 'qc-push', organize: 'qc-organize', wait: 'qc-wait' };
-    const typeIcon  = { push: '→', organize: '↓', wait: '◎' };
-    html += `<div class="quick-conclusions-sec">
-      <p class="free-sec-label">지금의 결론</p>
-      <div class="qc-grid">
-        ${parsed.quickConclusions.map(c => `
-          <div class="qc-card ${typeClass[c.type] || ''}">
-            <p class="qc-type-label"><span class="qc-icon">${typeIcon[c.type] || '✦'}</span>${escHtml(c.label)}</p>
-            <p class="qc-content">${escHtml(c.content)}</p>
-          </div>`).join('')}
-      </div>
-    </div>`;
-  }
-
-  // 3-B. 오속 사주 유형 카드
-  html += renderTypeCard(S.sajuData?.osokType);
-
-  // 4. 나를 보여주는 특징 3개
+  // 2. 개인화 특징 3개
   if (parsed.traits && parsed.traits.length) {
     const nums = ['01','02','03'];
     html += `<div class="free-traits-sec">
@@ -4004,65 +4092,69 @@ function renderReadingSections(parsed) {
     </div>`;
   }
 
-  // 5. 매력살 · 귀인 카드 (S.sajuData.shinsal 사용)
+  // 3. 오속 사주 유형
+  html += renderTypeCard(S.sajuData?.osokType);
+
+  // 4. 대표 매력살 맛보기
   {
-    const shinsal = S.sajuData?.shinsal;
+    const shinsal   = S.sajuData?.shinsal;
     const knownHour = S.sajuData ? (S.sajuData.hourVal >= 0) : true;
-    html += renderShinsalCards(shinsal, name, knownHour, S.sajuData?.auspicious);
+    html += renderShinsalCompact(shinsal, name, knownHour);
   }
 
-  // 5-B. 나의 사주 능력치 카드
+  // 5. 대표 귀인·길신 맛보기
+  {
+    const knownHour   = S.sajuData ? (S.sajuData.hourVal >= 0) : true;
+    html += renderGwininCompact(S.sajuData?.auspicious, name, knownHour);
+  }
+
+  // 6. 능력 지표
   html += renderAbilityCard(S.sajuData?.osokAbilities);
 
-  // 5-C. 현재 운의 위치 + 연도별 흐름 + 영역 신호
+  // 7. 현재 대운 위치 (area signals 제외)
+  // 8. 현재 포함 3개 연도 흐름
   {
-    const _ft = S.sajuData?.fortuneTiming;
+    const _rawFt = S.sajuData?.fortuneTiming;
     const _ftPillars = S.sajuData
       ? calcSaju(S.sajuData.year, S.sajuData.month, S.sajuData.day,
           S.sajuData.hourVal >= 0 ? S.sajuData.hourVal : -1)
       : null;
-    html += renderFortunePositionSection(_ft, _ftPillars, concern);
+    if (_rawFt && _ftPillars) {
+      const _ft = normalizeFortuneTiming(_rawFt);
+      if (_ft.verified) {
+        html += renderCurrentPositionCard(_ft, _ftPillars);
+        html += renderYearlyTimelineCompact(_ft, _ftPillars);
+      }
+    }
   }
 
-  // 6. 현재 흐름 (A) + 분석 근거 (B)
+  // 9. 현재 흐름 + 분석 근거
   if (parsed.flow || parsed.analysisBasis) {
     html += `<div class="flow-sec">
       <p class="free-sec-label">지금의 흐름</p>
-      ${parsed.flow ? `<p class="flow-body">${escHtmlNl(parsed.flow)}</p>` : ''}
-      ${parsed.analysisBasis ? `<div class="flow-basis-wrap">
-        <p class="flow-basis-label">왜 이런 흐름이 나타날까요?</p>
-        <p class="flow-basis-text">${escHtmlNl(parsed.analysisBasis)}</p>
+      ${parsed.flow ? `<p class="flow-text">${escHtmlNl(parsed.flow)}</p>` : ''}
+      ${parsed.analysisBasis ? `<div class="analysis-basis-box">
+        <p class="ab-label">분석 근거</p>
+        <p class="ab-text">${escHtmlNl(parsed.analysisBasis)}</p>
       </div>` : ''}
     </div>`;
   }
 
-  // 6. 행동 카드
+  // 10. 먼저 할 행동 + 피할 행동
   if (parsed.firstAction || parsed.avoidAction) {
     html += `<div class="action-cards-sec">
       ${parsed.firstAction ? `<div class="flow-action-box do-box">
-        <p class="flow-action-label">지금 먼저 해볼 일</p>
+        <p class="flow-action-label">지금 먼저 할 일</p>
         <p class="flow-action-text">${escHtml(parsed.firstAction)}</p>
       </div>` : ''}
       ${parsed.avoidAction ? `<div class="flow-action-box avoid-box">
-        <p class="flow-action-label">지금은 피할 일</p>
+        <p class="flow-action-label">지금 피할 일</p>
         <p class="flow-action-text">${escHtml(parsed.avoidAction)}</p>
       </div>` : ''}
     </div>`;
   }
 
-  // 7. 고민 미리보기 (유료 예고)
-  if (parsed.topicPreview) {
-    const previewLabel = concern.selectedBeforeAnalysis && concern.label
-      ? `${escHtml(concern.label)} 관련 흐름 미리보기`
-      : '지금 가장 막히는 영역';
-    html += `<div id="topic-preview-dynamic"><div class="topic-preview-sec">
-      <p class="tp-label">✦ ${previewLabel}</p>
-      <p class="tp-body">${escHtmlNl(parsed.topicPreview)}</p>
-      <div class="tp-blur-bar">나머지 내용은 질문 집중 분석에서 확인할 수 있어요</div>
-    </div></div>`;
-  }
-
-  // 8. 상세 성향 아코디언
+  // 11. 상세 성향 아코디언
   const det = parsed.details || {};
   const detItems = [
     { label: '타고난 성향',           text: det.personality },
@@ -4086,6 +4178,11 @@ function renderReadingSections(parsed) {
           </div>`).join('')}
       </div>
     </div>`;
+  }
+
+  // 12. 선택한 고민에 맞춘 유료 연결 문장
+  if (concern.selectedBeforeAnalysis) {
+    html += renderConcernConnectionText(concern);
   }
 
   wrap.innerHTML = html;
@@ -4177,7 +4274,7 @@ function navScrollTo(id) {
 }
 
 function initNavObserver() {
-  const targets = ['sec-summary','ai-reading-anchor','custom-question-sec','product-select-sec','saju-details-wrap'];
+  const targets = ['sec-summary','ai-reading-anchor','product-select-sec','saju-details-wrap'];
   const items   = document.querySelectorAll('.sn-item');
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
@@ -5538,29 +5635,13 @@ async function calculate(){
       aiBody.innerHTML=`<div class="error-card"><p>결과를 불러오는 중 문제가 발생했어요.</p><button class="error-retry-btn" onclick="retryReading()">↺ 다시 시도하기</button></div>`;
     }
 
-    // 고민 상태 초기화
-    const _initCat = S.sajuData?.concern?.category || 'none';
-    if (!S.sajuData) S.sajuData = {};
-    S.sajuData.originalConcern = _initCat;
-    S.sajuData.activeConcern   = _initCat;
-    S.sajuData.topicPreviews   = {};
-
     // 상품·신뢰 정보 즉시 표시
     const _ps = document.getElementById('product-select-sec');
     if (_ps) _ps.style.display = 'block';
     const _ti = document.getElementById('trust-info-sec');
     if (_ti) _ti.style.display = 'block';
 
-    // 하단 alt-concern 섹션 표시
-    const _ac = document.getElementById('alt-concern-sec');
-    if (_ac) _ac.style.display = 'block';
-
-    // 기존 custom-question-sec 숨김 유지
-    const _cqSec = document.getElementById('custom-question-sec');
-    if (_cqSec) _cqSec.style.display = 'none';
-
     updateSingleProductLabel();
-    updateSingleCTAByCategory(_initCat);
     document.getElementById('saju-details-wrap').style.display='block';
     // product-select-sec / trust-info-sec은 질문 미리보기 완료 후 표시됨
     pxc('FreeReadingCompleted');
@@ -5640,8 +5721,6 @@ function resetSaju(){
   document.getElementById('saju-nav').classList.remove('visible');
   document.getElementById('rel-status-bar').style.display='none';
   document.getElementById('rel-edit-panel').style.display='none';
-  const cqSec=document.getElementById('custom-question-sec');
-  if(cqSec)cqSec.style.display='none';
   // 새 섹션 초기화
   ['product-select-sec','trust-info-sec','saju-details-wrap'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display='none';
@@ -5678,14 +5757,14 @@ const WORRY_LOCKED = {
 };
 
 const WORRY_CTA = {
-  work:     '내 이직 방향과 움직일 시기 확인하기',
+  work:     '내 이직 방향과 움직일 흐름 확인하기',
   money:    '내 수입 흐름과 먼저 할 일 확인하기',
   business: '내 사업 방향과 실행 순서 확인하기',
   love:     '이 관계의 흐름과 대화 방향 확인하기',
-  marriage: '우리 부부의 반복되는 갈등 흐름 확인하기',
-  family:   '가족 관계의 흐름 자세히 확인하기',
-  year:     '올해의 전환 흐름 확인하기',
-  custom:   '내 질문의 답 자세히 확인하기',
+  marriage: '우리 관계의 갈등 흐름과 풀어갈 방법 확인하기',
+  family:   '가족 관계의 반복되는 문제와 대응 방향 확인하기',
+  year:     '올해의 변화 흐름과 먼저 할 일 확인하기',
+  custom:   '내 질문의 흐름과 선택 방향 확인하기',
 };
 
 /* 레거시 호환용 (결제 팝업 등에서 topic 레이블 참조) */
@@ -5707,14 +5786,6 @@ function showCustomQuestionSec() {
   renderWorryButtons();
 }
 
-/* ─── activeConcern 관리 ─── */
-function setActiveConcern(category) {
-  if (S.sajuData) S.sajuData.activeConcern = category;
-}
-function getActiveConcern() {
-  return S.sajuData?.activeConcern || S.sajuData?.concern?.category || 'none';
-}
-
 /* ─── 4,900원 CTA 카테고리별 업데이트 ─── */
 function updateSingleCTAByCategory(category) {
   const btn = document.querySelector('.pay-btn-primary.single-btn');
@@ -5724,239 +5795,6 @@ function updateSingleCTAByCategory(category) {
   } else {
     btn.textContent = '내 질문 하나 자세히 보기 · 4,900원';
   }
-}
-
-/* ─── 상단 고민 변경 패널 ─── */
-function toggleTopConcernPanel() {
-  const panel = document.getElementById('top-concern-panel');
-  const btn   = document.getElementById('top-concern-toggle');
-  if (!panel || !btn) return;
-  const isOpen = panel.style.display !== 'none';
-  if (!isOpen) {
-    // 하단 패널 닫기
-    const altInner = document.getElementById('alt-concern-inner');
-    const altBtn   = document.getElementById('alt-concern-toggle-btn');
-    if (altInner && altInner.style.display !== 'none') {
-      altInner.style.display = 'none';
-      if (altBtn) altBtn.setAttribute('aria-expanded', 'false');
-    }
-    renderTopConcernButtons();
-    panel.style.display = 'block';
-    btn.setAttribute('aria-expanded', 'true');
-    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  } else {
-    panel.style.display = 'none';
-    btn.setAttribute('aria-expanded', 'false');
-  }
-}
-
-function renderTopConcernButtons() {
-  const grid = document.getElementById('top-concern-worry-grid');
-  if (!grid) return;
-  const isMarried = (S.sajuData?.relationStatus || 'private') === 'married';
-  const order = isMarried
-    ? ['marriage','work','money','business','love','family','year','custom']
-    : ['work','money','business','love','family','year','custom'];
-  const active = getActiveConcern();
-  grid.innerHTML = order.map(key => {
-    const t = WORRY_TOPICS[key];
-    return `<button class="top-worry-btn${key===active?' active':''}" data-topic="${key}"
-      onclick="selectTopConcern('${key}')" aria-pressed="${key===active}">
-      <span class="wb-icon">${t.icon}</span>${escHtml(t.label)}
-    </button>`;
-  }).join('');
-}
-
-function selectTopConcern(category) {
-  setActiveConcern(category);
-  document.querySelectorAll('#top-concern-worry-grid .top-worry-btn').forEach(b => {
-    const a = b.dataset.topic === category;
-    b.classList.toggle('active', a);
-    b.setAttribute('aria-pressed', String(a));
-  });
-  const customWrap = document.getElementById('top-concern-custom-wrap');
-  if (category === 'custom') {
-    if (customWrap) customWrap.style.display = 'block';
-    return;
-  }
-  if (customWrap) customWrap.style.display = 'none';
-  // 패널 닫기
-  const panel = document.getElementById('top-concern-panel');
-  const btn   = document.getElementById('top-concern-toggle');
-  if (panel) panel.style.display = 'none';
-  if (btn)   btn.setAttribute('aria-expanded', 'false');
-  // 고민 표시 텍스트 업데이트
-  const topicText = document.getElementById('cdc-topic-text');
-  if (topicText && WORRY_TOPICS[category]) topicText.textContent = WORRY_TOPICS[category].label;
-  // 4,900원 CTA 업데이트
-  updateSingleCTAByCategory(category);
-  // topicPreview 업데이트 (캐시 우선)
-  updateTopicPreviewForCategory(category);
-}
-
-async function updateTopicPreviewForCategory(category) {
-  const wrapper = document.getElementById('topic-preview-dynamic');
-  if (!wrapper) return;
-  if (S.sajuData?.topicPreviews?.[category]) {
-    renderTopicPreviewHTML(category, S.sajuData.topicPreviews[category]);
-    return;
-  }
-  const label = WORRY_TOPICS[category]?.label || category;
-  wrapper.innerHTML = `<div class="topic-preview-sec"><p class="tp-label">✦ ${escHtml(label)} 흐름 미리보기</p><div class="ai-loading" style="padding:8px 0"><div class="ai-loading-dots"><span></span><span></span><span></span></div></div></div>`;
-  try {
-    const text = await callAI([{ role:'user', content: buildWorryPreviewPrompt(category, '') }]);
-    const para1 = (text.match(/첫째문단:\s*([\s\S]+?)(?=둘째문단:|$)/)?.[1] || '').trim();
-    const para2 = (text.match(/둘째문단:\s*([\s\S]+?)$/)?.[1] || '').trim();
-    const body  = [para1, para2].filter(Boolean).join('\n\n');
-    if (!S.sajuData.topicPreviews) S.sajuData.topicPreviews = {};
-    S.sajuData.topicPreviews[category] = body;
-    renderTopicPreviewHTML(category, body);
-  } catch(e) {
-    wrapper.innerHTML = `<div class="topic-preview-sec"><p class="tp-label">✦ ${escHtml(label)} 흐름 미리보기</p><p class="tp-body">분석 중 오류가 발생했어요.</p></div>`;
-  }
-}
-
-function renderTopicPreviewHTML(category, bodyText) {
-  const wrapper = document.getElementById('topic-preview-dynamic');
-  if (!wrapper) return;
-  const label = WORRY_TOPICS[category]?.label || category;
-  wrapper.innerHTML = `<div class="topic-preview-sec">
-    <p class="tp-label">✦ ${escHtml(label)} 관련 흐름 미리보기</p>
-    <p class="tp-body">${escHtmlNl(bodyText)}</p>
-    <div class="tp-blur-bar">나머지 내용은 질문 집중 분석에서 확인할 수 있어요</div>
-  </div>`;
-}
-
-function buildWorryPreviewPrompt(category, customQ) {
-  const worryInfo = WORRY_TOPICS[category] || { label: category, icon:'✦' };
-  return `내담자 사주 정보:\n${S.sajuData?.context || ''}\n\n선택한 고민 분야: ${worryInfo.label}\n${customQ ? '직접 질문: ' + customQ : ''}\n\n위 분야에 대해 이 사람의 사주를 바탕으로 아래 형식으로 작성해주세요.\n앞에서 제공한 핵심 진단·현재 흐름과 같은 내용을 반복하지 마세요.\n실제 계산되지 않은 날짜·연도를 만들어내지 마세요.\n\n===미리보기===\n첫째문단: (선택한 고민과 현재 사주 흐름의 연결, 지금 가장 중요한 판단 기준. 2~3문장)\n둘째문단: (이 사람이 놓치기 쉬운 지점, 더 정확한 결정을 위해 확인해야 할 부분. 2~3문장)\n\n규칙: 두 문단 합쳐 4~6문장. 한 문단 최대 3문장. 반드시 해요체. 마크다운·번호목록 금지. 계산하지 않은 날짜 금지.`;
-}
-
-function updateTopCqCharCount() {
-  const len = document.getElementById('top-cq-input')?.value.length || 0;
-  const el  = document.getElementById('top-cq-char-num');
-  if (el) el.textContent = len;
-  const btn = document.getElementById('top-cq-submit-btn');
-  if (btn) btn.disabled = len < 10;
-}
-
-function submitTopCustomQ() {
-  const q = document.getElementById('top-cq-input')?.value.trim() || '';
-  if (q.length < 10) return;
-  if (S.sajuData?.concern) S.sajuData.concern.question = q;
-  setActiveConcern('custom');
-  const panel = document.getElementById('top-concern-panel');
-  const btn   = document.getElementById('top-concern-toggle');
-  if (panel) panel.style.display = 'none';
-  if (btn)   btn.setAttribute('aria-expanded', 'false');
-  const topicText = document.getElementById('cdc-topic-text');
-  if (topicText) topicText.textContent = WORRY_TOPICS.custom.label;
-  updateSingleCTAByCategory('custom');
-}
-
-/* ─── 하단 alt-concern 패널 ─── */
-function toggleAltConcernPanel() {
-  const inner = document.getElementById('alt-concern-inner');
-  const btn   = document.getElementById('alt-concern-toggle-btn');
-  if (!inner || !btn) return;
-  const isOpen = inner.style.display !== 'none';
-  if (!isOpen) {
-    // 상단 패널 닫기
-    const topPanel = document.getElementById('top-concern-panel');
-    const topBtn   = document.getElementById('top-concern-toggle');
-    if (topPanel && topPanel.style.display !== 'none') {
-      topPanel.style.display = 'none';
-      if (topBtn) topBtn.setAttribute('aria-expanded', 'false');
-    }
-    renderAltConcernButtons();
-    inner.style.display = 'block';
-    btn.setAttribute('aria-expanded', 'true');
-    inner.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  } else {
-    inner.style.display = 'none';
-    btn.setAttribute('aria-expanded', 'false');
-  }
-}
-
-function renderAltConcernButtons() {
-  const grid = document.getElementById('alt-concern-worry-grid');
-  if (!grid) return;
-  const isMarried = (S.sajuData?.relationStatus || 'private') === 'married';
-  const order = isMarried
-    ? ['marriage','work','money','business','love','family','year','custom']
-    : ['work','money','business','love','family','year','custom'];
-  grid.innerHTML = order.map(key => {
-    const t = WORRY_TOPICS[key];
-    return `<button class="alt-worry-btn" data-alt-topic="${key}"
-      onclick="selectAltConcern('${key}')" aria-pressed="false">
-      <span class="wb-icon">${t.icon}</span>${escHtml(t.label)}
-    </button>`;
-  }).join('');
-}
-
-function selectAltConcern(category) {
-  document.querySelectorAll('#alt-concern-worry-grid .alt-worry-btn').forEach(b => {
-    const a = b.dataset.altTopic === category;
-    b.classList.toggle('active', a);
-    b.setAttribute('aria-pressed', String(a));
-  });
-  const customWrap = document.getElementById('alt-concern-custom-wrap');
-  if (category === 'custom') {
-    if (customWrap) customWrap.style.display = 'block';
-    const pw = document.getElementById('alt-concern-preview-wrap');
-    if (pw) pw.innerHTML = '';
-    return;
-  }
-  if (customWrap) customWrap.style.display = 'none';
-  loadAltConcernPreview(category, '');
-}
-
-async function loadAltConcernPreview(category, customQ) {
-  const pw = document.getElementById('alt-concern-preview-wrap');
-  if (!pw) return;
-  const label    = WORRY_TOPICS[category]?.label || category;
-  const cacheKey = category === 'custom' ? `custom:${customQ}` : category;
-  pw.innerHTML = `<div class="alt-concern-preview-card"><p class="alt-preview-label">✦ ${escHtml(label)} 흐름 분석 중...</p><div class="ai-loading" style="padding:8px 0"><div class="ai-loading-dots"><span></span><span></span><span></span></div></div></div>`;
-  try {
-    if (S.sajuData?.topicPreviews?.[cacheKey]) {
-      renderAltPreviewHTML(category, label, S.sajuData.topicPreviews[cacheKey]);
-      return;
-    }
-    const text  = await callAI([{ role:'user', content: buildWorryPreviewPrompt(category, customQ) }]);
-    const para1 = (text.match(/첫째문단:\s*([\s\S]+?)(?=둘째문단:|$)/)?.[1] || '').trim();
-    const para2 = (text.match(/둘째문단:\s*([\s\S]+?)$/)?.[1] || '').trim();
-    const body  = [para1, para2].filter(Boolean).join('\n\n');
-    if (!S.sajuData.topicPreviews) S.sajuData.topicPreviews = {};
-    S.sajuData.topicPreviews[cacheKey] = body;
-    renderAltPreviewHTML(category, label, body);
-  } catch(e) {
-    pw.innerHTML = `<div class="alt-concern-preview-card"><p class="alt-preview-label">분석 중 오류가 발생했어요.</p></div>`;
-  }
-}
-
-function renderAltPreviewHTML(category, label, bodyText) {
-  const pw = document.getElementById('alt-concern-preview-wrap');
-  if (!pw) return;
-  const ctaLabel = WORRY_CTA[category] || '내 질문의 답 자세히 확인하기';
-  pw.innerHTML = `<div class="alt-concern-preview-card">
-    <p class="alt-preview-label">✦ ${escHtml(label)} 흐름 미리보기</p>
-    <div class="alt-preview-body">${bodyText.split('\n\n').map(p=>`<p>${escHtmlNl(p)}</p>`).join('')}</div>
-  </div>
-  <button class="alt-mini-cta" onclick="showPayModal('single')">${escHtml(ctaLabel)} · 4,900원</button>`;
-}
-
-function updateAltCqCharCount() {
-  const len = document.getElementById('alt-cq-input')?.value.length || 0;
-  const el  = document.getElementById('alt-cq-char-num');
-  if (el) el.textContent = len;
-  const btn = document.getElementById('alt-cq-submit-btn');
-  if (btn) btn.disabled = len < 10;
-}
-
-function submitAltCustomQ() {
-  const q = document.getElementById('alt-cq-input')?.value.trim() || '';
-  if (q.length < 10) return;
-  loadAltConcernPreview('custom', q);
 }
 
 /* ─── 4900원 상품 레이블 동적 업데이트 ─── */
@@ -6205,7 +6043,7 @@ function resetCustomQuestion() {
   const ps = document.getElementById('product-select-sec'); if (ps) ps.style.display = 'none';
   const ti = document.getElementById('trust-info-sec'); if (ti) ti.style.display = 'none';
 
-  document.getElementById('custom-question-sec').scrollIntoView({ behavior:'smooth', block:'start' });
+  document.getElementById('product-select-sec')?.scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 function payCustomQuestion(type) {
@@ -6233,19 +6071,11 @@ function retryReading(){
     aiBody.innerHTML='';
     const parsed=parseSajuReading(reading);
     if(parsed._format==='new' || (parsed.sections && parsed.sections.length>0)){renderReadingSections(parsed);}
-    // 재시도 후에도 새 흐름 순서 유지: 상품 → alt-concern (custom-question-sec 표시 안 함)
-    const _initCat = S.sajuData?.concern?.category || 'none';
-    if (S.sajuData) { S.sajuData.topicPreviews = {}; }
     const _ps = document.getElementById('product-select-sec');
     if (_ps) _ps.style.display = 'block';
     const _ti = document.getElementById('trust-info-sec');
     if (_ti) _ti.style.display = 'block';
-    const _ac = document.getElementById('alt-concern-sec');
-    if (_ac) _ac.style.display = 'block';
-    const _cqSec = document.getElementById('custom-question-sec');
-    if (_cqSec) _cqSec.style.display = 'none';
     updateSingleProductLabel();
-    updateSingleCTAByCategory(_initCat);
     document.getElementById('saju-details-wrap').style.display='block';
     pxc('FreeReadingCompleted');
   }).catch(e=>{
@@ -6273,11 +6103,10 @@ function executeDeleteMyInfo(){
   const rsb=document.getElementById('rel-status-bar'); if(rsb) rsb.style.display='none';
   const rep=document.getElementById('rel-edit-panel'); if(rep) rep.style.display='none';
   // 새 섹션 초기화
-  ['product-select-sec','trust-info-sec','saju-details-wrap','alt-concern-sec'].forEach(id=>{
+  ['product-select-sec','trust-info-sec','saju-details-wrap'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display='none';
   });
   const di=document.getElementById('saju-details-inner'); if(di) di.style.display='none';
-  const cqSec=document.getElementById('custom-question-sec'); if(cqSec) cqSec.style.display='none';
   // 입력 초기화
   ['inp-name','inp-year'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('inp-month').selectedIndex=0;
