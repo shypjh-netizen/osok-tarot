@@ -376,7 +376,6 @@ function renderFocusYearCards(raw) {
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-}
 
 /* ─────────────────────────────────────────────────────────────
    이메일 HTML 빌더
