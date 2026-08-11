@@ -458,7 +458,22 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel) {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   주제별 설정 (집중 리딩 4,900원)
+───────────────────────────────────────────────────────────── */
+const TOPIC_CONFIG = {
+  year:     { relLimit: 25, autoChoices: true  },
+  work:     { relLimit: 15, autoChoices: false },
+  money:    { relLimit: 15, autoChoices: false },
+  business: { relLimit: 15, autoChoices: false },
+  love:     { relLimit: 90, autoChoices: false },
+  marriage: { relLimit: 90, autoChoices: false },
+  family:   { relLimit: 60, autoChoices: false },
+  custom:   { relLimit: 25, autoChoices: false },
+};
+
+/* ─────────────────────────────────────────────────────────────
    집중 리딩 생성 (single 티어 4,900원)
+   returns { sections, closingMessage }
 ───────────────────────────────────────────────────────────── */
 async function generateFocusReading(sajuData, ctx, name, currentYear, currentSewoon, systemPrompt) {
   const concern    = sajuData.concern || {};
@@ -466,27 +481,209 @@ async function generateFocusReading(sajuData, ctx, name, currentYear, currentSew
   const topicLabel = concern.label || FOCUS_TOPIC_MAP[cat] || cat;
   const question   = concern.question || '';
   const relStatus  = sajuData.relationStatus || 'private';
+  const tCfg       = TOPIC_CONFIG[cat] || TOPIC_CONFIG.custom;
   const sections   = [];
   const failedSections = [];
 
   const yr = currentYear;
   const sw = currentSewoon || `${yr}년 세운`;
   const yearNote = `※ 분석 기준: ${yr}년 ${sw}. "${yr}년"만 "올해"로 사용하세요. 2025년·을사를 절대 현재로 표현하지 마세요.`;
-  const relNote  = `관계 상태(${relStatus})는 보조 맥락으로만 참고하세요. 사용자가 선택한 [${topicLabel}]이 분석의 중심이어야 합니다.`;
   const qNote    = question ? `직접 질문: "${question}"` : '';
   const completeNote = `\n[필수] 모든 문장을 완전하게 끝내주세요. 단락 마지막이 조사(을/를/이/가/에서 등)나 연결어로 끊기지 않도록 하세요.`;
 
-  /* ── 섹션 1+2: 핵심 답변 + 고민 원인 ── */
-  const p1 = `${name}님의 선택 고민: [${topicLabel}]
+  /* 관계 상태 문자열 */
+  const relStatusLabel = {
+    single: '미혼·솔로', dating: '연애 중', engaged: '약혼', married: '기혼',
+    separated: '별거·이혼 중', widowed: '사별', private: '미공개',
+  }[relStatus] || relStatus;
+
+  /* 주제별 관계 제한 지시 */
+  const relNote = tCfg.relLimit <= 30
+    ? `[주제 우선순위 규칙] 선택 주제는 [${topicLabel}]입니다. 관계 상태(${relStatusLabel})는 보조 맥락으로만 사용하세요. 배우자·결혼생활·관계 관련 내용은 선택 주제와 직접 관련된 경우에만 짧게 언급하고, 전체 내용의 ${tCfg.relLimit}% 이하로 제한하세요. 기혼이라는 이유만으로 전체를 결혼생활 리딩으로 바꾸지 마세요.`
+    : `관계 상태: ${relStatusLabel}. 이 분야가 선택된 주제이므로 관련 내용을 중심으로 분석하세요.`;
+
+  /* ══════════════════════════════════════════════════════════
+     주제별 전용 프롬프트 빌더
+  ══════════════════════════════════════════════════════════ */
+
+  /* 섹션 1: 핵심 답변 프롬프트 */
+  function buildP1() {
+    if (cat === 'year') {
+      return `${name}님의 사주와 ${yr}년 ${sw} 흐름을 분석해서 '올해의 흐름' 핵심 결론을 알려주세요.
+${yearNote}
+${relNote}
+
+[필수 포함 내용 — 아래 순서로 작성하세요]
+1단락: 올해 ${name}님에게 가장 크게 움직이는 영역이 무엇인지, 왜 그 영역인지 한두 문장으로 시작하세요.
+2단락: 일·재물·관계·건강·생활변화 중 ${yr}년 실제 계산 결과에 따른 우선순위를 간결하게 알려주세요. 기혼이라는 이유만으로 관계를 1순위로 만들지 마세요.
+3단락: 올해 확장하거나 밀어야 할 영역과, 서두르지 말아야 할 영역을 한 문장씩.
+4단락: 현재 대운과 ${yr}년 ${sw}가 어떻게 연결되는지 한두 문장.
+
+총 4단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+    }
+    if (cat === 'custom') {
+      return `${name}님의 직접 질문: "${question}"
+${yearNote}
+${relNote}
+
+1단락: 이 질문에 대한 핵심 답변을 명확하고 직접적인 한 문장으로 시작하세요.
+2~3단락: ${name}님의 사주 기질과 ${yr}년 ${sw}에서 이 질문과 관련된 흐름을 구체적으로 찾아주세요.
+
+총 3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+    }
+    /* work / money / business / love / marriage / family */
+    return `${name}님의 선택 고민: [${topicLabel}]
 ${qNote}
 ${yearNote}
 ${relNote}
 
-1단락: 이 고민에 대한 핵심 답변을 강렬하고 명확한 한 문장으로 시작해주세요.
-2~3단락: 지금 이 고민이 답답하게 느껴지는 이유를 ${name}님의 사주 기질과 ${yr}년 ${sw} 흐름에서 구체적으로 찾아주세요.
+1단락: [${topicLabel}]에 대한 핵심 답변을 강렬하고 명확한 한 문장으로 시작하세요.
+2~3단락: 지금 이 고민이 답답한 이유를 ${name}님의 사주 기질과 ${yr}년 ${sw} 흐름에서 구체적으로 찾아주세요.
 
 총 3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
-  const r1 = await generateWithRetry(ctx, p1, systemPrompt, 2500, c => validateContent(c, '핵심답변'));
+  }
+
+  /* 섹션 2: 선택지 비교 프롬프트 */
+  function buildP2() {
+    if (cat === 'year') {
+      return `${name}님의 ${yr}년 흐름에서 실제로 선택해야 하는 두 가지 방향을 비교해주세요.
+${yearNote}
+${relNote}
+
+[선택지 A: 새로운 것을 넓히는 방향]
+- ${name}님 사주에서 이 방향의 유리한 점
+- 이 방향을 선택할 때의 위험
+
+[선택지 B: 기존 기반을 정비하고 강화하는 방향]
+- ${name}님 사주에서 이 방향의 유리한 점
+- 이 방향을 선택할 때의 위험
+
+[현재 더 유리한 방향]: ${yr}년 ${sw} 에너지에서 어느 쪽이 더 맞는지 한 문장.
+[그 방향을 선택할 조건]: 실제 ${name}님 상황에서 이 방향이 맞는 전제 조건 한 문장.
+
+4~5단락. 반드시 해요체, 마크다운 금지. 사용자에게 추가 정보를 요구하지 마세요.${completeNote}`;
+    }
+    if (cat === 'work') {
+      return `${name}님의 [일·이직] 고민에서 실제 선택지를 비교해주세요.
+${qNote}
+${yearNote}
+${relNote}
+
+[선택지 A: 현재 직장·분야 유지]와 [선택지 B: 이직·전환·새로운 시도]를 ${name}님 사주와 ${yr}년 흐름으로 비교하세요.
+각 선택지의 장점, 위험, 지금 더 유리한 방향, 그 조건을 포함하세요.
+4~5단락. 반드시 해요체, 마크다운 금지. 사용자에게 추가 정보를 요구하지 마세요.${completeNote}`;
+    }
+    if (cat === 'business') {
+      return `${name}님의 [사업·부업] 고민에서 실제 선택지를 비교해주세요.
+${qNote}
+${yearNote}
+${relNote}
+
+[선택지 A: 지금 바로 시작·확장]와 [선택지 B: 더 준비 후 시작 또는 유지]를 ${name}님 사주와 ${yr}년 흐름으로 비교하세요.
+각 선택지의 장점, 위험, 지금 더 유리한 방향을 포함하세요.
+4~5단락. 반드시 해요체, 마크다운 금지. 사용자에게 추가 정보를 요구하지 마세요.${completeNote}`;
+    }
+    /* money / love / marriage / family / custom */
+    return `${name}님의 고민 [${topicLabel}]에서 지금 실질적으로 갈리는 두 방향을 비교해주세요.
+${qNote}
+${yearNote}
+${relNote}
+
+${name}님의 실제 상황에 맞는 선택지 A·B를 직접 정해서 비교하세요. 사용자에게 추가 정보를 요구하지 마세요.
+각 선택지의 장점, 위험, 지금 더 유리한 방향, 그 이유를 포함하세요.
+4~5단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+  }
+
+  /* 섹션 3: 밀어야 할 방향 */
+  function buildP3() {
+    const yearPushNote = cat === 'year'
+      ? `올해 가장 크게 움직이는 영역을 기준으로 실제 밀어야 할 행동을 알려주세요. 관계·배우자 중심이 아니라 올해 핵심 영역(일·재물·건강·변화 등) 중심으로 작성하세요.`
+      : `[${topicLabel}] 분야에서 ${yr}년 지금 실제로 밀어야 할 방향을 알려주세요.`;
+    return `${yearPushNote}
+${yearNote}
+${relNote}
+
+${name}님의 사주 기질과 ${yr}년 ${sw} 에너지에서 가장 잘 맞는 방향, 그 이유, 지금 당장 시작할 수 있는 구체적 행동 1~2가지.
+같은 오행 설명을 반복하지 마세요. 결론과 행동 위주로 간결하게.
+3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+  }
+
+  /* 섹션 4: 피해야 할 선택 */
+  function buildP4() {
+    const yearAvoidNote = cat === 'year'
+      ? `올해 가장 에너지를 소진시키는 방향, 서두르면 안 되는 결정, 피해야 할 선택을 알려주세요. 단순히 '배우자와 대화하세요'가 아니라 올해 흐름에서 실제로 조심할 것들을 짚어주세요.`
+      : `[${topicLabel}] 분야에서 ${yr}년 지금 피해야 할 선택을 알려주세요.`;
+    return `${yearAvoidNote}
+${yearNote}
+${relNote}
+
+사주에서 보이는 반복적 실수 패턴, ${yr}년 ${sw}에서 특히 조심해야 할 결정. 두렵게 만들지 말고 따뜻하고 실용적으로.
+같은 오행 설명 반복 금지. 결론 위주로.
+3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+  }
+
+  /* 섹션 5: 연도별 흐름 JSON */
+  const yr2 = yr + 1, yr3 = yr + 2;
+  function buildP5() {
+    const yearFlowNote = cat === 'year'
+      ? `각 연도 카드는 일·재물·관계·건강·변화 중 그해 가장 중요한 영역을 중심으로 서로 다르게 작성하세요. 3개 연도가 모두 같은 영역(특히 관계·배우자)만 담으면 안 됩니다.`
+      : `각 연도에서 [${topicLabel}] 고민과 관련된 흐름을 중심으로 서로 다르게 작성하세요.`;
+    return `${name}님의 ${yr}년, ${yr2}년, ${yr3}년 흐름을 분석해주세요.
+${yearNote}
+${yearFlowNote}
+
+아래 JSON 배열 형식으로만 정확히 작성하세요. 다른 텍스트 없이 JSON만:
+[
+  {"year":${yr},"sewoon":"${sw}","flow":"그해 핵심 역할·가장 크게 움직이는 영역 (2~3문장)","action":"밀어야 할 행동 (1~2문장)","caution":"주의할 선택 (1~2문장)"},
+  {"year":${yr2},"sewoon":"세운간지","flow":"...","action":"...","caution":"..."},
+  {"year":${yr3},"sewoon":"세운간지","flow":"...","action":"...","caution":"..."}
+]
+
+${yr}년을 "지난해"로 쓰지 마세요. 세운 간지와 대운을 혼동하지 마세요. 각 항목은 완성된 문장으로 작성하세요.`;
+  }
+
+  /* 섹션 6: 30일 행동 계획 */
+  function buildP6() {
+    const yearPlanNote = cat === 'year'
+      ? `배우자와의 대화 위주가 아니라, 올해 핵심 영역(일·재물·건강·변화 등)에서 실제 실행할 행동으로 구성하세요. 관계 관련 행동은 관계가 실제 1순위 영역인 경우에만 포함하세요.`
+      : `[${topicLabel}] 분야에서 실제 실행할 수 있는 행동 계획으로 구성하세요.`;
+    return `${name}님의 앞으로 30일 행동 계획을 짜주세요.
+${yearNote}
+${relNote}
+${yearPlanNote}
+
+반드시 아래 4개 주차를 모두 포함하세요:
+1주차 (1~7일): 목표 + 구체적 행동 2가지
+2주차 (8~14일): 목표 + 구체적 행동 2가지
+3주차 (15~21일): 목표 + 구체적 행동 2가지
+4주차 (22~30일): 목표 + 구체적 행동 2가지
+
+미래 사건 예측이 아니라 ${name}님이 실제 실행할 수 있는 행동으로 작성하세요.
+반드시 해요체, 마크다운 금지.${completeNote}`;
+  }
+
+  /* 섹션 7: 매력살·귀인 */
+  function buildP7() {
+    return `${name}님 사주에서 실제 성립하는 매력살·귀인을 확인하고 [${topicLabel}]와 연결해서 해석해주세요.
+${yearNote}
+
+[확인 대상] 도화살, 화개살, 홍염살, 천을귀인, 천덕귀인, 월덕귀인, 문창귀인, 학당귀인, 태극귀인
+
+각 항목은 실제 사주에서 성립 여부를 확인한 뒤:
+- 성립한 경우: 명칭, 성립 위치, [${topicLabel}]에서의 역할, ${yr}년 활용 방법을 설명하세요.
+- 성립하지 않는 경우: 있다고 만들지 마세요.
+
+성립한 항목이 없다면 제목을 "올해 활용할 나의 강점"으로 바꾸고, 원국의 실제 강점과 ${yr}년 활용 방법을 대신 설명하세요. 보편적인 성향 설명을 장황하게 쓰지 마세요.
+
+2~3단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     섹션 생성 실행
+  ══════════════════════════════════════════════════════════ */
+
+  /* 1. 핵심 답변 */
+  const r1 = await generateWithRetry(ctx, buildP1(), systemPrompt, 2500, c => validateContent(c, '핵심답변'));
   if (r1.ok) {
     sections.push({ icon: '💬', label: `${topicLabel} — 핵심 답변`, content: r1.content });
   } else {
@@ -494,19 +691,8 @@ ${relNote}
     sections.push({ icon: '💬', label: `${topicLabel} — 핵심 답변`, content: r1.content || '(생성 오류)' });
   }
 
-  /* ── 섹션 3: 선택지 비교 ── */
-  const p2 = `${name}님의 고민 [${topicLabel}]에서 지금 실제로 고민하는 선택지들을 비교해주세요.
-${qNote}
-${yearNote}
-${relNote}
-
-[선택지 A] 이름과 특징, 사주에서 보이는 유리한 점
-[선택지 B] 이름과 특징, 사주에서 보이는 유리한 점
-중간 결론: ${yr}년 지금 어느 쪽이 더 맞는지 한 문장
-
-고정된 틀이 아니라 ${name}님의 실제 상황에 맞게 선택지 이름을 정하세요.
-4~5단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
-  const r2 = await generateWithRetry(ctx, p2, systemPrompt, 2500, c => validateContent(c, '선택지비교'));
+  /* 2. 선택지 비교 */
+  const r2 = await generateWithRetry(ctx, buildP2(), systemPrompt, 2500, c => validateContent(c, '선택지비교'));
   if (r2.ok) {
     sections.push({ icon: '⚖️', label: '현재 선택지 비교', content: r2.content, focusType: 'choices' });
   } else {
@@ -514,15 +700,8 @@ ${relNote}
     sections.push({ icon: '⚖️', label: '현재 선택지 비교', content: r2.content || '(생성 오류)', focusType: 'choices' });
   }
 
-  /* ── 섹션 4: 밀어야 할 방향 ── */
-  const p3 = `${name}님의 고민 [${topicLabel}]에서 ${yr}년 지금 실제로 밀어야 할 방향을 알려주세요.
-${yearNote}
-${relNote}
-
-${name}님의 사주 기질과 ${yr}년 ${sw} 에너지에서 가장 잘 맞는 방향, 그 이유, 지금 당장 시작할 수 있는 구체적 행동 1~2가지.
-
-3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
-  const r3 = await generateWithRetry(ctx, p3, systemPrompt, 2000, c => validateContent(c, '밀어야할방향'));
+  /* 3. 밀어야 할 방향 */
+  const r3 = await generateWithRetry(ctx, buildP3(), systemPrompt, 2000, c => validateContent(c, '밀어야할방향'));
   if (r3.ok) {
     sections.push({ icon: '🟢', label: '지금 밀어야 할 방향', content: r3.content, focusType: 'push' });
   } else {
@@ -530,15 +709,8 @@ ${name}님의 사주 기질과 ${yr}년 ${sw} 에너지에서 가장 잘 맞는 
     sections.push({ icon: '🟢', label: '지금 밀어야 할 방향', content: r3.content || '(생성 오류)', focusType: 'push' });
   }
 
-  /* ── 섹션 5: 피해야 할 선택 ── */
-  const p4 = `${name}님의 고민 [${topicLabel}]에서 ${yr}년 지금 피해야 할 선택을 알려주세요.
-${yearNote}
-${relNote}
-
-사주에서 보이는 반복적 실수 패턴, ${yr}년 ${sw}에서 특히 조심해야 할 결정, 에너지를 소진시키는 방향. 두렵게 만들지 말고 따뜻하고 실용적으로.
-
-3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
-  const r4 = await generateWithRetry(ctx, p4, systemPrompt, 2000, c => validateContent(c, '피해야할선택'));
+  /* 4. 피해야 할 선택 */
+  const r4 = await generateWithRetry(ctx, buildP4(), systemPrompt, 2000, c => validateContent(c, '피해야할선택'));
   if (r4.ok) {
     sections.push({ icon: '🔴', label: '지금 피해야 할 선택', content: r4.content, focusType: 'avoid' });
   } else {
@@ -546,19 +718,7 @@ ${relNote}
     sections.push({ icon: '🔴', label: '지금 피해야 할 선택', content: r4.content || '(생성 오류)', focusType: 'avoid' });
   }
 
-  /* ── 섹션 6: 연도별 흐름 3년 (JSON 형식) ── */
-  const yr2 = yr + 1, yr3 = yr + 2;
-  const p5 = `${name}님의 고민 [${topicLabel}]을 중심으로 ${yr}년, ${yr2}년, ${yr3}년 흐름을 분석해주세요.
-${yearNote}
-
-아래 JSON 배열 형식으로만 정확히 작성하세요. 다른 텍스트 없이 JSON만:
-[
-  {"year":${yr},"sewoon":"${sw}","flow":"이 고민에서의 역할 (2~3문장)","action":"밀어야 할 행동 (1~2문장)","caution":"주의할 선택 (1~2문장)"},
-  {"year":${yr2},"sewoon":"세운간지","flow":"...","action":"...","caution":"..."},
-  {"year":${yr3},"sewoon":"세운간지","flow":"...","action":"...","caution":"..."}
-]
-
-${yr}년을 "지난해"로 쓰지 마세요. 각 항목은 완성된 문장으로 작성하세요.`;
+  /* 5. 연도별 흐름 (JSON) */
   const validateYearFlows = (c) => {
     const parsed = parseYearFlowsJson(c);
     if (!parsed || parsed.length < 3) return { ok: false, reason: 'yearflows:parse_failed' };
@@ -570,7 +730,7 @@ ${yr}년을 "지난해"로 쓰지 마세요. 각 항목은 완성된 문장으�
     }
     return { ok: true };
   };
-  const r5 = await generateWithRetry(ctx, p5, systemPrompt, 1200, validateYearFlows);
+  const r5 = await generateWithRetry(ctx, buildP5(), systemPrompt, 1500, validateYearFlows);
   if (r5.ok) {
     sections.push({ icon: '📅', label: `${yr}~${yr3} 연도별 흐름`, content: r5.content, isFocusTimeline: true });
   } else {
@@ -578,20 +738,8 @@ ${yr}년을 "지난해"로 쓰지 마세요. 각 항목은 완성된 문장으�
     sections.push({ icon: '📅', label: `${yr}~${yr3} 연도별 흐름`, content: r5.content || '(생성 오류)', isFocusTimeline: true });
   }
 
-  /* ── 섹션 7: 30일 행동 순서 ── */
-  const p6 = `${name}님의 고민 [${topicLabel}]에서 앞으로 30일 행동 순서를 짜주세요.
-${yearNote}
-${relNote}
-
-반드시 아래 4개 주차를 모두 포함하세요:
-1주차 (1~7일): 실행할 행동 1~2가지
-2주차 (8~14일): 실행할 행동 1~2가지
-3주차 (15~21일): 실행할 행동 1~2가지
-4주차 (22~30일): 실행할 행동 1~2가지
-
-미래 사건 예측이 아니라 ${name}님이 실제 실행할 수 있는 행동 계획으로 작성하세요.
-반드시 해요체, 마크다운 금지.${completeNote}`;
-  const r6 = await generateWithRetry(ctx, p6, systemPrompt, 2500, validate30DayPlan);
+  /* 6. 30일 행동 계획 */
+  const r6 = await generateWithRetry(ctx, buildP6(), systemPrompt, 2500, validate30DayPlan);
   if (r6.ok) {
     sections.push({ icon: '🗓️', label: '앞으로 30일 행동 순서', content: r6.content });
   } else {
@@ -599,34 +747,48 @@ ${relNote}
     sections.push({ icon: '🗓️', label: '앞으로 30일 행동 순서', content: r6.content || '(생성 오류)' });
   }
 
-  /* ── 섹션 8+9: 매력살·귀인 + 따뜻한 마무리 ── */
-  const p7 = `${name}님의 고민 [${topicLabel}]과 직접 관련된 매력살·귀인 에너지를 해석해주세요.
-${yearNote}
-
-사주에서 실제 확인된 매력살·귀인만 사용하세요. 확인되지 않은 것은 만들지 마세요.
-[${topicLabel}]에서의 역할을 중심으로 2~3단락 작성하세요.
-
-그리고 마지막 단락으로 따뜻한 마무리 메시지를 3~4문장으로 작성해주세요. ${name}님이 이 고민을 잘 헤쳐나갈 수 있다는 따뜻하고 구체적인 응원으로 마무리하세요.
-
-전체 4~6단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
-  const r7 = await generateWithRetry(ctx, p7, systemPrompt, 2500, c => validateContent(c, '마무리'));
+  /* 7. 매력살·귀인 */
+  const r7 = await generateWithRetry(ctx, buildP7(), systemPrompt, 1800, c => validateContent(c, '매력살귀인'));
+  const shinsal7Label = (r7.content || '').includes('올해 활용할') ? '올해 활용할 나의 강점' : '나의 매력살·귀인 에너지';
   if (r7.ok) {
-    sections.push({ icon: '✨', label: '나의 매력살·귀인 에너지 & 최종 정리', content: r7.content });
+    sections.push({ icon: '✨', label: shinsal7Label, content: r7.content });
   } else {
-    failedSections.push({ name: '매력살·마무리', reason: r7.reason });
-    sections.push({ icon: '✨', label: '나의 매력살·귀인 에너지 & 최종 정리', content: r7.content || '(생성 오류)' });
+    failedSections.push({ name: '매력살·귀인', reason: r7.reason });
+    sections.push({ icon: '✨', label: shinsal7Label, content: r7.content || '(생성 오류)' });
   }
 
-  /* ── 불완전 섹션 있으면 예외 던지기 (이메일 차단) ── */
+  /* 8. 마무리 메시지 (별도 생성 + 검증) */
+  const validateClosing = (c) => {
+    const v = validateContent(c, 'closing');
+    if (!v.ok) return v;
+    if (c.trim().length < 80) return { ok: false, reason: `closing:too_short(${c.trim().length})` };
+    return { ok: true };
+  };
+  const closingPrompt = `${name}님의 [${topicLabel}] 집중 리딩을 마무리하는 따뜻한 메시지를 작성해주세요.
+${yearNote}
+
+조건:
+- 이번 리딩의 핵심 결론을 한 문장으로 요약
+- ${name}님이 이 고민을 잘 헤쳐나갈 수 있다는 따뜻하고 구체적인 응원 2~3문장
+- 새로운 분석을 추가하지 말고 이미 나온 결과를 기반으로
+- 마지막 문장은 반드시 완결된 문장으로 끝내세요
+- 80~200자 내외. 반드시 해요체.${completeNote}`;
+  const r8 = await generateWithRetry(ctx, closingPrompt, systemPrompt, 600, validateClosing);
+  const closingMessage = r8.ok ? r8.content.trim() : null;
+  if (!r8.ok) {
+    failedSections.push({ name: '마무리 메시지', reason: r8.reason });
+  }
+
+  /* ── 임계 섹션 실패 시 이메일 차단 ── */
   const criticalFailed = failedSections.filter(f =>
-    ['핵심 답변', '30일 행동 순서', '매력살·마무리'].includes(f.name)
+    ['핵심 답변', '30일 행동 순서', '마무리 메시지'].includes(f.name)
   );
   if (criticalFailed.length > 0) {
     const details = criticalFailed.map(f => `${f.name}(${f.reason})`).join(', ');
     throw new Error(`generation_incomplete: ${details}`);
   }
 
-  return sections;
+  return { sections, closingMessage };
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -667,7 +829,7 @@ async function sendSajuEmail(email, sajuData, isPremium) {
     const topicLabel = sajuData.concern?.label || FOCUS_TOPIC_MAP[sajuData.concern?.category] || '선택한 고민';
     const basisLine  = `결과 기준 · ${currentYear}년 ${currentSewoon || ''} 세운`;
 
-    const focusSections = await generateFocusReading(
+    const { sections: focusSections, closingMessage } = await generateFocusReading(
       sajuData, ctx, name, currentYear, currentSewoon, systemPrompt
     );
     sections.push(...focusSections);
@@ -676,7 +838,7 @@ async function sendSajuEmail(email, sajuData, isPremium) {
       name,
       { infoLine, topicLine: `선택한 고민 · ${topicLabel}`, basisLine },
       sections,
-      '', // closing은 마지막 섹션에 포함됨
+      closingMessage || '',
       '내 질문 하나 집중 리딩'
     );
 
