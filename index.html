@@ -1491,7 +1491,8 @@ function goFreePick() {
   const today = new Date().toLocaleDateString('ko-KR');
   const lastDate = localStorage.getItem('freeCardDate');
   if (lastDate === today) {
-    alert('오늘의 무료 카드는 이미 뽑으셨어요 🌙\n내일 자정이 지나면 다시 만날 수 있어요 ✨');
+    const go = confirm('오늘의 무료 카드는 이미 뽑으셨어요 🌙\n내일 자정이 지나면 다시 만날 수 있어요 ✨\n\n심층 리딩을 받으시겠어요?');
+    if (go) showScreen('payment-screen');
     return;
   }
   document.getElementById('free-inp-question').value = '';
