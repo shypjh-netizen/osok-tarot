@@ -41,7 +41,9 @@ const EVENING_TOPICS = [
 /* ── 14일 중복 방지용 Redis 헬퍼 ── */
 async function getRecentCards() {
   const raw = await redis.get('tarot:recent_cards');
-  return raw ? JSON.parse(raw) : [];
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw;
+  try { return JSON.parse(raw); } catch { return []; }
 }
 
 async function recordCard(card) {
@@ -53,7 +55,7 @@ async function recordCard(card) {
     return diff < 14;
   });
   recent.push({ card, date: today });
-  await redis.set('tarot:recent_cards', JSON.stringify(recent), { ex: 86400 * 16 });
+  await redis.set('tarot:recent_cards', recent, { ex: 86400 * 16 });
 }
 
 async function pickCard() {
