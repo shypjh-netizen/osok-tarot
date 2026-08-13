@@ -6389,5 +6389,184 @@ function trackEvent(name, params) {
     <button class="cookie-accept-btn" onclick="acceptCookies()" aria-label="쿠키 동의">동의</button>
   </div>
 </div>
+<!-- ══════════════════════════════════════════════
+     개발자 테스트 패널 (URL에 ?devtest=1 + 올바른 secret 필요)
+     실제 이메일 발송 없이 리딩 HTML 미리보기
+══════════════════════════════════════════════ -->
+<div id="devPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99999;overflow:auto;font-family:monospace">
+  <div style="max-width:900px;margin:0 auto;padding:24px 20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2 style="color:#c9a84c;margin:0;font-size:18px">🛠 개발자 테스트 모드</h2>
+      <button onclick="document.getElementById('devPanel').style.display='none'" style="background:transparent;border:1px solid #555;color:#aaa;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:14px">닫기</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div>
+        <label style="color:#b89e7e;font-size:12px;display:block;margin-bottom:4px">Secret 키</label>
+        <input id="devSecret" type="password" placeholder="SAJU_TEST_SECRET 값 입력" style="width:100%;box-sizing:border-box;background:#1a1a2e;border:1px solid #333;color:#ede0c8;padding:8px 12px;border-radius:8px;font-size:14px">
+      </div>
+      <div>
+        <label style="color:#b89e7e;font-size:12px;display:block;margin-bottom:4px">이름</label>
+        <input id="devName" type="text" value="테스트" style="width:100%;box-sizing:border-box;background:#1a1a2e;border:1px solid #333;color:#ede0c8;padding:8px 12px;border-radius:8px;font-size:14px">
+      </div>
+      <div>
+        <label style="color:#b89e7e;font-size:12px;display:block;margin-bottom:4px">생년 / 월 / 일</label>
+        <div style="display:flex;gap:6px">
+          <input id="devYear" type="number" value="1990" style="flex:2;background:#1a1a2e;border:1px solid #333;color:#ede0c8;padding:8px 10px;border-radius:8px;font-size:14px">
+          <input id="devMonth" type="number" value="3" min="1" max="12" style="flex:1;background:#1a1a2e;border:1px solid #333;color:#ede0c8;padding:8px 10px;border-radius:8px;font-size:14px">
+          <input id="devDay" type="number" value="15" min="1" max="31" style="flex:1;background:#1a1a2e;border:1px solid #333;color:#ede0c8;padding:8px 10px;border-radius:8px;font-size:14px">
+        </div>
+      </div>
+      <div>
+        <label style="color:#b89e7e;font-size:12px;display:block;margin-bottom:4px">성별</label>
+        <select id="devGender" style="width:100%;background:#1a1a2e;border:1px solid #333;color:#ede0c8;padding:8px 12px;border-radius:8px;font-size:14px">
+          <option value="female">여성</option>
+          <option value="male">남성</option>
+        </select>
+      </div>
+      <div>
+        <label style="color:#b89e7e;font-size:12px;display:block;margin-bottom:4px">관계 상태</label>
+        <select id="devRelation" style="width:100%;background:#1a1a2e;border:1px solid #333;color:#ede0c8;padding:8px 12px;border-radius:8px;font-size:14px">
+          <option value="single">미혼·솔로</option>
+          <option value="dating">연애 중</option>
+          <option value="married">기혼</option>
+          <option value="divorced">이혼·별거</option>
+          <option value="private">비공개</option>
+        </select>
+      </div>
+      <div>
+        <label style="color:#b89e7e;font-size:12px;display:block;margin-bottom:4px">고민 주제</label>
+        <select id="devTopic" style="width:100%;background:#1a1a2e;border:1px solid #333;color:#ede0c8;padding:8px 12px;border-radius:8px;font-size:14px">
+          <option value="year">올해의 흐름</option>
+          <option value="work">일·이직</option>
+          <option value="money">재물·수입</option>
+          <option value="business">사업·부업</option>
+          <option value="love">관계·연애</option>
+          <option value="marriage">결혼생활</option>
+          <option value="family">가족</option>
+          <option value="custom">직접 질문</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <label style="color:#b89e7e;font-size:12px;display:block;margin-bottom:4px">직접 질문 (custom 선택 시)</label>
+      <input id="devQuestion" type="text" placeholder="질문 내용 입력..." style="width:100%;box-sizing:border-box;background:#1a1a2e;border:1px solid #333;color:#ede0c8;padding:8px 12px;border-radius:8px;font-size:14px">
+    </div>
+
+    <div style="display:flex;gap:10px;margin-bottom:20px">
+      <button id="devRunBtn" onclick="devRunTest()" style="flex:1;background:#c9a84c;color:#06060f;border:none;padding:12px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer">▶ 리딩 생성</button>
+      <button onclick="devClearResult()" style="background:transparent;border:1px solid #444;color:#888;padding:12px 20px;border-radius:10px;font-size:14px;cursor:pointer">초기화</button>
+    </div>
+
+    <div id="devStatus" style="color:#8ecfc0;font-size:13px;margin-bottom:12px;min-height:18px"></div>
+
+    <div id="devResultWrap" style="display:none">
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button onclick="devToggleView('html')" id="devTabHtml" style="background:#c9a84c;color:#06060f;border:none;padding:8px 18px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:700">HTML 미리보기</button>
+        <button onclick="devToggleView('json')" id="devTabJson" style="background:#333;color:#aaa;border:none;padding:8px 18px;border-radius:8px;font-size:13px;cursor:pointer">요약 JSON</button>
+      </div>
+      <div id="devHtmlView" style="background:#fff;border-radius:12px;overflow:hidden;max-height:600px;overflow-y:auto">
+        <iframe id="devIframe" style="width:100%;border:none;min-height:600px"></iframe>
+      </div>
+      <div id="devJsonView" style="display:none;background:#0d0d1a;border:1px solid #333;border-radius:12px;padding:16px;max-height:400px;overflow-y:auto">
+        <pre id="devJsonPre" style="color:#ede0c8;font-size:12px;margin:0;white-space:pre-wrap;word-break:break-all"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* 개발자 패널 초기화 */
+(function() {
+  const params = new URLSearchParams(location.search);
+  if (params.get('devtest') === '1') {
+    document.getElementById('devPanel').style.display = 'block';
+  }
+})();
+
+let _devLastResult = null;
+
+function devToggleView(tab) {
+  document.getElementById('devHtmlView').style.display = tab === 'html' ? 'block' : 'none';
+  document.getElementById('devJsonView').style.display = tab === 'json' ? 'block' : 'none';
+  document.getElementById('devTabHtml').style.background = tab === 'html' ? '#c9a84c' : '#333';
+  document.getElementById('devTabHtml').style.color = tab === 'html' ? '#06060f' : '#aaa';
+  document.getElementById('devTabJson').style.background = tab === 'json' ? '#c9a84c' : '#333';
+  document.getElementById('devTabJson').style.color = tab === 'json' ? '#06060f' : '#aaa';
+}
+
+function devClearResult() {
+  document.getElementById('devResultWrap').style.display = 'none';
+  document.getElementById('devStatus').textContent = '';
+  _devLastResult = null;
+}
+
+async function devRunTest() {
+  const secret = document.getElementById('devSecret').value.trim();
+  if (!secret) { alert('Secret 키를 입력해주세요.'); return; }
+
+  const topic = document.getElementById('devTopic').value;
+  const topicLabels = { year: '올해의 흐름', work: '일·이직', money: '재물·수입', business: '사업·부업', love: '관계·연애', marriage: '결혼생활', family: '가족', custom: '직접 질문' };
+
+  const sajuData = {
+    name: document.getElementById('devName').value || '테스트',
+    birthYear: parseInt(document.getElementById('devYear').value) || 1990,
+    birthMonth: parseInt(document.getElementById('devMonth').value) || 3,
+    birthDay: parseInt(document.getElementById('devDay').value) || 15,
+    gender: document.getElementById('devGender').value,
+    calendarType: 'solar',
+    relationStatus: document.getElementById('devRelation').value,
+    concern: {
+      category: topic,
+      label: topicLabels[topic] || topic,
+      question: document.getElementById('devQuestion').value.trim(),
+    },
+    tier: 'single',
+  };
+
+  const btn = document.getElementById('devRunBtn');
+  const status = document.getElementById('devStatus');
+  btn.disabled = true;
+  btn.textContent = '생성 중...';
+  status.textContent = '⏳ AI 리딩 생성 중 (1~2분 소요)...';
+
+  try {
+    const res = await fetch('/api/saju-test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret, sajuData }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      status.textContent = `❌ 오류: ${data.error || res.status}`;
+      return;
+    }
+
+    _devLastResult = data;
+    status.textContent = `✅ 완료 (testId: ${data.testId}) — 섹션 ${data.sections?.length || 0}개`;
+
+    const iframe = document.getElementById('devIframe');
+    const blob = new Blob([data.html], { type: 'text/html' });
+    iframe.src = URL.createObjectURL(blob);
+
+    document.getElementById('devJsonPre').textContent = JSON.stringify({
+      testId: data.testId,
+      summaryCard: data.summaryCard,
+      closingMessage: data.closingMessage,
+      sections: data.sections,
+    }, null, 2);
+
+    document.getElementById('devResultWrap').style.display = 'block';
+    devToggleView('html');
+  } catch (e) {
+    status.textContent = `❌ 네트워크 오류: ${e.message}`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '▶ 리딩 생성';
+  }
+}
+</script>
 </body>
 </html>
