@@ -379,19 +379,24 @@ function parseYearFlowsJson(raw) {
 
 function renderFocusYearCards(raw) {
   const rows = parseYearFlowsJson(raw);
+  const nowYear = new Date().getFullYear();
   if (!rows) {
-    return `<div style="color:#b89e7e;font-size:15px;line-height:2;white-space:pre-wrap;word-break:keep-all;overflow-wrap:break-word">${raw}</div>`;
+    return `<div style="color:#ede0c8;font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:keep-all;overflow-wrap:break-word">${escHtml(raw)}</div>`;
   }
-  return rows.map(r => `
-    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.18);border-radius:12px;padding:18px 20px;margin-bottom:16px;word-break:keep-all;overflow-wrap:break-word">
-      <p style="color:#c9a84c;font-size:15px;font-weight:700;margin:0 0 12px">${escHtml(String(r.year))}년 · ${escHtml(r.sewoon || '')}</p>
-      <p style="color:#b89e7e;font-size:13px;margin:0 0 6px;font-weight:600">이 고민에서의 역할</p>
-      <p style="color:#ede0c8;font-size:14px;line-height:1.75;margin:0 0 10px">${escHtml(r.flow || '')}</p>
-      <p style="color:#8ecfc0;font-size:13px;margin:0 0 4px;font-weight:600">밀어야 할 행동</p>
-      <p style="color:#ede0c8;font-size:14px;line-height:1.75;margin:0 0 10px">${escHtml(r.action || '')}</p>
-      <p style="color:#e8a060;font-size:13px;margin:0 0 4px;font-weight:600">주의할 선택</p>
-      <p style="color:#ede0c8;font-size:14px;line-height:1.75;margin:0">${escHtml(r.caution || '')}</p>
-    </div>`).join('');
+  return rows.map((r, i) => {
+    const isThisYear = Number(r.year) === nowYear;
+    const cardBg = isThisYear ? 'rgba(201,168,76,0.06)' : 'rgba(255,255,255,0.02)';
+    const cardBrdr = isThisYear ? 'rgba(201,168,76,0.4)' : 'rgba(201,168,76,0.12)';
+    const badge = isThisYear ? `<span style="background:#c9a84c;color:#07071a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle">올해</span>` : '';
+    return `<div style="background:${cardBg};border:1px solid ${cardBrdr};border-radius:10px;padding:16px 18px;margin-bottom:12px;word-break:keep-all;overflow-wrap:break-word">
+      <p style="color:#c9a84c;font-size:14px;font-weight:700;margin:0 0 10px">${escHtml(String(r.year))}년 · ${escHtml(r.sewoon || '')}${badge}</p>
+      <p style="color:#ede0c8;font-size:13px;line-height:1.8;margin:0 0 10px">${escHtml(r.flow || '')}</p>
+      <p style="color:#7ecfbe;font-size:12px;font-weight:700;margin:0 0 3px">▶ 밀어야 할 행동</p>
+      <p style="color:#ede0c8;font-size:13px;line-height:1.75;margin:0 0 8px">${escHtml(r.action || '')}</p>
+      <p style="color:#d07060;font-size:12px;font-weight:700;margin:0 0 3px">✕ 주의할 선택</p>
+      <p style="color:#ede0c8;font-size:13px;line-height:1.75;margin:0">${escHtml(r.caution || '')}</p>
+    </div>`;
+  }).join('');
 }
 
 function escHtml(s) {
@@ -440,30 +445,49 @@ function renderChecklistHtml(content) {
 }
 
 function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, summaryCard) {
-  /* ── 요약 카드 HTML ── */
+  /* ── 공통 스타일 토큰 ── */
+  const C = {
+    bg:        '#07071a',   // 전체 배경
+    card:      '#0f0f2a',   // 일반 카드
+    cardBrdr:  'rgba(201,168,76,0.18)',
+    gold:      '#c9a84c',
+    goldDim:   'rgba(201,168,76,0.35)',
+    ivory:     '#ede0c8',   // 본문 텍스트
+    sub:       '#b89e7e',   // 보조 텍스트
+    pushBg:    'rgba(60,160,140,0.07)',
+    pushBrdr:  'rgba(60,160,140,0.3)',
+    pushLabel: '#7ecfbe',
+    avoidBg:   'rgba(180,70,50,0.07)',
+    avoidBrdr: 'rgba(180,70,50,0.3)',
+    avoidLabel:'#d07060',
+    choiceBg:  'rgba(120,100,190,0.07)',
+    choiceBrdr:'rgba(120,100,190,0.28)',
+    choiceLabel:'#a48fd0',
+  };
+
+  /* ── 요약 카드 (말줄임표 없음 — 높이 자동) ── */
   const summaryHtml = summaryCard ? `
-    <div style="margin-bottom:32px;padding:24px;background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(160,143,208,0.06));border:1px solid rgba(201,168,76,0.35);border-radius:16px">
-      <p style="color:#c9a84c;font-size:11px;letter-spacing:3px;margin:0 0 16px;text-align:center">✦ 리딩 핵심 요약 ✦</p>
-      <div style="margin-bottom:14px;padding:14px 16px;background:rgba(0,0,0,0.2);border-radius:10px;border-left:3px solid #c9a84c">
-        <p style="color:#c9a84c;font-size:12px;font-weight:700;margin:0 0 6px;letter-spacing:1px">핵심 결론</p>
-        <p style="color:#ede0c8;font-size:15px;line-height:1.75;margin:0;word-break:keep-all">${escHtml(summaryCard.핵심결론 || '')}</p>
+    <div style="margin-bottom:20px;padding:22px 20px;background:${C.card};border:1px solid ${C.goldDim};border-radius:14px">
+      <p style="color:${C.gold};font-size:11px;letter-spacing:3px;margin:0 0 16px;text-align:center">✦ 리딩 핵심 요약 ✦</p>
+      <div style="margin-bottom:12px;padding:14px 16px;background:rgba(201,168,76,0.06);border-left:3px solid ${C.gold};border-radius:0 8px 8px 0">
+        <p style="color:${C.gold};font-size:11px;font-weight:700;margin:0 0 6px;letter-spacing:1px">핵심 결론</p>
+        <p style="color:${C.ivory};font-size:14px;line-height:1.8;margin:0;word-break:keep-all;overflow-wrap:break-word">${escHtml(summaryCard.핵심결론 || '')}</p>
       </div>
-      <div style="display:grid;gap:10px">
-        ${summaryCard.밀어야할방향 ? `<div style="padding:12px 14px;background:rgba(80,180,160,0.07);border-radius:10px;border-left:3px solid #8ecfc0">
-          <p style="color:#8ecfc0;font-size:12px;font-weight:700;margin:0 0 4px">지금 밀어야 할 방향</p>
-          <p style="color:#ede0c8;font-size:14px;line-height:1.7;margin:0;word-break:keep-all">${escHtml(summaryCard.밀어야할방향)}</p>
-        </div>` : ''}
-        ${summaryCard.피해야할선택 ? `<div style="padding:12px 14px;background:rgba(200,90,60,0.07);border-radius:10px;border-left:3px solid #c87060">
-          <p style="color:#c87060;font-size:12px;font-weight:700;margin:0 0 4px">지금 피해야 할 선택</p>
-          <p style="color:#ede0c8;font-size:14px;line-height:1.7;margin:0;word-break:keep-all">${escHtml(summaryCard.피해야할선택)}</p>
-        </div>` : ''}
-        ${summaryCard.첫행동 ? `<div style="padding:12px 14px;background:rgba(160,143,208,0.07);border-radius:10px;border-left:3px solid #a48fd0">
-          <p style="color:#a48fd0;font-size:12px;font-weight:700;margin:0 0 4px">앞으로 30일 — 첫 행동</p>
-          <p style="color:#ede0c8;font-size:14px;line-height:1.7;margin:0;word-break:keep-all">${escHtml(summaryCard.첫행동)}</p>
-        </div>` : ''}
-      </div>
+      ${summaryCard.밀어야할방향 ? `<div style="margin-bottom:10px;padding:12px 14px;background:${C.pushBg};border-left:3px solid ${C.pushLabel};border-radius:0 8px 8px 0">
+        <p style="color:${C.pushLabel};font-size:11px;font-weight:700;margin:0 0 5px">▶ 지금 밀어야 할 방향</p>
+        <p style="color:${C.ivory};font-size:14px;line-height:1.8;margin:0;word-break:keep-all;overflow-wrap:break-word">${escHtml(summaryCard.밀어야할방향)}</p>
+      </div>` : ''}
+      ${summaryCard.피해야할선택 ? `<div style="margin-bottom:10px;padding:12px 14px;background:${C.avoidBg};border-left:3px solid ${C.avoidLabel};border-radius:0 8px 8px 0">
+        <p style="color:${C.avoidLabel};font-size:11px;font-weight:700;margin:0 0 5px">✕ 지금 피해야 할 선택</p>
+        <p style="color:${C.ivory};font-size:14px;line-height:1.8;margin:0;word-break:keep-all;overflow-wrap:break-word">${escHtml(summaryCard.피해야할선택)}</p>
+      </div>` : ''}
+      ${summaryCard.첫행동 ? `<div style="padding:12px 14px;background:${C.choiceBg};border-left:3px solid ${C.choiceLabel};border-radius:0 8px 8px 0">
+        <p style="color:${C.choiceLabel};font-size:11px;font-weight:700;margin:0 0 5px">□ 앞으로 30일 — 첫 행동</p>
+        <p style="color:${C.ivory};font-size:14px;line-height:1.8;margin:0;word-break:keep-all;overflow-wrap:break-word">${escHtml(summaryCard.첫행동)}</p>
+      </div>` : ''}
     </div>` : '';
 
+  /* ── 섹션 카드 ── */
   const sectionsHtml = sections.map(({ icon, label, content, isTimeline, isFocusTimeline, focusType, is30DayPlan }) => {
     let bodyHtml;
     if (isTimeline) {
@@ -473,37 +497,29 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, su
     } else if (is30DayPlan) {
       bodyHtml = renderChecklistHtml(content);
     } else {
-      bodyHtml = `<div style="color:#ede0c8;font-size:15px;line-height:1.85;white-space:pre-wrap;word-break:keep-all;overflow-wrap:break-word">${escHtml(content)}</div>`;
+      bodyHtml = `<div style="color:${C.ivory};font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:keep-all;overflow-wrap:break-word">${escHtml(content)}</div>`;
     }
 
-    let cardBg = '#10102a';
-    let cardBorder = 'rgba(201,168,76,0.15)';
-    let labelColor = '#c9a84c';
-    if (focusType === 'push') {
-      cardBg = 'rgba(80,180,160,0.05)'; cardBorder = 'rgba(80,180,160,0.25)'; labelColor = '#8ecfc0';
-    } else if (focusType === 'avoid') {
-      cardBg = 'rgba(180,80,60,0.05)'; cardBorder = 'rgba(180,80,60,0.25)'; labelColor = '#c87060';
-    } else if (focusType === 'choices') {
-      cardBg = 'rgba(140,120,200,0.05)'; cardBorder = 'rgba(140,120,200,0.22)'; labelColor = '#a48fd0';
-    }
+    let bg = C.card, brdr = C.cardBrdr, lc = C.gold, lBrdr = C.gold;
+    if (focusType === 'push')   { bg = C.pushBg;   brdr = C.pushBrdr;   lc = C.pushLabel;   lBrdr = C.pushLabel; }
+    if (focusType === 'avoid')  { bg = C.avoidBg;  brdr = C.avoidBrdr;  lc = C.avoidLabel;  lBrdr = C.avoidLabel; }
+    if (focusType === 'choices'){ bg = C.choiceBg; brdr = C.choiceBrdr; lc = C.choiceLabel; lBrdr = C.choiceLabel; }
 
-    return `
-    <div style="background:${cardBg};border:1px solid ${cardBorder};border-radius:12px;padding:20px 22px;margin-bottom:28px;overflow:hidden">
-      <h2 style="color:${labelColor};font-size:16px;font-weight:700;border-bottom:1px solid ${cardBorder};padding-bottom:10px;margin:0 0 14px;line-height:1.5">${icon} ${label}</h2>
+    return `<div style="background:${bg};border:1px solid ${brdr};border-radius:12px;padding:20px 20px 22px;margin-bottom:16px">
+      <h2 style="color:${lc};font-size:15px;font-weight:700;border-bottom:1px solid ${brdr};padding-bottom:9px;margin:0 0 14px;line-height:1.5;word-break:keep-all">${icon} ${label}</h2>
       ${bodyHtml}
     </div>`;
   }).join('');
 
   const closingHtml = closingMsg ? `
-    <div style="margin-top:8px;padding:22px 24px;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:12px">
-      <p style="color:#c9a84c;font-size:12px;letter-spacing:.12em;margin:0 0 12px;text-align:center">✦ 오속의 마무리 메시지 ✦</p>
-      <p style="color:#ede0c8;font-size:15px;line-height:1.9;margin:0;word-break:keep-all">${escHtml(closingMsg)}</p>
+    <div style="margin-top:4px;padding:20px 20px;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.18);border-radius:12px">
+      <p style="color:${C.gold};font-size:11px;letter-spacing:.1em;margin:0 0 10px;text-align:center">✦ 오속의 마무리 메시지 ✦</p>
+      <p style="color:${C.ivory};font-size:14px;line-height:1.85;margin:0;word-break:keep-all;overflow-wrap:break-word">${escHtml(closingMsg)}</p>
     </div>` : '';
 
-  // headerMeta: { infoLine, topicLine, basisLine }
   const headerExtra = headerMeta.topicLine
-    ? `<p style="color:#c9a84c;font-size:13px;margin:6px 0 2px;font-weight:600">${headerMeta.topicLine}</p>
-       <p style="color:#b89e7e;font-size:12px;margin:0">${headerMeta.basisLine}</p>`
+    ? `<p style="color:${C.gold};font-size:13px;margin:6px 0 2px;font-weight:600">${escHtml(headerMeta.topicLine)}</p>
+       <p style="color:${C.sub};font-size:12px;margin:0">${escHtml(headerMeta.basisLine || '')}</p>`
     : '';
 
   return `<!DOCTYPE html>
@@ -511,29 +527,30 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, su
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${name}님의 오속 사주 리딩</title>
+<title>${escHtml(name)}님의 오속 사주 리딩</title>
 </head>
-<body style="background:#06060f;margin:0;padding:0;font-family:Georgia,'Noto Serif KR',serif">
-  <div style="max-width:640px;margin:0 auto;padding:40px 20px">
+<body style="background:${C.bg};margin:0;padding:0;font-family:Georgia,'Noto Serif KR',serif">
+  <div style="max-width:680px;margin:0 auto;padding:36px 16px 48px">
 
-    <div style="text-align:center;margin-bottom:40px">
-      <p style="color:#c9a84c;font-size:11px;letter-spacing:4px;margin:0 0 8px">✦ 오속 사주 ✦</p>
-      ${productLabel ? `<p style="color:#a48fd0;font-size:12px;letter-spacing:2px;margin:0 0 12px">${productLabel}</p>` : ''}
-      <h1 style="color:#ede0c8;font-size:22px;line-height:1.6;margin:0 0 10px;font-weight:700">${name}님의 사주 리딩이<br>도착했어요</h1>
-      <p style="color:#b89e7e;font-size:13px;margin:0 0 4px">${headerMeta.infoLine}</p>
+    <div style="text-align:center;margin-bottom:28px;padding:28px 20px 24px;background:${C.card};border:1px solid ${C.cardBrdr};border-radius:14px">
+      <p style="color:${C.gold};font-size:11px;letter-spacing:4px;margin:0 0 10px">✦ 오속 사주 ✦</p>
+      ${productLabel ? `<p style="color:${C.choiceLabel};font-size:12px;letter-spacing:2px;margin:0 0 10px">${escHtml(productLabel)}</p>` : ''}
+      <h1 style="color:${C.ivory};font-size:20px;line-height:1.65;margin:0 0 12px;font-weight:700">${escHtml(name)}님의 사주 리딩이 도착했어요</h1>
+      <p style="color:${C.sub};font-size:13px;margin:0 0 4px">${escHtml(headerMeta.infoLine || '')}</p>
       ${headerExtra}
-      <p style="color:rgba(184,158,126,0.5);font-size:11px;margin:8px 0 0">본 리딩은 오속 사주 AI 기반 분석이에요 · 오락 및 참고 목적</p>
+      <p style="color:rgba(184,158,126,0.45);font-size:11px;margin:10px 0 0">본 리딩은 오속 사주 AI 기반 분석이에요 · 오락 및 참고 목적</p>
     </div>
 
     ${summaryHtml}
-    <div style="background:#10102a;border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:32px 28px">
+
+    <div style="background:${C.card};border:1px solid ${C.cardBrdr};border-radius:14px;padding:20px 16px 24px">
       ${sectionsHtml}
       ${closingHtml}
     </div>
 
-    <div style="text-align:center;color:rgba(184,158,126,0.5);font-size:12px;line-height:2;margin-top:32px;padding-top:24px;border-top:1px solid rgba(201,168,76,0.08)">
+    <div style="text-align:center;color:rgba(184,158,126,0.45);font-size:12px;line-height:2;margin-top:28px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.08)">
       <p style="margin:0">오속 사주 · www.osok.kr/saju.html</p>
-      <p style="margin:0">궁금한 점은 <a href="http://pf.kakao.com/_bSudX/chat" style="color:#c9a84c">카카오 채널</a>로 문의해주세요</p>
+      <p style="margin:0">궁금한 점은 <a href="http://pf.kakao.com/_bSudX/chat" style="color:${C.gold}">카카오 채널</a>로 문의해주세요</p>
       <p style="margin:4px 0 0;font-size:11px">상호: 온나라 · 대표: 박지현 · 사업자등록번호: 602-23-61592</p>
     </div>
 
@@ -591,14 +608,16 @@ async function generateFocusReading(sajuData, ctx, name, currentYear, currentSew
   const prohibitNote = `
 [금지 사항 — 반드시 지킬 것]
 - 서양 점성술(별자리·전갈자리 등)을 사주 해석에 혼합하지 마세요.
-- 사용자가 입력하지 않은 현실 정보(직업·수입·투자 여부·사업 여부·자산)를 가정하지 마세요.
-- "상사와 급여 협상", "주식·펀드 포트폴리오 재구성", "거래처를 늘리세요" 같은 직업·자산 가정 문장 금지.
-- 오행 개수 하나만으로 성격·재물을 직접 연결하지 마세요. (예: "금이 0개이므로 직관적 판단에 강하다" 금지)
+- 사용자가 입력하지 않은 정보를 사실처럼 가정하지 마세요: 직업·수입·투자 여부·사업 여부·자산·부채·고정수입·공동자산. 예: "안정적인 자산 관리 기반 위에서"처럼 자산 상태를 단정하는 표현 금지.
+- 정보가 없을 때는 조건부로 표현하세요. 예: "현재 유지 중인 수입 기반이 있다면 지키고" / "새로운 수입 가능성을 작은 규모로 검증하세요".
+- "상사와 급여 협상", "주식·펀드 포트폴리오 재구성", "거래처를 늘리세요" 같이 직업·자산을 전제로 한 문장 금지.
+- 오행 개수 하나만으로 성격·재물을 직접 연결하지 마세요.
 - 같은 오행을 같은 리딩 안에서 서로 모순된 의미로 쓰지 마세요.
 - 대운과 세운을 혼동하지 마세요. 세운 간지(예: 丁未)를 대운처럼 표현하지 마세요.
 - 대운 전환 날짜는 실제 계산된 날짜가 있을 때만 사용하세요. 없으면 날짜를 추정하지 마세요.
 - 없는 신살을 만들거나 임의 퍼센트를 부여하지 마세요.
-- 이 리딩의 핵심 결론과 충돌하는 방향을 제시하지 마세요.`;
+- 이 리딩의 핵심 결론과 충돌하는 방향을 제시하지 마세요.
+- 앞 섹션에서 이미 설명한 원국·일간·오행 근거를 뒤 섹션에서 반복하지 마세요.`;
 
   /* ── 리딩 생성일 (날짜 기준) ── */
   const nowKST = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
@@ -617,9 +636,9 @@ async function generateFocusReading(sajuData, ctx, name, currentYear, currentSew
 {
   "primaryArea": "올해 가장 크게 움직이는 영역 (예: 일·진로 / 재물·수입 / 관계 / 건강·생활 / 변화·새로운 시도)",
   "primaryReason": "그 영역이 핵심인 사주적 근거 (원국·대운·세운 기반, 1~2문장)",
-  "coreDirection": "올해 핵심 방향 한 문장 (예: '기존 기반을 지키면서 재물 가능성을 작게 시험한다')",
-  "pushSummary": "밀어야 할 것 요약 (1문장)",
-  "avoidSummary": "피해야 할 것 요약 (1문장)",
+  "coreDirection": "올해 핵심 방향 — 무엇을 우선할지 직접 답하는 완결된 1문장 (최대 60자)",
+  "pushSummary": "지금 실제로 해야 할 행동 1문장 (최대 50자, 조건부 표현 사용)",
+  "avoidSummary": "지금 하지 말아야 할 행동 1문장 (최대 50자, pushSummary와 내용이 달라야 함)",
   "yearElementNote": "올해 세운 오행이 일간과 어떤 관계인지, 그 핵심 작용 (1문장)",
   "daewoonNote": "현재 대운 간지와 상태. 전환 날짜가 계산되어 있으면 포함, 없으면 null",
   "relationshipPriority": "관계가 실제로 올해 1순위 영역인가? true 또는 false"
@@ -652,191 +671,180 @@ ${yearCore.daewoonNote ? `대운 상태: ${yearCore.daewoonNote}` : '대운 전�
      주제별 전용 프롬프트 빌더
   ══════════════════════════════════════════════════════════ */
 
-  /* 섹션 1: 핵심 답변 프롬프트 */
+  /* 섹션 1: 핵심 답변 — 최대 3단락, 각 단락 2~3문장 */
   function buildP1() {
-    if (cat === 'year') {
-      return `${name}님의 사주와 ${yr}년 ${sw} 흐름을 분석해서 '올해의 흐름' 핵심 결론을 알려주세요.
-${yearNote}
-${relNote}
+    const base = cat === 'year'
+      ? `${name}님의 ${yr}년 올해 흐름 핵심 결론을 알려주세요.
 ${coreCtx}
-
-[필수 포함 내용 — 아래 순서로 작성하세요]
-1단락: 올해 ${name}님에게 가장 크게 움직이는 영역이 무엇인지, 사주적 근거(원국·대운·세운)와 함께 한두 문장으로 시작하세요.
-2단락: 일·재물·관계·건강·생활변화 중 ${yr}년 실제 계산 결과에 따른 우선순위를 간결하게 알려주세요. 기혼이라는 이유만으로 관계를 1순위로 만들지 마세요.
-3단락: 올해 확장하거나 밀어야 할 영역 하나, 서두르지 말아야 할 영역 하나를 각각 한 문장씩.
-4단락: 현재 대운(간지와 구간)과 ${yr}년 ${sw} 세운이 어떻게 연결되는지 한두 문장. 대운과 세운을 혼동하지 마세요.
-
-총 4단락. 반드시 해요체, 마크다운 금지.${completeNote}
-${prohibitNote}`;
-    }
-    if (cat === 'custom') {
-      return `${name}님의 직접 질문: "${question}"
-${yearNote}
-${relNote}
-
-1단락: 이 질문에 대한 핵심 답변을 명확하고 직접적인 한 문장으로 시작하세요.
-2~3단락: ${name}님의 사주 기질과 ${yr}년 ${sw}에서 이 질문과 관련된 흐름을 구체적으로 찾아주세요. 해석은 원국→일간→십성→오행→대운→세운 순서로 연결하세요.
-
-총 3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}
-${prohibitNote}`;
-    }
-    return `${name}님의 선택 고민: [${topicLabel}]
+1단락: 올해 가장 크게 움직이는 영역과 사주적 근거(원국·대운·세운)를 2문장으로.
+2단락: 밀어야 할 영역 하나, 서두르지 말아야 할 영역 하나를 각각 1문장씩.
+3단락: 대운과 ${sw} 세운이 어떻게 연결되는지 1~2문장. 대운·세운 혼동 금지.`
+      : cat === 'custom'
+      ? `${name}님의 질문: "${question}"
+1단락: 핵심 답변 1문장으로 시작.
+2~3단락: 사주 기질과 ${yr}년 ${sw}에서 관련 흐름을 원국→대운→세운 순서로.`
+      : `${name}님의 고민: [${topicLabel}]
 ${qNote}
+1단락: [${topicLabel}]에 대한 핵심 답변 1문장.
+2~3단락: ${name}님 사주와 ${yr}년 ${sw}에서 이 고민 관련 흐름을 원국→대운→세운 순서로.`;
+    return `${base}
 ${yearNote}
 ${relNote}
-
-1단락: [${topicLabel}]에 대한 핵심 답변을 강렬하고 명확한 한 문장으로 시작하세요.
-2~3단락: 이 고민과 관련된 흐름을 ${name}님의 사주 기질과 ${yr}년 ${sw}에서 구체적으로 찾아주세요. 해석은 원국→일간→십성→오행→대운→세운 순서로 연결하세요.
-
-총 3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}
+총 3단락, 각 단락 최대 3문장. 반드시 해요체, 마크다운 금지.${completeNote}
 ${prohibitNote}`;
   }
 
-  /* 섹션 2: 선택지 비교 프롬프트 */
+  /* 섹션 2: 두 방향 비교 — 구조화된 카드 형식 */
   function buildP2() {
+    let abDef = '';
     if (cat === 'year') {
-      return `${name}님의 ${yr}년 흐름에서 실제로 선택해야 하는 두 가지 방향을 비교해주세요.
+      abDef = `A: 새로운 것을 넓히거나 변화를 추구하는 방향\nB: 기존 기반을 지키고 강화하는 방향`;
+    } else if (cat === 'work') {
+      abDef = `A: 현재 분야·역할 유지\nB: 이직·전환·새로운 도전`;
+    } else if (cat === 'business') {
+      abDef = `A: 지금 바로 시작·확장\nB: 더 준비 후 시작`;
+    } else if (cat === 'love' || cat === 'marriage') {
+      abDef = `A: 현재 관계를 적극적으로 진전시키는 방향\nB: 지금은 내면을 먼저 정리하는 방향`;
+    } else if (cat === 'money') {
+      abDef = `A: 새로운 수입 가능성을 소규모로 시험하는 방향\nB: 현재 여건을 점검하고 지키는 방향`;
+    } else {
+      abDef = `${name}님의 [${topicLabel}] 고민에서 실질적으로 갈리는 두 방향을 직접 정해서`;
+    }
+    return `${name}님의 [${topicLabel}] 고민에서 두 방향을 비교해주세요.
+${abDef}
 ${yearNote}
 ${relNote}
 ${coreCtx}
 
-[선택지 A: 새로운 것을 넓히거나 변화를 추구하는 방향]
-- ${name}님 사주와 ${yr}년 흐름에서 이 방향의 유리한 점 한두 문장
-- 이 방향을 선택할 때의 위험 한 문장
+아래 형식으로 정확히 작성하세요:
 
-[선택지 B: 기존 기반을 지키고 강화하는 방향]
-- ${name}님 사주와 ${yr}년 흐름에서 이 방향의 유리한 점 한두 문장
-- 이 방향을 선택할 때의 위험 한 문장
+[방향 A: (방향 이름 1문장)]
+- 이 방향의 의미: 1문장
+- 유리한 점: 1문장
+- 주의할 점: 1문장
 
-결론: ${yr}년 ${sw} 에너지에서 어느 쪽이 더 맞는지, 그 이유와 조건을 한두 문장으로.
+[방향 B: (방향 이름 1문장)]
+- 이 방향의 의미: 1문장
+- 유리한 점: 1문장
+- 주의할 점: 1문장
 
-이 결론은 앞에서 정한 핵심 방향(${yearCore?.coreDirection || '올해의 핵심 흐름'})과 반드시 일치해야 합니다.
-사용자에게 추가 정보를 요구하지 마세요. 4~5단락. 반드시 해요체, 마크다운 금지.${completeNote}
-${prohibitNote}`;
-    }
-    if (cat === 'work') {
-      return `${name}님의 [일·이직] 고민에서 실제 선택지를 비교해주세요.
-${qNote}
-${yearNote}
-${relNote}
+[오속의 판단]
+- 지금 더 적합한 방향: A 또는 B (1문장 이유 포함)
+- 적합한 조건: 1문장
+- 지금 당장 할 첫 행동: 1문장
 
-[선택지 A: 현재 분야·역할 유지]와 [선택지 B: 이직·전환·새로운 도전]를 ${name}님 사주와 ${yr}년 흐름으로 비교하세요.
-각 선택지의 장점, 위험, 지금 더 유리한 방향을 포함하세요. 직업을 가정하지 마세요.
-4~5단락. 반드시 해요체, 마크다운 금지. 사용자에게 추가 정보를 요구하지 마세요.${completeNote}
-${prohibitNote}`;
-    }
-    if (cat === 'business') {
-      return `${name}님의 [사업·부업] 고민에서 실제 선택지를 비교해주세요.
-${qNote}
-${yearNote}
-${relNote}
-
-[선택지 A: 지금 바로 시작·확장]와 [선택지 B: 더 준비 후 시작]를 ${name}님 사주와 ${yr}년 흐름으로 비교하세요.
-각 선택지의 장점, 위험, 지금 더 유리한 방향을 포함하세요. 구체적인 업종·사업을 임의로 가정하지 마세요.
-4~5단락. 반드시 해요체, 마크다운 금지.${completeNote}
-${prohibitNote}`;
-    }
-    return `${name}님의 고민 [${topicLabel}]에서 지금 실질적으로 갈리는 두 방향을 비교해주세요.
-${qNote}
-${yearNote}
-${relNote}
-
-${name}님의 실제 사주 흐름에 맞는 선택지 A·B를 직접 정해서 비교하세요. 사용자에게 추가 정보를 요구하지 마세요.
-각 선택지의 장점, 위험, 지금 더 유리한 방향, 그 이유를 포함하세요.
-4~5단락. 반드시 해요체, 마크다운 금지.${completeNote}
-${prohibitNote}`;
-  }
-
-  /* 섹션 3: 밀어야 할 방향 */
-  function buildP3() {
-    const focus = cat === 'year'
-      ? `${coreCtx}\n올해 핵심 영역(${yearCore?.primaryArea || '가장 크게 움직이는 영역'})을 기준으로 지금 밀어야 할 행동을 알려주세요. 앞의 핵심 방향(${yearCore?.coreDirection || ''})과 일치해야 합니다.`
-      : `[${topicLabel}] 분야에서 ${yr}년 지금 실제로 밀어야 할 방향을 알려주세요.`;
-    return `${focus}
-${yearNote}
-${relNote}
-
-${name}님의 사주와 ${yr}년 ${sw}에서 가장 잘 맞는 방향, 그 사주적 근거, 지금 당장 시작할 수 있는 구체적 행동 1~2가지.
-앞에서 설명한 오행 근거를 반복하지 마세요. 결론과 행동 위주로 간결하게.
-3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}
-${prohibitNote}`;
-  }
-
-  /* 섹션 4: 피해야 할 선택 */
-  function buildP4() {
-    const focus = cat === 'year'
-      ? `${coreCtx}\n올해 에너지를 소진시키는 방향, 서두르면 안 되는 결정을 알려주세요. 앞의 핵심 방향(${yearCore?.coreDirection || ''})과 충돌하지 않도록 작성하세요.`
-      : `[${topicLabel}] 분야에서 ${yr}년 지금 피해야 할 선택을 알려주세요.`;
-    return `${focus}
-${yearNote}
-${relNote}
-
-사주에서 보이는 반복적 실수 패턴, ${yr}년 ${sw}에서 특히 조심해야 할 결정. 두렵게 만들지 말고 따뜻하고 실용적으로.
-앞 섹션에서 설명한 오행 근거 반복 금지. 결론 위주로.
-3~4단락. 반드시 해요체, 마크다운 금지.${completeNote}
-${prohibitNote}`;
-  }
-
-  /* 섹션 5: 연도별 흐름 JSON */
-  const yr2 = yr + 1, yr3 = yr + 2;
-  function buildP5() {
-    const flowCtx = cat === 'year'
-      ? `${coreCtx}\n각 연도 카드는 일·재물·관계·건강·변화 중 그해 가장 중요한 영역 하나를 중심으로 서로 다르게 작성하세요. 3개 연도가 모두 같은 영역(특히 관계·배우자)만 담으면 안 됩니다. 대운 전환이 있다면 계산된 경우에만 명시하세요.`
-      : `각 연도에서 [${topicLabel}] 고민과 관련된 흐름을 서로 다른 각도로 작성하세요.`;
-    return `${name}님의 ${yr}년, ${yr2}년, ${yr3}년 흐름을 분석해주세요.
-${yearNote}
-${flowCtx}
-
-아래 JSON 배열 형식으로만 정확히 작성하세요. 다른 텍스트 없이 JSON만:
-[
-  {"year":${yr},"sewoon":"${sw}","flow":"그해 핵심 역할과 가장 크게 움직이는 영역 (2~3문장, 완결된 문장)","action":"밀어야 할 행동 (1~2문장)","caution":"주의할 선택 (1~2문장)"},
-  {"year":${yr2},"sewoon":"세운 간지만","flow":"...","action":"...","caution":"..."},
-  {"year":${yr3},"sewoon":"세운 간지만","flow":"...","action":"...","caution":"..."}
-]
-
-중요: sewoon 필드에는 해당 연도의 세운 간지만 쓰세요. 대운 간지를 세운으로 쓰지 마세요.
-${yr}년을 "지난해"로 표현하지 마세요. 각 항목은 완성된 문장으로 작성하세요.
-${prohibitNote}`;
-  }
-
-  /* 섹션 6: 30일 행동 계획 */
-  function buildP6() {
-    const planFocus = cat === 'year'
-      ? `${coreCtx}\n올해 핵심 영역(${yearCore?.primaryArea || '핵심 영역'})에서 실제 실행할 행동으로 구성하세요. 관계가 1순위 영역이 아니라면 배우자·대화 중심으로 구성하지 마세요.`
-      : `[${topicLabel}] 분야에서 실제 실행할 수 있는 행동 계획으로 구성하세요.`;
-    return `${name}님의 앞으로 30일 행동 계획을 짜주세요.
-${dateNote}
-${yearNote}
-${relNote}
-${planFocus}
-
-반드시 아래 4개 주차를 모두 포함하세요. 날짜 표기는 "1주차", "2주차" 형식만 사용하세요. 과거 날짜(예: 1월 1일)를 하드코딩하지 마세요:
-1주차: 목표 한 문장 + 구체적 행동 2가지
-2주차: 목표 한 문장 + 구체적 행동 2가지
-3주차: 목표 한 문장 + 구체적 행동 2가지
-4주차: 목표 한 문장 + 구체적 행동 2가지
-마지막: "30일 후 확인할 변화" 한 문장
-
-행동은 ${name}님이 실제 실행 가능한 것으로. 직업·자산·수입을 가정하지 마세요.
+두 방향이 사실상 같거나 표현만 다른 경우 다시 구성하세요.
 반드시 해요체, 마크다운 금지.${completeNote}
 ${prohibitNote}`;
   }
 
-  /* 섹션 7: 매력살·귀인 */
-  function buildP7() {
-    return `${name}님 사주에서 실제 성립하는 매력살·귀인을 확인하고 [${topicLabel}]와 연결해서 해석해주세요.
+  /* 섹션 3: 밀어야 할 방향 — 행동 2개 + 이유 1문장, 반드시 피해야 할 선택과 달라야 함 */
+  function buildP3() {
+    const focus = cat === 'year'
+      ? `${coreCtx}\n[${yearCore?.primaryArea || '핵심 영역'}] 기준으로 지금 실제로 해야 할 행동.`
+      : `[${topicLabel}] 분야에서 지금 실제로 밀어야 할 행동.`;
+    return `${focus}
 ${yearNote}
+${relNote}
 
+아래 형식으로 작성하세요:
+- 지금 실제로 해야 할 행동 1: 구체적 행동 1문장
+- 지금 실제로 해야 할 행동 2: 구체적 행동 1문장
+- 이 방향이 맞는 사주적 이유: 1문장
+
+[중요] 이 섹션은 "지금 해야 할 행동"입니다. 피해야 할 것, 주의할 것을 여기에 쓰지 마세요.
+직업·자산·투자를 가정한 행동 금지. 앞 섹션 오행 근거 반복 금지.
+반드시 해요체, 마크다운 금지.${completeNote}
+${prohibitNote}`;
+  }
+
+  /* 섹션 4: 피해야 할 선택 — 밀어야 할 방향과 명확히 다른 내용 */
+  function buildP4() {
+    const focus = cat === 'year'
+      ? `${coreCtx}\n올해 에너지를 소진시키는 행동, 아직 확정하지 말아야 할 결정.`
+      : `[${topicLabel}] 분야에서 지금 피해야 할 선택.`;
+    return `${focus}
+${yearNote}
+${relNote}
+
+아래 형식으로 작성하세요:
+- 지금 하지 말아야 할 행동 1: 구체적 행동 1문장
+- 지금 하지 말아야 할 행동 2: 구체적 행동 1문장
+- 이 방향이 위험한 사주적 이유: 1문장
+
+[중요] 이 섹션은 "하지 말아야 할 것"입니다. 해야 할 행동을 여기에 쓰지 마세요.
+앞 섹션(밀어야 할 방향)과 같은 내용을 표현만 바꿔 쓰면 안 됩니다.
+직업·자산·투자를 가정한 금지 행동 사용 금지. 두렵게 만들지 말고 실용적으로.
+반드시 해요체, 마크다운 금지.${completeNote}
+${prohibitNote}`;
+  }
+
+  /* 섹션 5: 연도별 흐름 JSON — 연도당 3항목, 각 1~2문장 */
+  const yr2 = yr + 1, yr3 = yr + 2;
+  function buildP5() {
+    const flowCtx = cat === 'year'
+      ? `${coreCtx}\n각 연도는 일·재물·관계·건강·변화 중 서로 다른 영역 하나씩 중심으로 작성하세요. 3연도 모두 관계·배우자 중심이면 안 됩니다.`
+      : `각 연도에서 [${topicLabel}] 관련 흐름을 서로 다른 각도로.`;
+    return `${name}님의 ${yr}·${yr2}·${yr3}년 흐름을 JSON으로만 출력하세요. 다른 텍스트 없이 JSON만:
+[
+  {"year":${yr},"sewoon":"${sw}","flow":"이 해의 역할과 핵심 영역 (1~2문장)","action":"밀어야 할 행동 (1문장)","caution":"주의할 선택 (1문장)"},
+  {"year":${yr2},"sewoon":"세운 간지만","flow":"...","action":"...","caution":"..."},
+  {"year":${yr3},"sewoon":"세운 간지만","flow":"...","action":"...","caution":"..."}
+]
+${yearNote}
+${flowCtx}
+규칙: sewoon은 해당 연도 세운 간지만. 대운 간지를 세운으로 쓰지 마세요. 원국·일간·오행 개수 반복 금지. 각 항목 완결된 문장.
+${prohibitNote}`;
+  }
+
+  /* 섹션 6: 30일 체크리스트 — 주차당 목표1+행동2만 */
+  function buildP6() {
+    const planFocus = cat === 'year'
+      ? `${coreCtx}\n[${yearCore?.primaryArea || '핵심 영역'}] 기준 행동. 관계가 1순위가 아니면 배우자 중심 행동 금지.`
+      : `[${topicLabel}] 분야 실행 계획.`;
+    return `${name}님의 앞으로 30일 행동 계획.
+${dateNote}
+${planFocus}
+
+아래 형식 그대로 작성하세요. 추가 설명·명리 해설 없이 이 구조만:
+
+1주차
+목표: (한 문장)
+□ 행동 1
+□ 행동 2
+
+2주차
+목표: (한 문장)
+□ 행동 1
+□ 행동 2
+
+3주차
+목표: (한 문장)
+□ 행동 1
+□ 행동 2
+
+4주차
+목표: (한 문장)
+□ 행동 1
+□ 행동 2
+
+30일 후 확인할 변화: (다음 결정을 내리기 위해 확인해야 할 기준 1문장)
+
+각 행동은 ${name}님이 실제 수행할 수 있는 구체적인 문장으로. 직업·자산·투자 가정 금지. 주차 내 명리 근거 반복 금지.
+반드시 해요체, 마크다운 금지.${completeNote}
+${prohibitNote}`;
+  }
+
+  /* 섹션 7: 매력살·귀인 — 2단락 이하 */
+  function buildP7() {
+    return `${name}님 사주에서 실제 성립하는 매력살·귀인을 [${topicLabel}]와 연결해 해석해주세요.
 [확인 대상]: 도화살, 화개살, 홍염살, 천을귀인, 천덕귀인, 월덕귀인, 문창귀인, 학당귀인, 태극귀인
-
-규칙:
-- 실제 성립하는 것만 쓰세요. 없는 신살을 만들거나 임의 퍼센트(예: 도화 76%)를 부여하지 마세요.
-- 성립 시: 명칭, 성립 근거(어느 기둥에서), [${topicLabel}]에서의 역할, ${yr}년 활용 방법.
-- 없다면: "이번 계산 기준에서 대표 매력살은 확인되지 않았습니다." 한 문장 후, 원국의 실제 강점으로 대체 설명.
-- 제목: 성립한 신살이 있으면 "나의 매력살·귀인 에너지", 없으면 "올해 활용할 나의 강점"으로 첫 줄에 표시.
-- 서양 점성술(별자리)을 혼합하지 마세요.
-
-2~3단락. 반드시 해요체, 마크다운 금지.${completeNote}`;
+- 실제 성립하는 것만. 없으면 "이번 계산 기준에서 대표 매력살은 확인되지 않았습니다." 후 원국 실제 강점으로 대체.
+- 성립 시: 명칭·성립 근거(어느 기둥)·[${topicLabel}] 역할·${yr}년 활용법.
+- 첫 줄: 신살 있으면 "나의 매력살·귀인 에너지", 없으면 "올해 활용할 나의 강점".
+${yearNote}
+최대 2단락. 반드시 해요체, 마크다운 금지.${completeNote}
+${prohibitNote}`;
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -940,33 +948,35 @@ ${yearNote}
     failedSections.push({ name: '마무리 메시지', reason: r8.reason });
   }
 
-  /* 9. 요약 카드 생성 (상단에 노출할 4항목) */
-  /* 첫 문장 추출 헬퍼: 종결어미 기준 분리, 최대 maxLen자 */
-  const firstSent = (text = '', maxLen = 80) => {
+  /* 9. 요약 카드 생성 — 말줄임표 없이 첫 완결 문장 추출 */
+  const extractFirstSentence = (text = '') => {
     const t = text.trim();
-    const match = t.match(/^.{10,}?[요다죠니까]\s/);
-    const sentence = match ? match[0].trim() : t.split('\n')[0] || t;
-    return sentence.length > maxLen ? sentence.slice(0, maxLen) + '…' : sentence;
+    /* 종결어미(요·다·죠·니까) 뒤 공백 기준 첫 문장 */
+    const m = t.match(/^[\s\S]{15,}?[요다죠까]\s/);
+    if (m) return m[0].trim();
+    /* 줄바꿈 기준 첫 줄 */
+    const line = t.split('\n').find(l => l.trim().length > 10);
+    return line ? line.trim() : t.slice(0, 120);
   };
 
-  let summaryCard = null;
+  /* 30일 계획에서 1주차 첫 행동 추출 */
   const planContent6 = r6.content || '';
-  const firstActionMatch = planContent6.match(/1주차[^\n]*\n([^\n]+)/);
-  const firstAction = firstActionMatch ? firstActionMatch[1].replace(/^[□·\-\s]+/, '').trim() : '';
+  const firstActionMatch = planContent6.match(/□\s*([^\n]+)/);
+  const firstAction = firstActionMatch ? firstActionMatch[1].trim() : '';
 
+  let summaryCard = null;
   if (yearCore) {
-    const coreDir = yearCore.coreDirection || '';
     summaryCard = {
-      핵심결론: coreDir.length > 100 ? firstSent(coreDir, 100) : coreDir,
-      밀어야할방향: yearCore.pushSummary || '',
-      피해야할선택: yearCore.avoidSummary || '',
+      핵심결론: yearCore.coreDirection || extractFirstSentence(r1.content),
+      밀어야할방향: yearCore.pushSummary || extractFirstSentence(r3.content),
+      피해야할선택: yearCore.avoidSummary || extractFirstSentence(r4.content),
       첫행동: firstAction,
     };
   } else {
     summaryCard = {
-      핵심결론: firstSent(r1.content || '', 100),
-      밀어야할방향: firstSent(r3.content || '', 80),
-      피해야할선택: firstSent(r4.content || '', 80),
+      핵심결론: extractFirstSentence(r1.content),
+      밀어야할방향: extractFirstSentence(r3.content),
+      피해야할선택: extractFirstSentence(r4.content),
       첫행동: firstAction,
     };
   }
