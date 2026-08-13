@@ -1050,7 +1050,7 @@ async function sendSajuEmail(email, sajuData, isPremium) {
       const err = await emailRes.json();
       throw new Error(JSON.stringify(err));
     }
-    await redis.del(`saju_pending:${email.toLowerCase().trim()}`);
+    // saju_pending 데이터는 삭제하지 않음 (관리자 재발송 검수용, 24시간 후 자동 만료)
     await notifyAdmin(
       `[오속 사주] ✅ 발송 완료 — ${name}님`,
       `리딩 이메일 발송 완료!\n\n고객: ${name}님\n이메일: ${email}\n상품: 내 질문 하나 집중 리딩 (4,900원)\n고민: ${sajuData.concern?.label || '-'}`
@@ -1154,7 +1154,7 @@ ${name}님의 기질과 ${currentYear}년 대운·세운 에너지에 맞는 구
     throw new Error(JSON.stringify(err));
   }
 
-  await redis.del(`saju_pending:${email.toLowerCase().trim()}`);
+  // saju_pending 데이터는 삭제하지 않음 (관리자 재발송 검수용, 24시간 후 자동 만료)
   await notifyAdmin(
     `[오속 사주] ✅ 발송 완료 — ${name}님`,
     `리딩 이메일 발송 완료!\n\n고객: ${name}님\n이메일: ${email}\n상품: ${tier === 'premium' ? '프리미엄 종합 풀이 (14,900원)' : '기본 리딩'}`
