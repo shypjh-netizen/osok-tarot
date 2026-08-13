@@ -309,7 +309,7 @@ function renderTimelineHtml(raw) {
 }
 
 /* ─── 문장 완결성 검증 ─── */
-const SENTENCE_ENDINGS = ['요', '다', '죠', '세요', '하세요', '됩니다', '입니다', '.', '!', '?', '~'];
+const SENTENCE_ENDINGS = ['요', '다', '죠', '세요', '하세요', '됩니다', '입니다', '.', '!', '?', '~', '행동', '실천', '시작', '확인', '점검', '준비', '유지', '집중', '도전', '진행'];
 const BAD_ENDINGS = ['을', '를', '이', '가', '은', '는', '에', '에서', '로', '으로', '와', '과', '그리고', '하지만', '때문에', '이런 구조', '어떤 형태로', '관련된', '1주차에', '2주차에', '3주차에'];
 
 function validateContent(content, fieldName = '') {
@@ -941,33 +941,33 @@ ${yearNote}
   }
 
   /* 9. 요약 카드 생성 (상단에 노출할 4항목) */
+  /* 첫 문장 추출 헬퍼: 종결어미 기준 분리, 최대 maxLen자 */
+  const firstSent = (text = '', maxLen = 80) => {
+    const t = text.trim();
+    const match = t.match(/^.{10,}?[요다죠니까]\s/);
+    const sentence = match ? match[0].trim() : t.split('\n')[0] || t;
+    return sentence.length > maxLen ? sentence.slice(0, maxLen) + '…' : sentence;
+  };
+
   let summaryCard = null;
+  const planContent6 = r6.content || '';
+  const firstActionMatch = planContent6.match(/1주차[^\n]*\n([^\n]+)/);
+  const firstAction = firstActionMatch ? firstActionMatch[1].replace(/^[□·\-\s]+/, '').trim() : '';
+
   if (yearCore) {
+    const coreDir = yearCore.coreDirection || '';
     summaryCard = {
-      핵심결론: yearCore.coreDirection || '',
+      핵심결론: coreDir.length > 100 ? firstSent(coreDir, 100) : coreDir,
       밀어야할방향: yearCore.pushSummary || '',
       피해야할선택: yearCore.avoidSummary || '',
-      첫행동: '',
+      첫행동: firstAction,
     };
-    /* 30일 계획 첫 행동 추출 */
-    const planContent = r6.content || '';
-    const firstActionMatch = planContent.match(/1주차[^\n]*\n([^\n]+)/);
-    if (firstActionMatch) summaryCard.첫행동 = firstActionMatch[1].replace(/^[□·\-\s]+/, '').trim();
   } else {
-    /* year 아닌 주제: 핵심 답변 첫 문장을 요약으로 사용 */
-    const c1 = r1.content || '';
-    const firstSentence = c1.split(/(?<=[요다죠])\s/)[0] || c1.slice(0, 80);
-    const c3c = r3.content || '';
-    const pushFirst = c3c.split(/(?<=[요다죠])\s/)[0] || c3c.slice(0, 60);
-    const c4c = r4.content || '';
-    const avoidFirst = c4c.split(/(?<=[요다죠])\s/)[0] || c4c.slice(0, 60);
-    const planContent = r6.content || '';
-    const firstActionMatch = planContent.match(/1주차[^\n]*\n([^\n]+)/);
     summaryCard = {
-      핵심결론: firstSentence.trim(),
-      밀어야할방향: pushFirst.trim(),
-      피해야할선택: avoidFirst.trim(),
-      첫행동: firstActionMatch ? firstActionMatch[1].replace(/^[□·\-\s]+/, '').trim() : '',
+      핵심결론: firstSent(r1.content || '', 100),
+      밀어야할방향: firstSent(r3.content || '', 80),
+      피해야할선택: firstSent(r4.content || '', 80),
+      첫행동: firstAction,
     };
   }
 
