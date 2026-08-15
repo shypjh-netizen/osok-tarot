@@ -3,10 +3,21 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { messages, system } = req.body;
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch(e) {
+      return res.status(400).json({ error: 'body parse failed', raw: body.slice(0,100) });
+    }
+  }
+  if (!body) {
+    return res.status(400).json({ error: 'body is null/undefined' });
+  }
+
+  const { messages, system } = body;
 
   if (!messages || !Array.isArray(messages)) {
-    return res.status(400).json({ error: 'messages array required' });
+    console.error('[chat] 400 body:', JSON.stringify({ bodyType: typeof req.body, keys: body ? Object.keys(body) : null }));
+    return res.status(400).json({ error: 'messages array required', bodyKeys: body ? Object.keys(body) : null });
   }
 
   try {
