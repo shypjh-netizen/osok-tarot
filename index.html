@@ -249,6 +249,30 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
   <button class="btn-main" onclick="goFreePick()">🌟 무료 카드 한 장 뽑기</button>
   <button class="btn-sub" onclick="showScreen('payment-screen')" style="margin-top:10px">이미 결제하셨나요? 이메일로 시작하기</button>
 
+  <!-- 첫 화면 쿠폰 입력 -->
+  <div style="max-width:420px;width:100%;margin-top:14px;text-align:center">
+    <button onclick="toggleIntroCoupon()" style="background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;padding:0;text-decoration:underline;opacity:.7">🎟️ 쿠폰 코드가 있나요?</button>
+    <div id="intro-coupon-wrap" style="display:none;margin-top:10px;text-align:left;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:14px 16px">
+      <div style="display:flex;gap:8px">
+        <input type="text" id="intro-coupon-input"
+          style="flex:1;padding:10px 12px;background:#0d0c22;border:1px solid rgba(201,168,76,.3);border-radius:8px;color:#ede0c8;font-size:13px;font-family:inherit;outline:none;text-transform:uppercase"
+          placeholder="쿠폰 코드 입력" oninput="this.value=this.value.toUpperCase()"
+          onkeydown="if(event.key==='Enter')applyIntroCoupon()">
+        <button onclick="applyIntroCoupon()"
+          style="padding:10px 16px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);border-radius:8px;color:#e8c97a;font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap">적용</button>
+      </div>
+      <div id="intro-coupon-msg" style="font-size:12px;margin-top:6px;display:none"></div>
+      <div id="intro-coupon-preview" style="display:none;margin-top:10px;font-size:12px;color:#b89e7e;line-height:2">
+        <div style="font-size:13px;font-weight:700;color:#e8c97a;margin-bottom:6px" id="intro-coupon-product-label"></div>
+        <div style="display:flex;justify-content:space-between"><span>정가</span><span id="icp-original" style="text-decoration:line-through"></span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#c9a84c">쿠폰 할인</span><span id="icp-discount" style="color:#c9a84c"></span></div>
+        <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid rgba(201,168,76,.15);padding-top:5px;margin-top:3px"><span>최종</span><span id="icp-final" style="color:#e8c97a"></span></div>
+        <button id="intro-coupon-pay-btn" onclick="introCouponPay()"
+          style="width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(109,40,217,.2));border:1px solid var(--gold);border-radius:10px;color:#e8c97a;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">쿠폰으로 결제하러 가기 →</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 후기 섹션 -->
   <div style="max-width:480px;width:100%;margin-top:48px">
     <div style="text-align:center;margin-bottom:20px">
@@ -1568,6 +1592,99 @@ function resetCoupon() {
   document.getElementById('coupon-code-input').value = '';
   document.getElementById('coupon-price-preview').style.display = 'none';
   document.getElementById('coupon-msg').style.display = 'none';
+}
+
+/* ── 첫 화면 쿠폰 ── */
+const ALL_PRODUCTS_INFO = {
+  tarot_basic:  { name: '타로 심층리딩',   amount: 5900,  tarotKey: 'basic'    },
+  tarot_extra:  { name: '타로 추가질문',   amount: 3900,  tarotKey: 'extra'    },
+  tarot_set:    { name: '타로 세트',       amount: 8900,  tarotKey: 'set'      },
+  saju_single:  { name: '사주 집중풀이',   amount: 4900,  sajuTier: 'single'   },
+  saju_premium: { name: '사주 프리미엄',   amount: 14900, sajuTier: 'premium'  },
+};
+let _introCouponData = null;
+
+function toggleIntroCoupon() {
+  const w = document.getElementById('intro-coupon-wrap');
+  w.style.display = w.style.display === 'none' ? 'block' : 'none';
+}
+
+function _showIntroCouponMsg(msg, ok) {
+  const el = document.getElementById('intro-coupon-msg');
+  el.style.display = 'block';
+  el.style.color = ok ? '#a8d8a0' : '#e57373';
+  el.textContent = msg;
+}
+
+async function applyIntroCoupon() {
+  const code = (document.getElementById('intro-coupon-input').value || '').trim().toUpperCase();
+  if (!code) return;
+  _introCouponData = null;
+  document.getElementById('intro-coupon-preview').style.display = 'none';
+  const MSGS = {
+    not_found: '쿠폰을 찾을 수 없어요.', inactive: '비활성화된 쿠폰이에요.',
+    expired: '만료된 쿠폰이에요.', not_started: '아직 사용 기간이 아니에요.',
+    wrong_product: '적용 가능한 상품이 없어요.',
+    max_used: '쿠폰이 모두 소진됐어요.', user_limit: '이미 사용하신 쿠폰이에요.',
+  };
+  try {
+    /* 상품 무관 쿠폰 정보 조회 */
+    const r = await fetch('/api/webhook?action=coupon-info', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code }),
+    });
+    const d = await r.json();
+    if (!r.ok || !d.valid) { _showIntroCouponMsg(MSGS[d.error] || '쿠폰 확인 실패', false); return; }
+
+    /* 적용 가능한 첫 번째 타로 상품 선택 (타로 우선) */
+    const prods = d.applicableProductIds || ['all'];
+    const taroFirst = ['tarot_basic','tarot_extra','tarot_set','saju_single','saju_premium'];
+    const targetId = prods.includes('all')
+      ? 'tarot_basic'
+      : (taroFirst.find(p => prods.includes(p)) || prods[0]);
+    const info = ALL_PRODUCTS_INFO[targetId];
+    if (!info) { _showIntroCouponMsg('적용 가능한 상품을 찾을 수 없어요.', false); return; }
+
+    /* 할인 계산 */
+    let discount = 0;
+    if (d.discountType === 'free') { discount = info.amount; }
+    else if (d.discountType === 'percent') {
+      discount = Math.floor(info.amount * d.discountValue / 100);
+      if (d.maxDiscountAmount) discount = Math.min(discount, d.maxDiscountAmount);
+    } else if (d.discountType === 'fixed') { discount = d.discountValue || 0; }
+    discount = Math.min(discount, info.amount);
+    const final = info.amount - discount;
+    _introCouponData = { code, productId: targetId, info, discountAmount: discount, finalAmount: final, isFree: final === 0, rawCoupon: d };
+
+    _showIntroCouponMsg('쿠폰이 확인됐어요!', true);
+    const fmt = n => n.toLocaleString('ko-KR') + '원';
+    document.getElementById('intro-coupon-product-label').textContent = '📦 ' + info.name + '에 적용';
+    document.getElementById('icp-original').textContent = fmt(info.amount);
+    document.getElementById('icp-discount').textContent = '-' + fmt(discount);
+    document.getElementById('icp-final').textContent = final === 0 ? '무료' : fmt(final);
+    document.getElementById('intro-coupon-preview').style.display = 'block';
+  } catch(e) { _showIntroCouponMsg('네트워크 오류가 발생했어요.', false); }
+}
+
+async function introCouponPay() {
+  if (!_introCouponData) return;
+  const { code, productId, info, isFree } = _introCouponData;
+
+  /* 사주 상품이면 사주 팝업으로 연결 */
+  if (info.sajuTier) {
+    alert('사주 상품 쿠폰이에요.\n사주 페이지에서 쿠폰 코드를 입력해주세요 😊');
+    window.location.href = '/saju.html';
+    return;
+  }
+
+  /* 타로 상품 — CQ에 복사 후 결제 */
+  CQ.code = code; CQ.productId = productId; CQ.isFree = isFree;
+  CQ.discountAmount = _introCouponData.discountAmount;
+  CQ.finalAmount = _introCouponData.finalAmount;
+  CQ.originalAmount = info.amount;
+  document.getElementById('coupon-code-input').value = code;
+  await kakaoPay(info.tarotKey);
 }
 
 /* ── 카카오페이 결제 ── */
