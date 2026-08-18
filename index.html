@@ -161,6 +161,9 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 .upgrade-btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(201,162,39,.4)}
 .followup-count{font-size:12px;color:var(--dim);text-align:right;margin-bottom:8px}
 .followup-count span{color:var(--gold-l);font-weight:700}
+/* 카드 포지션 레이블 */
+.card-pos-label{font-size:9px;color:var(--dim);margin-bottom:4px;line-height:1.4;word-break:keep-all;text-align:center}
+@media(max-width:420px){.res-card{width:88px!important}.result-cards{gap:8px!important}}
 /* 할인 가격 */
 .price-amount-wrap{text-align:right;flex-shrink:0}
 .price-original{font-size:12px;color:var(--dim);text-decoration:line-through;margin-bottom:2px}
@@ -288,15 +291,15 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
     <div class="reading-box">
       <div class="reading-text" id="free-reading-text"></div>
     </div>
-    <div style="background:linear-gradient(135deg,rgba(201,162,39,.1),rgba(109,40,217,.1));border:1px solid var(--gold);border-radius:20px;padding:32px 28px;text-align:center;margin-bottom:22px">
-      <div style="font-family:'Nanum Myeongjo',serif;font-size:19px;color:var(--gold-l);margin-bottom:10px">✨ 더 깊은 상담을 원하시나요?</div>
-      <p style="font-size:14px;color:var(--dim);line-height:1.9;margin-bottom:24px">카드 1~3장 리딩과 추가 질문으로<br>내담자님의 상황을 더 깊이 살펴드릴게요</p>
+    <div id="free-paid-offer" style="background:linear-gradient(135deg,rgba(201,162,39,.1),rgba(109,40,217,.1));border:1px solid var(--gold);border-radius:20px;padding:32px 28px;text-align:center;margin-bottom:22px">
+      <div id="free-offer-title" style="font-family:'Nanum Myeongjo',serif;font-size:19px;color:var(--gold-l);margin-bottom:10px">✨ 더 깊은 상담을 원하시나요?</div>
+      <p id="free-offer-desc" style="font-size:14px;color:var(--dim);line-height:1.9;margin-bottom:24px">3카드 스프레드로 현재 강점, 장애 요소,<br>앞으로의 방향을 각각 살펴드릴게요</p>
 
       <!-- 기본 상담 -->
       <div style="background:rgba(109,40,217,.15);border:1px solid rgba(109,40,217,.5);border-radius:14px;padding:18px 20px;margin-bottom:12px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px">
         <div>
-          <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px">🔮 기본 타로 상담</div>
-          <div style="font-size:12px;color:var(--dim)">카드 1~3장 리딩 + 추가 질문 3회</div>
+          <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px" id="free-offer-product-name">🔮 3카드 심층 리딩</div>
+          <div id="free-offer-product-desc" style="font-size:12px;color:var(--dim)">질문별 3카드 스프레드 + 추가 질문 3회</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div style="font-size:11px;color:var(--dim);text-decoration:line-through;margin-bottom:2px">9,900원</div>
@@ -423,14 +426,10 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
         <input type="text" id="inp-question" class="field-input"
           placeholder="예) 그 사람이 지금 저를 어떻게 생각하고 있을까요?">
       </div>
-      <div class="field-group" style="margin-bottom:0">
-        <label class="field-label">✦ 카드 장수</label>
-        <p style="font-size:12px;color:var(--dim);margin-bottom:8px">처음엔 1장, 깊이 보고 싶다면 3장</p>
-        <div class="count-selector">
-          <div class="count-btn active" onclick="setCount(1,this)">1장</div>
-          <div class="count-btn" onclick="setCount(2,this)">2장</div>
-          <div class="count-btn" onclick="setCount(3,this)">3장</div>
-        </div>
+      <!-- 유료 리딩은 항상 3카드 스프레드 -->
+      <div style="background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--dim);line-height:1.7">
+        🃏 질문에 맞는 3카드 스프레드로 진행해요<br>
+        <span style="color:var(--gold)">질문 유형에 따라 각 카드의 역할이 자동으로 정해져요</span>
       </div>
     </div>
     <div id="form-err" class="hidden" style="background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.4);border-radius:8px;padding:12px 16px;font-size:13px;color:#fca5a5;margin-bottom:14px"></div>
@@ -447,6 +446,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
     <div class="pick-header">
       <h2>🃏 마음에 끌리는 카드를 선택하세요</h2>
       <p>눈을 감고 고민에 집중한 뒤, 직관적으로 끌리는 카드를 클릭하세요</p>
+      <div id="spread-name-label" style="margin-top:8px;font-size:12px;color:var(--gold);font-weight:600;letter-spacing:.3px"></div>
     </div>
     <div class="cards-grid" id="cards-grid"></div>
     <p class="pick-hint"><span class="pick-cnt" id="pick-cnt">0</span>/<span id="pick-total">1</span>장 선택됨</p>
@@ -470,13 +470,13 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
     <!-- 추가 질문 영역 -->
     <div class="followup-wrap hidden" id="followup-wrap">
       <div class="followup-label">💬 더 궁금한 게 있으신가요?</div>
-      <p class="followup-desc">새 카드를 한 장 더 뽑아서 이어서 봐드릴게요</p>
+      <p class="followup-desc">앞서 뽑힌 세 카드를 바탕으로 추가 질문에 답해드릴게요</p>
       <p class="followup-count">추가 질문 <span id="fq-used">0</span> / <span id="fq-limit">3</span>회 사용</p>
       <div class="followup-input-row" id="followup-input-row">
         <input type="text" id="followup-input" class="field-input followup-input"
           placeholder="예) 제가 먼저 연락하는 게 좋을까요?" maxlength="100"
           onkeydown="if(event.key==='Enter')sendFollowUp()">
-        <button class="followup-send-btn" id="followup-send-btn" onclick="sendFollowUp()">카드 뽑기</button>
+        <button class="followup-send-btn" id="followup-send-btn" onclick="sendFollowUp()">질문하기</button>
       </div>
       <div id="followup-answers"></div>
       <div class="upgrade-banner hidden" id="upgrade-banner">
@@ -1016,6 +1016,93 @@ function detectTopic(t) {
   return 'general';
 }
 
+/* ── 질문 유형 분류 & 3카드 스프레드 ── */
+const SPREADS = {
+  reconnect:    { name:'재회·연락 스프레드',   reason:'상대방의 현재 상태와 재연결 가능성을 살펴봐요.',
+    positions:['상대방의 현재 마음 상태','우리 사이를 막는 장애물','재연결 가능성과 방향'] },
+  innerFeelings:{ name:'속마음 탐색 스프레드', reason:'상대방이 진짜 어떻게 생각하는지 들여다봐요.',
+    positions:['상대방의 겉으로 보이는 태도','상대방의 숨겨진 속마음','앞으로 드러날 감정의 흐름'] },
+  choice:       { name:'선택 비교 스프레드',   reason:'두 가지 길 중 어느 쪽이 나에게 맞는지 봐요.',
+    positions:['선택지 A의 에너지와 결과','선택지 B의 에너지와 결과','현재 나에게 더 맞는 방향'] },
+  relationship: { name:'관계 흐름 스프레드',   reason:'현재 관계의 에너지와 앞으로의 흐름을 봐요.',
+    positions:['현재 관계의 에너지','관계에서 내가 맡고 있는 역할','관계가 향하는 방향'] },
+  work:         { name:'일·커리어 스프레드',   reason:'직장과 커리어에서 지금 어떤 흐름인지 봐요.',
+    positions:['현재 상황의 핵심 에너지','가장 큰 걸림돌 또는 도전','앞으로 취할 최선의 행동'] },
+  business:     { name:'사업·프로젝트 스프레드', reason:'사업의 가능성과 주의점을 함께 봐요.',
+    positions:['프로젝트의 강점과 잠재력','주의해야 할 위험 또는 약점','성공을 위해 집중할 핵심'] },
+  money:        { name:'재물 흐름 스프레드',   reason:'재정 흐름과 기회를 같이 살펴봐요.',
+    positions:['현재 재정 에너지','돈의 흐름을 막고 있는 것','재물 운을 높이는 방향'] },
+  family:       { name:'가족·인간관계 스프레드', reason:'가족이나 주변 관계의 에너지를 봐요.',
+    positions:['현재 관계의 핵심 에너지','서로 간의 갈등 또는 연결 고리','관계 개선을 위한 실마리'] },
+  success:      { name:'목표·성공 가능성 스프레드', reason:'목표 달성 가능성과 필요한 것을 봐요.',
+    positions:['목표를 향한 현재 에너지','성공을 위해 개발해야 할 것','목표 달성 가능성과 타임라인'] },
+  currentFlow:  { name:'현재 흐름 스프레드',   reason:'지금 이 순간 내 삶의 흐름을 전체적으로 봐요.',
+    positions:['현재 나를 둘러싼 에너지','내 안에서 작동하는 힘','앞으로 전개될 흐름'] },
+  relations:    { name:'대인관계 스프레드',     reason:'친구나 주변 사람과의 관계 에너지를 봐요.',
+    positions:['관계의 현재 상태','내가 이 관계에서 느끼는 것','관계를 더 건강하게 만드는 방향'] },
+  direct:       { name:'핵심 질문 스프레드',   reason:'질문에 가장 직접적으로 답하는 스프레드예요.',
+    positions:['현재 상황의 핵심','가장 중요한 조언','앞으로의 방향과 결과'] },
+};
+
+function classifyQuestion(situation, question) {
+  const t = (situation + ' ' + question).toLowerCase();
+  if (/재회|다시 만나|돌아|연락이 없|연락을 끊|연락 없/.test(t)) return 'reconnect';
+  if (/속마음|마음을|어떻게 생각|어떤 마음/.test(t)) return 'innerFeelings';
+  if (/선택|고민.*할까.*할까|이거.*저거|둘 중|어느 쪽/.test(t)) return 'choice';
+  if (/연애|사귀|남자친구|여자친구|헤어|이별|관계/.test(t)) return 'relationship';
+  if (/이직|직장|퇴사|회사|취업|면접|업무/.test(t)) return 'work';
+  if (/사업|창업|프리랜서|프로젝트|매출|계약/.test(t)) return 'business';
+  if (/돈|금전|재정|수입|월급|재산|투자/.test(t)) return 'money';
+  if (/가족|부모|엄마|아빠|형제|자녀/.test(t)) return 'family';
+  if (/성공|목표|가능성|될 수|이룰/.test(t)) return 'success';
+  if (/흐름|지금|현재|어떤 상태|상황/.test(t)) return 'currentFlow';
+  if (/친구|인간관계|갈등|대인/.test(t)) return 'relations';
+  return 'direct';
+}
+
+function buildPaidSystem(spread) {
+  const pos = spread.positions;
+  return `당신은 오속 타로의 전문 타로 리더예요. 따뜻하고 공감적인 말투로, 내담자의 질문에 직접 답하는 리딩을 해주세요.
+
+이번 리딩은 "${spread.name}"을 사용해요. ${spread.reason}
+
+카드 해석 순서:
+1. **${pos[0]}** — 첫 번째 카드를 이 역할로 깊이 해석해주세요 (2~3단락)
+2. **${pos[1]}** — 두 번째 카드를 이 역할로 깊이 해석해주세요 (2~3단락)
+3. **${pos[2]}** — 세 번째 카드를 이 역할로 깊이 해석해주세요 (2~3단락)
+4. **세 카드의 연결 메시지** — 세 카드가 함께 전하는 흐름과 관계를 2~3문장으로 연결해주세요
+5. **내담자님께 드리는 핵심 메시지** — 원래 질문에 직접 답하는 결론을 따뜻하게 마무리해주세요
+
+규칙:
+- 카드가 어려운 에너지여도 "전환점" 또는 "성장의 기회"로 제시해주세요
+- 각 카드 해석은 해당 위치의 역할에 집중해서 해석해주세요
+- 새 카드를 뽑거나 추가 카드를 언급하지 마세요
+- 존댓말, 따뜻한 어조 유지`;
+}
+
+function makeFreeOffer(questionType) {
+  const sp = SPREADS[questionType] || SPREADS.direct;
+  const titles = {
+    reconnect:     ['💌 재회 가능성, 더 깊이 봐드릴게요', '세 카드로 상대방 마음과 재연결 흐름을 정확히 짚어드려요'],
+    innerFeelings: ['🔍 상대방 속마음, 제대로 들여다볼게요', '세 카드로 겉과 속, 앞으로의 감정까지 전부 읽어드려요'],
+    choice:        ['⚖️ 어느 쪽이 맞는지 카드가 알려드려요', '두 선택지의 에너지와 결과를 카드로 비교해드려요'],
+    relationship:  ['💕 이 관계, 어디로 가고 있을까요?', '세 카드로 관계의 현재와 앞으로의 방향을 봐드려요'],
+    work:          ['💼 일의 흐름, 카드로 짚어드릴게요', '현재 상황·장애물·최선의 행동을 세 카드로 봐드려요'],
+    business:      ['🚀 사업의 가능성과 주의점을 봐드려요', '강점·약점·집중할 핵심을 카드로 정확히 짚어드려요'],
+    money:         ['💰 재물 흐름, 카드로 살펴볼게요', '재정 에너지와 돈의 흐름을 세 카드로 봐드려요'],
+    family:        ['🏠 가족 관계 에너지를 읽어드릴게요', '현재 에너지·갈등 고리·개선 방향을 카드로 봐드려요'],
+    success:       ['🎯 목표 달성 가능성을 봐드릴게요', '현재 에너지·필요한 것·가능성을 세 카드로 읽어드려요'],
+    currentFlow:   ['🌊 지금 내 삶의 흐름을 봐드릴게요', '현재 에너지·내면의 힘·앞으로 전개될 흐름을 봐드려요'],
+    relations:     ['🤝 이 관계 더 깊이 살펴볼게요', '현재 상태·내 감정·건강한 방향을 카드로 봐드려요'],
+    direct:        ['✨ 질문에 직접 답하는 리딩을 해드려요', '현재·조언·결과를 세 카드로 정확히 봐드려요'],
+  };
+  const [title, desc] = titles[questionType] || titles.direct;
+  document.getElementById('free-offer-title').textContent = title;
+  document.getElementById('free-offer-desc').innerHTML = desc + '<br><span style="color:var(--gold)">' + sp.name + '으로 진행해요</span>';
+  document.getElementById('free-offer-product-name').textContent = '🔮 ' + sp.name;
+  document.getElementById('free-offer-product-desc').textContent = '질문별 3카드 스프레드 + 추가 질문 3회';
+}
+
 /* ── 오프닝 — 상황을 직접 언급 ── */
 function makeOpening(name, situation, q) {
   const tag = name ? `${name}님` : '내담자님';
@@ -1298,7 +1385,7 @@ const CFG = {
 };
 
 /* ── 상태 ── */
-let S = { count:1, picked:[], name:'', situation:'', question:'', followupUsed:0, extraUnlocked:false, freeMode:false, chatHistory:[], freeQuestion:'' };
+let S = { count:3, picked:[], name:'', situation:'', question:'', followupUsed:0, extraUnlocked:false, freeMode:false, chatHistory:[], freeQuestion:'', questionType:'', spread:null };
 
 function showScreen(id) {
   ['intro','free-question-screen','free-result-screen','payment-screen','question-screen','pick-screen','result-screen'].forEach(s =>
@@ -1421,7 +1508,6 @@ async function loadReviews() {
       return `<div style="background:rgba(255,255,255,.04);border:1px solid var(--card-b);border-radius:14px;padding:16px 18px;text-align:left">
         <div style="font-size:14px;margin-bottom:4px">${stars}</div>
         <div style="font-size:14px;color:var(--text);line-height:1.7">${review.content}</div>
-        <div style="font-size:11px;color:var(--dim);margin-top:6px">${review.date}</div>
       </div>`;
     }).join('');
   } catch(e) {}
@@ -1753,6 +1839,7 @@ async function showFreeResult(card) {
     el.textContent = '';
     await typeText(el, text, 14);
     _track('free_reading_succeeded');
+    makeFreeOffer(classifyQuestion(S.freeQuestion, S.freeQuestion));
     setTimeout(() => _track('paid_offer_viewed'), 800);
   } catch(e) {
     el.textContent = '죄송해요, 리딩을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
@@ -1777,6 +1864,9 @@ function goPick() {
     err.classList.remove('hidden');
     return;
   }
+  S.questionType = classifyQuestion(S.situation, S.question);
+  S.spread = SPREADS[S.questionType] || SPREADS.direct;
+  S.count = 3;
   buildPickScreen();
   showScreen('pick-screen');
 }
@@ -1787,6 +1877,12 @@ function buildPickScreen() {
   grid.innerHTML = '';
   document.getElementById('pick-total').textContent = S.count;
   document.getElementById('pick-cnt').textContent = '0';
+  // 스프레드 이름 표시
+  const spreadLabel = document.getElementById('spread-name-label');
+  if(spreadLabel && S.spread) {
+    spreadLabel.textContent = S.spread.name;
+    spreadLabel.parentElement && (spreadLabel.parentElement.style.display='block');
+  }
 
   const shuffled = [...CARDS].sort(() => Math.random() - .5).slice(0, 12);
   shuffled.forEach((card, i) => {
@@ -1822,18 +1918,16 @@ async function showResult() {
   const el = document.getElementById('reading-text');
   el.innerHTML = loadingHTML();
 
-  const cardList = S.picked.map((c,i)=>`${i+1}번 카드: ${c.kr} (${c.name}) — 키워드: ${c.kw}`).join('\n');
+  const sp = S.spread || SPREADS.direct;
+  const cardList = S.picked.map((c,i)=>`카드 ${i+1} (${sp.positions[i]}): ${c.kr} (${c.name}) — 키워드: ${c.kw}`).join('\n');
   const tag = S.name ? `${S.name}님` : '내담자님';
-  const cardCount = S.picked.length;
-  const multiCardGuide = cardCount > 1
-    ? `카드가 ${cardCount}장이에요. 반드시 각 카드를 순서대로 개별 해석하고(각 카드마다 2~3단락씩), 마지막에 전체 흐름을 종합해서 마무리해주세요.`
-    : `카드 1장을 깊이 있게 해석해주세요.`;
-  const userMsg = `${tag}의 상담 내용이에요.\n\n상황: ${S.situation}\n질문: ${S.question || '(없음)'}\n뽑힌 카드 (${cardCount}장):\n${cardList}\n\n${multiCardGuide}`;
+  const userMsg = `${tag}의 상담 내용이에요.\n\n상황: ${S.situation}\n질문: ${S.question || '(없음)'}\n\n뽑힌 카드 (3장, ${sp.name}):\n${cardList}`;
 
   S.chatHistory = [{role:'user', content:userMsg}];
+  const systemPrompt = buildPaidSystem(sp);
 
   try {
-    const text = await callAI(S.chatHistory, null, {type:'paid'});
+    const text = await callAI(S.chatHistory, systemPrompt, {type:'paid'});
     S.chatHistory.push({role:'assistant', content:text});
     el.textContent = '';
 
@@ -1857,10 +1951,11 @@ async function showResult() {
 function buildResultCards() {
   const c = document.getElementById('result-cards');
   c.innerHTML = '';
-  S.picked.forEach(card => {
+  S.picked.forEach((card, i) => {
     const d = document.createElement('div');
     d.className = 'res-card';
-    d.innerHTML = `<div style="width:68px;height:102px;margin:0 auto 6px">${getCardImg(card,68,102)}</div>
+    const posLabel = (S.spread && S.spread.positions[i]) ? `<div class="card-pos-label">${S.spread.positions[i]}</div>` : '';
+    d.innerHTML = `${posLabel}<div style="width:68px;height:102px;margin:0 auto 6px">${getCardImg(card,68,102)}</div>
       <div class="card-kr">${card.kr}</div>
       <div class="card-en">${card.name}</div>`;
     c.appendChild(d);
@@ -1875,7 +1970,7 @@ function newReading() {
   document.getElementById('followup-input').value = '';
   document.getElementById('followup-input-row').classList.remove('hidden');
   document.getElementById('upgrade-banner').classList.add('hidden');
-  S.picked = []; S.followupCards = []; S.followupUsed = 0; S.extraUnlocked = false; S.freeMode = false; S.chatHistory = []; S._orderCode = null;
+  S.picked = []; S.followupCards = []; S.followupUsed = 0; S.extraUnlocked = false; S.freeMode = false; S.chatHistory = []; S._orderCode = null; S.questionType = ''; S.spread = null; S.count = 3;
   updateFollowupCount();
   showScreen('question-screen');
 }
@@ -1974,20 +2069,11 @@ async function sendFollowUp() {
   btn.disabled = true;
   input.value = '';
 
-  // 새 카드 뽑기
-  const newCard = drawNewCard();
-  if(!S.followupCards) S.followupCards = [];
-  S.followupCards.push(newCard);
-
   const answersEl = document.getElementById('followup-answers');
   const block = document.createElement('div');
   block.className = 'followup-answer';
   block.innerHTML = `
     <div class="followup-q">${q}</div>
-    <div class="followup-new-card">
-      ${getCardImg(newCard,52,78)}
-      <div class="followup-card-name">${newCard.kr}</div>
-    </div>
     <div class="followup-text"></div>`;
   answersEl.appendChild(block);
   block.scrollIntoView({behavior:'smooth', block:'start'});
@@ -1995,7 +2081,8 @@ async function sendFollowUp() {
   const textEl = block.querySelector('.followup-text');
   textEl.innerHTML = loadingHTML();
 
-  const followMsg = `추가 질문: ${q}\n새로 뽑힌 카드: ${newCard.kr} (${newCard.name}) — 키워드: ${newCard.kw}\n\n이 카드를 바탕으로 추가 질문에 답해주세요.`;
+  const cardNames = S.picked.map(c=>c.kr).join(', ');
+  const followMsg = `추가 질문: ${q}\n\n처음 뽑은 세 카드(${cardNames})의 리딩을 바탕으로 이 추가 질문에 답해주세요. 새 카드를 뽑지 말고 기존 해석과 일관되게 답해주세요.`;
   if(!S.chatHistory) S.chatHistory = [];
   S.chatHistory.push({role:'user', content:followMsg});
 
@@ -2096,6 +2183,8 @@ function saveReadingToLocal() {
     name: S.name,
     extraUnlocked: S.extraUnlocked,
     followupUsed: S.followupUsed,
+    questionType: S.questionType,
+    spreadKey: S.questionType,
     readingText: document.getElementById('reading-text')?.textContent || '',
     followupHTML: document.getElementById('followup-answers')?.innerHTML || '',
   };
@@ -2115,6 +2204,8 @@ function restoreReadingFromLocal(code) {
     S.followupUsed = data.followupUsed || 0;
     S.freeMode = false;
     S._orderCode = code;
+    S.questionType = data.questionType || data.spreadKey || 'direct';
+    S.spread = SPREADS[S.questionType] || SPREADS.direct;
 
     buildResultCards();
     showScreen('result-screen');
