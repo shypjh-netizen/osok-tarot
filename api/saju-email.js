@@ -1191,7 +1191,6 @@ ${name}님의 사주에서 관계·인연 영역을 깊이 분석해주세요.
   const now2       = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
   const startYear  = now2.getFullYear();
   const startMonth = now2.getMonth() + 1;
-  const currentSewoon = sajuData.sewoon || '';
   const timelinePrompt = `${name}님의 ${startYear}년 ${currentSewoon} 세운 에너지를 월별로 정리해주세요.
 
 [규칙]
