@@ -1978,6 +1978,26 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
       placeholder="이메일 주소 입력"
       onkeydown="if(event.key==='Enter')submitSajuEmail()">
     <p id="saju-email-err" style="display:none;color:#e57373;font-size:12px;margin-bottom:8px">이메일 주소를 올바르게 입력해주세요.</p>
+    <!-- 쿠폰 입력 -->
+    <div style="margin-bottom:12px;text-align:left">
+      <button onclick="toggleSajuCoupon()" style="background:none;border:none;color:rgba(201,168,76,.6);font-size:12px;cursor:pointer;padding:0;text-decoration:underline">쿠폰 코드가 있나요?</button>
+      <div id="saju-coupon-wrap" style="display:none;margin-top:8px">
+        <div style="display:flex;gap:6px">
+          <input type="text" id="saju-coupon-input"
+            style="flex:1;padding:10px 12px;background:#0d0c22;border:1px solid rgba(201,168,76,.3);border-radius:8px;color:#ede0c8;font-size:13px;font-family:inherit;outline:none;text-transform:uppercase"
+            placeholder="쿠폰 코드" oninput="this.value=this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter')applySajuCoupon()">
+          <button onclick="applySajuCoupon()"
+            style="padding:10px 14px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);border-radius:8px;color:#e8c97a;font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap">적용</button>
+        </div>
+        <div id="saju-coupon-msg" style="font-size:12px;margin-top:5px;display:none"></div>
+        <div id="saju-coupon-preview" style="display:none;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:8px 12px;margin-top:6px;font-size:12px;color:#b89e7e;line-height:1.9">
+          <div style="display:flex;justify-content:space-between"><span>정가</span><span id="scp-original" style="text-decoration:line-through"></span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#c9a84c">쿠폰 할인</span><span id="scp-discount" style="color:#c9a84c"></span></div>
+          <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid rgba(201,168,76,.15);padding-top:5px;margin-top:3px"><span>최종</span><span id="scp-final" style="color:#e8c97a"></span></div>
+        </div>
+      </div>
+    </div>
     <button id="saju-pay-submit-btn" onclick="submitSajuEmail()"
       style="width:100%;padding:15px;background:linear-gradient(135deg,#c9a84c,#e8c97a);border:none;border-radius:12px;color:#06060f;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:44px">
       결제하러 가기 →
@@ -4508,6 +4528,71 @@ function closeSajuEmailPopup(){
   document.getElementById('saju-email-overlay').style.display='none';
 }
 
+/* ── 사주 쿠폰 상태 ── */
+const SCQ = { code: null, productId: null, discountAmount: 0, finalAmount: 0, originalAmount: 0, isFree: false };
+const SAJU_PRODUCT_MAP = { single: 'saju_single', premium: 'saju_premium' };
+const SAJU_PRICES = { single: 4900, premium: 14900 };
+
+function _getSajuUserId() {
+  let id = localStorage.getItem('_osok_uid');
+  if (!id) { id = 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9); localStorage.setItem('_osok_uid', id); }
+  return id;
+}
+
+function toggleSajuCoupon() {
+  const w = document.getElementById('saju-coupon-wrap');
+  w.style.display = w.style.display === 'none' ? 'block' : 'none';
+}
+
+function showSajuCouponMsg(msg, ok) {
+  const el = document.getElementById('saju-coupon-msg');
+  el.style.display = 'block';
+  el.style.color = ok ? '#a8d8a0' : '#e57373';
+  el.textContent = msg;
+}
+
+function resetSajuCoupon() {
+  SCQ.code = null; SCQ.productId = null; SCQ.discountAmount = 0;
+  SCQ.finalAmount = 0; SCQ.originalAmount = 0; SCQ.isFree = false;
+  document.getElementById('saju-coupon-preview').style.display = 'none';
+  const m = document.getElementById('saju-coupon-msg'); m.style.display = 'none';
+}
+
+async function applySajuCoupon(productOverride) {
+  const tier = productOverride || document.getElementById('saju-email-overlay').dataset.tier || 'single';
+  const productId = SAJU_PRODUCT_MAP[tier] || 'saju_single';
+  const originalAmount = SAJU_PRICES[tier] || 4900;
+  const code = (document.getElementById('saju-coupon-input').value || '').trim().toUpperCase();
+  if (!code) return;
+
+  const MSGS = {
+    not_found: '쿠폰을 찾을 수 없어요.', inactive: '비활성화된 쿠폰이에요.',
+    expired: '만료된 쿠폰이에요.', not_started: '아직 사용 기간이 아니에요.',
+    wrong_product: '이 상품에는 적용할 수 없는 쿠폰이에요.',
+    max_used: '쿠폰이 모두 소진됐어요.', user_limit: '이미 사용하신 쿠폰이에요.',
+  };
+  try {
+    const r = await fetch('/api/webhook?action=coupon-validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, productId, userId: _getSajuUserId() }),
+    });
+    const d = await r.json();
+    if (!r.ok || d.error) { resetSajuCoupon(); showSajuCouponMsg(MSGS[d.error] || '쿠폰 확인 실패', false); return; }
+    SCQ.code = code; SCQ.productId = productId;
+    SCQ.originalAmount = originalAmount;
+    SCQ.discountAmount = d.discountAmount || 0;
+    SCQ.finalAmount = d.finalAmount ?? originalAmount;
+    SCQ.isFree = SCQ.finalAmount === 0;
+    showSajuCouponMsg('쿠폰이 적용됐어요!', true);
+    const fmt = n => n.toLocaleString('ko-KR') + '원';
+    document.getElementById('scp-original').textContent = fmt(originalAmount);
+    document.getElementById('scp-discount').textContent = '-' + fmt(SCQ.discountAmount);
+    document.getElementById('scp-final').textContent = SCQ.isFree ? '무료' : fmt(SCQ.finalAmount);
+    document.getElementById('saju-coupon-preview').style.display = 'block';
+  } catch(e) { resetSajuCoupon(); showSajuCouponMsg('네트워크 오류가 발생했어요.', false); }
+}
+
 async function submitSajuEmail(){
   const email=document.getElementById('saju-email-input').value.trim();
   const errEl=document.getElementById('saju-email-err');
@@ -4525,7 +4610,13 @@ async function submitSajuEmail(){
     return;
   }
 
-  const tier=document.getElementById('saju-email-overlay').dataset.tier||'basic';
+  const tier=document.getElementById('saju-email-overlay').dataset.tier||'single';
+
+  /* 쿠폰이 다른 상품에 적용돼 있다면 재검증 */
+  if (SCQ.code && SCQ.productId !== (SAJU_PRODUCT_MAP[tier] || 'saju_single')) {
+    await applySajuCoupon(tier);
+  }
+
   try{
     await fetch('/api/webhook?action=saju-save',{
       method:'POST',
@@ -4542,12 +4633,31 @@ async function submitSajuEmail(){
   pxc('PaymentLinkOpened',{tier,currency:'KRW'});
   px('InitiateCheckout',{value:priceMap2[tier]||9900,currency:'KRW',num_items:1});
 
+  /* 무료 쿠폰 → KakaoPay 생략 */
+  if (SCQ.code && SCQ.isFree) {
+    try {
+      const r = await fetch('/api/webhook?action=coupon-free-saju-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ couponCode: SCQ.code, productId: SCQ.productId, userId: _getSajuUserId(), email, tier }),
+      });
+      const d = await r.json();
+      if (!r.ok || d.error) throw new Error(d.error || 'free order fail');
+      window.location.href = `/saju.html?payment=success&email=${encodeURIComponent(email)}&oid=${d.orderId}`;
+    } catch(e) {
+      alert('무료 쿠폰 처리 중 오류가 발생했어요. 다시 시도해주세요.');
+    }
+    return;
+  }
+
   try {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const body2 = { email, tier };
+    if (SCQ.code) { body2.couponCode = SCQ.code; body2.userId = _getSajuUserId(); }
     const res2 = await fetch('/api/kakaopay-ready-saju', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, tier }),
+      body: JSON.stringify(body2),
     });
     const data = await res2.json();
     if (data.error) throw new Error('결제 준비 실패');

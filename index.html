@@ -330,7 +330,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
       <div style="background:rgba(201,162,39,.12);border:2px solid var(--gold);border-radius:14px;padding:18px 20px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px">
         <div>
           <div style="font-size:15px;font-weight:700;color:var(--gold-l);margin-bottom:4px">✨ 기본 상담 + 추가 질문 세트</div>
-          <div style="font-size:12px;color:var(--dim)">심층리딩 + 추가 질문 3회 모두 포함</div>
+          <div style="font-size:12px;color:var(--dim)">심층리딩 + 추가 질문 6회 모두 포함</div>
           <div style="font-size:11px;color:var(--gold);margin-top:3px">★ 가장 인기있는 플랜</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
@@ -390,7 +390,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
         <span class="price-icon">✨</span>
         <div class="price-info">
           <div class="price-name" style="color:#e8c95a">심층리딩 + 추가 질문 세트</div>
-          <div class="price-desc">심층리딩 + 추가 질문 3회 모두 포함<br><span style="color:#c9a227;font-size:11px">★ 가장 인기있는 플랜</span></div>
+          <div class="price-desc">심층리딩 + 추가 질문 6회 모두 포함<br><span style="color:#c9a227;font-size:11px">★ 가장 인기있는 플랜</span></div>
         </div>
         <div class="price-amount-wrap">
           <div class="price-original">16,800원</div>
@@ -403,6 +403,24 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
       </div>
     </div>
     <div style="height:20px"></div>
+    <!-- 쿠폰 입력 -->
+    <div id="coupon-area" style="max-width:420px;margin:0 auto 16px;text-align:left">
+      <button onclick="toggleCouponInput()" style="background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;padding:0;text-decoration:underline">쿠폰 코드가 있나요?</button>
+      <div id="coupon-input-wrap" style="display:none;margin-top:8px">
+        <div style="display:flex;gap:8px">
+          <input type="text" id="coupon-code-input" class="field-input" placeholder="쿠폰 코드 입력"
+            style="margin:0;flex:1;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter')applyCoupon()">
+          <button class="followup-send-btn" onclick="applyCoupon()" style="white-space:nowrap">적용하기</button>
+        </div>
+        <div id="coupon-msg" style="font-size:12px;margin-top:6px;display:none"></div>
+        <div id="coupon-price-preview" style="display:none;background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.2);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13px;line-height:1.8">
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">정가</span><span id="cp-original" style="text-decoration:line-through;color:var(--dim)"></span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#c9a227">쿠폰 할인</span><span id="cp-discount" style="color:#c9a227"></span></div>
+          <div style="display:flex;justify-content:space-between;font-weight:700;margin-top:4px;border-top:1px solid rgba(201,162,39,.2);padding-top:6px"><span>최종 결제금액</span><span id="cp-final" style="color:var(--gold-l)"></span></div>
+        </div>
+      </div>
+    </div>
     <a href="http://pf.kakao.com/_bSudX/chat" target="_blank" style="display:block;font-size:13px;color:var(--dim);text-decoration:none;margin-bottom:20px">💬 결제 문제가 있으신가요? <span style="color:#f9a8d4;text-decoration:underline">카카오 채널로 문의하기</span></a>
     <div id="code-input-row" style="margin-top:0;text-align:left;max-width:420px;width:100%;margin-left:auto;margin-right:auto">
       <div style="background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--dim);text-align:left;line-height:1.7;margin-bottom:10px;word-break:keep-all">
@@ -1480,15 +1498,120 @@ function showScreen(id) {
   window.scrollTo(0,0);
 }
 
+/* ── 쿠폰 상태 ── */
+const CQ = { code: null, productId: null, discountAmount: 0, finalAmount: 0, originalAmount: 0, isFree: false };
+
+function _getUserId() {
+  let id = localStorage.getItem('_osok_uid');
+  if (!id) { id = 'u_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); localStorage.setItem('_osok_uid', id); }
+  return id;
+}
+
+const COUPON_PRODUCT_MAP = { basic: 'tarot_basic', extra: 'tarot_extra', set: 'tarot_set' };
+
+function toggleCouponInput() {
+  const w = document.getElementById('coupon-input-wrap');
+  w.style.display = w.style.display === 'none' ? 'block' : 'none';
+  if (w.style.display === 'block') document.getElementById('coupon-code-input').focus();
+}
+
+function showCouponMsg(msg, ok) {
+  const el = document.getElementById('coupon-msg');
+  el.textContent = msg;
+  el.style.color = ok ? '#86efac' : '#f87171';
+  el.style.display = 'block';
+}
+
+async function applyCoupon(productOverride) {
+  const code = document.getElementById('coupon-code-input').value.trim().toUpperCase();
+  if (!code) return;
+  /* 어떤 상품에 쿠폰을 적용할지: 파라미터 또는 기본 basic */
+  const product = productOverride || 'basic';
+  const productId = COUPON_PRODUCT_MAP[product] || 'tarot_basic';
+  document.getElementById('coupon-price-preview').style.display = 'none';
+
+  try {
+    const r = await fetch('/api/webhook?action=coupon-validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, productId, userId: _getUserId() }),
+    });
+    const d = await r.json();
+    if (!d.valid) {
+      const MSGS = {
+        not_found: '쿠폰 코드를 다시 확인해주세요.',
+        inactive: '현재 사용할 수 없는 쿠폰이에요.',
+        expired: '사용 기간이 지난 쿠폰이에요.',
+        not_started: '아직 사용 시작 전인 쿠폰이에요.',
+        wrong_product: '이 상품에는 사용할 수 없는 쿠폰이에요.',
+        max_used: '이미 사용된 쿠폰이에요.',
+        user_limit: '이미 사용한 쿠폰이에요.',
+      };
+      showCouponMsg(MSGS[d.reason] || '쿠폰 코드를 다시 확인해주세요.', false);
+      CQ.code = null; return;
+    }
+    CQ.code = d.code; CQ.productId = d.isFree ? productId : productId;
+    CQ.discountAmount = d.discountAmount; CQ.finalAmount = d.finalAmount;
+    CQ.originalAmount = d.originalAmount; CQ.isFree = d.isFree;
+    showCouponMsg('쿠폰이 적용되었어요.', true);
+    document.getElementById('cp-original').textContent = d.originalAmount.toLocaleString() + '원';
+    document.getElementById('cp-discount').textContent = '-' + d.discountAmount.toLocaleString() + '원';
+    document.getElementById('cp-final').textContent = d.finalAmount === 0 ? '무료' : d.finalAmount.toLocaleString() + '원';
+    document.getElementById('coupon-price-preview').style.display = 'block';
+  } catch(e) {
+    showCouponMsg('쿠폰 확인 중 오류가 발생했어요. 다시 시도해주세요.', false);
+  }
+}
+
+function resetCoupon() {
+  CQ.code = null; CQ.isFree = false;
+  document.getElementById('coupon-code-input').value = '';
+  document.getElementById('coupon-price-preview').style.display = 'none';
+  document.getElementById('coupon-msg').style.display = 'none';
+}
+
 /* ── 카카오페이 결제 ── */
 async function kakaoPay(product) {
   _track('payment_attempted', { productType: product }, true);
+
+  /* 쿠폰이 다른 상품에 대해 적용됐을 경우 재검증 */
+  if (CQ.code && COUPON_PRODUCT_MAP[product] !== CQ.productId) {
+    await applyCoupon(product);
+    if (!CQ.code) return; /* 재검증 실패 */
+  }
+
+  /* 무료 쿠폰 — 카카오페이 없이 처리 */
+  if (CQ.code && CQ.isFree) {
+    try {
+      const orderId = 'FREE_' + Date.now().toString(36).toUpperCase() + '_' + Math.random().toString(36).slice(2, 6).toUpperCase();
+      const r = await fetch('/api/webhook?action=coupon-free-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: CQ.code, productId: CQ.productId, userId: _getUserId(), orderId }),
+      });
+      const d = await r.json();
+      if (!d.ok) {
+        const MSGS = { max_used: '이미 사용된 쿠폰이에요.', user_limit: '이미 사용한 쿠폰이에요.', expired: '사용 기간이 지난 쿠폰이에요.' };
+        showCouponMsg(MSGS[d.reason] || '쿠폰 처리 중 오류가 발생했어요.', false);
+        return;
+      }
+      resetCoupon();
+      _track('coupon_free_order', { productType: product }, true);
+      await autoStartFromToken(d.token);
+    } catch(e) {
+      alert('결제 처리 중 오류가 발생했어요. 다시 시도해주세요.');
+    }
+    return;
+  }
+
   try {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const body = { product, _source: window._trackSrc ? window._trackSrc() : 'direct' };
+    if (CQ.code) { body.couponCode = CQ.code; body.userId = _getUserId(); }
     const res = await fetch('/api/kakaopay-ready', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product, _source: window._trackSrc ? window._trackSrc() : 'direct' }),
+      body: JSON.stringify(body),
     });
     const data = await res.json();
     if (data.error) throw new Error('결제 준비 실패');

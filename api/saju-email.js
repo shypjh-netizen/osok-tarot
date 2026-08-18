@@ -346,11 +346,14 @@ function validate30DayPlan(content) {
 
 /* ─── 금지 문구 감지 (모델이 되묻거나 중간 작업 노출 시 차단) ─── */
 const FORBIDDEN_PHRASES = [
-  '죄송합니다', '제공된 데이터에는', '정보가 없어요', '정보가 없습니다',
+  '죄송합니다', '제공된 데이터에는', '제공된 데이터는', '정보가 없어요', '정보가 없습니다',
   '작성할 수 없', '어느 방식을 원하시나요', '선택해주세요', '선택해 주세요',
   '추가 정보를 제공', '다음 방식으로 도움', '방식 중 하나를 선택',
   '월별 세운을 임의로', '월 단위의 세운 간지', '명리학적 오류가 되므로',
   '위의 내용을 어떻게', '어떤 방향으로 작성',
+  '제공되지 않았기', '데이터가 없', '계산할 수 없', '분류할 수 없',
+  '추정할 수 없', '임의로 만들', '진행해도 괜찮', '이렇게 진행해도',
+  '어느 방식을', '추가 정보를', '대신 다음', '도움을 드릴 수',
 ];
 
 function hasForbiddenPhrase(text) {
@@ -1242,19 +1245,56 @@ ${name}님의 사주에서 관계·인연 영역을 깊이 분석해주세요.
     sections.push({ icon: cat.icon, label, content });
   }
 
-  /* 3. 시기 요약표 */
-  const now2       = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-  const startYear  = now2.getFullYear();
-  const startMonth = now2.getMonth() + 1;
-  const timelinePrompt = `${name}님의 ${startYear}년 ${currentSewoon} 세운 에너지를 월별로 정리해주세요.
+  /* 3. 핵심 시기 요약 — 월운 간지 없이 원국·대운·세운 기반 완결 리딩 */
+  const now2         = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+  const timelineYear = now2.getFullYear();
+  const tlSewoon     = currentSewoon || `${timelineYear}년 세운`;
+  const timelinePrompt = `${name}님의 사주 원국, 현재 대운, ${timelineYear}년 ${tlSewoon} 세운을 바탕으로 아래 구조로 완성해주세요.
 
-규칙: 월별 세운(월주 간지) 데이터는 제공되지 않았어요. 임의로 계산하거나 꾸며내지 마세요. 대신 ${startYear}년 ${currentSewoon} 세운이 원국 일간과 어떻게 작용하는지를 기준으로 상반기·하반기 흐름 차이를 반영해 12개월을 분류하세요. 에너지는 기회/안정/전환/주의 중 하나만.
+[필수 규칙 — 반드시 지킬 것]
+- 고객에게 추가 정보를 요청하지 않는다.
+- 진행 방식을 선택하게 하지 않는다.
+- 월운 데이터가 없으므로 특정 월 간지를 생성하거나 계산하지 않는다.
+- 데이터 부족·계산 한계에 대한 내부 설명을 출력하지 않는다.
+- 원국·대운·${timelineYear}년 세운 안에서 완결된 시기 리딩을 작성한다.
+- 모든 문장을 완결된 종결형으로 끝낸다. 마지막 문장이 잘리지 않게 한다.
+- 반드시 해요체. 마크다운 금지.
 
-각 달 형식: YYYY년 MM월 | 에너지 | 한 줄 설명
+[1] ${timelineYear}년 전체 핵심
+${timelineYear}년 ${tlSewoon} 세운이 ${name}님 원국·대운과 어떻게 작용하는지 3~4문장으로 설명해주세요.
 
-${startYear}년 ${startMonth}월부터 12개월 전부. 다른 텍스트 없이 표 형식만.`;
-  const timelineRaw = await generateReading(ctx, timelinePrompt, systemPrompt, 1600);
-  sections.push({ icon: '📅', label: `${startYear} 핵심 시기 요약`, content: timelineRaw, isTimeline: true });
+[2] 흐름 요약표 (4행 고정)
+| 구분 | 흐름 | 활용법 |
+| 전체 흐름 | ${timelineYear}년 세운의 핵심 작용 | 올해 중심 전략 |
+| 상반기 | ${name}님 원국·대운 기반 상반기 흐름 | 해야 할 행동 |
+| 하반기 | ${name}님 원국·대운 기반 하반기 흐름 | 해야 할 행동 |
+| 주의 시기 | 과열·충동·지출·갈등이 생기기 쉬운 조건 | 피해야 할 선택 |
+
+상반기·하반기는 ${name}님의 원국·대운·세운 실제 상호작용을 반영해 개인화하세요. 모든 사람에게 동일한 내용을 쓰지 마세요.
+
+[3] 올해 활용법
+${name}님이 실제로 취할 수 있는 행동 3가지.`;
+
+  const validateTimeline = (c) => {
+    const f = hasForbiddenPhrase(c);
+    if (f) return { ok: false, reason: `timeline:forbidden("${f.slice(0, 20)}")` };
+    if (!c || c.trim().length < 80) return { ok: false, reason: 'timeline:too_short' };
+    return { ok: true };
+  };
+  const timelineStrictPrompt = `내부 설명이나 질문 없이, ${name}님의 원국·대운·${timelineYear}년 ${tlSewoon} 세운만으로 완결된 핵심 시기 리딩을 작성하세요. 월운 데이터가 없다면 특정 월 간지를 만들지 말고 상반기·하반기·주의 흐름·실행 조언 구조로 완성하세요.
+표 4행(전체흐름·상반기·하반기·주의시기) 포함. 해요체. 마크다운 금지.`;
+
+  let timelineRaw = '';
+  const tr1 = await generateWithRetry(ctx, timelinePrompt, systemPrompt, 1600, validateTimeline);
+  if (tr1.ok) {
+    timelineRaw = tr1.content;
+  } else {
+    console.error('[saju-email][timeline] 1차 실패:', tr1.reason, '— 엄격 프롬프트로 재시도');
+    const tr2 = await generateWithRetry(ctx, timelineStrictPrompt, systemPrompt, 1600, validateTimeline);
+    timelineRaw = tr2.content || tr1.content || '';
+    if (!tr2.ok) console.error('[saju-email][timeline] 2차도 실패:', tr2.reason);
+  }
+  sections.push({ icon: '📅', label: `${timelineYear} 핵심 시기 요약`, content: timelineRaw, isTimeline: true });
 
   /* 4. 지금부터 준비해야 할 것 */
   const actionPrompt = `${name}님의 사주팔자와 ${currentYear}년 운의 흐름을 바탕으로 "지금부터 준비해야 할 것"을 작성해주세요.

@@ -59,6 +59,17 @@ export default async function handler(req, res) {
       return res.redirect(`${BASE_URL}/saju.html?payment=fail`);
     }
 
+    const approveData = await approveRes.json();
+
+    /* 쿠폰이 있었다면 승인금액 검증 */
+    if (pending.coupon && pending.finalAmount !== undefined) {
+      const approved = approveData.amount?.total;
+      if (approved !== undefined && approved !== pending.finalAmount) {
+        console.error(`[kakaopay-approve-saju] 금액 불일치 expected=${pending.finalAmount} approved=${approved}`);
+        return res.redirect(`${BASE_URL}/saju.html?payment=fail`);
+      }
+    }
+
     const { email, tier } = pending;
 
     // Redis에서 사주 데이터 확인
@@ -83,6 +94,25 @@ export default async function handler(req, res) {
       `[오속 사주] 새 결제 — ${sajuData?.name || email}`,
       `결제 완료됐어요!\n\n고객 이메일: ${email}\n상품: ${tierLabel}\n이름: ${sajuData?.name || '미확인'}\n주문ID: ${order_id}\n시각: ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}\n\n이메일 발송 중... (3~5분 소요)\n발송 완료/실패 시 추가 알림이 와요.`
     );
+
+    /* 쿠폰 확정 */
+    if (pending.coupon?.code && pending.userId) {
+      try {
+        const { code } = pending.coupon;
+        const pipe = redis.pipeline();
+        pipe.incr(`coupon:user:${code}:${pending.userId}`);
+        pipe.expire(`coupon:user:${code}:${pending.userId}`, 86400 * 30);
+        pipe.set(`coupon:redemption:${order_id}`, {
+          couponCode: code, orderId: order_id, userId: pending.userId,
+          productId: pending.productId,
+          originalAmount: pending.originalAmount, discountAmount: pending.discountAmount,
+          finalAmount: pending.finalAmount, campaign: pending.coupon.campaign || '',
+          status: 'redeemed', redeemedAt: new Date().toISOString(),
+        }, { ex: 86400 * 90 });
+        pipe.del(`coupon:reservation:${code}:${order_id}`);
+        await pipe.exec();
+      } catch (e) { console.error('[kakaopay-approve-saju] coupon confirm failed:', e.message); }
+    }
 
     await redis.del(`kp_saju:${order_id}`);
 

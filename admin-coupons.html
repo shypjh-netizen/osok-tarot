@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>오속 쿠폰 관리</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0c22;color:#ede0c8;font-family:'Apple SD Gothic Neo',sans-serif;min-height:100vh;padding:24px 16px}
+h1{color:#c9a84c;font-size:20px;margin-bottom:20px}
+h2{color:#c9a84c;font-size:15px;margin:20px 0 10px}
+input,select,textarea{background:#111030;border:1px solid rgba(201,168,76,.3);border-radius:8px;color:#ede0c8;font-family:inherit;font-size:13px;padding:9px 12px;width:100%;outline:none}
+input:focus,select:focus{border-color:#c9a84c}
+label{font-size:12px;color:#b89e7e;display:block;margin-bottom:4px;margin-top:10px}
+.btn{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);border-radius:8px;color:#e8c97a;cursor:pointer;font-family:inherit;font-size:13px;padding:10px 18px}
+.btn:hover{background:rgba(201,168,76,.25)}
+.btn-sm{font-size:12px;padding:5px 12px}
+.btn-danger{background:rgba(229,115,115,.1);border-color:rgba(229,115,115,.4);color:#e57373}
+.card{background:#111030;border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:16px;margin-bottom:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.col{flex:1;min-width:160px}
+.msg{font-size:12px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+.msg.ok{background:rgba(100,200,100,.1);border:1px solid rgba(100,200,100,.3);color:#a8d8a0}
+.msg.err{background:rgba(229,115,115,.1);border:1px solid rgba(229,115,115,.3);color:#e57373}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{color:#b89e7e;font-weight:600;text-align:left;padding:6px 10px;border-bottom:1px solid rgba(201,168,76,.15)}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+.badge{display:inline-block;font-size:11px;padding:2px 7px;border-radius:4px}
+.badge-on{background:rgba(100,200,100,.15);color:#a8d8a0;border:1px solid rgba(100,200,100,.3)}
+.badge-off{background:rgba(229,115,115,.1);color:#e57373;border:1px solid rgba(229,115,115,.3)}
+#login-area{max-width:340px;margin:60px auto}
+#app{display:none}
+.tabs{display:flex;gap:6px;margin-bottom:20px}
+.tab{padding:9px 18px;border-radius:8px;cursor:pointer;font-size:13px;border:1px solid rgba(201,168,76,.2);color:#b89e7e}
+.tab.active{background:rgba(201,168,76,.15);border-color:#c9a84c;color:#e8c97a}
+.pane{display:none}.pane.active{display:block}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);border-top-color:#c9a84c;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.event-wrap{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px 14px;margin-top:10px;font-size:12px;color:#b89e7e;line-height:2}
+</style>
+</head>
+<body>
+
+<div id="login-area">
+  <h1>🔐 오속 쿠폰 관리</h1>
+  <label>관리자 비밀번호</label>
+  <input type="password" id="pwd-input" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')login()">
+  <button class="btn" style="margin-top:10px;width:100%" onclick="login()">로그인</button>
+  <div id="login-err" class="msg err" style="display:none">비밀번호가 틀렸어요.</div>
+</div>
+
+<div id="app">
+  <h1>🎟️ 오속 쿠폰 관리</h1>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('list')">쿠폰 목록</div>
+    <div class="tab" onclick="switchTab('create')">쿠폰 생성</div>
+    <div class="tab" onclick="switchTab('event')">이벤트 빠른 생성</div>
+  </div>
+
+  <!-- 목록 탭 -->
+  <div id="tab-list" class="pane active">
+    <button class="btn btn-sm" onclick="loadList()" style="margin-bottom:12px">새로고침</button>
+    <div id="list-msg" class="msg"></div>
+    <div id="list-wrap"><div style="color:#b89e7e;font-size:13px">불러오는 중...</div></div>
+  </div>
+
+  <!-- 생성 탭 -->
+  <div id="tab-create" class="pane">
+    <div class="card">
+      <label>쿠폰 코드 (빈칸 = 자동 생성)</label>
+      <input id="c-code" placeholder="예) SUMMER2026">
+      <label>설명 / 캠페인명</label>
+      <input id="c-campaign" placeholder="예) 여름 이벤트">
+      <div class="row">
+        <div class="col">
+          <label>할인 유형</label>
+          <select id="c-dtype" onchange="updateDiscountUI()">
+            <option value="free">100% 무료</option>
+            <option value="percent">퍼센트 할인</option>
+            <option value="fixed">정액 할인</option>
+          </select>
+        </div>
+        <div class="col" id="c-dval-wrap" style="display:none">
+          <label id="c-dval-label">할인값</label>
+          <input id="c-dval" type="number" placeholder="예) 30">
+        </div>
+        <div class="col" id="c-maxd-wrap" style="display:none">
+          <label>최대 할인금액 (원, 선택)</label>
+          <input id="c-maxd" type="number" placeholder="비워두면 제한 없음">
+        </div>
+      </div>
+      <label>적용 상품 (복수 선택 가능)</label>
+      <select id="c-products" multiple style="height:100px">
+        <option value="all">전체 상품</option>
+        <option value="tarot_basic">타로 심층리딩</option>
+        <option value="tarot_extra">타로 추가질문</option>
+        <option value="tarot_set">타로 세트</option>
+        <option value="saju_single">사주 집중풀이</option>
+        <option value="saju_premium">사주 프리미엄</option>
+      </select>
+      <div class="row">
+        <div class="col">
+          <label>총 사용 한도 (빈칸 = 무제한)</label>
+          <input id="c-max" type="number" placeholder="예) 100">
+        </div>
+        <div class="col">
+          <label>1인당 사용 한도</label>
+          <input id="c-peruser" type="number" placeholder="기본 1" value="1">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>시작일 (선택)</label>
+          <input id="c-starts" type="datetime-local">
+        </div>
+        <div class="col">
+          <label>만료일 (선택)</label>
+          <input id="c-expires" type="datetime-local">
+        </div>
+      </div>
+      <button class="btn" style="margin-top:16px;width:100%" onclick="createCoupon()">쿠폰 생성</button>
+      <div id="create-msg" class="msg"></div>
+    </div>
+  </div>
+
+  <!-- 이벤트 탭 -->
+  <div id="tab-event" class="pane">
+    <div class="card">
+      <h2>🎉 빠른 이벤트 쿠폰 (3종 세트)</h2>
+      <p style="font-size:12px;color:#b89e7e;margin-bottom:14px">OSOK-XXXX 형식 무료 쿠폰 3개를 한 번에 생성해요. 각 1회 사용, 전체 상품 적용.</p>
+      <label>캠페인명</label>
+      <input id="ev-campaign" placeholder="예) 오픈 기념">
+      <label>만료일 (선택)</label>
+      <input id="ev-expires" type="datetime-local">
+      <button class="btn" style="margin-top:14px;width:100%" onclick="createEvent()">이벤트 쿠폰 3종 생성</button>
+      <div id="event-msg" class="msg"></div>
+      <div id="event-result" class="event-wrap" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let SECRET = '';
+
+function login() {
+  const pw = document.getElementById('pwd-input').value.trim();
+  if (!pw) return;
+  SECRET = pw;
+  // 인증 확인은 목록 로드로
+  document.getElementById('login-err').style.display = 'none';
+  loadList().then(ok => {
+    if (ok) { document.getElementById('login-area').style.display = 'none'; document.getElementById('app').style.display = 'block'; }
+    else { document.getElementById('login-err').style.display = 'block'; SECRET = ''; }
+  });
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['list','create','event'][i] === name));
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function showMsg(id, msg, ok) {
+  const el = document.getElementById(id);
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function updateDiscountUI() {
+  const v = document.getElementById('c-dtype').value;
+  document.getElementById('c-dval-wrap').style.display = v === 'free' ? 'none' : 'block';
+  document.getElementById('c-maxd-wrap').style.display = v === 'percent' ? 'block' : 'none';
+  document.getElementById('c-dval-label').textContent = v === 'percent' ? '할인율 (%)' : '할인금액 (원)';
+}
+
+async function api(action, body, method) {
+  const url = `/api/webhook?action=${action}`;
+  const opts = { method: method || 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-secret': SECRET } };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(url, opts);
+  return { ok: r.ok, data: await r.json() };
+}
+
+async function loadList() {
+  const { ok, data } = await api('coupon-list', null, 'GET');
+  if (!ok) { if (data.error === 'unauthorized') return false; document.getElementById('list-wrap').innerHTML = `<div style="color:#e57373;font-size:13px">${data.error}</div>`; return true; }
+  const coupons = data.coupons || [];
+  if (!coupons.length) { document.getElementById('list-wrap').innerHTML = '<div style="color:#b89e7e;font-size:13px">생성된 쿠폰이 없어요.</div>'; return true; }
+  let html = `<div style="overflow-x:auto"><table><tr><th>코드</th><th>캠페인</th><th>할인</th><th>상품</th><th>사용/한도</th><th>만료</th><th>상태</th><th></th></tr>`;
+  for (const c of coupons) {
+    const discount = c.discountType === 'free' ? '무료' : c.discountType === 'percent' ? `${c.discountValue}%` : `${(c.discountValue||0).toLocaleString()}원`;
+    const prods = (c.applicableProductIds || ['all']).join(', ');
+    const maxR = c.maxRedemptions >= 0 ? c.maxRedemptions : '∞';
+    const used = c.usedCount ?? '?';
+    const exp = c.expiresAt ? new Date(c.expiresAt).toLocaleDateString('ko-KR') : '—';
+    html += `<tr>
+      <td style="font-weight:700;font-family:monospace;color:#e8c97a">${c.code}</td>
+      <td>${c.campaign || '—'}</td>
+      <td>${discount}</td>
+      <td style="font-size:11px">${prods}</td>
+      <td>${used} / ${maxR}</td>
+      <td>${exp}</td>
+      <td><span class="badge ${c.active ? 'badge-on' : 'badge-off'}">${c.active ? '활성' : '비활성'}</span></td>
+      <td><button class="btn btn-sm ${c.active ? 'btn-danger' : ''}" onclick="toggleCoupon('${c.code}',${!c.active})">${c.active ? '비활성화' : '활성화'}</button></td>
+    </tr>`;
+  }
+  html += '</table></div>';
+  document.getElementById('list-wrap').innerHTML = html;
+  return true;
+}
+
+async function toggleCoupon(code, activate) {
+  const { ok, data } = await api('coupon-toggle', { code, active: activate });
+  if (ok) { showMsg('list-msg', `${code} ${activate ? '활성화' : '비활성화'} 완료`, true); loadList(); }
+  else showMsg('list-msg', data.error || '실패', false);
+}
+
+async function createCoupon() {
+  const dtype = document.getElementById('c-dtype').value;
+  const dval = parseFloat(document.getElementById('c-dval').value) || 0;
+  const selected = Array.from(document.getElementById('c-products').selectedOptions).map(o => o.value);
+  const body = {
+    code: document.getElementById('c-code').value.trim().toUpperCase() || undefined,
+    campaign: document.getElementById('c-campaign').value.trim(),
+    discountType: dtype,
+    discountValue: dtype === 'free' ? 100 : dval,
+    maxDiscountAmount: parseInt(document.getElementById('c-maxd').value) || undefined,
+    applicableProductIds: selected.length ? selected : ['all'],
+    maxRedemptions: parseInt(document.getElementById('c-max').value) >= 0 ? parseInt(document.getElementById('c-max').value) : -1,
+    perUserLimit: parseInt(document.getElementById('c-peruser').value) || 1,
+    startsAt: document.getElementById('c-starts').value || undefined,
+    expiresAt: document.getElementById('c-expires').value || undefined,
+  };
+  const { ok, data } = await api('coupon-create', body);
+  if (ok) { showMsg('create-msg', `✅ 쿠폰 생성 완료: ${data.code}`, true); loadList(); }
+  else showMsg('create-msg', `❌ ${data.error || '생성 실패'}`, false);
+}
+
+async function createEvent() {
+  const body = {
+    campaign: document.getElementById('ev-campaign').value.trim(),
+    expiresAt: document.getElementById('ev-expires').value || undefined,
+  };
+  const { ok, data } = await api('coupon-quick-event', body);
+  if (ok) {
+    showMsg('event-msg', '✅ 이벤트 쿠폰 3개 생성 완료', true);
+    const r = document.getElementById('event-result');
+    r.style.display = 'block';
+    r.innerHTML = (data.codes || []).map(c => `<div>🎟️ <strong style="color:#e8c97a;font-family:monospace">${c}</strong></div>`).join('');
+    loadList();
+  } else showMsg('event-msg', `❌ ${data.error || '생성 실패'}`, false);
+}
+
+updateDiscountUI();
+</script>
+</body>
+</html>
