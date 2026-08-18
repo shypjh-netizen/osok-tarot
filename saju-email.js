@@ -229,7 +229,7 @@ ${yearLine}
 /* ─────────────────────────────────────────────────────────────
    AI 호출
 ───────────────────────────────────────────────────────────── */
-async function generateReading(sajuContext, prompt, systemPrompt, maxTokens = 1400) {
+async function generateReading(sajuContext, prompt, systemPrompt, maxTokens = 2200) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -250,6 +250,9 @@ async function generateReading(sajuContext, prompt, systemPrompt, maxTokens = 14
   });
   if (!res.ok) throw new Error(await res.text());
   const data = await res.json();
+  if (data.stop_reason === 'max_tokens') {
+    throw new Error(`max_tokens_reached(limit=${maxTokens}): 출력이 잘렸어요`);
+  }
   return data.content[0].text;
 }
 
@@ -339,6 +342,26 @@ function validate30DayPlan(content) {
     return { ok: false, reason: '30day:4th_week_incomplete' };
   }
   return validateContent(content, '30day');
+}
+
+/* ─── 금지 문구 감지 (모델이 되묻거나 중간 작업 노출 시 차단) ─── */
+const FORBIDDEN_PHRASES = [
+  '죄송합니다', '제공된 데이터에는', '정보가 없어요', '정보가 없습니다',
+  '작성할 수 없', '어느 방식을 원하시나요', '선택해주세요', '선택해 주세요',
+  '추가 정보를 제공', '다음 방식으로 도움', '방식 중 하나를 선택',
+  '월별 세운을 임의로', '월 단위의 세운 간지', '명리학적 오류가 되므로',
+  '위의 내용을 어떻게', '어떤 방향으로 작성',
+];
+
+function hasForbiddenPhrase(text) {
+  if (!text || typeof text !== 'string') return null;
+  return FORBIDDEN_PHRASES.find(p => text.includes(p)) || null;
+}
+
+function validatePremiumContent(content, fieldName = '') {
+  const found = hasForbiddenPhrase(content);
+  if (found) return { ok: false, reason: `${fieldName}:forbidden("${found.slice(0, 18)}")` };
+  return validateContent(content, fieldName);
 }
 
 /* ─── 생성 + 재시도 래퍼 ─── */
@@ -1105,6 +1128,31 @@ async function sendSajuEmail(email, sajuData, isPremium) {
   const relStatus = sajuData.relationStatus || 'private';
   const loveCfg   = REL_LOVE_CONFIG[relStatus] || REL_LOVE_CONFIG.private;
 
+  /* 공통 금지 규칙 (모든 섹션에 첨부) */
+  const SECTION_RULES = `\n\n[필수 규칙] 모든 문장을 완결된 종결어미(요·다·죠·세요 등)로 끝내세요. 고객에게 질문하거나 추가 데이터를 요청하거나 선택지를 제시하지 않아요. 내부 계산 과정이나 데이터 부족 설명을 출력하지 않아요. 앞 섹션에서 이미 설명한 오행 개수나 원국 구조를 여기서 반복하지 마세요. 안내문·소개문으로 시작하지 마세요.`;
+
+  /* 섹션별 실패 추적 */
+  const premiumStartedAt = Date.now();
+  const failedSections = [];
+
+  async function genSection(label, prompt, maxTokens) {
+    const result = await generateWithRetry(
+      ctx,
+      prompt + SECTION_RULES,
+      systemPrompt,
+      maxTokens,
+      (c) => validatePremiumContent(c, label),
+      2
+    );
+    if (!result.ok) {
+      failedSections.push({ name: label, reason: result.reason });
+      console.error(`[saju-email][section] FAIL section="${label}" reason="${result.reason}"`);
+    } else {
+      console.log(`[saju-email][section] OK section="${label}" len=${result.content?.length}`);
+    }
+    return result.content || '(리딩 생성 중 오류가 발생했어요. 카카오 채널로 문의해주세요.)';
+  }
+
   /* 1. 질문 맞춤 답변 */
   if (sajuData.customQuestion || sajuData.concern?.question) {
     const q = sajuData.customQuestion || sajuData.concern.question;
@@ -1114,11 +1162,11 @@ async function sendSajuEmail(email, sajuData, isPremium) {
 ${questionTopic ? `[${questionTopic}] 영역 중심으로 ` : ''}사주팔자를 바탕으로 깊이 있고 구체적인 답변을 작성해주세요.
 먼저 이 질문과 관련된 사주 영역을 짚고, ${currentYear}년 흐름에서 어떤 방향성이 보이는지, 구체적인 시기가 있다면 명확하게, 지금 당장 실천할 수 있는 행동 방향 1~2가지로 마무리해주세요.
 4~5단락. 반드시 해요체, 마크다운 금지.`;
-    const content = await generateReading(ctx, qPrompt, systemPrompt);
+    const content = await genSection('질문맞춤답변', qPrompt, 2200);
     sections.push({ icon: '💬', label: `${questionTopic ? questionTopic + ' — ' : ''}${name}님의 질문 맞춤 풀이`, content });
   }
 
-  /* 2. 기본 카테고리 */
+  /* 2. 기본 카테고리 (관계·직업·재물·건강·흐름) */
   for (const cat of CATEGORY_PROMPTS) {
     let prompt = cat.prompt;
     let label  = cat.label;
@@ -1134,43 +1182,74 @@ ${name}님의 사주에서 관계·인연 영역을 깊이 분석해주세요.
 4~6단락. 반드시 해요체, 마크다운 금지.`;
     }
 
-    const content = await generateReading(ctx, prompt, systemPrompt);
+    const maxTk = cat.key === 'health' ? 1900 : 2400;
+    const content = await genSection(cat.key, prompt, maxTk);
     sections.push({ icon: cat.icon, label, content });
   }
 
-  /* 3. 시기 요약표 */
-  const now2       = new Date();
+  /* 3. 시기 요약표 — 월별 세운 없이 세운·대운 기반 패턴으로 */
+  const now2       = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
   const startYear  = now2.getFullYear();
   const startMonth = now2.getMonth() + 1;
-  const timelinePrompt = `${name}님의 사주팔자를 바탕으로 ${startYear}년 ${startMonth}월부터 12개월간 핵심 시기를 분석해주세요.
+  const currentSewoon = sajuData.sewoon || '';
+  const timelinePrompt = `${name}님의 ${startYear}년 ${currentSewoon} 세운 에너지를 월별로 정리해주세요.
 
-각 달을 아래 형식으로 정확히 작성 (파이프 기호로 구분):
+[규칙]
+- 월별 세운(월주 간지) 데이터는 제공되지 않았어요. 임의로 계산하거나 꾸며내지 마세요.
+- 대신 ${startYear}년 ${currentSewoon} 세운이 원국 일간·오행과 어떻게 작용하는지를 기준으로, 상반기(1~6월)와 하반기(7~12월)의 에너지 흐름 차이를 반영해 12개월을 분류하세요.
+- 에너지는 기회/안정/전환/주의 중 하나만.
+- 특정 날짜나 이벤트를 임의로 하드코딩하지 마세요.
+
+각 달 형식 (파이프 구분):
 YYYY년 MM월 | 에너지 | 한 줄 설명
 
-에너지는 반드시 다음 4가지 중 하나만 사용: 기회, 안정, 전환, 주의
+${startYear}년 ${startMonth}월부터 12개월 전부. 다른 텍스트 없이 표 형식만.`;
 
-12개월 전부 작성. 다른 텍스트 없이 표 형식만.`;
-  const timelineRaw = await generateReading(ctx, timelinePrompt, systemPrompt, 1200);
-  sections.push({ icon: '📅', label: `${startYear} 핵심 시기 요약`, content: timelineRaw, isTimeline: true });
+  const timelineValidator = (c) => {
+    const found = hasForbiddenPhrase(c);
+    if (found) return { ok: false, reason: `timeline:forbidden("${found.slice(0, 15)}")` };
+    const pipeCount = (c.match(/\|/g) || []).length;
+    if (pipeCount < 24) return { ok: false, reason: `timeline:too_few_pipes(${pipeCount})` };
+    return { ok: true };
+  };
+  const timelineResult = await generateWithRetry(ctx, timelinePrompt, systemPrompt, 1600, timelineValidator, 2);
+  if (!timelineResult.ok) {
+    failedSections.push({ name: '시기요약', reason: timelineResult.reason });
+    console.error(`[saju-email][section] FAIL section="시기요약" reason="${timelineResult.reason}"`);
+  }
+  sections.push({ icon: '📅', label: `${startYear} 핵심 시기 요약`, content: timelineResult.content || '(생성 오류)', isTimeline: true });
 
   /* 4. 지금부터 준비해야 할 것 */
   const actionPrompt = `${name}님의 사주팔자와 ${currentYear}년 운의 흐름을 바탕으로 "지금부터 준비해야 할 것"을 작성해주세요.
-${name}님의 기질과 ${currentYear}년 대운·세운 에너지에 맞는 구체적 준비 방향을 담아주세요. 재물·관계·일·내면 등 중요한 영역에서 지금 당장 시작할 수 있는 것과 올해 안에 준비해야 할 것을 나눠서.
+앞 섹션에서 설명한 원국 구조를 다시 반복하지 말고, 재물·관계·일·내면 등 중요한 영역에서 지금 당장 시작할 수 있는 것과 올해 안에 준비해야 할 것을 나눠서 구체적 행동으로 제시해주세요.
 5~6단락. 반드시 해요체, 마크다운 금지.`;
-  const actionContent = await generateReading(ctx, actionPrompt, systemPrompt, 1600);
+  const actionContent = await genSection('지금부터준비', actionPrompt, 2400);
   sections.push({ icon: '🚀', label: '지금부터 준비해야 할 것', content: actionContent });
 
   /* 5. 프리미엄 전용 */
   if (tier === 'premium') {
+    const premiumNotes = {
+      direction: '이 섹션은 인생 방향 조언이에요. 앞 섹션에서 다룬 직업·재물·관계 분석을 반복하지 말고, 장기적 방향과 현재 자원을 기회로 바꾸는 방법에만 집중해주세요.',
+      avoid: '이 섹션은 피해야 할 선택이에요. 앞에서 말한 행동 제안을 반복하지 말고, 실제 명식에서 확인되는 반복 패턴과 에너지 소진 요소에만 집중해주세요.',
+      decision: '이 섹션은 선택·결정 조언이에요. 앞의 분석을 다시 설명하지 말고, 이 사주의 의사결정 방식, 직감과 검증의 균형, 지금 시기에 맞는 결정 원칙에만 집중해주세요.',
+    };
     for (const cat of PREMIUM_PROMPTS) {
-      const content = await generateReading(ctx, cat.prompt, systemPrompt);
+      const note = premiumNotes[cat.key] ? premiumNotes[cat.key] + '\n\n' : '';
+      const content = await genSection(cat.key, note + cat.prompt, 2200);
       sections.push({ icon: cat.icon, label: cat.label, content });
     }
   }
 
   /* 6. 마무리 메시지 */
   const closingPrompt = `${name}님의 사주 리딩을 마무리하는 따뜻한 메시지를 3~4문장으로 작성해주세요. 이 사람의 기질과 ${currentYear}년 에너지를 담아 개인화되게. 반드시 해요체, 마크다운 금지.`;
-  const closingMsg = await generateReading(ctx, closingPrompt, systemPrompt, 600);
+  const closingMsg = await genSection('마무리메시지', closingPrompt, 800);
+
+  /* 관리자 로그 */
+  const totalMs = Date.now() - premiumStartedAt;
+  const failLog = failedSections.length > 0
+    ? `실패: ${failedSections.map(f => `${f.name}(${f.reason})`).join(', ')}`
+    : '전 섹션 성공';
+  console.log(`[saju-email][${tier}] 완료 섹션=${sections.length} ${failLog} 소요=${Math.round(totalMs / 1000)}초`);
 
   const productLabel = tier === 'premium' ? '★ 프리미엄 종합 풀이' : null;
   const html = buildEmailHtml(
