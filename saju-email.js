@@ -1135,7 +1135,7 @@ async function sendSajuEmail(email, sajuData, isPremium) {
   const premiumStartedAt = Date.now();
   const failedSections = [];
 
-  async function genSection(label, prompt, maxTokens) {
+  const genSection = async (label, prompt, maxTokens) => {
     const result = await generateWithRetry(
       ctx,
       prompt + SECTION_RULES,
@@ -1151,7 +1151,7 @@ async function sendSajuEmail(email, sajuData, isPremium) {
       console.log(`[saju-email][section] OK section="${label}" len=${result.content?.length}`);
     }
     return result.content || '(리딩 생성 중 오류가 발생했어요. 카카오 채널로 문의해주세요.)';
-  }
+  };
 
   /* 1. 질문 맞춤 답변 */
   if (sajuData.customQuestion || sajuData.concern?.question) {
