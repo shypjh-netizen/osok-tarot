@@ -39,9 +39,16 @@ export default async function handler(req, res) {
     }
 
     // 결제 완료 — 액세스 토큰을 주문 코드로 저장 (7일)
-    // webhook GET /api/webhook?code={token} 으로 조회 가능
     await redis.set(`order:${token}`, { product: pending.product }, { ex: 604800 });
     await redis.del(`kp:${order_id}`);
+
+    // payment_succeeded 이벤트 기록 (서버 전용)
+    try {
+      const src = pending.source || 'direct';
+      const date = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' });
+      const evKey = `funnel:ev:${date}:${src}:payment_succeeded`;
+      await redis.pipeline().incr(evKey).expire(evKey, 86400 * 90).exec();
+    } catch { /* 기록 실패가 결제에 영향 없도록 */ }
 
     return res.redirect(`${BASE_URL}/?kp_token=${token}`);
   } catch (e) {

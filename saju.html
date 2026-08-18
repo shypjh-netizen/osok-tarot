@@ -4527,7 +4527,7 @@ async function submitSajuEmail(){
 
   const tier=document.getElementById('saju-email-overlay').dataset.tier||'basic';
   try{
-    await fetch('/api/saju-save',{
+    await fetch('/api/webhook?action=saju-save',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({email, sajuData:S.sajuData, tier}),

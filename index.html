@@ -304,7 +304,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span style="background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px">40% OFF</span>
             <span style="font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:700;color:var(--gold)">5,900원</span>
           </div>
-          <button onclick="showScreen('payment-screen')" style="margin-top:8px;padding:8px 18px;background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap">선택하기</button>
+          <button onclick="_track('paid_product_selected',{productType:'basic'},true);showScreen('payment-screen')" style="margin-top:8px;padding:8px 18px;background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap">선택하기</button>
         </div>
       </div>
 
@@ -321,7 +321,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span style="background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px">47% OFF</span>
             <span style="font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:700;color:var(--gold)">8,900원</span>
           </div>
-          <button onclick="showScreen('payment-screen')" style="margin-top:8px;padding:8px 18px;background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap">선택하기</button>
+          <button onclick="_track('paid_product_selected',{productType:'set'},true);showScreen('payment-screen')" style="margin-top:8px;padding:8px 18px;background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap">선택하기</button>
         </div>
       </div>
     </div>
@@ -550,6 +550,45 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 </footer>
 
 <script>
+/* ── 퍼널 추적 ── */
+(function() {
+  let _sid = sessionStorage.getItem('_osok_sid');
+  if (!_sid) {
+    _sid = 'sid_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    sessionStorage.setItem('_osok_sid', _sid);
+  }
+  let _src = sessionStorage.getItem('_osok_src');
+  if (!_src) {
+    const p = new URLSearchParams(window.location.search);
+    const us = (p.get('utm_source') || '').toLowerCase();
+    if (us === 'karrot' || us === 'daangn') _src = 'karrot';
+    else if (us === 'threads') _src = 'threads';
+    else if (document.referrer.includes('threads.net')) _src = 'threads';
+    else if (us) _src = 'other';
+    else _src = 'direct';
+    sessionStorage.setItem('_osok_src', _src);
+  }
+  const _tracked = new Set(JSON.parse(sessionStorage.getItem('_osok_ev') || '[]'));
+
+  window._track = function(event, extra, allowRepeat) {
+    if (!allowRepeat && _tracked.has(event)) return;
+    _tracked.add(event);
+    sessionStorage.setItem('_osok_ev', JSON.stringify([..._tracked]));
+    fetch('/api/webhook?action=track', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ event, sessionId: _sid, source: _src, ...(extra || {}) })
+    }).catch(() => {});
+  };
+  window._trackSrc = function() { return _src; };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => window._track('landing_view'));
+  } else {
+    window._track('landing_view');
+  }
+})();
+
 /* ── 별 배경 ── */
 (()=>{
   const c=document.getElementById('stars-canvas'),ctx=c.getContext('2d');
@@ -1270,17 +1309,20 @@ function showScreen(id) {
 
 /* ── 카카오페이 결제 ── */
 async function kakaoPay(product) {
+  _track('payment_attempted', { productType: product }, true);
   try {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const res = await fetch('/api/kakaopay-ready', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product }),
+      body: JSON.stringify({ product, _source: window._trackSrc ? window._trackSrc() : 'direct' }),
     });
     const data = await res.json();
     if (data.error) throw new Error('결제 준비 실패');
+    _track('checkout_viewed', { productType: product }, true);
     window.location.href = isMobile ? data.mobile_url : data.pc_url;
   } catch(e) {
+    _track('payment_failed', { productType: product }, true);
     alert('결제 준비 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
   }
 }
@@ -1359,7 +1401,7 @@ async function submitReview() {
   // 보너스 카드 AI 리딩
   const bonusMsg = `보너스 카드로 뽑힌 카드: ${bonusCard.kr} (${bonusCard.name}) — 키워드: ${bonusCard.kw}\n\n이 카드를 바탕으로 짧고 따뜻한 메시지를 3~4단락으로 전해주세요. 앞선 리딩의 에너지를 마무리하는 느낌으로요.`;
   try {
-    const bonusText = await callAI([...S.chatHistory, {role:'user', content:bonusMsg}]);
+    const bonusText = await callAI([...S.chatHistory, {role:'user', content:bonusMsg}], null, {type:'paid'});
     const bonusEl = document.getElementById('bonus-reading-text');
     bonusEl.textContent = '';
     await typeText(bonusEl, bonusText, 16);
@@ -1509,6 +1551,7 @@ function goFreePickConfirm() {
   S.count = 1;
   const today = new Date().toLocaleDateString('ko-KR');
   localStorage.setItem('freeCardDate', today);
+  _track('free_reading_started');
   buildPickScreen();
   showScreen('pick-screen');
 }
@@ -1625,11 +1668,11 @@ const FREE_TAROT_SYSTEM = `당신은 '오속 타로'의 전문 타로 상담사�
 - 본문만으로도 질문에 대한 핵심 답변이 완결되는가?
 - CTA가 정확히 한 개만 포함됐는가?`;
 
-async function callAI(messages, sys) {
+async function callAI(messages, sys, trackMeta) {
   const res = await fetch('/api/chat', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({system: sys || TAROT_SYSTEM, messages})
+    body: JSON.stringify({system: sys || TAROT_SYSTEM, messages, _trackMeta: trackMeta})
   });
   if(!res.ok) {
     const err = await res.json().catch(()=>({}));
@@ -1705,11 +1748,15 @@ async function showFreeResult(card) {
 
   try {
     const userMsg = `질문: ${S.freeQuestion}\n뽑힌 카드: ${card.kr} (${card.name})\n카드 키워드: ${card.kw}\n\n위 카드를 바탕으로 질문에 맞는 타로 리딩을 작성해주세요.`;
-    const text = await callAI([{role:'user', content:userMsg}], FREE_TAROT_SYSTEM);
+    _track('free_reading_request_sent');
+    const text = await callAI([{role:'user', content:userMsg}], FREE_TAROT_SYSTEM, {type:'free'});
     el.textContent = '';
     await typeText(el, text, 14);
+    _track('free_reading_succeeded');
+    setTimeout(() => _track('paid_offer_viewed'), 800);
   } catch(e) {
     el.textContent = '죄송해요, 리딩을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+    _track('free_reading_failed', {}, true);
   }
 }
 
@@ -1763,7 +1810,7 @@ function pickCard(el, card) {
   S.picked.push(card);
   document.getElementById('pick-cnt').textContent = S.picked.length;
   if(S.picked.length >= S.count) {
-    if(S.freeMode) setTimeout(() => showFreeResult(card), 900);
+    if(S.freeMode) { _track('card_selected'); setTimeout(() => showFreeResult(card), 900); }
     else setTimeout(showResult, 900);
   }
 }
@@ -1786,7 +1833,7 @@ async function showResult() {
   S.chatHistory = [{role:'user', content:userMsg}];
 
   try {
-    const text = await callAI(S.chatHistory);
+    const text = await callAI(S.chatHistory, null, {type:'paid'});
     S.chatHistory.push({role:'assistant', content:text});
     el.textContent = '';
 
@@ -1796,10 +1843,12 @@ async function showResult() {
     updateFollowupCount();
 
     await typeText(el, text, 16);
+    _track('paid_reading_succeeded');
     saveReadingToLocal();
     fw.scrollIntoView({behavior:'smooth', block:'start'});
   } catch(e) {
     el.textContent = '죄송해요, 리딩을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+    _track('paid_reading_failed', {}, true);
     const fw = document.getElementById('followup-wrap');
     fw.classList.remove('hidden');
   }
@@ -1952,7 +2001,7 @@ async function sendFollowUp() {
 
   let answer;
   try {
-    answer = await callAI(S.chatHistory);
+    answer = await callAI(S.chatHistory, null, {type:'paid'});
     S.chatHistory.push({role:'assistant', content:answer});
   } catch(e) {
     answer = '죄송해요, 답변을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
@@ -2155,6 +2204,7 @@ loadReviews();
     autoStartFromToken(kpToken);
   } else if (payStatus === 'fail' || payStatus === 'cancel') {
     window.history.replaceState({}, '', window.location.pathname);
+    _track('payment_failed', {}, true);
     showScreen('payment-screen');
     const err = document.getElementById('code-err');
     if (err) {

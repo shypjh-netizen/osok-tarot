@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>오속 타로 — 관리자 통계</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f1a;color:#e0d8f0;min-height:100vh;padding:20px}
+h1{font-size:20px;color:#e8c95a;margin-bottom:4px}
+.sub{font-size:12px;color:#7c6fa0;margin-bottom:24px}
+.notice{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.4);border-radius:10px;padding:12px 16px;font-size:13px;color:#fde68a;margin-bottom:20px;line-height:1.6}
+.login-box{max-width:400px;margin:80px auto;background:#1a1a2e;border:1px solid #3d3580;border-radius:16px;padding:32px}
+.login-box h2{text-align:center;color:#e8c95a;margin-bottom:20px;font-size:18px}
+input[type=password]{width:100%;padding:10px 14px;background:#0f0f1a;border:1px solid #3d3580;border-radius:8px;color:#e0d8f0;font-size:14px;margin-bottom:12px}
+input[type=password]:focus{outline:none;border-color:#6d28d9}
+button.btn{width:100%;padding:12px;background:linear-gradient(135deg,#6d28d9,#7c3aed);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer}
+button.btn:hover{opacity:.9}
+.err{color:#f87171;font-size:13px;margin-top:8px;display:none}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;align-items:center}
+.filter-group{display:flex;gap:4px;flex-wrap:wrap}
+.fbtn{padding:6px 14px;border-radius:20px;border:1px solid #3d3580;background:transparent;color:#9d8fbc;font-size:12px;cursor:pointer}
+.fbtn.active,.fbtn:hover{background:#3d3580;color:#e0d8f0}
+.card{background:#1a1a2e;border:1px solid #3d3580;border-radius:12px;padding:16px;margin-bottom:16px}
+.card h3{font-size:14px;color:#e8c95a;margin-bottom:12px}
+.summary{background:rgba(109,40,217,.15);border:1px solid rgba(109,40,217,.4);border-radius:10px;padding:16px;margin-bottom:16px;font-size:14px;line-height:2}
+.summary strong{color:#e8c95a}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;color:#7c6fa0;font-weight:600;border-bottom:1px solid #2d2d4e;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #1f1f35;vertical-align:middle}
+.ev-name{color:#c4b5fd;font-weight:600}
+.count{color:#e0d8f0;text-align:right;font-variant-numeric:tabular-nums}
+.rate{text-align:right;font-size:12px;color:#7c6fa0}
+.rate.good{color:#4ade80}
+.rate.warn{color:#fbbf24}
+.rate.bad{color:#f87171}
+.tok-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tok-box{background:#111128;border:1px solid #2d2d4e;border-radius:8px;padding:14px}
+.tok-box h4{font-size:12px;color:#7c6fa0;margin-bottom:8px}
+.tok-val{font-size:22px;font-weight:700;color:#e8c95a}
+.tok-sub{font-size:11px;color:#7c6fa0;margin-top:4px}
+.na{color:#4a4a6a}
+.loading{text-align:center;padding:40px;color:#7c6fa0}
+.spinner{display:inline-block;width:24px;height:24px;border:2px solid #3d3580;border-top-color:#6d28d9;border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:600px){.tok-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="login-section" style="display:none">
+  <div class="login-box">
+    <h2>🔐 관리자 로그인</h2>
+    <input type="password" id="secret-input" placeholder="관리자 비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn" onclick="doLogin()">확인</button>
+    <div class="err" id="login-err">비밀번호가 맞지 않아요.</div>
+  </div>
+</div>
+
+<div id="main-section" style="display:none">
+  <h1>오속 타로 — 전환 퍼널 통계</h1>
+  <div class="sub">오류 수정 완료 기준: 2026-08-15 14:30 KST 이후 데이터가 정상 측정값입니다.</div>
+
+  <div class="notice">
+    ⚠️ <strong>오류 수정 전 주의:</strong> 2026-08-15 14:30 KST 이전 무료·유료 리딩 요청은 API 오류(chat.js body 파싱 실패 + 크레딧 소진)로 대부분 실패했습니다.
+    이 데이터는 참고용이며 정상 전환율 계산에 포함하지 마세요.
+    현재 추적 시스템은 이 페이지를 배포한 시점부터 수집됩니다. 과거 데이터는 수집되지 않았습니다.
+  </div>
+
+  <div class="filters">
+    <div class="filter-group" id="day-filters">
+      <button class="fbtn active" data-days="1" onclick="setFilter('days',1,this)">오늘</button>
+      <button class="fbtn" data-days="7" onclick="setFilter('days',7,this)">7일</button>
+      <button class="fbtn" data-days="30" onclick="setFilter('days',30,this)">30일</button>
+      <button class="fbtn" data-days="90" onclick="setFilter('days',90,this)">전체</button>
+    </div>
+    <div class="filter-group" id="src-filters">
+      <button class="fbtn active" data-src="all" onclick="setFilter('src','all',this)">전체</button>
+      <button class="fbtn" data-src="karrot" onclick="setFilter('src','karrot',this)">당근</button>
+      <button class="fbtn" data-src="threads" onclick="setFilter('src','threads',this)">스레드</button>
+      <button class="fbtn" data-src="direct" onclick="setFilter('src','direct',this)">직접방문</button>
+      <button class="fbtn" data-src="other" onclick="setFilter('src','other',this)">기타</button>
+    </div>
+    <button class="fbtn" onclick="loadData()" style="border-color:#6d28d9;color:#c4b5fd">↻ 새로고침</button>
+  </div>
+
+  <div id="content" class="loading"><span class="spinner"></span>데이터 불러오는 중...</div>
+</div>
+
+<script>
+let _secret = '';
+let _days = 1;
+let _src = 'all';
+
+function doLogin() {
+  const val = document.getElementById('secret-input').value.trim();
+  if (!val) return;
+  _secret = val;
+  loadData();
+}
+
+function setFilter(type, val, btn) {
+  if (type === 'days') {
+    _days = val;
+    document.querySelectorAll('#day-filters .fbtn').forEach(b => b.classList.remove('active'));
+  } else {
+    _src = val;
+    document.querySelectorAll('#src-filters .fbtn').forEach(b => b.classList.remove('active'));
+  }
+  btn.classList.add('active');
+  loadData();
+}
+
+async function loadData() {
+  document.getElementById('content').innerHTML = '<div class="loading"><span class="spinner"></span>데이터 불러오는 중...</div>';
+  try {
+    const r = await fetch(`/api/webhook?action=admin&days=${_days}&source=${_src}`, {
+      headers: { 'x-admin-secret': _secret }
+    });
+    if (r.status === 401) {
+      document.getElementById('login-err').style.display = 'block';
+      document.getElementById('login-section').style.display = 'block';
+      document.getElementById('main-section').style.display = 'none';
+      return;
+    }
+    const data = await r.json();
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('main-section').style.display = 'block';
+    render(data);
+  } catch(e) {
+    document.getElementById('content').innerHTML = `<div class="loading" style="color:#f87171">오류: ${e.message}</div>`;
+  }
+}
+
+function pct(num, den) {
+  if (!den || den === 0) return '<span class="na">—</span>';
+  const p = Math.round(num / den * 100);
+  const cls = p >= 50 ? 'good' : p >= 20 ? 'warn' : 'bad';
+  return `<span class="rate ${cls}">${num}명 / ${den}명 (${p}%)</span>`;
+}
+
+function num(n) { return (n||0).toLocaleString(); }
+function tok(n) { return n >= 1000 ? (n/1000).toFixed(1)+'K' : n; }
+
+function findBiggestDropout(t) {
+  const steps = [
+    ['landing_view','free_reading_started','방문 → 무료 시작'],
+    ['free_reading_started','card_selected','무료 시작 → 카드 선택'],
+    ['card_selected','free_reading_request_sent','카드 선택 → API 요청'],
+    ['free_reading_request_sent','free_reading_succeeded','API 요청 → 리딩 성공'],
+    ['free_reading_succeeded','paid_offer_viewed','리딩 성공 → 유료 노출'],
+    ['paid_offer_viewed','paid_product_selected','유료 노출 → 상품 선택'],
+    ['paid_product_selected','checkout_viewed','상품 선택 → 결제창'],
+    ['checkout_viewed','payment_attempted','결제창 → 결제 시도'],
+    ['payment_attempted','payment_succeeded','결제 시도 → 결제 성공'],
+    ['payment_succeeded','paid_reading_succeeded','결제 성공 → 유료 리딩 완료'],
+  ];
+  let worst = null, worstRate = 101;
+  for (const [from, to, label] of steps) {
+    const f = t[from] || 0;
+    const g = t[to] || 0;
+    if (f === 0) continue;
+    const rate = g / f * 100;
+    if (rate < worstRate) { worstRate = rate; worst = { label, f, g, rate: Math.round(rate) }; }
+  }
+  return worst;
+}
+
+function render(data) {
+  const t = data.totals || {};
+  const tok_ = data.tokens || { free:{}, paid:{} };
+
+  // 요약
+  const dropout = findBiggestDropout(t);
+  let summaryLines = [];
+  if ((t.landing_view||0) > 0) {
+    summaryLines.push(`방문자 <strong>${num(t.landing_view)}명</strong> 중 무료 리딩을 시작한 사람은 <strong>${num(t.free_reading_started)}명</strong>입니다.`);
+  }
+  if ((t.free_reading_request_sent||0) > 0) {
+    summaryLines.push(`무료 리딩 요청 <strong>${num(t.free_reading_request_sent)}건</strong> 중 성공은 <strong>${num(t.free_reading_succeeded)}건</strong>, 실패는 <strong>${num(t.free_reading_failed)}건</strong>입니다.`);
+  }
+  if ((t.free_reading_succeeded||0) > 0) {
+    summaryLines.push(`무료 결과를 본 <strong>${num(t.free_reading_succeeded)}명</strong> 중 유료 상품을 선택한 사람은 <strong>${num(t.paid_product_selected)}명</strong>입니다.`);
+  }
+  if (dropout) {
+    summaryLines.push(`⚠️ 현재 가장 큰 이탈: <strong>${dropout.label}</strong> — ${dropout.f}명 중 ${dropout.g}명만 다음 단계로 이동 (${dropout.rate}%)`);
+  }
+  if (summaryLines.length === 0) {
+    summaryLines.push('아직 수집된 데이터가 없습니다. 사이트를 방문해 이벤트를 발생시키면 여기에 표시됩니다.');
+  }
+
+  const funnelRows = [
+    { ev: 'landing_view',              label: '1. 방문 (landing_view)',               prev: null },
+    { ev: 'free_reading_started',      label: '2. 무료 리딩 시작',                    prev: 'landing_view' },
+    { ev: 'card_selected',             label: '3. 카드 선택',                         prev: 'free_reading_started' },
+    { ev: 'free_reading_request_sent', label: '4. 무료 API 요청',                     prev: 'card_selected' },
+    { ev: 'free_reading_succeeded',    label: '5. 무료 리딩 성공',                    prev: 'free_reading_request_sent' },
+    { ev: 'free_reading_failed',       label: '   ↳ 무료 리딩 실패',                  prev: 'free_reading_request_sent', isFail: true },
+    { ev: 'paid_offer_viewed',         label: '6. 유료 상품 노출',                    prev: 'free_reading_succeeded' },
+    { ev: 'paid_product_selected',     label: '7. 유료 상품 선택',                    prev: 'paid_offer_viewed' },
+    { ev: 'checkout_viewed',           label: '8. 결제창 진입',                       prev: 'paid_product_selected' },
+    { ev: 'payment_attempted',         label: '9. 결제 시도',                         prev: 'checkout_viewed' },
+    { ev: 'payment_succeeded',         label: '10. 결제 성공 (서버)',                 prev: 'payment_attempted' },
+    { ev: 'payment_failed',            label: '    ↳ 결제 실패',                      prev: 'payment_attempted', isFail: true },
+    { ev: 'paid_reading_succeeded',    label: '11. 유료 리딩 완료',                   prev: 'payment_succeeded' },
+    { ev: 'paid_reading_failed',       label: '    ↳ 유료 리딩 실패',                 prev: 'payment_succeeded', isFail: true },
+  ];
+
+  const totalConversion = pct(t.payment_succeeded||0, t.landing_view||0);
+  const freeToPayment = pct(t.payment_succeeded||0, t.free_reading_succeeded||0);
+
+  const funnelHTML = funnelRows.map(row => {
+    const cnt = t[row.ev] || 0;
+    const prevCnt = row.prev ? (t[row.prev] || 0) : null;
+    const rateHTML = row.prev ? pct(cnt, prevCnt) : '<span class="na">—</span>';
+    const style = row.isFail ? 'color:#f87171' : '';
+    return `<tr>
+      <td class="ev-name" style="${style}">${row.label}</td>
+      <td class="count">${num(cnt)}</td>
+      <td>${rateHTML}</td>
+    </tr>`;
+  }).join('');
+
+  // 토큰 통계
+  const fTok = tok_.free || {};
+  const pTok = tok_.paid || {};
+  const fAvg = fTok.ok > 0 ? Math.round((fTok.input + fTok.output) / fTok.ok) : 0;
+  const pAvg = pTok.ok > 0 ? Math.round((pTok.input + pTok.output) / pTok.ok) : 0;
+
+  document.getElementById('content').innerHTML = `
+    <div class="summary">${summaryLines.join('<br>')}</div>
+
+    <div class="card">
+      <h3>전환 퍼널 (${_days === 1 ? '오늘' : _days + '일'} · ${_src === 'all' ? '전체 유입' : _src})</h3>
+      <table>
+        <thead><tr><th>단계</th><th style="text-align:right">인원</th><th style="text-align:right">전환율</th></tr></thead>
+        <tbody>${funnelHTML}</tbody>
+      </table>
+      <div style="margin-top:12px;font-size:12px;color:#7c6fa0;border-top:1px solid #2d2d4e;padding-top:10px">
+        전체 방문 → 결제 성공: ${totalConversion} &nbsp;|&nbsp;
+        무료 성공 → 결제 성공: ${freeToPayment}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>토큰 사용량</h3>
+      <div class="tok-grid">
+        <div class="tok-box">
+          <h4>무료 리딩</h4>
+          <div class="tok-val">${tok((fTok.input||0)+(fTok.output||0))}</div>
+          <div class="tok-sub">총 토큰 · 성공 ${fTok.ok||0}건 / 실패 ${fTok.fail||0}건</div>
+          <div class="tok-sub">건당 평균: ${fAvg > 0 ? tok(fAvg) + ' tokens' : '—'}</div>
+        </div>
+        <div class="tok-box">
+          <h4>유료 리딩</h4>
+          <div class="tok-val">${tok((pTok.input||0)+(pTok.output||0))}</div>
+          <div class="tok-sub">총 토큰 · 성공 ${pTok.ok||0}건 / 실패 ${pTok.fail||0}건</div>
+          <div class="tok-sub">건당 평균: ${pAvg > 0 ? tok(pAvg) + ' tokens' : '—'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:#4a4a6a;margin-top:12px;line-height:1.8">
+      ※ 과거 데이터 한계: 이 추적 시스템 배포 이전 방문·리딩은 수집되지 않았습니다.<br>
+      ※ 세션 중복 방지: 같은 세션에서 동일 이벤트 재발생 시 한 번만 카운트됩니다.<br>
+      ※ payment_succeeded는 서버 결제 검증 성공 시에만 기록됩니다.
+    </div>
+  `;
+}
+
+// 초기화
+window.addEventListener('load', () => {
+  document.getElementById('login-section').style.display = 'block';
+});
+</script>
+</body>
+</html>

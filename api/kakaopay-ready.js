@@ -54,6 +54,7 @@ export default async function handler(req, res) {
       tid: kakaoData.tid,
       accessToken,
       product: prod.name,
+      source: req.body._source || 'direct',
     }, { ex: 3600 });
 
     return res.status(200).json({
