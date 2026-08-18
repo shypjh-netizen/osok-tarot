@@ -291,15 +291,30 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
     <div class="reading-box">
       <div class="reading-text" id="free-reading-text"></div>
     </div>
-    <div id="free-paid-offer" style="background:linear-gradient(135deg,rgba(201,162,39,.1),rgba(109,40,217,.1));border:1px solid var(--gold);border-radius:20px;padding:32px 28px;text-align:center;margin-bottom:22px">
-      <div id="free-offer-title" style="font-family:'Nanum Myeongjo',serif;font-size:19px;color:var(--gold-l);margin-bottom:10px">✨ 더 깊은 상담을 원하시나요?</div>
-      <p id="free-offer-desc" style="font-size:14px;color:var(--dim);line-height:1.9;margin-bottom:24px">3카드 스프레드로 현재 강점, 장애 요소,<br>앞으로의 방향을 각각 살펴드릴게요</p>
+    <div id="free-paid-offer" style="background:linear-gradient(135deg,rgba(201,162,39,.1),rgba(109,40,217,.1));border:1px solid var(--gold);border-radius:20px;padding:28px 20px;text-align:center;margin-bottom:22px">
+
+      <!-- CTA 제목 -->
+      <div id="free-offer-title" style="font-family:'Nanum Myeongjo',serif;font-size:17px;color:var(--gold-l);margin-bottom:10px;line-height:1.55;word-break:keep-all">지금 상황을 막고 있는 요소와 다음 행동을 확인해보세요.</div>
+
+      <!-- 설명 -->
+      <p id="free-offer-desc" style="font-size:13px;color:var(--dim);line-height:1.8;margin-bottom:14px;word-break:keep-all">무료 카드에서는 질문의 큰 방향과 핵심 조언을 확인했어요. 유료 리딩에서는 현재 상황, 핵심 장애 요소, 다음 행동을 나눠서 살펴봅니다.</p>
+
+      <!-- 확인 내용 3가지 -->
+      <div id="free-offer-checks" style="text-align:left;background:rgba(255,255,255,.05);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+        <div style="font-size:11px;color:var(--dim);margin-bottom:8px;letter-spacing:.4px">유료 리딩에서 확인하는 내용</div>
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;color:var(--text);line-height:1.5"><span style="color:var(--gold);font-weight:700;flex-shrink:0">①</span><span>현재 상황의 핵심 흐름</span></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;color:var(--text);line-height:1.5"><span style="color:var(--gold);font-weight:700;flex-shrink:0">②</span><span>지금 놓치고 있는 장애 요소</span></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text);line-height:1.5"><span style="color:var(--gold);font-weight:700;flex-shrink:0">③</span><span>앞으로 취해야 할 현실적인 행동</span></div>
+      </div>
+
+      <!-- 신뢰 안내 -->
+      <div style="font-size:11px;color:var(--dim);margin-bottom:18px">결제 후 바로 확인 · 결과 다시 열람 가능 · 추가 질문 지원</div>
 
       <!-- 기본 상담 -->
       <div style="background:rgba(109,40,217,.15);border:1px solid rgba(109,40,217,.5);border-radius:14px;padding:18px 20px;margin-bottom:12px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px">
         <div>
-          <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px" id="free-offer-product-name">🔮 3카드 심층 리딩</div>
-          <div id="free-offer-product-desc" style="font-size:12px;color:var(--dim)">질문별 3카드 스프레드 + 추가 질문 3회</div>
+          <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px">🔮 3카드 심층 리딩</div>
+          <div style="font-size:12px;color:var(--dim)">질문별 3카드 스프레드 + 추가 질문 3회</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div style="font-size:11px;color:var(--dim);text-decoration:line-through;margin-bottom:2px">9,900원</div>
@@ -307,7 +322,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span style="background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px">40% OFF</span>
             <span style="font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:700;color:var(--gold)">5,900원</span>
           </div>
-          <button onclick="_track('paid_product_selected',{productType:'basic'},true);showScreen('payment-screen')" style="margin-top:8px;padding:8px 18px;background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap">선택하기</button>
+          <button id="btn-basic-cta" onclick="_track('paid_product_selected',{productType:'basic'},true);showScreen('payment-screen')" style="margin-top:8px;padding:8px 14px;background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap">3카드로 더 확인하기</button>
         </div>
       </div>
 
@@ -324,7 +339,7 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
             <span style="background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px">47% OFF</span>
             <span style="font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:700;color:var(--gold)">8,900원</span>
           </div>
-          <button onclick="_track('paid_product_selected',{productType:'set'},true);showScreen('payment-screen')" style="margin-top:8px;padding:8px 18px;background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap">선택하기</button>
+          <button id="btn-set-cta" onclick="_track('paid_product_selected',{productType:'set'},true);showScreen('payment-screen')" style="margin-top:8px;padding:8px 14px;background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap">심층 리딩 선택하기</button>
         </div>
       </div>
     </div>
@@ -1081,26 +1096,97 @@ function buildPaidSystem(spread) {
 }
 
 function makeFreeOffer(questionType) {
-  const sp = SPREADS[questionType] || SPREADS.direct;
-  const titles = {
-    reconnect:     ['💌 재회 가능성, 더 깊이 봐드릴게요', '세 카드로 상대방 마음과 재연결 흐름을 정확히 짚어드려요'],
-    innerFeelings: ['🔍 상대방 속마음, 제대로 들여다볼게요', '세 카드로 겉과 속, 앞으로의 감정까지 전부 읽어드려요'],
-    choice:        ['⚖️ 어느 쪽이 맞는지 카드가 알려드려요', '두 선택지의 에너지와 결과를 카드로 비교해드려요'],
-    relationship:  ['💕 이 관계, 어디로 가고 있을까요?', '세 카드로 관계의 현재와 앞으로의 방향을 봐드려요'],
-    work:          ['💼 일의 흐름, 카드로 짚어드릴게요', '현재 상황·장애물·최선의 행동을 세 카드로 봐드려요'],
-    business:      ['🚀 사업의 가능성과 주의점을 봐드려요', '강점·약점·집중할 핵심을 카드로 정확히 짚어드려요'],
-    money:         ['💰 재물 흐름, 카드로 살펴볼게요', '재정 에너지와 돈의 흐름을 세 카드로 봐드려요'],
-    family:        ['🏠 가족 관계 에너지를 읽어드릴게요', '현재 에너지·갈등 고리·개선 방향을 카드로 봐드려요'],
-    success:       ['🎯 목표 달성 가능성을 봐드릴게요', '현재 에너지·필요한 것·가능성을 세 카드로 읽어드려요'],
-    currentFlow:   ['🌊 지금 내 삶의 흐름을 봐드릴게요', '현재 에너지·내면의 힘·앞으로 전개될 흐름을 봐드려요'],
-    relations:     ['🤝 이 관계 더 깊이 살펴볼게요', '현재 상태·내 감정·건강한 방향을 카드로 봐드려요'],
-    direct:        ['✨ 질문에 직접 답하는 리딩을 해드려요', '현재·조언·결과를 세 카드로 정확히 봐드려요'],
+  const CTA = {
+    money: {
+      title: '돈의 흐름을 막는 원인과 다음 방향을 확인해보세요.',
+      desc: '무료 카드에서는 현재 재물 흐름의 큰 방향을 확인했어요. 유료 리딩에서는 현재 흐름, 반복되는 금전 패턴, 앞으로의 행동을 나눠서 살펴봅니다.',
+      checks: ['현재 재물·수입 흐름', '반복되는 금전 패턴과 주의할 요소', '앞으로 밀어야 할 현실적인 방향'],
+      btn1: '돈의 흐름 더 확인하기', btn2: '재물 심층 리딩 선택하기',
+    },
+    innerFeelings: {
+      title: '그 사람의 태도 뒤에 숨은 감정을 더 확인해보세요.',
+      desc: '무료 카드에서는 상대와의 관계에서 보이는 전체 흐름을 확인했어요. 유료 리딩에서는 겉으로 드러난 태도와 표현되지 않은 감정, 앞으로의 관계 방향을 나눠서 살펴봅니다.',
+      checks: ['현재 겉으로 드러나는 태도', '표현하지 못하고 있는 감정 또는 갈등', '앞으로 질문자가 알아야 할 관계의 방향'],
+      btn1: '숨은 감정 더 확인하기', btn2: '관계 심층 리딩 선택하기',
+    },
+    reconnect: {
+      title: '연락을 막고 있는 이유와 앞으로의 움직임을 확인해보세요.',
+      desc: '무료 카드에서는 현재 관계의 큰 흐름을 확인했어요. 유료 리딩에서는 연락이 멈춘 이유, 움직임을 막는 요소, 질문자가 취할 대응을 나눠서 살펴봅니다.',
+      checks: ['현재 연락이 멈춘 관계의 흐름', '연락 또는 재회를 막는 핵심 요소', '앞으로의 움직임 가능성과 나의 대응'],
+      btn1: '연락 흐름 더 확인하기', btn2: '재회 심층 리딩 선택하기',
+    },
+    relationship: {
+      title: '두 사람 사이의 엇갈림과 관계의 다음 방향을 확인해보세요.',
+      desc: '무료 카드에서는 현재 관계의 핵심 메시지를 확인했어요. 유료 리딩에서는 관계의 상태, 두 사람을 막는 요소, 지금 필요한 태도를 나눠서 살펴봅니다.',
+      checks: ['현재 관계의 핵심 흐름', '두 사람 사이의 장애물 또는 엇갈림', '관계를 위해 취할 수 있는 현실적인 태도'],
+      btn1: '관계 흐름 더 확인하기', btn2: '관계 심층 리딩 선택하기',
+    },
+    work: {
+      title: '지금 일을 유지할지, 변화를 준비할지 더 구체적으로 확인해보세요.',
+      desc: '무료 카드에서는 현재 일의 큰 방향을 확인했어요. 유료 리딩에서는 유지할 강점, 변화를 막는 요소, 다음 행동을 나눠서 살펴봅니다.',
+      checks: ['현재 일의 흐름과 유지할 강점', '불만이나 변화를 만드는 핵심 요소', '앞으로 취해야 할 현실적인 방향'],
+      btn1: '일의 방향 더 확인하기', btn2: '일·이직 심층 리딩 선택하기',
+    },
+    business: {
+      title: '목표를 막고 있는 요소와 다음 30일의 방향을 확인해보세요.',
+      desc: '무료 카드에서는 성공 가능성과 전체 방향을 확인했어요. 유료 리딩에서는 현재 강점, 카드가 보여주는 장애 요소, 앞으로 밀어야 할 행동을 나눠서 살펴봅니다.',
+      checks: ['현재 가진 가능성과 강점', '카드가 보여주는 핵심 장애 요소', '앞으로 30일 동안 밀어야 할 방향'],
+      btn1: '막힌 원인 더 확인하기', btn2: '성공 흐름 심층 리딩 선택하기',
+    },
+    success: {
+      title: '목표를 막고 있는 요소와 다음 30일의 방향을 확인해보세요.',
+      desc: '무료 카드에서는 성공 가능성과 전체 방향을 확인했어요. 유료 리딩에서는 현재 강점, 카드가 보여주는 장애 요소, 앞으로 밀어야 할 행동을 나눠서 살펴봅니다.',
+      checks: ['현재 가진 가능성과 강점', '카드가 보여주는 핵심 장애 요소', '앞으로 30일 동안 밀어야 할 방향'],
+      btn1: '막힌 원인 더 확인하기', btn2: '성공 흐름 심층 리딩 선택하기',
+    },
+    choice: {
+      title: '두 선택의 차이와 결정 전에 알아야 할 점을 확인해보세요.',
+      desc: '무료 카드에서는 선택의 전체 방향을 확인했어요. 유료 리딩에서는 각 선택의 가능성과 결정 전에 고려해야 할 기준을 나눠서 살펴봅니다.',
+      checks: ['선택 A의 가능성과 주의점', '선택 B의 가능성과 주의점', '결정 전에 반드시 고려해야 할 기준'],
+      btn1: '선택 흐름 더 확인하기', btn2: '선택 심층 리딩 선택하기',
+    },
+    family: {
+      title: '관계를 어렵게 만드는 원인과 필요한 태도를 확인해보세요.',
+      desc: '무료 카드에서는 현재 관계의 큰 흐름을 확인했어요. 유료 리딩에서는 관계의 상태, 갈등의 원인, 지금 필요한 대응을 나눠서 살펴봅니다.',
+      checks: ['현재 관계의 핵심 상태', '갈등 또는 오해를 만드는 요소', '관계를 다루는 데 도움이 되는 태도'],
+      btn1: '관계 흐름 더 확인하기', btn2: '가족·관계 심층 리딩 선택하기',
+    },
+    relations: {
+      title: '관계를 어렵게 만드는 원인과 필요한 태도를 확인해보세요.',
+      desc: '무료 카드에서는 현재 관계의 큰 흐름을 확인했어요. 유료 리딩에서는 관계의 상태, 갈등의 원인, 지금 필요한 대응을 나눠서 살펴봅니다.',
+      checks: ['현재 관계의 핵심 상태', '갈등 또는 오해를 만드는 요소', '관계를 다루는 데 도움이 되는 태도'],
+      btn1: '관계 흐름 더 확인하기', btn2: '관계 심층 리딩 선택하기',
+    },
+    currentFlow: {
+      title: '지금 상황을 막고 있는 요소와 다음 행동을 확인해보세요.',
+      desc: '무료 카드에서는 질문의 큰 방향과 핵심 조언을 확인했어요. 유료 리딩에서는 현재 상황, 핵심 장애 요소, 다음 행동을 나눠서 살펴봅니다.',
+      checks: ['현재 상황의 핵심 흐름', '지금 놓치고 있는 장애 요소', '앞으로 취해야 할 현실적인 행동'],
+      btn1: '3카드로 더 확인하기', btn2: '심층 리딩 선택하기',
+    },
+    direct: {
+      title: '지금 상황을 막고 있는 요소와 다음 행동을 확인해보세요.',
+      desc: '무료 카드에서는 질문의 큰 방향과 핵심 조언을 확인했어요. 유료 리딩에서는 현재 상황, 핵심 장애 요소, 다음 행동을 나눠서 살펴봅니다.',
+      checks: ['현재 상황의 핵심 흐름', '지금 놓치고 있는 장애 요소', '앞으로 취해야 할 현실적인 행동'],
+      btn1: '3카드로 더 확인하기', btn2: '심층 리딩 선택하기',
+    },
   };
-  const [title, desc] = titles[questionType] || titles.direct;
-  document.getElementById('free-offer-title').textContent = title;
-  document.getElementById('free-offer-desc').innerHTML = desc + '<br><span style="color:var(--gold)">' + sp.name + '으로 진행해요</span>';
-  document.getElementById('free-offer-product-name').textContent = '🔮 ' + sp.name;
-  document.getElementById('free-offer-product-desc').textContent = '질문별 3카드 스프레드 + 추가 질문 3회';
+
+  const d = CTA[questionType] || CTA.direct;
+
+  document.getElementById('free-offer-title').textContent = d.title;
+  document.getElementById('free-offer-desc').textContent = d.desc;
+
+  const numIcons = ['①','②','③'];
+  document.getElementById('free-offer-checks').innerHTML =
+    '<div style="font-size:11px;color:var(--dim);margin-bottom:8px;letter-spacing:.4px">유료 리딩에서 확인하는 내용</div>' +
+    d.checks.map((c,i) =>
+      `<div style="display:flex;align-items:flex-start;gap:8px;${i<2?'margin-bottom:8px;':''}font-size:13px;color:var(--text);line-height:1.5"><span style="color:var(--gold);font-weight:700;flex-shrink:0">${numIcons[i]}</span><span>${c}</span></div>`
+    ).join('');
+
+  const btn1 = document.getElementById('btn-basic-cta');
+  const btn2 = document.getElementById('btn-set-cta');
+  if(btn1) btn1.textContent = d.btn1;
+  if(btn2) btn2.textContent = d.btn2;
 }
 
 /* ── 오프닝 — 상황을 직접 언급 ── */
@@ -1839,8 +1925,9 @@ async function showFreeResult(card) {
     el.textContent = '';
     await typeText(el, text, 14);
     _track('free_reading_succeeded');
-    makeFreeOffer(classifyQuestion(S.freeQuestion, S.freeQuestion));
-    setTimeout(() => _track('paid_offer_viewed'), 800);
+    const _fqType = classifyQuestion(S.freeQuestion, S.freeQuestion);
+    makeFreeOffer(_fqType);
+    setTimeout(() => _track('paid_offer_viewed', {questionType: _fqType, templateId: _fqType}), 800);
   } catch(e) {
     el.textContent = '죄송해요, 리딩을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
     _track('free_reading_failed', {}, true);
