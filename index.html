@@ -1628,33 +1628,29 @@ async function applyIntroCoupon() {
     max_used: '쿠폰이 모두 소진됐어요.', user_limit: '이미 사용하신 쿠폰이에요.',
   };
   try {
-    /* 상품 무관 쿠폰 정보 조회 */
-    const r = await fetch('/api/webhook?action=coupon-info', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code }),
-    });
-    const d = await r.json();
-    if (!r.ok || !d.valid) { _showIntroCouponMsg(MSGS[d.error] || '쿠폰 확인 실패', false); return; }
+    /* 상품 순서대로 coupon-validate 시도 — 기존 작동하는 엔드포인트 재사용 */
+    const tryOrder = ['tarot_basic','saju_single','tarot_set','tarot_extra','saju_premium'];
+    let d = null, targetId = null;
+    for (const pid of tryOrder) {
+      const r2 = await fetch('/api/webhook?action=coupon-validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, productId: pid, userId: _getUserId() }),
+      });
+      const rd = await r2.json();
+      if (rd.valid) { d = rd; targetId = pid; break; }
+      /* wrong_product이면 다음 상품 시도, 그 외 에러면 중단 */
+      const errCode = rd.reason || rd.error || '';
+      if (errCode !== 'wrong_product') {
+        _showIntroCouponMsg(MSGS[errCode] || '쿠폰 확인 실패', false);
+        return;
+      }
+    }
+    if (!d || !targetId) { _showIntroCouponMsg('적용 가능한 상품이 없어요.', false); return; }
 
-    /* 적용 가능한 첫 번째 타로 상품 선택 (타로 우선) */
-    const prods = d.applicableProductIds || ['all'];
-    const taroFirst = ['tarot_basic','tarot_extra','tarot_set','saju_single','saju_premium'];
-    const targetId = prods.includes('all')
-      ? 'tarot_basic'
-      : (taroFirst.find(p => prods.includes(p)) || prods[0]);
     const info = ALL_PRODUCTS_INFO[targetId];
-    if (!info) { _showIntroCouponMsg('적용 가능한 상품을 찾을 수 없어요.', false); return; }
-
-    /* 할인 계산 */
-    let discount = 0;
-    if (d.discountType === 'free') { discount = info.amount; }
-    else if (d.discountType === 'percent') {
-      discount = Math.floor(info.amount * d.discountValue / 100);
-      if (d.maxDiscountAmount) discount = Math.min(discount, d.maxDiscountAmount);
-    } else if (d.discountType === 'fixed') { discount = d.discountValue || 0; }
-    discount = Math.min(discount, info.amount);
-    const final = info.amount - discount;
+    const discount = d.discountAmount || 0;
+    const final = d.finalAmount ?? info.amount;
     _introCouponData = { code, productId: targetId, info, discountAmount: discount, finalAmount: final, isFree: final === 0, rawCoupon: d };
 
     _showIntroCouponMsg('쿠폰이 확인됐어요!', true);
