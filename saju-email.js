@@ -1050,6 +1050,62 @@ ${yearNote}
 }
 
 /* ─────────────────────────────────────────────────────────────
+   프리미엄 전용: 매력살·귀인운 상세 섹션
+───────────────────────────────────────────────────────────── */
+async function buildPremiumAttractionSection(sajuData, ctx, name, currentYear, systemPrompt) {
+  const shinsal    = sajuData.shinsal    || {};
+  const auspicious = sajuData.auspicious || {};
+
+  const SHINSAL_INFO = {
+    dohwa:    '도화살(桃花)',
+    hwagae:   '화개살(華蓋)',
+    hongyeom: '홍염살(紅艷)',
+  };
+  const confirmedShinsal = Object.entries(SHINSAL_INFO)
+    .filter(([key]) => shinsal[key]?.present)
+    .map(([key, label]) => `${label}(${(shinsal[key].matchedPositions || []).join('·')} 기둥 성립)`);
+
+  const GWININ_LABELS = {
+    cheoneul: '천을귀인', cheondeok: '천덕귀인', woldeok: '월덕귀인',
+    munchang: '문창귀인', taegeuk:  '태극귀인',
+  };
+  const presentIds     = auspicious.presentItems || [];
+  const confirmedGwinin = presentIds.map(id => GWININ_LABELS[id]).filter(Boolean);
+
+  const shinsalLine = confirmedShinsal.length > 0
+    ? `확인된 매력살: ${confirmedShinsal.join(', ')}`
+    : '확인된 매력살: 도화·홍염·화개 모두 불성립';
+  const gwininLine  = confirmedGwinin.length > 0
+    ? `확인된 귀인·길신: ${confirmedGwinin.join(', ')}`
+    : '확인된 귀인·길신: 없음';
+
+  const prompt = `${name}님의 실제 명리 계산 결과입니다.
+
+${shinsalLine}
+${gwininLine}
+분석 기준: ${currentYear}년
+
+위 확인된 신살·귀인만을 바탕으로 아래 4항목을 작성해주세요. 계산에 없는 신살을 추가하거나 임의로 생성하지 마세요.
+
+💗 나의 매력 유형
+확인된 매력살 기반으로 ${name}님만의 매력 유형을 2~3문장으로. 성립된 살이 없으면 일간의 에너지에서 드러나는 자연스러운 매력을 써주세요.
+
+✨ 매력이 빛나는 곳
+이 매력이 실제로 드러나는 상황·환경을 2~3문장. ${currentYear}년 세운 흐름을 반영하세요.
+
+🤝 나의 귀인 유형
+확인된 귀인·길신 기반으로 어떤 사람이나 상황이 도움이 되는지 2~3문장. 귀인이 없으면 일간과 원국에서 자연스럽게 인연이 형성되는 방식을 써주세요.
+
+🔑 귀인운을 여는 행동
+${currentYear}년에 실제로 할 수 있는 구체적 행동 2~3가지. 계산 근거를 자연스럽게 언급하세요.
+
+각 항목 제목(💗 나의 매력 유형, ✨ 매력이 빛나는 곳, 🤝 나의 귀인 유형, 🔑 귀인운을 여는 행동)은 그대로 유지하세요. 해요체, 마크다운 금지. 계산되지 않은 신살 생성 금지.`;
+
+  const content = await generateReading(ctx, prompt, systemPrompt, 1800);
+  return { icon: '✨', label: '나의 특별한 기운 — 매력살 & 귀인운', content };
+}
+
+/* ─────────────────────────────────────────────────────────────
    이메일 발송 핵심 로직
 ───────────────────────────────────────────────────────────── */
 async function sendSajuEmail(email, sajuData, isPremium) {
@@ -1128,8 +1184,32 @@ async function sendSajuEmail(email, sajuData, isPremium) {
   const relStatus = sajuData.relationStatus || 'private';
   const loveCfg   = REL_LOVE_CONFIG[relStatus] || REL_LOVE_CONFIG.private;
 
-  /* 1. 질문 맞춤 답변 */
-  if (sajuData.customQuestion || sajuData.concern?.question) {
+  /* 프리미엄 전용 사전 섹션 (순서: focus 리딩 → 매력살·귀인운 → 기존 종합 리딩) */
+  let premiumFocusSections   = [];
+  let premiumFocusSummaryCard = null;
+  let premiumAttractionSection = null;
+
+  if (tier === 'premium') {
+    try {
+      const { sections: fSecs, summaryCard: fCard } = await generateFocusReading(
+        sajuData, ctx, name, currentYear, currentSewoon, systemPrompt
+      );
+      premiumFocusSections   = fSecs;
+      premiumFocusSummaryCard = fCard;
+    } catch (e) {
+      console.error('[saju-email][premium-focus]', e.message);
+    }
+    try {
+      premiumAttractionSection = await buildPremiumAttractionSection(
+        sajuData, ctx, name, currentYear, systemPrompt
+      );
+    } catch (e) {
+      console.error('[saju-email][premium-attraction]', e.message);
+    }
+  }
+
+  /* 1. 질문 맞춤 답변 (basic만 — premium은 focus 리딩이 대신) */
+  if ((sajuData.customQuestion || sajuData.concern?.question) && tier !== 'premium') {
     const q = sajuData.customQuestion || sajuData.concern.question;
     const questionTopic = sajuData.questionTopic || sajuData.concern?.label || '';
     const qPrompt = `${name}님의 질문: ${q}
@@ -1195,13 +1275,21 @@ ${name}님의 기질과 ${currentYear}년 대운·세운 에너지에 맞는 구
   const closingPrompt = `${name}님의 사주 리딩을 마무리하는 따뜻한 메시지를 3~4문장으로 작성해주세요. 이 사람의 기질과 ${currentYear}년 에너지를 담아 개인화되게. 반드시 해요체, 마크다운 금지.`;
   const closingMsg = await generateReading(ctx, closingPrompt, systemPrompt, 800);
 
+  const finalSections = tier === 'premium'
+    ? [
+        ...premiumFocusSections,
+        ...(premiumAttractionSection ? [premiumAttractionSection] : []),
+        ...sections,
+      ]
+    : sections;
   const productLabel = tier === 'premium' ? '★ 프리미엄 종합 풀이' : null;
   const html = buildEmailHtml(
     name,
     { infoLine, topicLine: null, basisLine: null },
-    sections,
+    finalSections,
     closingMsg,
-    productLabel
+    productLabel,
+    tier === 'premium' ? premiumFocusSummaryCard : null
   );
 
   const emailRes = await fetch('https://api.resend.com/emails', {
