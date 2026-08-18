@@ -111,8 +111,11 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 .reading-text .md-hr{border:none;border-top:1px solid var(--card-b);margin:18px 0}
 .reading-text strong{color:var(--white);font-weight:700}
 /* 생성 완료 페이드인 */
-@keyframes fadeInReading{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.reading-fade-in{animation:fadeInReading .5s ease forwards}
+@keyframes fadeInReading{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.reading-fade-in{animation:fadeInReading .5s ease-out forwards;will-change:opacity,transform}
+@media(prefers-reduced-motion:reduce){.reading-fade-in{animation:none;opacity:1;transform:none}}
+/* 로딩 영역 높이 안정화 */
+.reading-text .ai-loading{min-height:120px;display:flex;align-items:center;gap:10px}
 .result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 /* 추가 질문 */
@@ -374,6 +377,21 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
           </div>
           <button id="btn-set-cta" onclick="_track('paid_product_selected',{productType:'set'},true);showScreen('payment-screen')" style="margin-top:8px;padding:8px 14px;background:linear-gradient(135deg,#c9a227,#e8c95a);color:#1a0a00;border:none;border-radius:50px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap">심층 리딩 선택하기</button>
         </div>
+      </div>
+    </div>
+    <!-- 무료 결과 화면 쿠폰 입력 -->
+    <div style="margin-top:16px;text-align:center">
+      <button onclick="toggleFreeCoupon()" style="background:none;border:none;color:rgba(201,168,76,.55);font-size:12px;cursor:pointer;padding:0;text-decoration:underline">🎟️ 쿠폰 코드가 있나요?</button>
+      <div id="free-coupon-wrap" style="display:none;margin-top:10px;text-align:left;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:14px 16px">
+        <div style="display:flex;gap:8px">
+          <input type="text" id="free-coupon-input"
+            style="flex:1;padding:10px 12px;background:#0d0c22;border:1px solid rgba(201,168,76,.3);border-radius:8px;color:#ede0c8;font-size:13px;font-family:inherit;outline:none;text-transform:uppercase"
+            placeholder="쿠폰 코드 입력" oninput="this.value=this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter')applyFreeCoupon()">
+          <button onclick="applyFreeCoupon()"
+            style="padding:10px 14px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);border-radius:8px;color:#e8c97a;font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap">적용</button>
+        </div>
+        <div id="free-coupon-msg" style="font-size:12px;margin-top:6px;display:none"></div>
       </div>
     </div>
     <div class="result-actions">
@@ -1692,6 +1710,56 @@ async function introCouponPay() {
   await kakaoPay(info.tarotKey);
 }
 
+/* ── 무료 카드 결과 화면 쿠폰 ── */
+function toggleFreeCoupon() {
+  const w = document.getElementById('free-coupon-wrap');
+  w.style.display = w.style.display === 'none' ? 'block' : 'none';
+}
+
+async function applyFreeCoupon() {
+  const code = (document.getElementById('free-coupon-input').value || '').trim().toUpperCase();
+  if (!code) return;
+  const msgEl = document.getElementById('free-coupon-msg');
+  msgEl.style.display = 'none';
+  const MSGS = {
+    not_found: '쿠폰을 찾을 수 없어요.', inactive: '비활성화된 쿠폰이에요.',
+    expired: '만료된 쿠폰이에요.', not_started: '아직 사용 기간이 아니에요.',
+    wrong_product: '이 상품에는 적용할 수 없는 쿠폰이에요.',
+    max_used: '쿠폰이 모두 소진됐어요.', user_limit: '이미 사용하신 쿠폰이에요.',
+  };
+  const showMsg = (msg, ok) => {
+    msgEl.style.display = 'block';
+    msgEl.style.color = ok ? '#a8d8a0' : '#e57373';
+    msgEl.textContent = msg;
+  };
+  try {
+    /* 타로 상품 순서로 validate 시도 */
+    const tryOrder = ['tarot_basic','tarot_set','tarot_extra','saju_single','saju_premium'];
+    let found = null, foundPid = null;
+    for (const pid of tryOrder) {
+      const r = await fetch('/api/webhook?action=coupon-validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, productId: pid, userId: _getUserId() }),
+      });
+      const d = await r.json();
+      if (d.valid) { found = d; foundPid = pid; break; }
+      const err = d.reason || d.error || '';
+      if (err !== 'wrong_product') { showMsg(MSGS[err] || '쿠폰 확인 실패', false); return; }
+    }
+    if (!found) { showMsg('적용 가능한 상품이 없어요.', false); return; }
+
+    /* CQ에 저장 후 결제 화면으로 이동 */
+    CQ.code = code; CQ.productId = foundPid; CQ.isFree = found.isFree || found.finalAmount === 0;
+    CQ.discountAmount = found.discountAmount || 0;
+    CQ.finalAmount = found.finalAmount ?? found.originalAmount;
+    CQ.originalAmount = found.originalAmount;
+    document.getElementById('coupon-code-input').value = code;
+    showMsg('쿠폰이 적용됐어요! 결제 화면으로 이동합니다...', true);
+    setTimeout(() => showScreen('payment-screen'), 900);
+  } catch(e) { showMsg('네트워크 오류가 발생했어요.', false); }
+}
+
 /* ── 카카오페이 결제 ── */
 async function kakaoPay(product) {
   _track('payment_attempted', { productType: product }, true);
@@ -2139,7 +2207,13 @@ function renderMarkdown(raw) {
 
 /* ── 결과 표시: 마크다운 렌더링 + 페이드인 ── */
 function displayReading(el, rawText) {
-  el.innerHTML = '<div class="reading-fade-in">' + renderMarkdown(rawText) + '</div>';
+  const inner = document.createElement('div');
+  inner.className = 'reading-fade-in';
+  inner.innerHTML = renderMarkdown(rawText);
+  el.innerHTML = '';
+  el.appendChild(inner);
+  // 애니메이션 종료 후 will-change 제거 (레이어 고정 해제)
+  inner.addEventListener('animationend', () => { inner.style.willChange = 'auto'; }, { once: true });
 }
 
 /* ── 로딩 중 회전 메시지 (clearInterval 함수 반환) ── */
@@ -2329,8 +2403,11 @@ async function showResult() {
     updateFollowupCount();
     saveReadingToLocal();
 
-    // 결과 맨 위부터 읽을 수 있도록 스크롤
-    el.scrollIntoView({behavior:'smooth', block:'start'});
+    // 결과 시작이 화면 밖에 있을 때만 부드럽게 스크롤
+    const rect = el.getBoundingClientRect();
+    if (rect.top < 0 || rect.top > window.innerHeight * 0.4) {
+      el.scrollIntoView({behavior:'smooth', block:'start'});
+    }
   } catch(e) {
     stopLoading();
     el.innerHTML = '<p style="color:var(--dim);line-height:1.9">리딩을 가져오는 중 오류가 발생했어요.<br>잠시 후 카드를 다시 눌러 재시도해주세요.<br><small style="font-size:12px">결제 및 토큰은 차감되지 않았어요.</small></p>';
