@@ -100,10 +100,19 @@ body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:var(--text
 .res-card .card-kr{font-family:'Nanum Myeongjo',serif;font-size:12px;font-weight:700;color:var(--gold-l)}
 .res-card .card-en{font-size:8px;color:var(--dim);margin-top:2px}
 .reading-box{background:var(--bg2);border:1px solid var(--card-b);border-radius:16px;padding:28px;margin-bottom:22px}
-.reading-text{font-size:15px;line-height:2;color:var(--text);white-space:pre-wrap;word-break:keep-all}
+.reading-text{font-size:15px;line-height:2;color:var(--text);word-break:keep-all}
 .reading-text .cursor{display:inline-block;width:2px;height:1em;background:var(--gold);
   animation:blink 1s step-end infinite;margin-left:2px;vertical-align:middle}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+/* 마크다운 렌더링 스타일 */
+.reading-text .md-h2{font-family:'Nanum Myeongjo',serif;font-size:16px;color:var(--gold-l);font-weight:700;margin:22px 0 6px;line-height:1.5}
+.reading-text .md-p{margin:0 0 16px;line-height:2;white-space:pre-wrap}
+.reading-text .md-p:last-child{margin-bottom:0}
+.reading-text .md-hr{border:none;border-top:1px solid var(--card-b);margin:18px 0}
+.reading-text strong{color:var(--white);font-weight:700}
+/* 생성 완료 페이드인 */
+@keyframes fadeInReading{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.reading-fade-in{animation:fadeInReading .5s ease forwards}
 .result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 /* 추가 질문 */
@@ -1812,8 +1821,7 @@ async function submitReview() {
   try {
     const bonusText = await callAI([...S.chatHistory, {role:'user', content:bonusMsg}], null, {type:'paid'});
     const bonusEl = document.getElementById('bonus-reading-text');
-    bonusEl.textContent = '';
-    await typeText(bonusEl, bonusText, 16);
+    displayReading(bonusEl, bonusText);
   } catch(e) {
     document.getElementById('bonus-reading-text').textContent = '보너스 카드가 전하는 에너지를 마음속으로 느껴보세요 ✨';
   }
@@ -2094,6 +2102,64 @@ function loadingHTML() {
   return `<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div> 카드를 읽고 있어요...</div>`;
 }
 
+/* ── 마크다운 → 안전한 HTML 변환 (XSS 방지: HTML 이스케이프 후 적용) ── */
+function renderMarkdown(raw) {
+  if (!raw) return '';
+  // 1. HTML 이스케이프 (XSS 방지)
+  let s = raw
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  // 2. ## 제목 (줄 시작)
+  s = s.replace(/^#{1,2} (.+)$/gm, '\x00h2\x01$1\x00/h2\x01');
+  s = s.replace(/^### (.+)$/gm, '\x00h3\x01$1\x00/h3\x01');
+  // 3. **굵게**
+  s = s.replace(/\*\*(.+?)\*\*/g, '\x00b\x01$1\x00/b\x01');
+  // 4. --- 구분선 (단독 줄)
+  s = s.replace(/^---$/gm, '\x00hr\x01');
+  // 5. 플레이스홀더를 안전한 HTML 태그로 교체
+  s = s
+    .replace(/\x00h2\x01/g, '<div class="md-h2">')
+    .replace(/\x00\/h2\x01/g, '</div>')
+    .replace(/\x00h3\x01/g, '<div class="md-h2" style="font-size:14px">')
+    .replace(/\x00\/h3\x01/g, '</div>')
+    .replace(/\x00b\x01/g, '<strong>')
+    .replace(/\x00\/b\x01/g, '</strong>')
+    .replace(/\x00hr\x01/g, '<div class="md-hr"></div>');
+  // 6. 빈 줄 기준으로 문단 분리
+  const paras = s.split(/\n{2,}/);
+  return paras.map(p => {
+    const t = p.trim();
+    if (!t) return '';
+    // 블록 요소(md-h2, md-hr)는 p 태그로 감싸지 않음
+    if (t.startsWith('<div class="md-')) return t;
+    return '<p class="md-p">' + t.replace(/\n/g, '<br>') + '</p>';
+  }).join('');
+}
+
+/* ── 결과 표시: 마크다운 렌더링 + 페이드인 ── */
+function displayReading(el, rawText) {
+  el.innerHTML = '<div class="reading-fade-in">' + renderMarkdown(rawText) + '</div>';
+}
+
+/* ── 로딩 중 회전 메시지 (clearInterval 함수 반환) ── */
+const _LOADING_MSGS = [
+  '카드의 흐름을 연결하고 있어요',
+  '질문과 카드의 메시지를 정리하고 있어요',
+  '잠시만 기다리면 완성된 리딩이 열려요',
+  '카드가 전하는 에너지를 읽고 있어요',
+];
+function showLoadingReading(el) {
+  let idx = 0;
+  el.innerHTML = `<div class="ai-loading"><div class="ai-loading-dots"><span></span><span></span><span></span></div><span id="_ld_msg" style="transition:opacity .2s">${_LOADING_MSGS[0]}</span></div>`;
+  const timer = setInterval(() => {
+    idx = (idx + 1) % _LOADING_MSGS.length;
+    const m = document.getElementById('_ld_msg');
+    if (m) { m.style.opacity = '0'; setTimeout(() => { if(m){ m.textContent = _LOADING_MSGS[idx]; m.style.opacity = '1'; } }, 200); }
+  }, 2800);
+  return () => clearInterval(timer);
+}
+
 function makeFreeReading(card) {
   const r = READING[card.id];
   const arch = getCardArchetype(card);
@@ -2239,7 +2305,7 @@ async function showResult() {
   showScreen('result-screen');
 
   const el = document.getElementById('reading-text');
-  el.innerHTML = loadingHTML();
+  const stopLoading = showLoadingReading(el);
 
   const sp = S.spread || SPREADS.direct;
   const cardList = S.picked.map((c,i)=>`카드 ${i+1} (${sp.positions[i]}): ${c.kr} (${c.name}) — 키워드: ${c.kw}`).join('\n');
@@ -2252,22 +2318,23 @@ async function showResult() {
   try {
     const text = await callAI(S.chatHistory, systemPrompt, {type:'paid'});
     S.chatHistory.push({role:'assistant', content:text});
-    el.textContent = '';
+    S._rawReadingText = text; // 마크다운 재렌더링용 원문 보관
+    stopLoading();
 
-    // 추가 질문 영역 먼저 표시
+    displayReading(el, text);
+    _track('paid_reading_succeeded');
+
     const fw = document.getElementById('followup-wrap');
     fw.classList.remove('hidden');
     updateFollowupCount();
-
-    await typeText(el, text, 16);
-    _track('paid_reading_succeeded');
     saveReadingToLocal();
-    fw.scrollIntoView({behavior:'smooth', block:'start'});
+
+    // 결과 맨 위부터 읽을 수 있도록 스크롤
+    el.scrollIntoView({behavior:'smooth', block:'start'});
   } catch(e) {
-    el.textContent = '죄송해요, 리딩을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+    stopLoading();
+    el.innerHTML = '<p style="color:var(--dim);line-height:1.9">리딩을 가져오는 중 오류가 발생했어요.<br>잠시 후 카드를 다시 눌러 재시도해주세요.<br><small style="font-size:12px">결제 및 토큰은 차감되지 않았어요.</small></p>';
     _track('paid_reading_failed', {}, true);
-    const fw = document.getElementById('followup-wrap');
-    fw.classList.remove('hidden');
   }
 }
 
@@ -2413,11 +2480,10 @@ async function sendFollowUp() {
   try {
     answer = await callAI(S.chatHistory, null, {type:'paid'});
     S.chatHistory.push({role:'assistant', content:answer});
+    displayReading(textEl, answer);
   } catch(e) {
-    answer = '죄송해요, 답변을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
+    textEl.innerHTML = '<p style="color:var(--dim)">답변을 가져오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.</p>';
   }
-  textEl.textContent = '';
-  await typeText(textEl, answer, 16);
 
   // 카운터 업데이트
   S.followupUsed++;
@@ -2508,7 +2574,7 @@ function saveReadingToLocal() {
     followupUsed: S.followupUsed,
     questionType: S.questionType,
     spreadKey: S.questionType,
-    readingText: document.getElementById('reading-text')?.textContent || '',
+    readingText: S._rawReadingText || document.getElementById('reading-text')?.textContent || '',
     followupHTML: document.getElementById('followup-answers')?.innerHTML || '',
   };
   localStorage.setItem(`reading:${S._orderCode}`, JSON.stringify(data));
@@ -2534,7 +2600,7 @@ function restoreReadingFromLocal(code) {
     showScreen('result-screen');
 
     const readingEl = document.getElementById('reading-text');
-    if (readingEl) readingEl.textContent = data.readingText;
+    if (readingEl) { S._rawReadingText = data.readingText; displayReading(readingEl, data.readingText); }
 
     const answersEl = document.getElementById('followup-answers');
     if (answersEl) answersEl.innerHTML = data.followupHTML;
