@@ -88,7 +88,29 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
-  /* ── 4. 관리자 통계 ── */
+  /* ── 4. 사주 이메일 재발송 (관리자 전용) ── */
+  if (action === 'resend-saju') {
+    const secret = req.headers['x-admin-secret'];
+    if (!secret || secret !== process.env.ADMIN_SECRET) {
+      return res.status(401).json({ error: 'unauthorized' });
+    }
+    const email = (req.query.email || '').trim().toLowerCase();
+    if (!email) return res.status(400).json({ error: 'email required' });
+
+    const sajuData = await redis.get(`saju_pending:${email}`);
+    if (!sajuData) return res.status(404).json({ error: 'saju data not found', email });
+
+    const origin = `https://${req.headers.host || 'www.osok.kr'}`;
+    const emailRes = await fetch(`${origin}/api/saju-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const result = emailRes.ok ? await emailRes.json().catch(() => ({})) : {};
+    return res.status(emailRes.status).json({ ok: emailRes.ok, email, tier: sajuData.tier, ...result });
+  }
+
+  /* ── 5. 관리자 통계 ── */
   if (req.method === 'GET' && action === 'admin') {
     const secret = req.headers['x-admin-secret'];
     if (!secret || secret !== process.env.ADMIN_SECRET) {
