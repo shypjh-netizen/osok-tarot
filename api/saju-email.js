@@ -1050,6 +1050,62 @@ ${yearNote}
 }
 
 /* ─────────────────────────────────────────────────────────────
+   프리미엄 전용: 매력살·귀인운 상세 섹션
+───────────────────────────────────────────────────────────── */
+async function buildPremiumAttractionSection(sajuData, ctx, name, currentYear, systemPrompt) {
+  const shinsal    = sajuData.shinsal    || {};
+  const auspicious = sajuData.auspicious || {};
+
+  const SHINSAL_INFO = {
+    dohwa:    '도화살(桃花)',
+    hwagae:   '화개살(華蓋)',
+    hongyeom: '홍염살(紅艷)',
+  };
+  const confirmedShinsal = Object.entries(SHINSAL_INFO)
+    .filter(([key]) => shinsal[key]?.present)
+    .map(([key, label]) => `${label}(${(shinsal[key].matchedPositions || []).join('·')} 기둥 성립)`);
+
+  const GWININ_LABELS = {
+    cheoneul: '천을귀인', cheondeok: '천덕귀인', woldeok: '월덕귀인',
+    munchang: '문창귀인', taegeuk:  '태극귀인',
+  };
+  const presentIds     = auspicious.presentItems || [];
+  const confirmedGwinin = presentIds.map(id => GWININ_LABELS[id]).filter(Boolean);
+
+  const shinsalLine = confirmedShinsal.length > 0
+    ? `확인된 매력살: ${confirmedShinsal.join(', ')}`
+    : '확인된 매력살: 도화·홍염·화개 모두 불성립';
+  const gwininLine  = confirmedGwinin.length > 0
+    ? `확인된 귀인·길신: ${confirmedGwinin.join(', ')}`
+    : '확인된 귀인·길신: 없음';
+
+  const prompt = `${name}님의 실제 명리 계산 결과입니다.
+
+${shinsalLine}
+${gwininLine}
+분석 기준: ${currentYear}년
+
+위 확인된 신살·귀인만을 바탕으로 아래 4항목을 작성해주세요. 계산에 없는 신살을 추가하거나 임의로 생성하지 마세요.
+
+💗 나의 매력 유형
+확인된 매력살 기반으로 ${name}님만의 매력 유형을 2~3문장으로. 성립된 살이 없으면 일간의 에너지에서 드러나는 자연스러운 매력을 써주세요.
+
+✨ 매력이 빛나는 곳
+이 매력이 실제로 드러나는 상황·환경을 2~3문장. ${currentYear}년 세운 흐름을 반영하세요.
+
+🤝 나의 귀인 유형
+확인된 귀인·길신 기반으로 어떤 사람이나 상황이 도움이 되는지 2~3문장. 귀인이 없으면 일간과 원국에서 자연스럽게 인연이 형성되는 방식을 써주세요.
+
+🔑 귀인운을 여는 행동
+${currentYear}년에 실제로 할 수 있는 구체적 행동 2~3가지. 계산 근거를 자연스럽게 언급하세요.
+
+각 항목 제목(💗 나의 매력 유형, ✨ 매력이 빛나는 곳, 🤝 나의 귀인 유형, 🔑 귀인운을 여는 행동)은 그대로 유지하세요. 해요체, 마크다운 금지. 계산되지 않은 신살 생성 금지.`;
+
+  const content = await generateReading(ctx, prompt, systemPrompt, 1800);
+  return { icon: '✨', label: '나의 특별한 기운 — 매력살 & 귀인운', content };
+}
+
+/* ─────────────────────────────────────────────────────────────
    이메일 발송 핵심 로직
 ───────────────────────────────────────────────────────────── */
 async function sendSajuEmail(email, sajuData, isPremium) {
@@ -1128,33 +1184,32 @@ async function sendSajuEmail(email, sajuData, isPremium) {
   const relStatus = sajuData.relationStatus || 'private';
   const loveCfg   = REL_LOVE_CONFIG[relStatus] || REL_LOVE_CONFIG.private;
 
-  /* 공통 금지 규칙 (모든 섹션에 첨부) */
-  const SECTION_RULES = `\n\n[필수 규칙] 모든 문장을 완결된 종결어미(요·다·죠·세요 등)로 끝내세요. 고객에게 질문하거나 추가 데이터를 요청하거나 선택지를 제시하지 않아요. 내부 계산 과정이나 데이터 부족 설명을 출력하지 않아요. 앞 섹션에서 이미 설명한 오행 개수나 원국 구조를 여기서 반복하지 마세요. 안내문·소개문으로 시작하지 마세요.`;
+  /* 프리미엄 전용 사전 섹션 (순서: focus 리딩 → 매력살·귀인운 → 기존 종합 리딩) */
+  let premiumFocusSections   = [];
+  let premiumFocusSummaryCard = null;
+  let premiumAttractionSection = null;
 
-  /* 섹션별 실패 추적 */
-  const premiumStartedAt = Date.now();
-  const failedSections = [];
-
-  async function genSection(label, prompt, maxTokens) {
-    const result = await generateWithRetry(
-      ctx,
-      prompt + SECTION_RULES,
-      systemPrompt,
-      maxTokens,
-      (c) => validatePremiumContent(c, label),
-      2
-    );
-    if (!result.ok) {
-      failedSections.push({ name: label, reason: result.reason });
-      console.error(`[saju-email][section] FAIL section="${label}" reason="${result.reason}"`);
-    } else {
-      console.log(`[saju-email][section] OK section="${label}" len=${result.content?.length}`);
+  if (tier === 'premium') {
+    try {
+      const { sections: fSecs, summaryCard: fCard } = await generateFocusReading(
+        sajuData, ctx, name, currentYear, currentSewoon, systemPrompt
+      );
+      premiumFocusSections   = fSecs;
+      premiumFocusSummaryCard = fCard;
+    } catch (e) {
+      console.error('[saju-email][premium-focus]', e.message);
     }
-    return result.content || '(리딩 생성 중 오류가 발생했어요. 카카오 채널로 문의해주세요.)';
+    try {
+      premiumAttractionSection = await buildPremiumAttractionSection(
+        sajuData, ctx, name, currentYear, systemPrompt
+      );
+    } catch (e) {
+      console.error('[saju-email][premium-attraction]', e.message);
+    }
   }
 
-  /* 1. 질문 맞춤 답변 */
-  if (sajuData.customQuestion || sajuData.concern?.question) {
+  /* 1. 질문 맞춤 답변 (basic만 — premium은 focus 리딩이 대신) */
+  if ((sajuData.customQuestion || sajuData.concern?.question) && tier !== 'premium') {
     const q = sajuData.customQuestion || sajuData.concern.question;
     const questionTopic = sajuData.questionTopic || sajuData.concern?.label || '';
     const qPrompt = `${name}님의 질문: ${q}
@@ -1162,11 +1217,11 @@ async function sendSajuEmail(email, sajuData, isPremium) {
 ${questionTopic ? `[${questionTopic}] 영역 중심으로 ` : ''}사주팔자를 바탕으로 깊이 있고 구체적인 답변을 작성해주세요.
 먼저 이 질문과 관련된 사주 영역을 짚고, ${currentYear}년 흐름에서 어떤 방향성이 보이는지, 구체적인 시기가 있다면 명확하게, 지금 당장 실천할 수 있는 행동 방향 1~2가지로 마무리해주세요.
 4~5단락. 반드시 해요체, 마크다운 금지.`;
-    const content = await genSection('질문맞춤답변', qPrompt, 2200);
+    const content = await generateReading(ctx, qPrompt, systemPrompt, 2200);
     sections.push({ icon: '💬', label: `${questionTopic ? questionTopic + ' — ' : ''}${name}님의 질문 맞춤 풀이`, content });
   }
 
-  /* 2. 기본 카테고리 (관계·직업·재물·건강·흐름) */
+  /* 2. 기본 카테고리 */
   for (const cat of CATEGORY_PROMPTS) {
     let prompt = cat.prompt;
     let label  = cat.label;
@@ -1183,80 +1238,58 @@ ${name}님의 사주에서 관계·인연 영역을 깊이 분석해주세요.
     }
 
     const maxTk = cat.key === 'health' ? 1900 : 2400;
-    const content = await genSection(cat.key, prompt, maxTk);
+    const content = await generateReading(ctx, prompt, systemPrompt, maxTk);
     sections.push({ icon: cat.icon, label, content });
   }
 
-  /* 3. 시기 요약표 — 월별 세운 없이 세운·대운 기반 패턴으로 */
+  /* 3. 시기 요약표 */
   const now2       = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
   const startYear  = now2.getFullYear();
   const startMonth = now2.getMonth() + 1;
   const timelinePrompt = `${name}님의 ${startYear}년 ${currentSewoon} 세운 에너지를 월별로 정리해주세요.
 
-[규칙]
-- 월별 세운(월주 간지) 데이터는 제공되지 않았어요. 임의로 계산하거나 꾸며내지 마세요.
-- 대신 ${startYear}년 ${currentSewoon} 세운이 원국 일간·오행과 어떻게 작용하는지를 기준으로, 상반기(1~6월)와 하반기(7~12월)의 에너지 흐름 차이를 반영해 12개월을 분류하세요.
-- 에너지는 기회/안정/전환/주의 중 하나만.
-- 특정 날짜나 이벤트를 임의로 하드코딩하지 마세요.
+규칙: 월별 세운(월주 간지) 데이터는 제공되지 않았어요. 임의로 계산하거나 꾸며내지 마세요. 대신 ${startYear}년 ${currentSewoon} 세운이 원국 일간과 어떻게 작용하는지를 기준으로 상반기·하반기 흐름 차이를 반영해 12개월을 분류하세요. 에너지는 기회/안정/전환/주의 중 하나만.
 
-각 달 형식 (파이프 구분):
-YYYY년 MM월 | 에너지 | 한 줄 설명
+각 달 형식: YYYY년 MM월 | 에너지 | 한 줄 설명
 
 ${startYear}년 ${startMonth}월부터 12개월 전부. 다른 텍스트 없이 표 형식만.`;
-
-  const timelineValidator = (c) => {
-    const found = hasForbiddenPhrase(c);
-    if (found) return { ok: false, reason: `timeline:forbidden("${found.slice(0, 15)}")` };
-    const pipeCount = (c.match(/\|/g) || []).length;
-    if (pipeCount < 24) return { ok: false, reason: `timeline:too_few_pipes(${pipeCount})` };
-    return { ok: true };
-  };
-  const timelineResult = await generateWithRetry(ctx, timelinePrompt, systemPrompt, 1600, timelineValidator, 2);
-  if (!timelineResult.ok) {
-    failedSections.push({ name: '시기요약', reason: timelineResult.reason });
-    console.error(`[saju-email][section] FAIL section="시기요약" reason="${timelineResult.reason}"`);
-  }
-  sections.push({ icon: '📅', label: `${startYear} 핵심 시기 요약`, content: timelineResult.content || '(생성 오류)', isTimeline: true });
+  const timelineRaw = await generateReading(ctx, timelinePrompt, systemPrompt, 1600);
+  sections.push({ icon: '📅', label: `${startYear} 핵심 시기 요약`, content: timelineRaw, isTimeline: true });
 
   /* 4. 지금부터 준비해야 할 것 */
   const actionPrompt = `${name}님의 사주팔자와 ${currentYear}년 운의 흐름을 바탕으로 "지금부터 준비해야 할 것"을 작성해주세요.
-앞 섹션에서 설명한 원국 구조를 다시 반복하지 말고, 재물·관계·일·내면 등 중요한 영역에서 지금 당장 시작할 수 있는 것과 올해 안에 준비해야 할 것을 나눠서 구체적 행동으로 제시해주세요.
+${name}님의 기질과 ${currentYear}년 대운·세운 에너지에 맞는 구체적 준비 방향을 담아주세요. 재물·관계·일·내면 등 중요한 영역에서 지금 당장 시작할 수 있는 것과 올해 안에 준비해야 할 것을 나눠서.
 5~6단락. 반드시 해요체, 마크다운 금지.`;
-  const actionContent = await genSection('지금부터준비', actionPrompt, 2400);
+  const actionContent = await generateReading(ctx, actionPrompt, systemPrompt, 2400);
   sections.push({ icon: '🚀', label: '지금부터 준비해야 할 것', content: actionContent });
 
   /* 5. 프리미엄 전용 */
   if (tier === 'premium') {
-    const premiumNotes = {
-      direction: '이 섹션은 인생 방향 조언이에요. 앞 섹션에서 다룬 직업·재물·관계 분석을 반복하지 말고, 장기적 방향과 현재 자원을 기회로 바꾸는 방법에만 집중해주세요.',
-      avoid: '이 섹션은 피해야 할 선택이에요. 앞에서 말한 행동 제안을 반복하지 말고, 실제 명식에서 확인되는 반복 패턴과 에너지 소진 요소에만 집중해주세요.',
-      decision: '이 섹션은 선택·결정 조언이에요. 앞의 분석을 다시 설명하지 말고, 이 사주의 의사결정 방식, 직감과 검증의 균형, 지금 시기에 맞는 결정 원칙에만 집중해주세요.',
-    };
     for (const cat of PREMIUM_PROMPTS) {
-      const note = premiumNotes[cat.key] ? premiumNotes[cat.key] + '\n\n' : '';
-      const content = await genSection(cat.key, note + cat.prompt, 2200);
+      const content = await generateReading(ctx, cat.prompt, systemPrompt, 2200);
       sections.push({ icon: cat.icon, label: cat.label, content });
     }
   }
 
   /* 6. 마무리 메시지 */
   const closingPrompt = `${name}님의 사주 리딩을 마무리하는 따뜻한 메시지를 3~4문장으로 작성해주세요. 이 사람의 기질과 ${currentYear}년 에너지를 담아 개인화되게. 반드시 해요체, 마크다운 금지.`;
-  const closingMsg = await genSection('마무리메시지', closingPrompt, 800);
+  const closingMsg = await generateReading(ctx, closingPrompt, systemPrompt, 800);
 
-  /* 관리자 로그 */
-  const totalMs = Date.now() - premiumStartedAt;
-  const failLog = failedSections.length > 0
-    ? `실패: ${failedSections.map(f => `${f.name}(${f.reason})`).join(', ')}`
-    : '전 섹션 성공';
-  console.log(`[saju-email][${tier}] 완료 섹션=${sections.length} ${failLog} 소요=${Math.round(totalMs / 1000)}초`);
-
+  const finalSections = tier === 'premium'
+    ? [
+        ...premiumFocusSections,
+        ...(premiumAttractionSection ? [premiumAttractionSection] : []),
+        ...sections,
+      ]
+    : sections;
   const productLabel = tier === 'premium' ? '★ 프리미엄 종합 풀이' : null;
   const html = buildEmailHtml(
     name,
     { infoLine, topicLine: null, basisLine: null },
-    sections,
+    finalSections,
     closingMsg,
-    productLabel
+    productLabel,
+    tier === 'premium' ? premiumFocusSummaryCard : null
   );
 
   const emailRes = await fetch('https://api.resend.com/emails', {
