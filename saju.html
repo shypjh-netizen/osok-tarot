@@ -2380,6 +2380,7 @@ body{
 .report-sheet.is-active{z-index:4;transform:translateX(-50%) scale(1);opacity:1;filter:none;cursor:default}
 .report-sheet.is-left{z-index:2;transform:translateX(calc(-50% - 250px)) rotate(-1.5deg) scale(.88);opacity:.72;filter:saturate(.72)}
 .report-sheet.is-right{z-index:2;transform:translateX(calc(-50% + 250px)) rotate(1.5deg) scale(.88);opacity:.72;filter:saturate(.72)}
+.report-sheet.is-hidden{z-index:0;transform:translateX(-50%) scale(.78);opacity:0;filter:saturate(.4);pointer-events:none}
 .report-sheet:focus-visible{box-shadow:0 0 0 3px rgba(163,66,40,.28),0 14px 34px rgba(13,34,53,.1)}
 .preview-nav{position:absolute;top:50%;z-index:8;width:42px;height:42px;margin-top:-21px;border:1px solid #cfc4b3;border-radius:50%;background:rgba(249,246,239,.88);color:#0d2235;font:300 1.7rem/1 serif;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .18s,border-color .18s,transform .18s}
 .preview-nav:hover{background:#fff;border-color:#a34228;transform:scale(1.05)}
@@ -2387,11 +2388,33 @@ body{
 .preview-dots{display:flex;justify-content:center;gap:10px;margin-top:4px}
 .preview-dots button{width:8px;height:8px;padding:0;border:0;border-radius:50%;background:#d4ccbf;cursor:pointer;transition:width .2s,background .2s}
 .preview-dots button.active{width:22px;border-radius:8px;background:#a34228}
+.preview-sec-desc{margin:8px 0 0;color:#6f6a62;font-size:.86rem;line-height:1.7}
+.preview-counter{margin:8px 0 0;text-align:center;color:#978e82;font-family:Georgia,serif;font-size:.72rem;letter-spacing:.12em}
+.preview-counter strong{color:#a34228;font-weight:700}
+.report-sheet>p:not(.sheet-kicker){max-width:270px}
+.sheet-answer-tease{position:absolute;left:26px;right:26px;bottom:22px;padding:11px 12px;border-top:1px solid #d7cdbd;display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(249,246,239,.9);z-index:2}
+.sheet-answer-tease b{font-size:.72rem;color:#0d2235;letter-spacing:-.01em}.sheet-answer-tease span{font-size:.62rem;color:#a34228;white-space:nowrap}
+.sheet-gauge{position:absolute;left:50%;bottom:67px;width:176px;height:88px;overflow:hidden;transform:translateX(-50%)}
+.sheet-gauge::before{content:"";position:absolute;inset:0 0 -88px;border:20px solid #e5ded2;border-bottom-color:transparent;border-radius:50%}
+.sheet-gauge span{position:absolute;inset:0 0 -88px;border:20px solid #0d2235;border-right-color:transparent;border-bottom-color:transparent;border-radius:50%;transform:rotate(-17deg)}
+.sheet-gauge i{position:absolute;left:50%;bottom:7px;transform:translateX(-50%);font:600 1.45rem/1 Georgia,serif;color:#a34228}
+.sheet-income-bars{position:absolute;left:32px;right:32px;bottom:72px;height:112px;display:flex;align-items:flex-end;justify-content:space-around;border-bottom:1px solid #bcb2a3}
+.sheet-income-bars i{position:relative;width:31px;background:#0d2235}.sheet-income-bars i:nth-child(1){height:62%}.sheet-income-bars i:nth-child(2){height:88%;background:#a34228}.sheet-income-bars i:nth-child(3){height:48%;opacity:.65}.sheet-income-bars i:nth-child(4){height:35%;opacity:.4}
+.sheet-income-bars b{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);font-size:.57rem;font-style:normal;font-weight:400;color:#70685e;white-space:nowrap}
+.sheet-leak-art{position:absolute;left:32px;right:32px;bottom:73px;height:104px;border-top:12px solid #0d2235;border-radius:3px 3px 0 0}
+.sheet-leak-art::before{content:"";position:absolute;left:22px;right:22px;top:23px;height:22px;background:linear-gradient(90deg,#0d2235 0 64%,#d9d1c5 64%)}
+.sheet-leak-art i{position:absolute;top:57px;width:7px;height:20px;border-radius:0 0 6px 6px;background:#a34228}.sheet-leak-art i:nth-of-type(1){left:52%}.sheet-leak-art i:nth-of-type(2){left:66%;height:28px}.sheet-leak-art i:nth-of-type(3){left:78%;height:15px}
+.sheet-leak-art span{position:absolute;font-size:.58rem;color:#776e63}.leak-in{left:0;top:-31px}.leak-out{right:0;bottom:-2px;color:#a34228!important}
+.sheet-timing>svg{bottom:67px;height:112px}.sheet-lifetime .sheet-age-curve{position:absolute;left:28px;right:28px;bottom:71px;height:122px}.sheet-age-curve svg{display:block;width:100%;height:96px;border-bottom:1px solid #cfc5b5}.sheet-age-curve span{display:inline-block;width:19.2%;text-align:center;font-size:.55rem;color:#8a8175}
+.sheet-people-art{position:absolute;left:50%;bottom:69px;width:190px;height:118px;transform:translateX(-50%)}
+.sheet-people-art span{position:absolute;border-radius:50%;border:1.5px solid #0d2235}.sheet-people-art span:nth-child(1){width:90px;height:90px;left:0;top:18px}.sheet-people-art span:nth-child(2){width:90px;height:90px;right:0;top:18px;border-color:#a34228}.sheet-people-art span:nth-child(3){width:70px;height:70px;left:60px;top:0;border-color:#aaa196}.sheet-people-art b{position:absolute;left:50%;top:51%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#0d2235;color:#f7f2e8;font-size:.7rem}
+.sheet-priority-list{position:absolute;left:29px;right:29px;bottom:68px;margin:0;padding:0;list-style:none}.sheet-priority-list li{display:grid;grid-template-columns:34px 1fr;align-items:center;height:38px;border-bottom:1px solid #d2c8b8}.sheet-priority-list b{font:600 .62rem/1 Georgia,serif;color:#a34228}.sheet-priority-list span{height:7px;background:linear-gradient(90deg,#0d2235 0 68%,#e1d9cd 68%)}.sheet-priority-list li:nth-child(2) span{background:linear-gradient(90deg,#0d2235 0 48%,#e1d9cd 48%)}.sheet-priority-list li:nth-child(3) span{background:linear-gradient(90deg,#0d2235 0 31%,#e1d9cd 31%)}
 @media(max-width:720px){
   .report-sheets{display:block;height:405px;min-height:405px;padding:8px 0 20px;overflow:hidden;scroll-snap-type:none}
   .report-sheet,.report-sheet.sheet-a,.report-sheet.sheet-b,.report-sheet.sheet-c{position:absolute;width:min(290px,76vw);height:375px;top:8px;scroll-snap-align:none}
   .report-sheet.is-left{transform:translateX(calc(-50% - 69vw)) rotate(-1deg) scale(.9);opacity:.42}
   .report-sheet.is-right{transform:translateX(calc(-50% + 69vw)) rotate(1deg) scale(.9);opacity:.42}
+  .report-sheet.is-hidden{transform:translateX(-50%) scale(.78);opacity:0}
   .preview-nav{width:36px;height:36px;margin-top:-18px;background:rgba(249,246,239,.94)}
   .preview-prev{left:2px}.preview-next{right:2px}
 }
@@ -2778,50 +2801,99 @@ body{
 
   <!-- ══ 결과 미리보기 ══ -->
   <section class="editorial-preview-sec" aria-label="사주 결과 리포트 미리보기">
-    <div class="sec-header"><h2 class="sec-title">결과 <span class="em">미리보기</span></h2></div>
+    <div class="sec-header">
+      <h2 class="sec-title">내 사주에는 <span class="em">어떤 답이 숨어 있을까요?</span></h2>
+      <p class="preview-sec-desc">결제하면 받게 될 개인 리포트의 주요 질문을 미리 넘겨보세요.</p>
+    </div>
     <div class="report-sheets" id="editorial-report-slider">
       <button type="button" class="preview-nav preview-prev" onclick="moveEditorialPreview(-1)" aria-label="이전 결과 보기">‹</button>
-      <article class="report-sheet sheet-a is-left" data-report-index="0" tabindex="0" role="button" aria-label="핵심 요약 결과 보기">
-        <span class="sheet-no">01</span><p class="sheet-kicker">핵심 요약</p>
-        <h3>생각이 깊고<br>균형감이 뛰어납니다</h3>
-        <svg viewBox="0 0 180 130" aria-hidden="true"><polygon points="90,12 152,48 138,112 42,112 28,48" fill="none" stroke="currentColor"/><polygon points="90,30 134,55 122,95 58,95 46,55" fill="none" stroke="currentColor" opacity=".5"/><line x1="90" y1="12" x2="90" y2="112"/><line x1="28" y1="48" x2="138" y2="112"/><line x1="152" y1="48" x2="42" y2="112"/></svg>
+      <article class="report-sheet sheet-money-bowl is-active" data-report-index="0" tabindex="0" role="button" aria-label="타고난 재물 그릇 결과 보기">
+        <span class="sheet-no">01</span><p class="sheet-kicker">타고난 재물 그릇</p>
+        <h3>내 팔자에 돈복은<br>얼마나 있을까?</h3>
+        <p>재물을 담는 힘과 현재 활용 중인 정도는 서로 다를 수 있어요.</p>
+        <div class="sheet-gauge" aria-hidden="true"><span></span><i>?</i></div>
+        <div class="sheet-answer-tease"><b>당신의 재물 그릇</b><span>상세 등급 잠금</span></div>
       </article>
-      <article class="report-sheet sheet-b is-active" data-report-index="1" tabindex="0" role="button" aria-label="성향 분석 결과 보기">
-        <span class="sheet-no">02</span><p class="sheet-kicker">성향 분석</p>
-        <h3>유연한 균형감과<br>꾸준한 성장의 강점</h3>
-        <p>타고난 기질과 오행의 흐름을 함께 비교해, 지금의 선택에 필요한 기준을 정리합니다.</p>
-        <div class="sheet-bars"><i></i><i></i><i></i><i></i><i></i></div>
-        <span class="sheet-ink-circle"></span>
+      <article class="report-sheet sheet-income is-right" data-report-index="1" tabindex="0" role="button" aria-label="돈을 버는 방식 결과 보기">
+        <span class="sheet-no">02</span><p class="sheet-kicker">수입 구조</p>
+        <h3>나는 어떤 방식으로<br>돈을 벌어야 크게 벌까?</h3>
+        <p>직장·사업·부업·투자 중 내 재물 에너지가 가장 잘 움직이는 경로를 비교합니다.</p>
+        <div class="sheet-income-bars" aria-hidden="true"><i><b>직장</b></i><i><b>사업</b></i><i><b>부업</b></i><i><b>투자</b></i></div>
+        <div class="sheet-answer-tease"><b>가장 강한 수입 경로</b><span>분석 결과 잠금</span></div>
       </article>
-      <article class="report-sheet sheet-c is-right" data-report-index="2" tabindex="0" role="button" aria-label="운의 흐름 결과 보기">
-        <span class="sheet-no">03</span><p class="sheet-kicker">운의 흐름</p>
-        <h3>굽이마다 기회가<br>찾아오는 흐름</h3>
-        <svg viewBox="0 0 260 110" aria-hidden="true"><path d="M10 86 C42 80 52 38 86 55 S135 90 160 48 S208 22 250 38" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 94H250M10 72H250M10 50H250M10 28H250" opacity=".16"/><circle cx="86" cy="55" r="4"/><circle cx="160" cy="48" r="4" fill="#A34228"/><circle cx="226" cy="32" r="4"/></svg>
+      <article class="report-sheet sheet-leak is-hidden" data-report-index="2" tabindex="0" role="button" aria-label="돈이 새는 이유 결과 보기">
+        <span class="sheet-no">03</span><p class="sheet-kicker">재물 누수</p>
+        <h3>열심히 버는데<br>왜 돈이 남지 않을까?</h3>
+        <p>사주에서 반복되는 소비 습관과 재물이 새기 쉬운 상황을 찾아냅니다.</p>
+        <div class="sheet-leak-art" aria-hidden="true"><span class="leak-in">수입</span><i></i><i></i><i></i><span class="leak-out">남는 돈 ?</span></div>
+        <div class="sheet-answer-tease"><b>가장 큰 재물 누수 지점</b><span>원인 잠금</span></div>
+      </article>
+      <article class="report-sheet sheet-timing is-hidden" data-report-index="3" tabindex="0" role="button" aria-label="돈의 변곡 시기 결과 보기">
+        <span class="sheet-no">04</span><p class="sheet-kicker">가까운 재물 시기</p>
+        <h3>앞으로 돈의 흐름이<br>크게 바뀌는 시기는?</h3>
+        <p>향후 12개월의 상승 구간과 손실을 조심해야 할 구간을 구분합니다.</p>
+        <svg viewBox="0 0 260 105" aria-hidden="true"><path d="M10 80 C45 83 56 63 83 68 S126 82 151 43 S206 26 250 16" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 90H250M10 65H250M10 40H250M10 15H250" opacity=".13"/><circle cx="151" cy="43" r="6" fill="#A34228"/><path d="M151 10V92" stroke="#A34228" stroke-dasharray="3 4" opacity=".5"/></svg>
+        <div class="sheet-answer-tease"><b>첫 번째 변곡 시기</b><span>정확한 월 잠금</span></div>
+      </article>
+      <article class="report-sheet sheet-lifetime is-hidden" data-report-index="4" tabindex="0" role="button" aria-label="운이 열리는 나이 결과 보기">
+        <span class="sheet-no">05</span><p class="sheet-kicker">평생 대운 곡선</p>
+        <h3>내 인생에서 가장 크게<br>운이 열리는 나이는?</h3>
+        <p>10년 단위 대운을 비교해 도약기·정체기·전환점이 오는 나이를 살펴봅니다.</p>
+        <div class="sheet-age-curve" aria-hidden="true"><svg viewBox="0 0 260 100"><path d="M8 78 C33 76 48 58 72 63 S108 86 130 52 S166 20 188 34 S222 61 252 18" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="188" cy="34" r="7" fill="#A34228"/></svg><span>20</span><span>30</span><span>40</span><span>50</span><span>60</span></div>
+        <div class="sheet-answer-tease"><b>가장 강한 도약기</b><span>나이 잠금</span></div>
+      </article>
+      <article class="report-sheet sheet-people is-hidden" data-report-index="5" tabindex="0" role="button" aria-label="귀인과 소모 관계 결과 보기">
+        <span class="sheet-no">06</span><p class="sheet-kicker">귀인과 관계의 작용</p>
+        <h3>나를 끌어올리는 사람과<br>소모시키는 사람은?</h3>
+        <p>배우자·동업자·상사처럼 가까운 관계가 내 운을 움직이는 방식을 구분합니다.</p>
+        <div class="sheet-people-art" aria-hidden="true"><span></span><span></span><span></span><b>나</b></div>
+        <div class="sheet-answer-tease"><b>내 운을 살리는 관계</b><span>특징 잠금</span></div>
+      </article>
+      <article class="report-sheet sheet-priority is-left" data-report-index="6" tabindex="0" role="button" aria-label="지금의 우선순위 결과 보기">
+        <span class="sheet-no">07</span><p class="sheet-kicker">나만의 선택 지도</p>
+        <h3>그래서 지금 나는<br>무엇부터 바꿔야 할까?</h3>
+        <p>돈·일·관계 가운데 먼저 움직일 것과 잠시 기다릴 것을 순서대로 정리합니다.</p>
+        <ol class="sheet-priority-list" aria-hidden="true"><li><b>01</b><span></span></li><li><b>02</b><span></span></li><li><b>03</b><span></span></li></ol>
+        <div class="sheet-answer-tease"><b>지금 가장 먼저 할 일</b><span>실천 순서 잠금</span></div>
       </article>
       <button type="button" class="preview-nav preview-next" onclick="moveEditorialPreview(1)" aria-label="다음 결과 보기">›</button>
     </div>
     <div class="preview-dots" aria-label="결과 미리보기 선택">
-      <button type="button" onclick="setEditorialPreview(0)" aria-label="핵심 요약 보기"></button>
-      <button type="button" class="active" onclick="setEditorialPreview(1)" aria-label="성향 분석 보기"></button>
-      <button type="button" onclick="setEditorialPreview(2)" aria-label="운의 흐름 보기"></button>
+      <button type="button" class="active" onclick="setEditorialPreview(0)" aria-label="재물 그릇 보기"></button>
+      <button type="button" onclick="setEditorialPreview(1)" aria-label="수입 구조 보기"></button>
+      <button type="button" onclick="setEditorialPreview(2)" aria-label="재물 누수 보기"></button>
+      <button type="button" onclick="setEditorialPreview(3)" aria-label="가까운 재물 시기 보기"></button>
+      <button type="button" onclick="setEditorialPreview(4)" aria-label="평생 대운 보기"></button>
+      <button type="button" onclick="setEditorialPreview(5)" aria-label="귀인과 관계 보기"></button>
+      <button type="button" onclick="setEditorialPreview(6)" aria-label="선택 지도 보기"></button>
     </div>
+    <p class="preview-counter"><strong id="editorial-preview-current">1</strong> / 7</p>
   </section>
 
   <script>
-  let editorialPreviewIndex = 1;
+  let editorialPreviewIndex = 0;
   function renderEditorialPreview(){
     const slider=document.getElementById('editorial-report-slider');
     if(!slider)return;
     const cards=[...slider.querySelectorAll('.report-sheet')];
+    const count=cards.length;
+    const prev=(editorialPreviewIndex-1+count)%count;
+    const next=(editorialPreviewIndex+1)%count;
     cards.forEach((card,i)=>{
-      const delta=(i-editorialPreviewIndex+cards.length)%cards.length;
-      card.classList.remove('is-left','is-active','is-right');
-      card.classList.add(delta===0?'is-active':delta===1?'is-right':'is-left');
-      card.setAttribute('aria-current',delta===0?'true':'false');
+      card.classList.remove('is-left','is-active','is-right','is-hidden');
+      card.classList.add(i===editorialPreviewIndex?'is-active':i===prev?'is-left':i===next?'is-right':'is-hidden');
+      card.setAttribute('aria-current',i===editorialPreviewIndex?'true':'false');
+      card.setAttribute('aria-hidden',i===editorialPreviewIndex||i===prev||i===next?'false':'true');
+      card.tabIndex=i===editorialPreviewIndex?0:-1;
     });
     document.querySelectorAll('.preview-dots button').forEach((dot,i)=>dot.classList.toggle('active',i===editorialPreviewIndex));
+    const current=document.getElementById('editorial-preview-current');
+    if(current)current.textContent=String(editorialPreviewIndex+1);
   }
-  function setEditorialPreview(index){editorialPreviewIndex=(index+3)%3;renderEditorialPreview()}
+  function setEditorialPreview(index){
+    const count=document.querySelectorAll('#editorial-report-slider .report-sheet').length||1;
+    editorialPreviewIndex=(index+count)%count;renderEditorialPreview();
+  }
   function moveEditorialPreview(step){setEditorialPreview(editorialPreviewIndex+step)}
   document.addEventListener('DOMContentLoaded',()=>{
     const slider=document.getElementById('editorial-report-slider');
