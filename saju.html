@@ -2230,6 +2230,146 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   .benefit-card:last-child{grid-template-columns:40px minmax(0,1fr) 88px;padding:16px 14px;column-gap:10px}
 }
 
+/* ═══════════════════════════════════════════════════════
+   Editorial Saju v4 — 종이 위에 편집한 명리 리포트
+═══════════════════════════════════════════════════════ */
+body{
+  background:
+    radial-gradient(circle at 18% 12%,rgba(163,66,40,.025) 0 1px,transparent 1.6px) 0 0/11px 13px,
+    radial-gradient(circle at 72% 44%,rgba(13,34,53,.022) 0 1px,transparent 1.7px) 0 0/17px 19px,
+    #f4efe5;
+}
+.page{max-width:none;padding:0;background:transparent}
+.triple-sec,.value-summary-sec,.editorial-preview-sec,.how-sec,.faq-sec{width:min(1180px,calc(100% - 48px));margin-left:auto;margin-right:auto}
+#form-sec,.preview-sec,#result-sec,.transparency-sec{width:min(860px,calc(100% - 32px));margin-left:auto;margin-right:auto}
+
+/* Hero */
+.hero{
+  min-height:650px;padding:70px 28px 58px;
+  background:
+    repeating-linear-gradient(90deg,transparent 0 82px,rgba(13,34,53,.045) 83px,transparent 84px),
+    linear-gradient(90deg,#f6f1e8 0 69%,#0d2235 69% 100%);
+  border-bottom:1px solid rgba(13,34,53,.13);
+}
+.hero::before{display:none}
+.hero-inner{max-width:1180px;min-height:520px;margin:0 auto;display:grid;grid-template-columns:42% 58%;gap:0;align-items:center}
+.hero-text{position:relative;z-index:3;max-width:500px;padding-left:8px;text-align:left}
+.hero-brand-badge{margin-bottom:27px;justify-content:flex-start}
+.hero-brand-badge svg{width:38px;height:54px;filter:drop-shadow(0 2px 2px rgba(13,34,53,.1))}
+.hero-brand-badge svg rect{rx:2}
+.hero-main-title{font-size:clamp(4rem,6vw,5.65rem);font-weight:500;letter-spacing:-.065em;line-height:1;margin:0 0 28px;color:#0d2235}
+.hero-subtitle{font-size:clamp(1.35rem,2.05vw,1.76rem);font-weight:500;line-height:1.55;letter-spacing:-.035em;margin-bottom:26px;color:#171d22}
+.hero-subtitle::after{content:'';display:block;width:52px;height:1px;background:#9a8060;margin-top:26px}
+.hero-desc{font-size:1rem;line-height:1.85;color:#615e58}
+.hero-cta-row{margin-top:38px;gap:14px;flex-wrap:nowrap}
+.hero .cta-scroll-btn,.hero .cta-secondary-btn{min-width:195px;height:58px;border-radius:4px;padding:0 26px;font-size:1rem;letter-spacing:.01em}
+.hero .cta-scroll-btn{background:#0d2235;color:#fff;box-shadow:0 9px 22px rgba(13,34,53,.14)}
+.hero .cta-secondary-btn{background:rgba(246,241,232,.72);border:1px solid #0d2235;color:#0d2235}
+.hero-report-wrap{position:relative;width:100%;height:550px;display:flex;align-items:center;justify-content:center;padding:0;z-index:2}
+.hero-cosmos{position:relative;width:min(560px,100%);aspect-ratio:1;margin-left:30px}
+.hero-cosmos>svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 2px 1px rgba(13,34,53,.06))}
+.hero-year-column{position:absolute;right:-9px;bottom:59px;display:flex;flex-direction:column;gap:13px;color:#ded4c2;font-family:serif;font-size:.82rem;letter-spacing:.18em}
+.hero-cosmos-seal{position:absolute;right:7px;top:24px;width:28px;height:38px;display:flex;align-items:center;justify-content:center;background:#a34228;color:#f7f0e4;font-size:.61rem;font-weight:700;line-height:1.15;border:1px solid rgba(247,240,228,.5)}
+
+/* Section typography */
+.triple-sec,.value-summary-sec,.editorial-preview-sec,.how-sec,.faq-sec{padding-top:42px;padding-bottom:18px}
+.sec-header,.triple-header{border-left:3px solid #a34228;padding-left:14px;margin:0 0 22px;text-align:left}
+.sec-title{font-size:1.45rem;letter-spacing:-.025em;color:#0d2235}
+.triple-desc{max-width:780px;margin:8px 0 0;font-size:.9rem;line-height:1.75;color:#6f6a62}
+
+/* Three perspectives */
+.triple-grid{gap:0;margin:0;border:1px solid #d9d0c0;background:rgba(255,255,255,.18)}
+.triple-card{min-height:228px;border:0;border-right:1px solid #d9d0c0;border-radius:0;padding:27px 28px 0;text-align:left;background:transparent;box-shadow:none}
+.triple-card:last-child{border-right:0}
+.triple-card::before{display:none}
+.triple-icon{display:none}
+.triple-card h3{font-size:1.16rem;margin:0 0 20px;color:#12191f;font-weight:600}
+.triple-card h3::after{content:'';display:block;width:18px;height:2px;background:#a34228;margin-top:10px}
+.triple-card p{font-size:.88rem;line-height:1.7;color:#5e5b56}
+.triple-art{height:78px;margin-top:auto;color:#0d2235;opacity:.9}
+.triple-art svg{height:78px}
+
+/* What you receive */
+.benefit-cards-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.benefit-card{min-height:190px;padding:21px 18px 0;border:1px solid #d9d0c0;border-radius:0;background:rgba(255,255,255,.23);box-shadow:none}
+.bc-icon{display:none}
+.bc-name{font-size:1rem;color:#101820;margin-bottom:13px}
+.bc-desc{font-size:.8rem;line-height:1.65;color:#5e5b56}
+.bc-art{height:72px;color:#0d2235}
+.bc-art svg{height:72px}
+
+/* Report preview */
+.editorial-preview-sec{padding-top:46px;overflow:hidden}
+.report-sheets{position:relative;min-height:430px;display:flex;align-items:center;justify-content:center;padding:10px 55px 25px}
+.report-sheet{position:relative;width:310px;height:390px;flex:0 0 310px;padding:28px 27px;background:#f9f6ef;border:1px solid #e0d8cb;color:#0d2235;box-shadow:0 14px 34px rgba(13,34,53,.1);overflow:hidden}
+.report-sheet::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 27px,rgba(13,34,53,.024) 28px);pointer-events:none}
+.report-sheet.sheet-a{transform:translateX(42px) rotate(-1.4deg) scale(.88);z-index:1;opacity:.78}
+.report-sheet.sheet-b{z-index:3;transform:translateY(-5px);width:344px;flex-basis:344px;height:420px}
+.report-sheet.sheet-c{transform:translateX(-42px) rotate(1.4deg) scale(.88);z-index:1;opacity:.78}
+.sheet-no{font-size:.62rem;color:#8c8172;letter-spacing:.12em}
+.sheet-kicker{font-size:.68rem;color:#a34228;letter-spacing:.14em;margin:8px 0 20px}
+.report-sheet h3{font-size:1.28rem;line-height:1.48;letter-spacing:-.025em;margin:0 0 19px}
+.report-sheet>p:not(.sheet-kicker){font-size:.76rem;line-height:1.75;color:#6e6860}
+.report-sheet>svg{position:absolute;left:25px;right:25px;bottom:27px;width:calc(100% - 50px);height:135px}
+.sheet-bars{position:absolute;bottom:26px;left:30px;height:92px;display:flex;align-items:end;gap:11px}
+.sheet-bars i{display:block;width:20px;background:#0d2235}.sheet-bars i:nth-child(1){height:48%}.sheet-bars i:nth-child(2){height:75%;opacity:.65}.sheet-bars i:nth-child(3){height:58%;opacity:.38}.sheet-bars i:nth-child(4){height:88%;background:#a34228}.sheet-bars i:nth-child(5){height:66%;opacity:.48}
+.sheet-ink-circle{position:absolute;right:-30px;bottom:-38px;width:150px;height:150px;border:25px solid #0d2235;border-radius:50%;opacity:.82;filter:blur(.2px)}
+.preview-dots{display:flex;justify-content:center;gap:9px}.preview-dots i{width:7px;height:7px;border-radius:50%;background:#d4ccbf}.preview-dots i.active{background:#a34228}
+
+/* How */
+.how-steps{gap:0;border:1px solid #d9d0c0;background:rgba(255,255,255,.2)}
+.how-step{min-height:180px;border:0;border-radius:0;padding:23px 24px;display:grid;grid-template-columns:1fr 90px;grid-template-rows:auto auto 1fr;background:transparent}
+.how-num{width:auto;height:auto;border:0;border-radius:0;justify-content:flex-start;font-family:serif;font-size:.85rem;color:#0d2235;margin-bottom:11px}
+.how-title{grid-column:1;font-size:1rem}.how-desc{grid-column:1;font-size:.79rem}.how-art{grid-column:2;grid-row:1/4;margin:0;display:flex;align-items:center;justify-content:center;border-left:1px solid #ded6ca}
+.how-arrow{width:42px;font-size:1.6rem;color:#a34228;align-self:center}
+
+/* Honest trust strip */
+.editorial-trust-band{width:100vw;margin:35px 0 0 calc(50% - 50vw);display:grid;grid-template-columns:repeat(3,1fr);padding:34px max(24px,calc((100vw - 1060px)/2));background:#0d2235;color:#f3ede1;position:relative;overflow:hidden}
+.editorial-trust-band::after{content:'';position:absolute;right:-55px;top:-80px;width:230px;height:230px;border:34px solid rgba(244,239,229,.18);border-radius:50%}
+.editorial-trust-band>div{padding:0 45px;border-right:1px solid rgba(180,154,99,.42);display:flex;flex-direction:column;gap:6px;position:relative;z-index:1}
+.editorial-trust-band>div:last-child{border-right:0}
+.editorial-trust-band span{font-size:.72rem;color:#c7bba8;letter-spacing:.08em}.editorial-trust-band strong{font-family:serif;font-size:1.55rem;font-weight:500}.editorial-trust-band small{font-size:.7rem;color:#b7ad9f}
+
+/* FAQ */
+.faq-sec{padding-top:45px;padding-bottom:70px}
+.faq-list{border:1px solid #d9d0c0;border-bottom:0}
+.faq-item{border-bottom:1px solid #d9d0c0;background:rgba(255,255,255,.17)}
+.faq-item summary{padding:14px 18px}.faq-a{padding:0 20px 18px 50px}
+
+/* Bottom CTA follows the reference */
+.sticky-bottom-bar{background:#0d2235;border-color:rgba(244,239,229,.22);padding:12px 18px;gap:0}
+.sbb-btn-primary,.sbb-btn-secondary{height:52px;min-width:245px;border-radius:3px;font-size:.96rem}
+.sbb-btn-primary{background:#0d2235;border:1px solid #f0e9dc}
+.sbb-btn-secondary{border:1px solid #b49a63;color:#f0e9dc}
+.sbb-logo{order:2;display:flex;width:54px;height:54px;margin:0 -1px;border-radius:50%;background:#a34228;border:2px solid #f0e9dc;color:#fff;z-index:2;font-family:serif;font-size:.72rem}
+.sbb-btn-primary{order:1}.sbb-btn-secondary{order:3}
+
+@media(max-width:720px){
+  .triple-sec,.value-summary-sec,.editorial-preview-sec,.how-sec,.faq-sec{width:calc(100% - 32px)}
+  .hero{min-height:0;padding:42px 18px 34px;background:repeating-linear-gradient(90deg,transparent 0 70px,rgba(13,34,53,.04) 71px,transparent 72px),#f6f1e8}
+  .hero-inner{min-height:0;display:flex;flex-direction:column;gap:20px;align-items:stretch}
+  .hero-text{text-align:center;padding:0;max-width:none}
+  .hero-brand-badge{justify-content:center;margin-bottom:18px}
+  .hero-brand-badge svg{width:36px;height:48px}
+  .hero-main-title{font-size:3.45rem;letter-spacing:-.06em;margin-bottom:20px}
+  .hero-subtitle{font-size:1.28rem;margin-bottom:18px}.hero-subtitle::after{margin:20px auto 0}
+  .hero-desc{font-size:.88rem}.hero-desc br{display:none}
+  .hero-cta-row{justify-content:center;margin-top:27px;gap:9px}.hero .cta-scroll-btn,.hero .cta-secondary-btn{min-width:0;flex:1 1 0;height:54px;padding:0 10px;font-size:.9rem}
+  .hero-report-wrap{height:auto;order:2}.hero-cosmos{width:min(330px,92vw);margin:0 auto}.hero-year-column{right:5px;bottom:43px}.hero-cosmos-seal{right:9px;top:19px}
+  .triple-sec,.value-summary-sec,.editorial-preview-sec,.how-sec,.faq-sec{padding-top:34px}
+  .sec-title{font-size:1.28rem}.triple-desc{font-size:.82rem}
+  .triple-grid{grid-template-columns:1fr}.triple-card{min-height:145px;border-right:0;border-bottom:1px solid #d9d0c0;padding:20px 20px 0;display:grid;grid-template-columns:1fr 42%;grid-template-rows:auto 1fr}.triple-card:last-child{border-bottom:0}.triple-card h3{grid-column:1}.triple-card p{grid-column:1}.triple-art{grid-column:2;grid-row:1/3;height:100%;display:flex;align-items:end}.triple-art svg{height:90px}
+  .benefit-cards-grid{gap:8px}.benefit-card{min-height:164px;padding:17px 14px 0}.bc-name{font-size:.9rem}.bc-desc{font-size:.74rem}.benefit-card:last-child{min-height:116px;border-radius:0;padding:16px;grid-template-columns:minmax(0,1fr) 110px;grid-template-rows:auto auto}.benefit-card:last-child .bc-icon{display:none}.benefit-card:last-child .bc-name{grid-column:1}.benefit-card:last-child .bc-desc{grid-column:1}.benefit-card:last-child .bc-art{grid-column:2;grid-row:1/3}
+  .report-sheets{min-height:400px;justify-content:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px calc(50% - 145px) 24px;gap:14px;scrollbar-width:none}.report-sheets::-webkit-scrollbar{display:none}.report-sheet,.report-sheet.sheet-a,.report-sheet.sheet-b,.report-sheet.sheet-c{width:290px;flex-basis:290px;height:375px;transform:none;opacity:1;scroll-snap-align:center}.report-sheet.sheet-b{order:-1}
+  .how-steps{flex-direction:column}.how-step{width:100%;min-height:142px}.how-arrow{width:100%;height:28px;transform:rotate(90deg);display:flex;align-items:center;justify-content:center}.how-art{justify-content:flex-end}
+  .editorial-trust-band{grid-template-columns:1fr;padding:24px 30px}.editorial-trust-band>div{padding:17px 0;border-right:0;border-bottom:1px solid rgba(180,154,99,.35)}.editorial-trust-band>div:last-child{border-bottom:0}.editorial-trust-band strong{font-size:1.35rem}
+  .sticky-bottom-bar{padding:10px 12px}.sbb-logo{display:none}.sbb-btn-primary,.sbb-btn-secondary{min-width:0;flex:1;height:50px;font-size:.88rem}
+}
+@media(max-width:390px){
+  .hero-main-title{font-size:3.05rem}.hero-subtitle{font-size:1.12rem}.hero-cosmos{width:290px}
+  .benefit-card:last-child{grid-template-columns:minmax(0,1fr) 84px}
+}
+
 </style>
 </head>
 <body>
@@ -2248,42 +2388,35 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div class="hero-text">
         <!-- 좌상단 오속 뱃지 -->
         <div class="hero-brand-badge">
-          <svg viewBox="0 0 32 32" width="32" height="32"><rect width="32" height="32" rx="4" fill="#A34228"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-size="12" font-family="serif" font-weight="700">오속</text></svg>
+          <svg viewBox="0 0 32 46" width="32" height="46"><rect width="32" height="46" rx="3" fill="#A34228"/><rect x="3" y="3" width="26" height="40" rx="2" fill="none" stroke="rgba(255,255,255,.55)"/><text x="16" y="20" text-anchor="middle" fill="#fff" font-size="11" font-family="serif" font-weight="700">오</text><text x="16" y="35" text-anchor="middle" fill="#fff" font-size="11" font-family="serif" font-weight="700">속</text></svg>
         </div>
         <h1 class="hero-main-title">오속 사주</h1>
         <p class="hero-subtitle">운명을 단정하지 않고,<br>지금의 방향을 읽습니다</p>
         <p class="hero-desc">사주·자미두수·점성술을 함께<br>살펴보는 개인 분석</p>
         <div class="hero-cta-row">
           <button class="cta-scroll-btn" onclick="scrollToFreeForm()" aria-label="무료 사주 입력 영역으로 이동">무료로 시작하기</button>
-          <button class="cta-secondary-btn" onclick="document.getElementById('result-sec').scrollIntoView({behavior:'smooth'})">상세 리포트 보기</button>
+          <button class="cta-secondary-btn" onclick="document.querySelector('.editorial-preview-sec').scrollIntoView({behavior:'smooth'})">상세 리포트 보기</button>
         </div>
       </div>
       <div class="hero-report-wrap" aria-label="오속 사주 분석 리포트 미리보기">
-        <div class="hero-report">
-          <div class="hero-report-mark" aria-hidden="true">
-            <svg class="mini-yinyang" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="46" fill="#0D2235"/>
-              <path d="M50 4a46 46 0 0 1 0 92 23 23 0 0 0 0-46 23 23 0 0 1 0-46z" fill="#E8E2D5"/>
-              <circle cx="50" cy="27" r="7" fill="#0D2235"/>
-              <circle cx="50" cy="73" r="7" fill="#E8E2D5"/>
-            </svg>
-          </div>
-          <div class="hero-report-body">
-            <p class="report-eyebrow">PERSONAL READING REPORT</p>
-            <h2 class="report-title">나를 이해하고<br>다음 방향을 정하는 분석</h2>
-            <ul class="report-list">
-              <li>타고난 성향과 강점</li>
-              <li>일·재물·관계의 흐름</li>
-              <li>지금 먼저 살펴볼 선택</li>
-              <li>세 가지 관점의 교차 분석</li>
-            </ul>
-            <div class="report-foot">
-              <span>사주 · 자미두수 · 점성술</span>
-              <span class="report-seal">오<br>속</span>
-            </div>
-          </div>
+        <div class="hero-cosmos" aria-hidden="true">
+          <svg viewBox="0 0 560 560" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="#0D2235" opacity=".34">
+              <circle cx="280" cy="280" r="222"/><circle cx="280" cy="280" r="244"/><circle cx="280" cy="280" r="266"/>
+            </g>
+            <g fill="none" stroke="#A34228" stroke-width="1.5">
+              <ellipse cx="280" cy="280" rx="304" ry="78" transform="rotate(-16 280 280)"/>
+              <circle cx="10" cy="328" r="10" fill="#A34228" stroke="none"/><circle cx="550" cy="234" r="5" fill="#F4EFE5"/>
+            </g>
+            <circle cx="280" cy="280" r="188" fill="#0D2235"/>
+            <path d="M280 92a188 188 0 0 1 0 376 94 94 0 0 0 0-188 94 94 0 0 1 0-188z" fill="#F2EDE3"/>
+            <circle cx="280" cy="186" r="27" fill="#0D2235"/><circle cx="280" cy="374" r="27" fill="#F2EDE3"/>
+            <g stroke="#B49A63" opacity=".7"><line x1="450" y1="16" x2="450" y2="542"/><line x1="486" y1="46" x2="486" y2="514"/></g>
+            <circle cx="450" cy="114" r="7" fill="#0D2235" stroke="#B49A63"/><circle cx="450" cy="414" r="7" fill="#A34228"/>
+          </svg>
+          <div class="hero-year-column"><span>年</span><span>月</span><span>日</span><span>時</span></div>
+          <span class="hero-cosmos-seal">오<br>속</span>
         </div>
-        <div class="hero-side-type" aria-hidden="true"><span>年</span><span>月</span><span>日</span><span>時</span></div>
       </div>
     </div>
   </section>
@@ -2423,6 +2556,31 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     </div>
   </section>
 
+  <!-- ══ 결과 미리보기 ══ -->
+  <section class="editorial-preview-sec" aria-label="사주 결과 리포트 미리보기">
+    <div class="sec-header"><h2 class="sec-title">결과 <span class="em">미리보기</span></h2></div>
+    <div class="report-sheets">
+      <article class="report-sheet sheet-a">
+        <span class="sheet-no">01</span><p class="sheet-kicker">핵심 요약</p>
+        <h3>생각이 깊고<br>균형감이 뛰어납니다</h3>
+        <svg viewBox="0 0 180 130" aria-hidden="true"><polygon points="90,12 152,48 138,112 42,112 28,48" fill="none" stroke="currentColor"/><polygon points="90,30 134,55 122,95 58,95 46,55" fill="none" stroke="currentColor" opacity=".5"/><line x1="90" y1="12" x2="90" y2="112"/><line x1="28" y1="48" x2="138" y2="112"/><line x1="152" y1="48" x2="42" y2="112"/></svg>
+      </article>
+      <article class="report-sheet sheet-b">
+        <span class="sheet-no">02</span><p class="sheet-kicker">성향 분석</p>
+        <h3>유연한 균형감과<br>꾸준한 성장의 강점</h3>
+        <p>타고난 기질과 오행의 흐름을 함께 비교해, 지금의 선택에 필요한 기준을 정리합니다.</p>
+        <div class="sheet-bars"><i></i><i></i><i></i><i></i><i></i></div>
+        <span class="sheet-ink-circle"></span>
+      </article>
+      <article class="report-sheet sheet-c">
+        <span class="sheet-no">03</span><p class="sheet-kicker">운의 흐름</p>
+        <h3>굽이마다 기회가<br>찾아오는 흐름</h3>
+        <svg viewBox="0 0 260 110" aria-hidden="true"><path d="M10 86 C42 80 52 38 86 55 S135 90 160 48 S208 22 250 38" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 94H250M10 72H250M10 50H250M10 28H250" opacity=".16"/><circle cx="86" cy="55" r="4"/><circle cx="160" cy="48" r="4" fill="#A34228"/><circle cx="226" cy="32" r="4"/></svg>
+      </article>
+    </div>
+    <div class="preview-dots" aria-hidden="true"><i class="active"></i><i></i><i></i><i></i></div>
+  </section>
+
   <!-- ══ 이용 방법 ══ -->
   <section class="how-sec">
     <div class="sec-header">
@@ -2456,6 +2614,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         </div>
       </div>
     </div>
+  </section>
+
+  <section class="editorial-trust-band" aria-label="서비스 특징">
+    <div><span>분석 관점</span><strong>3가지</strong><small>사주 · 자미두수 · 점성술</small></div>
+    <div><span>결과 구성</span><strong>개인 맞춤</strong><small>입력 정보에 따른 개별 분석</small></div>
+    <div><span>정보 관리</span><strong>브라우저 저장</strong><small>별도 서버에 저장하지 않음</small></div>
   </section>
 
   <!-- ══ FAQ ══ -->
