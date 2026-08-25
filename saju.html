@@ -2275,7 +2275,7 @@ body{
 .triple-sec,.value-summary-sec,.editorial-preview-sec,.how-sec,.faq-sec{padding-top:42px;padding-bottom:18px}
 .sec-header,.triple-header{border-left:3px solid #a34228;padding-left:14px;margin:0 0 22px;text-align:left}
 .sec-title{font-size:1.45rem;letter-spacing:-.025em;color:#0d2235}
-.triple-desc{max-width:780px;margin:8px 0 0;font-size:.9rem;line-height:1.75;color:#6f6a62}
+.triple-desc{max-width:none;width:100%;margin:8px 0 0;font-size:.9rem;line-height:1.75;color:#6f6a62}
 
 /* Three perspectives */
 .triple-grid{gap:0;margin:0;border:1px solid #d9d0c0;background:rgba(255,255,255,.18)}
@@ -2369,6 +2369,33 @@ body{
   .hero-main-title{font-size:3.05rem}.hero-subtitle{font-size:1.12rem}.hero-cosmos{width:290px}
   .benefit-card:last-child{grid-template-columns:minmax(0,1fr) 84px}
 }
+
+/* 실제 작동하는 결과 리포트 캐러셀 */
+.report-sheets{position:relative;display:block;height:445px;min-height:445px;padding:10px 55px 25px;overflow:hidden;touch-action:pan-y}
+.report-sheet,.report-sheet.sheet-a,.report-sheet.sheet-b,.report-sheet.sheet-c{
+  position:absolute;left:50%;top:10px;width:344px;height:420px;opacity:1;
+  transform:translateX(-50%);transition:transform .42s cubic-bezier(.22,.75,.25,1),opacity .32s ease,filter .32s ease;
+  cursor:pointer;will-change:transform;outline:none;
+}
+.report-sheet.is-active{z-index:4;transform:translateX(-50%) scale(1);opacity:1;filter:none;cursor:default}
+.report-sheet.is-left{z-index:2;transform:translateX(calc(-50% - 250px)) rotate(-1.5deg) scale(.88);opacity:.72;filter:saturate(.72)}
+.report-sheet.is-right{z-index:2;transform:translateX(calc(-50% + 250px)) rotate(1.5deg) scale(.88);opacity:.72;filter:saturate(.72)}
+.report-sheet:focus-visible{box-shadow:0 0 0 3px rgba(163,66,40,.28),0 14px 34px rgba(13,34,53,.1)}
+.preview-nav{position:absolute;top:50%;z-index:8;width:42px;height:42px;margin-top:-21px;border:1px solid #cfc4b3;border-radius:50%;background:rgba(249,246,239,.88);color:#0d2235;font:300 1.7rem/1 serif;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .18s,border-color .18s,transform .18s}
+.preview-nav:hover{background:#fff;border-color:#a34228;transform:scale(1.05)}
+.preview-prev{left:10px}.preview-next{right:10px}
+.preview-dots{display:flex;justify-content:center;gap:10px;margin-top:4px}
+.preview-dots button{width:8px;height:8px;padding:0;border:0;border-radius:50%;background:#d4ccbf;cursor:pointer;transition:width .2s,background .2s}
+.preview-dots button.active{width:22px;border-radius:8px;background:#a34228}
+@media(max-width:720px){
+  .report-sheets{display:block;height:405px;min-height:405px;padding:8px 0 20px;overflow:hidden;scroll-snap-type:none}
+  .report-sheet,.report-sheet.sheet-a,.report-sheet.sheet-b,.report-sheet.sheet-c{position:absolute;width:min(290px,76vw);height:375px;top:8px;scroll-snap-align:none}
+  .report-sheet.is-left{transform:translateX(calc(-50% - 69vw)) rotate(-1deg) scale(.9);opacity:.42}
+  .report-sheet.is-right{transform:translateX(calc(-50% + 69vw)) rotate(1deg) scale(.9);opacity:.42}
+  .preview-nav{width:36px;height:36px;margin-top:-18px;background:rgba(249,246,239,.94)}
+  .preview-prev{left:2px}.preview-next{right:2px}
+}
+@media(prefers-reduced-motion:reduce){.report-sheet{transition:none}}
 
 </style>
 </head>
@@ -2588,27 +2615,66 @@ body{
   <!-- ══ 결과 미리보기 ══ -->
   <section class="editorial-preview-sec" aria-label="사주 결과 리포트 미리보기">
     <div class="sec-header"><h2 class="sec-title">결과 <span class="em">미리보기</span></h2></div>
-    <div class="report-sheets">
-      <article class="report-sheet sheet-a">
+    <div class="report-sheets" id="editorial-report-slider">
+      <button type="button" class="preview-nav preview-prev" onclick="moveEditorialPreview(-1)" aria-label="이전 결과 보기">‹</button>
+      <article class="report-sheet sheet-a is-left" data-report-index="0" tabindex="0" role="button" aria-label="핵심 요약 결과 보기">
         <span class="sheet-no">01</span><p class="sheet-kicker">핵심 요약</p>
         <h3>생각이 깊고<br>균형감이 뛰어납니다</h3>
         <svg viewBox="0 0 180 130" aria-hidden="true"><polygon points="90,12 152,48 138,112 42,112 28,48" fill="none" stroke="currentColor"/><polygon points="90,30 134,55 122,95 58,95 46,55" fill="none" stroke="currentColor" opacity=".5"/><line x1="90" y1="12" x2="90" y2="112"/><line x1="28" y1="48" x2="138" y2="112"/><line x1="152" y1="48" x2="42" y2="112"/></svg>
       </article>
-      <article class="report-sheet sheet-b">
+      <article class="report-sheet sheet-b is-active" data-report-index="1" tabindex="0" role="button" aria-label="성향 분석 결과 보기">
         <span class="sheet-no">02</span><p class="sheet-kicker">성향 분석</p>
         <h3>유연한 균형감과<br>꾸준한 성장의 강점</h3>
         <p>타고난 기질과 오행의 흐름을 함께 비교해, 지금의 선택에 필요한 기준을 정리합니다.</p>
         <div class="sheet-bars"><i></i><i></i><i></i><i></i><i></i></div>
         <span class="sheet-ink-circle"></span>
       </article>
-      <article class="report-sheet sheet-c">
+      <article class="report-sheet sheet-c is-right" data-report-index="2" tabindex="0" role="button" aria-label="운의 흐름 결과 보기">
         <span class="sheet-no">03</span><p class="sheet-kicker">운의 흐름</p>
         <h3>굽이마다 기회가<br>찾아오는 흐름</h3>
         <svg viewBox="0 0 260 110" aria-hidden="true"><path d="M10 86 C42 80 52 38 86 55 S135 90 160 48 S208 22 250 38" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 94H250M10 72H250M10 50H250M10 28H250" opacity=".16"/><circle cx="86" cy="55" r="4"/><circle cx="160" cy="48" r="4" fill="#A34228"/><circle cx="226" cy="32" r="4"/></svg>
       </article>
+      <button type="button" class="preview-nav preview-next" onclick="moveEditorialPreview(1)" aria-label="다음 결과 보기">›</button>
     </div>
-    <div class="preview-dots" aria-hidden="true"><i class="active"></i><i></i><i></i><i></i></div>
+    <div class="preview-dots" aria-label="결과 미리보기 선택">
+      <button type="button" onclick="setEditorialPreview(0)" aria-label="핵심 요약 보기"></button>
+      <button type="button" class="active" onclick="setEditorialPreview(1)" aria-label="성향 분석 보기"></button>
+      <button type="button" onclick="setEditorialPreview(2)" aria-label="운의 흐름 보기"></button>
+    </div>
   </section>
+
+  <script>
+  let editorialPreviewIndex = 1;
+  function renderEditorialPreview(){
+    const slider=document.getElementById('editorial-report-slider');
+    if(!slider)return;
+    const cards=[...slider.querySelectorAll('.report-sheet')];
+    cards.forEach((card,i)=>{
+      const delta=(i-editorialPreviewIndex+cards.length)%cards.length;
+      card.classList.remove('is-left','is-active','is-right');
+      card.classList.add(delta===0?'is-active':delta===1?'is-right':'is-left');
+      card.setAttribute('aria-current',delta===0?'true':'false');
+    });
+    document.querySelectorAll('.preview-dots button').forEach((dot,i)=>dot.classList.toggle('active',i===editorialPreviewIndex));
+  }
+  function setEditorialPreview(index){editorialPreviewIndex=(index+3)%3;renderEditorialPreview()}
+  function moveEditorialPreview(step){setEditorialPreview(editorialPreviewIndex+step)}
+  document.addEventListener('DOMContentLoaded',()=>{
+    const slider=document.getElementById('editorial-report-slider');
+    if(!slider)return;
+    slider.querySelectorAll('.report-sheet').forEach(card=>{
+      card.addEventListener('click',()=>setEditorialPreview(Number(card.dataset.reportIndex)));
+      card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setEditorialPreview(Number(card.dataset.reportIndex))}});
+    });
+    let startX=0,startY=0;
+    slider.addEventListener('touchstart',e=>{startX=e.changedTouches[0].clientX;startY=e.changedTouches[0].clientY},{passive:true});
+    slider.addEventListener('touchend',e=>{
+      const dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;
+      if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))moveEditorialPreview(dx<0?1:-1);
+    },{passive:true});
+    renderEditorialPreview();
+  });
+  </script>
 
   <!-- ══ 이용 방법 ══ -->
   <section class="how-sec">
