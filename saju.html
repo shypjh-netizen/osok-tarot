@@ -921,8 +921,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .concern-btn:hover{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.06)}
 .concern-btn.active{border-color:rgba(201,168,76,.75);background:rgba(201,168,76,.1)}
 .concern-btn.active::after{content:'✓';position:absolute;top:7px;right:9px;font-size:.65rem;color:var(--gold);font-weight:700}
-.cb-icon{font-size:1.15rem;line-height:1}
+.cb-icon{width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--rust);background:rgba(163,66,40,.07);line-height:1;flex:0 0 auto}
+.cb-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cb-label{font-size:.8rem;color:var(--text);font-weight:500;line-height:1.35}
+@media(max-width:479px){
+  .concern-btn{min-height:60px;flex-direction:row;align-items:center;gap:10px;padding:12px 13px}
+}
 .concern-skip-btn{display:block;width:100%;border:none;background:transparent;color:rgba(184,158,126,.4);font-size:.76rem;cursor:pointer;padding:8px 0 2px;text-align:center;font-family:inherit;transition:color .15s}
 .concern-skip-btn:hover{color:rgba(184,158,126,.7)}
 .concern-skip-btn.active{color:var(--gold);font-weight:600}
@@ -2011,7 +2015,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
 /* 혜택 카드 5개 */
 .benefit-cards-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
-@media(max-width:700px){.benefit-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+  .benefit-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .benefit-card:last-child{grid-column:1/-1;min-height:128px;display:grid;grid-template-columns:44px minmax(0,1fr) 112px;grid-template-rows:auto auto;column-gap:14px;align-items:center;padding:18px 20px}
+  .benefit-card:last-child .bc-icon{grid-column:1;grid-row:1/3;margin:0}
+  .benefit-card:last-child .bc-name{grid-column:2;grid-row:1;align-self:end}
+  .benefit-card:last-child .bc-desc{grid-column:2;grid-row:2;align-self:start}
+  .benefit-card:last-child .bc-art{grid-column:3;grid-row:1/3;margin:0;width:100%}
+}
 .benefit-card{background:var(--ivory-light);border:1px solid var(--border);border-radius:12px;padding:20px 16px 0;overflow:hidden;display:flex;flex-direction:column;min-height:160px}
 .bc-icon{width:34px;height:34px;background:rgba(163,66,40,.08);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;flex-shrink:0}
 .bc-name{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:4px}
@@ -2193,12 +2204,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   .hero{padding:38px 18px 36px;background:var(--ivory)}
   .hero::before{display:none}
   .hero-inner{flex-direction:column;align-items:stretch;gap:28px}
-  .hero-text{max-width:none;text-align:left}
-  .hero-brand-badge{justify-content:flex-start;margin-bottom:16px}
+  .hero-text{max-width:none;text-align:center}
+  .hero-brand-badge{justify-content:center;margin-bottom:16px}
   .hero-main-title{font-size:2.85rem;margin-bottom:17px}
   .hero-subtitle{font-size:1.18rem}
   .hero-desc br{display:none}
-  .hero-cta-row{justify-content:flex-start;margin-top:25px}
+  .hero-cta-row{justify-content:center;margin-top:25px}
   .hero .cta-scroll-btn,.hero .cta-secondary-btn{flex:1 1 150px;padding:0 16px}
   .hero-report-wrap{flex-basis:auto;width:100%;padding:0}
   .hero-report{grid-template-columns:94px 1fr;min-height:0;box-shadow:0 14px 36px rgba(8,24,38,.11)}
@@ -2216,6 +2227,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   .mini-yinyang{width:56px;height:56px}
   .report-foot span:first-child{display:none}
   .report-foot{justify-content:flex-end}
+  .benefit-card:last-child{grid-template-columns:40px minmax(0,1fr) 88px;padding:16px 14px;column-gap:10px}
 }
 
 </style>
@@ -6783,14 +6795,14 @@ function resetSaju(){
 
 /* ─── 고민 선택 (Worry) ─── */
 const WORRY_TOPICS = {
-  work:     { label:'일·이직',       icon:'💼' },
-  money:    { label:'재물·수입',     icon:'💰' },
-  business: { label:'사업·부업',     icon:'🌱' },
-  love:     { label:'관계·연애',     icon:'💕' },
-  marriage: { label:'결혼생활',      icon:'💍' },
-  family:   { label:'가족',          icon:'🏠' },
-  year:     { label:'올해의 흐름',   icon:'📅' },
-  custom:   { label:'직접 질문하기', icon:'✏️' },
+  work:     { label:'일·이직',       icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"/></svg>' },
+  money:    { label:'재물·수입',     icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="9" cy="6" rx="5" ry="2.5"/><path d="M4 6v4c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5V6M4 10v4c0 1.4 2.2 2.5 5 2.5 1.2 0 2.3-.2 3.2-.6"/><path d="M14 10.5c3.3 0 6 1.1 6 2.5v4c0 1.4-2.7 2.5-6 2.5-1.4 0-2.7-.2-3.7-.6"/></svg>' },
+  business: { label:'사업·부업',     icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-9M12 12C7 12 5 9 5 6c4 0 7 2 7 6ZM12 15c5 0 7-3 7-6-4 0-7 2-7 6Z"/></svg>' },
+  love:     { label:'관계·연애',     icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.8a5.3 5.3 0 0 0-7.5 0L12 6.1l-1.3-1.3a5.3 5.3 0 0 0-7.5 7.5L12 21l8.8-8.7a5.3 5.3 0 0 0 0-7.5Z"/></svg>' },
+  marriage: { label:'결혼생활',      icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="6"/><path d="m9 7 3-4 3 4M9 7h6"/></svg>' },
+  family:   { label:'가족',          icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8v9H3Z"/><path d="M9 20v-6h6v6"/></svg>' },
+  year:     { label:'올해의 흐름',   icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M8 14h2M14 14h2M8 17h2"/></svg>' },
+  custom:   { label:'직접 질문하기', icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 4.2-1 10.9-10.9a2.2 2.2 0 0 0-3.2-3.2L5 15.8 4 20Z"/><path d="m14.5 6.5 3 3M4 20h7"/></svg>' },
 };
 renderConcernButtons(); // 폼 로드 시 고민 버튼 초기 렌더
 
