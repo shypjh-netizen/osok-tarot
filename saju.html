@@ -2511,7 +2511,16 @@ body{
 .rrc-circle::before{top:0;background:var(--navy);box-shadow:0 0 0 15px #f3ede1 inset}
 .rrc-circle::after{bottom:0;background:#f3ede1;box-shadow:0 0 0 15px var(--navy) inset}
 .rrc-orbit{position:absolute;inset:8px;border:1px solid rgba(174,64,35,.7);border-radius:50%;transform:rotate(-14deg) scaleY(.43)}
-.rrc-index{grid-column:2;align-self:end;display:grid;gap:0;margin:0 0 0 20px;color:#f3ede1}
+.rrc-index{
+  position:absolute;
+  right:56px;
+  bottom:36px;
+  width:220px;
+  display:grid;
+  gap:0;
+  margin:0;
+  color:#f3ede1;
+}
 .rrc-index span{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(243,237,225,.2);font-size:.8rem;letter-spacing:.02em}
 .rrc-index b{color:#d46c4b;font-family:Georgia,serif;font-size:.7rem;letter-spacing:.12em}
 
@@ -2519,6 +2528,7 @@ body{
   border-radius:0;background:#fbf8f1;border:1px solid var(--border);box-shadow:none;padding:13px 18px;
 }
 #result-sec .birth-bar{border-left:3px solid var(--rust)}
+#result-sec .birth-info-text{color:#625a51;font-weight:500;opacity:1}
 #result-sec .birth-edit-btn,#result-sec .rel-edit-btn{border:0;background:none;color:var(--rust);font-weight:700}
 #result-sec .saju-nav{border-radius:0;border:1px solid var(--border);background:rgba(250,247,240,.96);box-shadow:none}
 #result-sec .sn-item{color:#746b60;font-family:Georgia,"Noto Serif KR",serif}
@@ -2605,7 +2615,7 @@ body{
   .rrc-copy h1{font-size:2.05rem;line-height:1.34}
   .rrc-desc{margin-top:16px;font-size:.84rem;line-height:1.75}
   .rrc-mark{right:-14px;top:250px;width:196px;height:196px}
-  .rrc-index{position:absolute;left:28px;right:28px;bottom:24px;margin:0;grid-template-columns:1fr 1fr;column-gap:20px;z-index:3}
+  .rrc-index{position:absolute;left:28px;right:28px;bottom:24px;width:auto;margin:0;grid-template-columns:1fr 1fr;column-gap:20px;z-index:3}
   .rrc-index span{padding:8px 0;font-size:.7rem}
   #result-sec .saju-nav-inner{justify-content:flex-start;overflow-x:auto}
   #result-sec .sn-item{flex:0 0 auto;padding:13px 16px}
@@ -2620,6 +2630,117 @@ body{
   #result-sec .shinsal-grid{grid-template-columns:1fr}
   #result-sec .result-actions{display:grid;grid-template-columns:1fr 1fr}
   #result-sec .result-actions .action-btn:last-child{grid-column:1/-1}
+}
+
+/* ═══════════════════════════════════════════════════════
+   결과 리포트 가독성 보정
+   라이트 배경에 남아 있던 구 테마의 저대비 색상을 정리한다.
+═══════════════════════════════════════════════════════ */
+#result-sec .free-core-diagnosis{
+  padding:42px 48px 40px;
+}
+#result-sec .fcd-text{
+  max-width:780px;
+  font-size:1.12rem;
+  font-weight:500;
+  line-height:1.9;
+  letter-spacing:-.012em;
+}
+
+/* 밝은 카드 위 보조 문장도 본문으로 읽힐 만큼 대비 확보 */
+#result-sec .gc-name{color:var(--navy)}
+#result-sec .gc-desc,
+#result-sec .gc-none,
+#result-sec .gc-count-note,
+#result-sec .gc-upsell,
+#result-sec .sc-main-desc,
+#result-sec .sc-none,
+#result-sec .sc-upsell,
+#result-sec .ytc-upsell,
+#result-sec .fp-unavail,
+#result-sec .cct-question{
+  color:#69635b;
+  opacity:1;
+}
+#result-sec .gc-count-note,
+#result-sec .gc-upsell,
+#result-sec .sc-upsell,
+#result-sec .ytc-upsell{
+  font-size:.8rem;
+  line-height:1.75;
+}
+#result-sec .sc-tag-off{
+  color:#777168;
+  background:#f2ede4;
+  border-color:#d8d0c3;
+}
+#result-sec .locked-title{color:#4f4a44;opacity:1}
+#result-sec .locked-preview{color:#69635b;opacity:1}
+
+/* 남색 카드 안 텍스트는 아이보리 계열로 통일 */
+#result-sec .fp-sec-label,
+#result-sec .fp-phase-label,
+#result-sec .ytc-pillar,
+#result-sec .ft-pillar{color:#dec789}
+#result-sec .fp-dw-name,
+#result-sec .gi-name,
+#result-sec .cc-name,
+#result-sec .sic-name{color:#f7f1e7}
+#result-sec .fp-dw-label,
+#result-sec .fp-dw-period,
+#result-sec .fp-phase-desc,
+#result-sec .fp-sw-label,
+#result-sec .fp-sw-period,
+#result-sec .fp-unknown-note,
+#result-sec .fp-evidence-wrap summary,
+#result-sec .fp-evidence-body,
+#result-sec .ytc-year,
+#result-sec .ytc-desc,
+#result-sec .ft-year-num,
+#result-sec .ft-desc,
+#result-sec .gi-desc,
+#result-sec .gi-ev-wrap summary,
+#result-sec .gi-ev-body,
+#result-sec .cc-where,
+#result-sec .cc-desc,
+#result-sec .cc-absent-desc,
+#result-sec .cc-evidence-wrap summary,
+#result-sec .cc-evidence-wrap .ev-body,
+#result-sec .sic-where,
+#result-sec .sic-desc,
+#result-sec .sic-evidence-wrap summary,
+#result-sec .sic-evidence-wrap .ev-body{
+  color:rgba(247,241,231,.82);
+  opacity:1;
+}
+#result-sec .fp-theme-tag,
+#result-sec .ytc-kw,
+#result-sec .ft-kw,
+#result-sec .gi-cat-badge,
+#result-sec .gi-where-badge{
+  color:#e8edf2;
+  background:rgba(255,255,255,.09);
+  border-color:rgba(255,255,255,.16);
+}
+
+/* 현재 연도 카드는 밝은 강조 카드이므로 별도의 진한 글자색 사용 */
+#result-sec .ytc-card.ytc-current{
+  background:#f8f1e3;
+  border-color:#cdb37d;
+}
+#result-sec .ytc-card.ytc-current .ytc-year,
+#result-sec .ytc-card.ytc-current .ytc-desc{color:#5f5951}
+#result-sec .ytc-card.ytc-current .ytc-pillar{color:#9b7435}
+#result-sec .ytc-card.ytc-current .ytc-kw{
+  color:#6b6256;
+  background:#e8dfcf;
+  border-color:#d8ccb9;
+}
+#result-sec .ytc-card.ytc-current .ytc-trans{color:#8c6731}
+
+@media(max-width:720px){
+  #result-sec .free-core-diagnosis{padding:30px 22px 28px}
+  #result-sec .fcd-text{font-size:1.02rem;line-height:1.85}
 }
 </style>
 </head>
