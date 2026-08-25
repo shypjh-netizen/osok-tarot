@@ -2397,6 +2397,170 @@ body{
 }
 @media(prefers-reduced-motion:reduce){.report-sheet{transition:none}}
 
+/* ═══════════════════════════════════════════════════════
+   실제 사주 결과 — 편집 리포트 디자인
+   기존 계산·리딩 로직은 유지하고 결과 시각 체계만 통일
+═══════════════════════════════════════════════════════ */
+#result-sec{
+  width:min(980px,calc(100% - 32px));
+  gap:20px;
+  padding:42px 0 80px;
+  color:var(--navy);
+}
+.result-report-cover{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);
+  min-height:390px;
+  overflow:hidden;
+  padding:58px 56px 46px;
+  background:
+    repeating-linear-gradient(90deg,transparent 0,transparent 69px,rgba(13,34,53,.035) 70px),
+    #f6f0e5;
+  border:1px solid rgba(13,34,53,.12);
+  box-shadow:0 22px 60px rgba(13,34,53,.09);
+}
+.result-report-cover::after{
+  content:"";
+  position:absolute;
+  top:0;right:0;bottom:0;
+  width:31%;
+  background:var(--navy);
+  z-index:0;
+}
+.rrc-copy,.rrc-index,.rrc-seal,.rrc-mark{position:relative;z-index:1}
+.rrc-seal{
+  position:absolute;top:28px;left:56px;
+  width:32px;height:45px;padding-top:5px;
+  background:var(--rust);border:1px solid var(--rust);
+  box-shadow:inset 0 0 0 2px #f6f0e5;
+  color:#fff;font-size:.72rem;font-weight:700;line-height:1.25;text-align:center;
+}
+.rrc-copy{align-self:center;padding-top:34px;padding-right:50px}
+.rrc-kicker{margin:0 0 18px;color:var(--rust);font-family:Georgia,serif;font-size:.72rem;font-weight:700;letter-spacing:.22em}
+.rrc-copy h1{margin:0;color:var(--navy);font-family:Georgia,"Noto Serif KR",serif;font-size:clamp(2rem,4.4vw,3.45rem);font-weight:600;line-height:1.28;letter-spacing:-.045em}
+.rrc-desc{max-width:470px;margin:22px 0 0;color:#756b5f;font-size:.93rem;line-height:1.9;word-break:keep-all}
+.rrc-mark{position:absolute;right:5.8%;top:54px;width:260px;height:260px;z-index:2}
+.rrc-circle{
+  position:absolute;inset:34px;border-radius:50%;
+  background:linear-gradient(90deg,#f3ede1 50%,var(--navy) 50%);
+  border:1px solid rgba(180,154,99,.5);
+  box-shadow:0 0 0 22px rgba(246,240,229,.08);
+}
+.rrc-circle::before,.rrc-circle::after{content:"";position:absolute;left:50%;width:50%;height:50%;border-radius:50%;transform:translateX(-50%)}
+.rrc-circle::before{top:0;background:var(--navy);box-shadow:0 0 0 15px #f3ede1 inset}
+.rrc-circle::after{bottom:0;background:#f3ede1;box-shadow:0 0 0 15px var(--navy) inset}
+.rrc-orbit{position:absolute;inset:8px;border:1px solid rgba(174,64,35,.7);border-radius:50%;transform:rotate(-14deg) scaleY(.43)}
+.rrc-index{grid-column:2;align-self:end;display:grid;gap:0;margin:0 0 0 20px;color:#f3ede1}
+.rrc-index span{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(243,237,225,.2);font-size:.8rem;letter-spacing:.02em}
+.rrc-index b{color:#d46c4b;font-family:Georgia,serif;font-size:.7rem;letter-spacing:.12em}
+
+#result-sec .birth-bar,#result-sec .rel-status-bar{
+  border-radius:0;background:#fbf8f1;border:1px solid var(--border);box-shadow:none;padding:13px 18px;
+}
+#result-sec .birth-bar{border-left:3px solid var(--rust)}
+#result-sec .birth-edit-btn,#result-sec .rel-edit-btn{border:0;background:none;color:var(--rust);font-weight:700}
+#result-sec .saju-nav{border-radius:0;border:1px solid var(--border);background:rgba(250,247,240,.96);box-shadow:none}
+#result-sec .sn-item{color:#746b60;font-family:Georgia,"Noto Serif KR",serif}
+#result-sec .sn-item.active{color:var(--rust);background:transparent;box-shadow:inset 0 -2px 0 var(--rust)}
+#reading-sections{gap:24px}
+#result-sec .free-core-diagnosis,
+#result-sec .free-traits-sec,
+#result-sec .section-card,
+#result-sec .flow-sec,
+#result-sec .details-accordion,
+#result-sec .topic-preview-sec,
+#result-sec .quick-conclusions-sec,
+#result-sec .current-position-card,
+#result-sec .yearly-timeline-card{
+  border-radius:0;
+  box-shadow:none;
+}
+#result-sec .free-core-diagnosis{
+  position:relative;
+  padding:54px 56px 50px;
+  margin:0;
+  background:#faf7ef;
+  border:1px solid var(--border);
+  border-top:5px solid var(--navy);
+}
+#result-sec .free-core-diagnosis::after{
+  content:"01";position:absolute;right:28px;top:20px;color:rgba(174,64,35,.45);
+  font-family:Georgia,serif;font-size:1rem;letter-spacing:.14em;
+}
+#result-sec .fcd-label,#result-sec .free-sec-label{
+  color:var(--rust);font-family:Georgia,"Noto Serif KR",serif;font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:none;
+}
+#result-sec .fcd-text{
+  max-width:760px;color:var(--navy);font-family:Georgia,"Noto Serif KR",serif;
+  font-size:clamp(1.25rem,2.6vw,1.75rem);font-weight:600;line-height:1.85;word-break:keep-all;
+}
+#result-sec .free-traits-sec,#result-sec .section-card,#result-sec .flow-sec{
+  background:#faf7ef;border:1px solid var(--border);padding:32px;
+}
+#result-sec .trait-cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border)}
+#result-sec .trait-card{min-height:230px;padding:28px 24px;background:#fffdf8;border:0;border-right:1px solid var(--border);border-radius:0}
+#result-sec .trait-card:last-child{border-right:0}
+#result-sec .trait-num{font-family:Georgia,serif;font-size:.72rem;letter-spacing:.18em;color:var(--rust)}
+#result-sec .trait-title{margin-top:32px;color:var(--navy);font-family:Georgia,"Noto Serif KR",serif;font-size:1.15rem;line-height:1.55}
+#result-sec .trait-desc{color:#6f675e;line-height:1.85}
+#result-sec .ability-card,#result-sec .shinsal-sec,#result-sec .gwinin-sec{overflow:hidden}
+#result-sec .ability-card::before,#result-sec .shinsal-sec::before,#result-sec .gwinin-sec::before{
+  content:"";display:block;width:44px;height:3px;margin-bottom:18px;background:var(--rust)
+}
+#result-sec .ability-bar-track,#result-sec .ab-track{background:#ebe5d9;border-radius:0}
+#result-sec .ability-bar-fill,#result-sec .ab-fill{background:var(--navy);border-radius:0}
+#result-sec .sic,#result-sec .gi-present-card{
+  background:#fffdf8;border-color:var(--border);border-radius:0;
+}
+#result-sec .sic-icon,#result-sec .cdc-icon{display:none}
+#result-sec .flow-sec{border-left:4px solid var(--rust)}
+#result-sec .flow-text,#result-sec .ab-text,#result-sec .analysis-basis-box{color:#615a52;line-height:1.9}
+#result-sec .analysis-basis-box{margin-top:22px;padding:18px 20px;background:#f1ebdf;border:0;border-radius:0}
+#result-sec .action-cards-sec{grid-template-columns:1fr 1fr;gap:12px;margin:0}
+#result-sec .flow-action-box.do-box,#result-sec .flow-action-box.avoid-box{
+  min-height:150px;padding:25px 24px;background:#faf7ef;border:1px solid var(--border);border-left-width:4px;border-radius:0;
+}
+#result-sec .flow-action-box.do-box{border-left-color:var(--navy)}
+#result-sec .flow-action-box.avoid-box{border-left-color:var(--rust)}
+#result-sec .flow-action-box.do-box .flow-action-label{color:var(--navy)}
+#result-sec .flow-action-box.avoid-box .flow-action-label{color:var(--rust)}
+#result-sec .flow-action-text{color:#615a52;line-height:1.8}
+#result-sec .details-accordion{background:#faf7ef;border:1px solid var(--border)}
+#result-sec .details-acc-header{padding:20px 24px;font-family:Georgia,"Noto Serif KR",serif;color:var(--navy)}
+#result-sec .detail-item{padding:22px 24px}
+#result-sec .detail-item-title{color:var(--rust)}
+#result-sec .result-actions{padding-top:24px;border-top:1px solid var(--border)}
+#result-sec .action-btn{border-radius:0;background:#faf7ef}
+#result-sec .action-btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+#result-sec .reset-btn{border-radius:0}
+
+@media(max-width:720px){
+  #result-sec{width:min(100% - 24px,620px);padding-top:18px;gap:14px}
+  .result-report-cover{display:block;min-height:520px;padding:92px 28px 28px;background:repeating-linear-gradient(90deg,transparent 0,transparent 35px,rgba(13,34,53,.035) 36px),#f6f0e5}
+  .result-report-cover::after{top:auto;left:0;right:0;bottom:0;width:100%;height:165px}
+  .rrc-seal{top:28px;left:28px}
+  .rrc-copy{padding:0}
+  .rrc-kicker{font-size:.62rem;margin-bottom:14px}
+  .rrc-copy h1{font-size:2.05rem;line-height:1.34}
+  .rrc-desc{margin-top:16px;font-size:.84rem;line-height:1.75}
+  .rrc-mark{right:-14px;top:250px;width:196px;height:196px}
+  .rrc-index{position:absolute;left:28px;right:28px;bottom:24px;margin:0;grid-template-columns:1fr 1fr;column-gap:20px;z-index:3}
+  .rrc-index span{padding:8px 0;font-size:.7rem}
+  #result-sec .saju-nav-inner{justify-content:flex-start;overflow-x:auto}
+  #result-sec .sn-item{flex:0 0 auto;padding:13px 16px}
+  #result-sec .free-core-diagnosis{padding:38px 24px 34px}
+  #result-sec .fcd-text{font-size:1.22rem;line-height:1.78}
+  #result-sec .free-traits-sec,#result-sec .section-card,#result-sec .flow-sec{padding:24px 20px}
+  #result-sec .trait-cards-grid{grid-template-columns:1fr}
+  #result-sec .trait-card{min-height:0;padding:22px 20px;border-right:0;border-bottom:1px solid var(--border)}
+  #result-sec .trait-card:last-child{border-bottom:0}
+  #result-sec .trait-title{margin-top:14px}
+  #result-sec .action-cards-sec{grid-template-columns:1fr}
+  #result-sec .shinsal-grid{grid-template-columns:1fr}
+  #result-sec .result-actions{display:grid;grid-template-columns:1fr 1fr}
+  #result-sec .result-actions .action-btn:last-child{grid-column:1/-1}
+}
 </style>
 </head>
 <body>
@@ -2890,6 +3054,26 @@ body{
 
   <!-- ══ 결과 ══ -->
   <section id="result-sec" class="hidden">
+
+    <!-- 편집 리포트형 결과 표지 -->
+    <header class="result-report-cover" aria-labelledby="result-report-title">
+      <div class="rrc-seal" aria-hidden="true">오<br>속</div>
+      <div class="rrc-copy">
+        <p class="rrc-kicker">PERSONAL READING REPORT</p>
+        <h1 id="result-report-title"><span id="result-report-owner">나를 이해하고</span><br>다음 방향을 정하는 분석</h1>
+        <p class="rrc-desc">사주명리학 · 자미두수 · 점성술, 세 가지 관점을 한 권의 리포트처럼 읽어드립니다.</p>
+      </div>
+      <div class="rrc-mark" aria-hidden="true">
+        <span class="rrc-circle"></span>
+        <span class="rrc-orbit"></span>
+      </div>
+      <div class="rrc-index" aria-label="리포트 구성">
+        <span><b>01</b> 핵심 진단</span>
+        <span><b>02</b> 성향과 강점</span>
+        <span><b>03</b> 운의 흐름</span>
+        <span><b>04</b> 선택 가이드</span>
+      </div>
+    </header>
 
     <!-- 출생 정보 바 -->
     <div class="birth-bar" id="sec-summary">
@@ -6870,6 +7054,8 @@ async function calculate(){
   const genderKo=gender==='m'?'남성':'여성';
   document.getElementById('birth-info-text').textContent=
     `${year}년 ${month}월 ${day}일 · ${hourLabel} · 양력 · ${genderKo}`;
+  const reportOwner = document.getElementById('result-report-owner');
+  if (reportOwner) reportOwner.textContent = name ? `${name}님을 이해하고` : '나를 이해하고';
 
   // 관계 상태 바
   const relLabel = REL_STATUS[relStatus]?.label || '답변 안 함';
