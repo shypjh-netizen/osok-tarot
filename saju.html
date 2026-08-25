@@ -1539,11 +1539,671 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
   .ytc-year,.ytc-pillar{margin-bottom:2px}
 }
 
+/* ══════════════════════════════════
+   라이트 테마 전면 개편 — 2026 오버라이드
+══════════════════════════════════ */
+
+/* 1. 루트 변수 재정의 */
+:root {
+  --navy:#0D2235; --navy-dark:#081826;
+  --ivory:#F5F0E7; --ivory-light:#FAF8F3;
+  --rust:#A34228; --gold:#B49A63; --gold2:#C8AD78;
+  --gold-hover:#9A8350; --gold3:rgba(180,154,99,.1);
+  --text:#25282B; --sub:#66635E; --border:#DDD5C8;
+  --card:#FAF8F3; --dark:#F5F0E7; --dark2:#F0EBE0;
+  --purple:#0D2235; --accent:#A34228; --red:#A34228;
+  --text-primary:#25282B; --text-secondary:#66635E;
+  --text-muted:#8C897F; --text-gold:#B49A63;
+  --text-placeholder:#ABA69E;
+}
+
+/* 2. 전체 기반 */
+body{background:var(--ivory);color:var(--text)}
+canvas#stars{display:none!important}
+.char-glow,.char-ring,.char-ring2{display:none!important}
+.osok-char img{filter:none}
+.cta-scroll-btn{animation:none!important}
+
+/* 3. 히어로 — 아이보리 배경 */
+.hero{background:var(--ivory);margin:0;padding:56px 0 48px;border-bottom:1px solid var(--border)}
+@media(min-width:640px){.hero{padding:72px 0 60px}}
+.hero-kw{color:var(--rust);opacity:1;font-size:.8rem;letter-spacing:.1em;text-transform:none;font-weight:600}
+.hero-hook{color:var(--navy)}
+.hero-hook .em{color:var(--rust)}
+.hero-divider{background:var(--border)}
+.hero-sub{color:var(--sub)}
+.osok-badge{background:rgba(163,66,40,.08);border-color:rgba(163,66,40,.25);color:var(--rust)}
+.cta-scroll-btn{background:var(--navy);color:#fff;border:none;box-shadow:0 2px 12px rgba(13,34,53,.2)}
+.cta-scroll-btn:hover,.cta-scroll-btn:focus-visible{background:var(--navy-dark);box-shadow:0 4px 18px rgba(13,34,53,.3);transform:translateY(-1px);outline:2px solid var(--navy)}
+
+/* 4. 내비게이션 */
+.saju-nav{background:rgba(13,34,53,.95);border-bottom-color:rgba(180,154,99,.2)}
+.sn-item{color:rgba(240,235,224,.5)}
+.sn-item:hover{color:rgba(240,235,224,.8)}
+.sn-item.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* 5. 섹션 공통 */
+.sec-kw{color:var(--gold)}
+.sec-title .em{color:var(--rust)}
+.sec-title{color:var(--text)}
+
+/* 6. 가치 요약 */
+.value-card{background:var(--ivory-light);border-color:var(--border);box-shadow:0 1px 6px rgba(0,0,0,.04)}
+.value-card .vc-num{border-color:rgba(180,154,99,.4);color:var(--gold);background:rgba(180,154,99,.08)}
+.value-card .vc-text{color:var(--text)}
+
+/* 7. 입력 폼 */
+.form-card{background:var(--ivory-light);border-color:var(--border);box-shadow:0 2px 16px rgba(0,0,0,.06)}
+.form-title p{color:var(--gold)}
+.form-title h2{color:var(--text)}
+.form-desc{color:var(--sub)}
+.ig label{color:var(--sub)}
+.ig input,.ig select{background:#fff;border-color:var(--border);color:var(--text)}
+.ig input:focus,.ig select:focus{border-color:var(--gold)}
+.ig select option{background:#fff;color:var(--text)}
+.ig input::placeholder{color:var(--text-placeholder)}
+.radio-row label{color:var(--text)}
+.radio-row input[type=radio]{accent-color:var(--rust)}
+.calc-btn{background:var(--navy);border:none;color:#fff;letter-spacing:.08em;box-shadow:none}
+.calc-btn::after{display:none}
+.calc-btn:hover{background:var(--navy-dark);box-shadow:0 4px 16px rgba(13,34,53,.25)}
+.form-privacy-note{color:var(--text-muted)}
+
+/* 8. 관계·고민 */
+.rel-btn{background:#fff;border-color:var(--border);color:var(--sub)}
+.rel-btn:hover{border-color:var(--gold);color:var(--text);background:var(--ivory-light)}
+.rel-btn.active{background:rgba(180,154,99,.1);border-color:var(--gold);color:var(--navy)}
+.concern-btn{background:#fff;border-color:var(--border)}
+.concern-btn:hover{border-color:var(--gold);background:rgba(180,154,99,.05)}
+.concern-btn.active{border-color:var(--gold);background:rgba(180,154,99,.08)}
+.cb-label{color:var(--text)}
+.concern-step-label{color:var(--gold)}
+.concern-step-title{color:var(--text)}
+.concern-skip-btn{color:var(--text-muted)}
+.concern-custom-textarea{background:#fff;border-color:var(--border);color:var(--text)}
+.concern-custom-hint{color:var(--sub)}
+
+/* 9. 3중 분석·미리보기·왜 */
+.triple-card{background:var(--ivory-light);border-color:var(--border)}
+.triple-card::before{display:none}
+.triple-card:hover{border-color:var(--gold)}
+.triple-icon{color:var(--rust)}
+.triple-card h3{color:var(--text)}
+.triple-card h3 span{color:var(--gold)}
+.triple-card p{color:var(--sub)}
+.triple-desc{color:var(--sub)}
+.why-body{color:var(--sub)}
+.preview-card{background:var(--ivory-light);border-color:var(--border)}
+.preview-label{color:var(--gold);background:rgba(180,154,99,.08);border-color:rgba(180,154,99,.22)}
+.preview-body{color:var(--text)}
+.preview-note{color:var(--text-muted)}
+
+/* 10. 결과 화면 기반 */
+.birth-bar{background:var(--navy);border-color:transparent;border-radius:8px}
+.birth-info-text{color:rgba(240,235,224,.8)}
+.birth-edit-btn{border-color:rgba(180,154,99,.4);color:var(--gold)}
+.birth-edit-btn:hover{border-color:var(--gold)}
+.rel-status-bar{background:rgba(180,154,99,.06);border-color:var(--border)}
+.rel-status-bar .rs-label{color:var(--text-muted)}
+.rel-status-bar .rs-value{color:var(--navy);font-weight:600}
+.rel-edit-btn{border-color:var(--border);color:var(--sub)}
+.rel-edit-panel{background:var(--ivory-light);border-color:var(--border)}
+.rel-edit-panel p{color:var(--sub)}
+.rel-edit-panel .rel-regen-note{color:var(--text-muted)}
+
+/* 11. 요약 카드 */
+.summary-card{background:var(--navy);border-color:rgba(180,154,99,.3)}
+.summary-card::before{display:none}
+.summary-kw{background:rgba(180,154,99,.15);border-color:rgba(180,154,99,.3);color:var(--gold)}
+.summary-personality{color:rgba(240,235,224,.9)}
+.summary-flow-box{background:rgba(180,154,99,.12);border-left-color:var(--gold);color:rgba(240,235,224,.85)}
+
+/* 12. AI 리딩 */
+.ai-reading-card{background:var(--ivory-light);border-color:var(--border)}
+.ai-reading-card h3{color:var(--navy);border-bottom-color:var(--border)}
+.ai-text{color:var(--text)}
+.ai-loading{color:var(--sub)}
+.ai-loading-dots span{background:var(--gold)}
+.ai-unlock-overlay{background:linear-gradient(to bottom,transparent,rgba(245,240,231,.98))}
+.ai-unlock-overlay p{color:var(--sub)}
+.ai-unlock-btn{background:var(--navy);border-color:transparent;color:#fff}
+.ai-unlock-btn:hover{box-shadow:0 4px 16px rgba(13,34,53,.3)}
+.inline-blur{color:var(--text)}
+
+/* 13. 리딩 섹션 */
+.reading-section{background:var(--ivory-light);border-color:var(--border)}
+.rs-label{color:var(--gold)}
+.rs-title{color:var(--navy);border-bottom-color:var(--border)}
+.rs-headline{background:rgba(180,154,99,.08);border-left-color:var(--gold);color:var(--text)}
+.rs-para{color:var(--sub)}
+.rs-toggle-btn{border-top-color:var(--border);color:var(--gold)}
+.rs-toggle-btn:hover{background:rgba(180,154,99,.05)}
+
+/* 14. section-card */
+.section-card{background:var(--ivory-light);border-color:var(--border)}
+.section-card h3{color:var(--navy);border-bottom-color:var(--border)}
+
+/* 15. 사주팔자 */
+.pillar{background:var(--ivory-light);border-color:var(--border)}
+.pillar .stem{color:var(--navy)}
+.pillar .branch{color:var(--rust)}
+.pillar .plabel{color:var(--text-muted)}
+.pillar .stem-name,.pillar .branch-name{color:var(--text-muted)}
+.pillar.day-pillar{background:var(--navy);border-color:rgba(180,154,99,.5)}
+.pillar.day-pillar .stem{color:var(--gold)}
+.pillar.day-pillar .branch{color:var(--gold2)}
+.pillar.day-pillar .plabel,.pillar.day-pillar .stem-name,.pillar.day-pillar .branch-name{color:rgba(240,235,224,.6)}
+.pillar.day-pillar .sipsung-badge{background:rgba(180,154,99,.25);color:#F0EBE0;border-color:rgba(180,154,99,.4)}
+.sipsung-badge{color:var(--navy);background:rgba(13,34,53,.08);border-color:rgba(13,34,53,.2)}
+.ohaeng-bar-bg{background:rgba(0,0,0,.07)}
+.ohaeng-msg-text{color:var(--sub);border-top-color:var(--border)}
+.ohaeng-count{color:var(--sub)}
+.zodiac-badge{background:var(--ivory-light);border-color:var(--border)}
+.zodiac-info h4{color:var(--navy)}
+.zodiac-info p{color:var(--sub)}
+.sinsal-item{background:rgba(0,0,0,.02);border-color:var(--border)}
+.sinsal-name{color:var(--navy)}
+.sinsal-desc{color:var(--sub)}
+#saju-details-toggle-btn{background:rgba(180,154,99,.06);border-color:var(--border);color:var(--sub)}
+#saju-details-toggle-btn:hover{border-color:var(--gold);color:var(--text)}
+
+/* 16. 상품 카드 */
+.ps-guide-line{color:var(--sub)}
+.ps-guide-line strong{color:var(--navy)}
+.ps-card.single{background:var(--ivory-light);border-color:var(--border)}
+.ps-card.single .ps-card-price{color:var(--navy)}
+.ps-card.single .ps-card-name{color:var(--sub)}
+.ps-card.single .ps-card-item{color:var(--sub)}
+.ps-card.single .ps-card-item .psi{color:var(--gold)}
+.ps-card.single p{color:var(--sub)}
+.pay-btn-primary.single-btn{background:var(--navy);color:#fff;border:none}
+.pay-btn-primary.single-btn:hover{background:var(--navy-dark);box-shadow:0 4px 16px rgba(13,34,53,.2)}
+.ps-card.premium{background:var(--navy);border-color:rgba(180,154,99,.5);box-shadow:none}
+.ps-card.premium::before{display:none}
+.ps-card.premium .ps-card-price{color:var(--gold)}
+.ps-card.premium .ps-card-name{color:rgba(240,235,224,.7)}
+.ps-card.premium p{color:rgba(240,235,224,.7)}
+.ps-card.premium .ps-card-item{color:rgba(240,235,224,.85)}
+.ps-card.premium .ps-card-item .psi{color:var(--gold)}
+.ps-card-badge{background:rgba(180,154,99,.2);border-color:rgba(180,154,99,.5);color:var(--gold)}
+.pay-btn-primary.premium-btn{background:var(--gold);color:var(--navy-dark);border:none;font-weight:700}
+.pay-btn-primary.premium-btn:hover{background:var(--gold-hover);box-shadow:0 4px 16px rgba(180,154,99,.3)}
+
+/* 17. 비교 테이블 */
+.decide-table{border-color:var(--border)}
+.decide-row{border-bottom-color:var(--border)}
+.decide-row.header{background:rgba(180,154,99,.06)}
+.decide-cell{color:var(--sub);border-right-color:var(--border)}
+.decide-row.header .decide-cell{color:var(--navy)}
+.decide-cell.highlight{color:var(--text)}
+.decide-cell.premium-col{color:var(--navy)}
+.cmp-decide-title{color:var(--text)}
+.cmp-decide-title .em{color:var(--rust)}
+
+/* 18. 신뢰 섹션 */
+.trust-section{background:var(--ivory-light);border-color:var(--border)}
+.trust-section h4{color:var(--navy)}
+.trust-dl dt{color:var(--navy)}
+.trust-dl dd{color:var(--sub)}
+.trust-note{color:var(--text-muted);border-top-color:var(--border)}
+.trust-note a{color:var(--gold)}
+.trust-note a:hover{color:var(--rust)}
+
+/* 19. 투명성·리뷰 */
+.tran-card{background:var(--ivory-light);border-color:var(--border)}
+.tran-card h4{color:var(--navy)}
+.tran-card p{color:var(--sub)}
+
+/* 20. 결과 액션 */
+.action-btn{border-color:var(--border);background:#fff;color:var(--sub)}
+.action-btn:hover{border-color:var(--gold);color:var(--text);background:rgba(180,154,99,.06)}
+.action-btn.primary{border-color:rgba(180,154,99,.4);color:var(--navy);background:rgba(180,154,99,.08)}
+.action-btn.primary:hover{background:rgba(180,154,99,.15)}
+.action-btn.danger{border-color:rgba(163,66,40,.25);color:var(--rust);background:rgba(163,66,40,.04)}
+.action-btn.danger:hover{border-color:var(--rust);background:rgba(163,66,40,.08)}
+.reset-btn{border-color:var(--border);color:var(--text-muted)}
+.reset-btn:hover{border-color:var(--gold);color:var(--sub)}
+.scroll-top-btn{background:rgba(13,34,53,.8);border:none;color:#fff}
+.scroll-top-btn:hover{background:var(--navy)}
+
+/* 21. 모달 */
+.confirm-modal{background:var(--ivory-light);border-color:var(--border)}
+.confirm-modal h3{color:var(--text)}
+.confirm-modal p{color:var(--sub)}
+.confirm-btn.cancel{border-color:var(--border);color:var(--sub)}
+.confirm-btn.cancel:hover{border-color:var(--gold);color:var(--text)}
+.share-modal{background:var(--ivory-light);border-color:var(--border)}
+.share-modal h3{color:var(--navy)}
+.share-modal>p{color:var(--sub)}
+.share-privacy{background:rgba(180,154,99,.05);border-color:var(--border)}
+.share-privacy label{color:var(--sub)}
+.share-option-btn.link-copy{background:rgba(180,154,99,.08);border-color:var(--border);color:var(--text)}
+.share-option-btn.link-copy:hover{background:rgba(180,154,99,.15)}
+.share-option-btn.img-save{background:rgba(13,34,53,.06);border-color:rgba(13,34,53,.15);color:var(--text)}
+.share-option-btn.img-save:hover{background:rgba(13,34,53,.1)}
+.share-modal-close{border-color:var(--border);color:var(--text-muted)}
+.share-modal-close:hover{border-color:var(--gold);color:var(--sub)}
+
+/* 22. 툴팁 */
+#term-tooltip{background:var(--navy);border-color:rgba(180,154,99,.4)}
+.tt-name{color:var(--gold)}
+.tt-desc{color:rgba(240,235,224,.85)}
+.term-trigger{border-color:rgba(180,154,99,.45);color:rgba(180,154,99,.7)}
+.term-trigger:hover,.term-trigger.active{background:rgba(180,154,99,.12);border-color:var(--gold);color:var(--gold)}
+
+/* 23. 푸터·쿠키 */
+footer,.footer-biz{color:var(--text-muted);border-top-color:var(--border)}
+.footer-links a{color:var(--text-muted)}
+.footer-links a:hover{color:var(--gold)}
+.cookie-banner{background:var(--navy);border-top-color:rgba(180,154,99,.25)}
+.cookie-banner p{color:rgba(240,235,224,.75)}
+.cookie-banner p a{color:var(--gold)}
+.cookie-accept-btn{background:var(--gold);color:var(--navy-dark)}
+.cookie-reject-btn{border-color:rgba(180,154,99,.3);color:rgba(240,235,224,.6)}
+
+/* 24. 무료 핵심 결과 */
+.free-core-diagnosis{background:var(--navy);border-color:rgba(180,154,99,.4)}
+.free-core-diagnosis::before{display:none}
+.fcd-label{color:var(--gold)}
+.fcd-text{color:rgba(240,235,224,.95)}
+.free-traits-sec{background:var(--ivory-light);border-color:var(--border)}
+.trait-card{background:#fff;border-color:var(--border)}
+.trait-num{color:var(--gold)}
+.trait-title{color:var(--text)}
+.trait-desc{color:var(--sub)}
+.basis-sec{background:var(--ivory-light);border-color:var(--border)}
+.basis-label{color:var(--gold)}
+.basis-text{color:var(--sub)}
+.flow-sec{background:var(--ivory-light);border-color:var(--border)}
+.flow-body{color:var(--sub)}
+.flow-action-text{color:var(--sub)}
+.details-accordion{background:#fff;border-color:var(--border)}
+.details-acc-header{color:var(--sub);background:transparent}
+.details-acc-header:hover{background:rgba(180,154,99,.04);color:var(--text)}
+.details-acc-inner{border-top-color:var(--border)}
+.detail-item{border-bottom-color:var(--border)}
+.detail-item-title{color:var(--gold)}
+.detail-item-text{color:var(--sub)}
+.details-acc-icon{color:var(--gold)}
+
+/* 25. 잠금 섹션 */
+.locked-section{background:rgba(180,154,99,.04);border-color:var(--border)}
+.locked-section::before{display:none}
+.locked-title{color:rgba(13,34,53,.6)}
+.locked-preview{color:var(--sub)}
+.locked-unlock-btn{background:rgba(13,34,53,.06);border-color:rgba(13,34,53,.2);color:var(--navy)}
+.locked-unlock-btn:hover{background:rgba(13,34,53,.1)}
+
+/* 26. 고민 (결과 화면) */
+.worry-btn{background:#fff;border-color:var(--border);color:var(--sub)}
+.worry-btn:hover{border-color:var(--gold);color:var(--text);background:rgba(180,154,99,.05)}
+.worry-btn.active{border-color:var(--gold);background:rgba(180,154,99,.1);color:var(--navy)}
+.worry-preview-card{background:var(--ivory-light);border-color:var(--border)}
+.worry-preview-label{color:var(--gold)}
+.worry-preview-body{color:var(--text)}
+.worry-preview-topic{color:var(--gold);background:rgba(180,154,99,.1);border-color:rgba(180,154,99,.3)}
+.unlock-zone{background:rgba(180,154,99,.04);border-color:var(--border)}
+.unlock-zone-title{color:var(--navy)}
+.unlock-item{background:rgba(0,0,0,.02);border-color:var(--border)}
+.unlock-item-dot{color:var(--gold)}
+.unlock-item-text{color:var(--sub)}
+
+/* 27. 맞춤 질문 */
+.cq-confirm-card{background:var(--ivory-light);border-color:var(--border)}
+.cq-confirm-label{color:var(--gold)}
+.cq-confirm-topic-badge{background:rgba(180,154,99,.1);border-color:rgba(180,154,99,.3);color:var(--gold)}
+.cq-confirm-q{color:var(--text);background:rgba(180,154,99,.06);border-left-color:var(--gold)}
+.cq-confirm-ctx{color:var(--sub)}
+.cq-edit-btn{border-color:var(--border);color:var(--sub)}
+.cq-edit-btn:hover{border-color:var(--gold);color:var(--text)}
+.cq-proceed-btn{background:var(--navy);border:none;color:#fff}
+.cq-proceed-btn:hover{background:var(--navy-dark);box-shadow:0 4px 14px rgba(13,34,53,.2)}
+.cq-preview-card{background:var(--ivory-light);border-color:var(--border)}
+.cq-preview-label{color:var(--gold)}
+.cq-prev-topic-badge{background:rgba(180,154,99,.1);border-color:rgba(180,154,99,.3);color:var(--gold)}
+.cq-prev-headline{color:var(--text)}
+.cq-prev-body{color:var(--sub)}
+.cq-prev-locked-item{background:rgba(0,0,0,.02);border-color:var(--border)}
+.cq-prev-locked-item .pli-label{color:var(--gold)!important}
+.topic-btn{background:#fff;border-color:var(--border);color:var(--sub)}
+.topic-btn:hover{border-color:var(--gold);color:var(--text);background:rgba(180,154,99,.05)}
+.topic-btn.active{border-color:var(--gold);background:rgba(180,154,99,.1);color:var(--navy)}
+.rec-q-btn{background:#fff;border-color:var(--border);color:var(--sub)}
+.rec-q-btn::before{color:var(--gold);border-color:var(--border)}
+.rec-q-btn:hover{border-color:var(--gold);color:var(--text);background:rgba(180,154,99,.05)}
+.rec-q-btn.selected{border-color:var(--gold);background:rgba(180,154,99,.08);color:var(--text)}
+.cq-textarea{background:#fff;border-color:var(--border);color:var(--text)}
+.cq-textarea:focus{border-color:var(--gold)}
+.cq-textarea::placeholder{color:var(--text-placeholder)}
+.cq-char-count{color:var(--text-muted)}
+.cq-submit-btn{background:var(--navy);border:none;color:#fff}
+.cq-submit-btn:hover{background:var(--navy-dark);box-shadow:0 4px 14px rgba(13,34,53,.2)}
+.cq-submit-btn:disabled{opacity:.4}
+.cq-reset-btn{border-color:var(--border);color:var(--text-muted)}
+.cq-reset-btn:hover{border-color:var(--gold);color:var(--sub)}
+.cq-divider{background:var(--border)}
+.cq-input-label{color:var(--gold)}
+.cq-privacy-note{color:var(--text-muted)}
+.cq-context-toggle{color:var(--text-muted)}
+.cq-intro-desc{color:var(--sub)}
+.cq-intro-q{color:var(--text)}
+.worry-custom-input-wrap{background:rgba(180,154,99,.04);border-color:var(--border)}
+.worry-custom-input-wrap p{color:var(--sub)}
+.worry-custom-submit-btn{background:var(--navy);border:none;color:#fff}
+.worry-custom-submit-btn:disabled{opacity:.4}
+
+/* 28. 질문 상품 */
+.q-product-card.single{background:var(--ivory-light);border-color:var(--border)}
+.q-product-card.single .q-product-price{color:var(--navy)}
+.q-product-card.single .q-product-item{color:var(--sub)}
+.q-product-card.single .q-product-item .qi{color:var(--gold)}
+.q-product-card.bundle{background:var(--navy);border-color:rgba(180,154,99,.5);box-shadow:none}
+.q-product-card.bundle::before{display:none}
+.q-product-card.bundle .q-product-price{color:var(--gold)}
+.q-product-card.bundle .q-product-item{color:rgba(240,235,224,.85)}
+.q-product-card.bundle .q-product-item .qi{color:var(--gold)}
+.q-pay-btn.single{background:var(--navy);color:#fff;border:none}
+.q-pay-btn.single:hover{background:var(--navy-dark);box-shadow:0 4px 14px rgba(13,34,53,.2)}
+.q-pay-btn.bundle{background:var(--gold);color:var(--navy-dark);border:none}
+.q-pay-btn.bundle:hover{background:var(--gold-hover)}
+.q-product-name{color:var(--sub)}
+.q-product-desc{color:var(--text-muted)}
+.q-pay-note{color:var(--text-muted)}
+.q-product-popular{background:var(--gold);color:var(--navy-dark)}
+
+/* 29. 단일/프리미엄 CTA */
+.single-cta-card{background:var(--ivory-light);border-color:var(--border)}
+.single-cta-label{color:var(--gold)}
+.single-cta-name{color:var(--text)}
+.single-cta-desc{color:var(--sub)}
+.single-cta-item{color:var(--sub)}
+.single-cta-item .sci{color:var(--gold)}
+.single-cta-btn{background:var(--navy);border:none;color:#fff}
+.single-cta-btn:hover{background:var(--navy-dark);box-shadow:0 4px 14px rgba(13,34,53,.2)}
+.premium-sub-cta{background:var(--navy);border-color:rgba(180,154,99,.4)}
+.premium-sub-cta::before{display:none}
+.premium-sub-intro{color:rgba(240,235,224,.65)}
+.premium-sub-name{color:var(--gold)}
+.premium-sub-price{color:var(--gold)}
+.premium-sub-item{color:rgba(240,235,224,.8)}
+.premium-sub-item .psi2{color:var(--gold)}
+.premium-sub-btn{background:var(--gold);color:var(--navy-dark);border:none}
+.premium-sub-btn:hover{background:var(--gold-hover)}
+
+/* 30. 오류 */
+.error-card{background:rgba(163,66,40,.04);border-color:rgba(163,66,40,.2)}
+.error-card p{color:var(--sub)}
+.error-retry-btn{background:rgba(13,34,53,.06);border-color:rgba(13,34,53,.2);color:var(--navy)}
+.error-retry-btn:hover{background:rgba(13,34,53,.12)}
+
+/* 31. 결제 신뢰 배지 */
+.pay-trust-strip{background:rgba(180,154,99,.05);border-color:var(--border)}
+.pay-trust-strip span{color:var(--text-muted)}
+
+/* 32. 어두운 배경 유지 섹션 (운/연도) */
+.fp-position-card{background:rgba(13,34,53,.85);border-color:rgba(140,170,230,.22)}
+.ft-year-card{background:rgba(13,34,53,.8);border-color:rgba(100,140,210,.18)}
+.ft-year-card.is-current{border-color:rgba(180,154,99,.45);background:rgba(13,34,53,.9)}
+.ytc-card{background:rgba(13,34,53,.8);border-color:rgba(100,140,210,.18)}
+.ytc-card.ytc-current{border-color:rgba(180,154,99,.45)}
+.gi-item-card{background:rgba(13,34,53,.65);border-color:rgba(120,160,220,.22)}
+.cheoneul-card{background:var(--navy);border-color:rgba(140,165,255,.18)}
+.shinsal-combo-box{background:rgba(13,34,53,.5)}
+.sic{background:rgba(13,34,53,.7);border-color:rgba(100,80,175,.2)}
+
+/* 33. 고민 변경 패널 */
+.concern-display-card{background:rgba(180,154,99,.07);border-color:rgba(180,154,99,.25)}
+.cdc-label{color:var(--gold)}
+.cdc-topic{color:var(--text)}
+.cdc-question{color:var(--sub)}
+.concern-change-btn{color:var(--gold);background:rgba(180,154,99,.08);border-color:rgba(180,154,99,.25)}
+.concern-change-btn:hover{background:rgba(180,154,99,.15)}
+.top-concern-panel{background:var(--navy);border-color:rgba(140,170,220,.2)}
+.top-panel-title{color:rgba(240,235,224,.8)}
+.top-worry-btn,.alt-worry-btn{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(240,235,224,.7)}
+.top-worry-btn:hover,.alt-worry-btn:hover{background:rgba(255,255,255,.12)}
+.top-worry-btn.active,.alt-worry-btn.active{background:rgba(180,154,99,.2);border-color:rgba(180,154,99,.5);color:rgba(240,235,224,.95)}
+.alt-concern-toggle-btn{background:rgba(13,34,53,.1);border-color:rgba(13,34,53,.18);color:var(--sub)}
+.alt-concern-toggle-btn:hover{background:rgba(13,34,53,.16)}
+.alt-concern-inner{background:rgba(13,34,53,.04);border-color:rgba(13,34,53,.1)}
+.alt-concern-preview-card{background:var(--ivory-light);border-color:var(--border)}
+.alt-preview-label{color:var(--gold)}
+.alt-preview-body p{color:var(--sub)}
+.alt-mini-cta{background:rgba(13,34,53,.08);border-color:rgba(13,34,53,.2);color:var(--navy)}
+.alt-mini-cta:hover{background:rgba(13,34,53,.14)}
+.topic-preview-sec{background:var(--ivory-light);border-color:var(--border)}
+.tp-label{color:var(--gold)}
+.tp-body{color:var(--text)}
+.tp-blur-bar{background:rgba(245,240,231,.9);border-color:var(--border);color:var(--gold)}
+
+/* 34. QC·능력치·타입 */
+.qc-card{background:#fff;border-color:var(--border)}
+.qc-content{color:var(--text)}
+.ab-row:hover{background:rgba(180,154,99,.05)}
+.ab-icon{color:var(--gold)}
+.ab-label{color:var(--text)}
+.ab-dots{color:rgba(180,154,99,.3)}
+.ab-dots .filled{color:var(--gold)}
+.ab-level-tag{color:var(--text-muted)}
+.ab-desc{color:var(--sub)}
+.ability-sub{color:var(--sub)}
+.otc-icon{color:var(--gold)}
+.otc-title{color:var(--text)}
+.otc-short{color:var(--gold);background:rgba(180,154,99,.1);border-color:rgba(180,154,99,.2)}
+.ot-kw{color:var(--gold);background:rgba(180,154,99,.07);border-color:rgba(180,154,99,.2)}
+.otc-summary{color:var(--sub)}
+.otc-evidence summary{color:var(--text-muted)}
+.otc-ev-body{color:var(--sub)}
+
+/* 35. 포커스 스타일 */
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline-color:var(--rust)}
+
+/* 36. 히어로 텍스트 소항목 */
+.hero .hero-kw,.hero .hero-sub,.hero .hero-hook,.hero .osok-badge,.hero .cta-scroll-btn,.hero p{/* 상속됨 */}
+
+/* ══ 스타일 개편 v2 — 에디토리얼 동양 미니멀 ══ */
+
+/* 트리플 카드 하단 아트 */
+.triple-card{display:flex;flex-direction:column;min-height:220px;overflow:hidden;padding-bottom:0}
+.triple-icon{margin-bottom:10px}
+.triple-card h3{margin-bottom:8px}
+.triple-art{margin-top:auto;padding:0;overflow:hidden;color:#0D2235;opacity:.35}
+
+/* 혜택 카드 5개 */
+.benefit-cards-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+@media(max-width:700px){.benefit-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.benefit-card{background:var(--ivory-light);border:1px solid var(--border);border-radius:12px;padding:20px 16px 0;overflow:hidden;display:flex;flex-direction:column;min-height:160px}
+.bc-icon{width:34px;height:34px;background:rgba(163,66,40,.08);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;flex-shrink:0}
+.bc-name{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+.bc-desc{font-size:.76rem;color:var(--sub);line-height:1.55;flex:1}
+.bc-art{margin-top:auto;overflow:hidden;opacity:1}
+
+/* 이용 방법 */
+.how-sec{padding:48px 0}
+.how-steps{display:flex;align-items:center;gap:0}
+.how-step{flex:1;background:var(--ivory-light);border:1px solid var(--border);border-radius:12px;padding:24px 20px}
+.how-num{width:34px;height:34px;border-radius:50%;border:1.5px solid rgba(163,66,40,.35);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:var(--rust);margin-bottom:12px}
+.how-title{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:6px}
+.how-desc{font-size:.78rem;color:var(--sub);line-height:1.6}
+.how-art{margin-top:14px}
+.how-arrow{flex-shrink:0;width:36px;text-align:center;font-size:1.4rem;color:var(--border)}
+
+/* FAQ */
+.faq-sec{padding:48px 0 60px}
+.faq-list{display:flex;flex-direction:column}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item summary{display:flex;align-items:center;gap:10px;padding:18px 0;cursor:pointer;list-style:none}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-q-letter{font-size:.78rem;font-weight:700;color:var(--rust);letter-spacing:.06em;flex-shrink:0}
+.faq-q-text{font-size:.9rem;color:var(--text);font-weight:500;flex:1;line-height:1.5}
+.faq-toggle{color:var(--gold);font-size:1rem;flex-shrink:0;transition:transform .2s}
+.faq-item[open] .faq-toggle{transform:rotate(45deg)}
+.faq-a{font-size:.84rem;color:var(--sub);line-height:1.8;padding:0 0 18px 24px}
+
+/* 히어로 레이아웃: 텍스트 + 일러스트 */
+.hero{position:relative;overflow:hidden}
+.hero-graphic-inner{position:relative;display:inline-block}
+.hero-stamp{position:absolute;top:-6px;right:-28px}
+@media(max-width:600px){.hero-stamp{right:-16px;top:-4px}}
+.hero-inner{display:flex;align-items:center;justify-content:space-between;gap:32px;max-width:960px;margin:0 auto}
+.hero-text{flex:1;min-width:0}
+.hero-brand-badge{margin-bottom:16px}
+.hero-main-title{font-size:clamp(2.6rem,9vw,4.4rem);font-weight:600;color:var(--navy);line-height:1.08;letter-spacing:.04em;margin:0 0 14px}
+.hero-subtitle{font-size:clamp(1rem,3vw,1.25rem);color:var(--text);font-weight:500;line-height:1.5;margin:0 0 10px}
+.hero-desc{font-size:.85rem;color:var(--sub);line-height:1.7;margin:0}
+.hero-graphic{flex-shrink:0;display:flex;align-items:center;gap:12px;opacity:.95}
+.ying-yang-svg{width:clamp(260px,40vw,370px);height:auto;margin-left:auto;overflow:visible}
+.hero-graphic{margin-right:-24px}
+.hero-year-text{display:flex;flex-direction:column;gap:10px;font-size:.9rem;color:rgba(37,40,43,.3);letter-spacing:.14em;line-height:1;font-weight:500}
+.hero-year-text span{display:block}
+@media(max-width:600px){.hero-inner{flex-direction:column-reverse;gap:16px}.hero-graphic{width:100%;justify-content:center}.ying-yang-svg{width:130px}.hero-text{text-align:center}.hero-brand-badge{display:flex;justify-content:center}.hero-stamp{top:10px;right:10px}}
+
+/* 네이비 띠 — 페이지 상단부터 내려오는 hero 오른쪽 배경 */
+.hero{position:relative;overflow:visible}
+.hero::before{
+  content:'';
+  position:absolute;
+  top:0; right:6%;
+  width:20%;
+  height:78%;
+  background:#1A2535;
+  z-index:0;
+  pointer-events:none;
+}
+.hero-inner{position:relative;z-index:1}
+
+/* 히어로 CTA 버튼 2개 */
+.hero-cta-row{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+@media(max-width:600px){.hero-cta-row{justify-content:center}}
+.cta-scroll-btn{flex:0 0 auto}
+.cta-secondary-btn{flex:0 0 auto;padding:14px 24px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;background:transparent;border:1.5px solid var(--border);color:var(--sub);transition:all .2s;font-family:inherit}
+.cta-secondary-btn:hover{border-color:var(--navy);color:var(--navy)}
+
+/* 섹션 헤더 — 러스트 좌측 바 */
+.sec-header,.triple-header{border-left:3px solid var(--rust);padding-left:14px;margin-bottom:24px}
+.sec-header h2,.triple-header h2{margin:0}
+.sec-header p.sec-kw,.triple-header p.sec-kw{margin:0 0 4px;font-size:.78rem;letter-spacing:.1em;color:var(--rust);text-transform:uppercase;font-weight:600}
+
+/* 스티키 하단 CTA 바 */
+.sticky-bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);border-top:1px solid rgba(180,154,99,.2);padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:10px;z-index:1000;transform:translateY(100%);transition:transform .3s ease}
+.sticky-bottom-bar.visible{transform:translateY(0)}
+.sbb-btn-primary{padding:11px 22px;background:var(--rust);border:none;border-radius:8px;color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit}
+.sbb-btn-primary:hover{background:#8f3922}
+.sbb-btn-secondary{padding:11px 22px;background:transparent;border:1.5px solid rgba(180,154,99,.45);border-radius:8px;color:rgba(240,235,224,.8);font-size:.9rem;font-weight:600;cursor:pointer;font-family:inherit}
+.sbb-btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+.sbb-logo{width:28px;height:28px;border-radius:6px;background:rgba(180,154,99,.15);border:1px solid rgba(180,154,99,.3);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:.75rem;font-weight:700;flex-shrink:0;display:none}
+@media(min-width:480px){.sbb-logo{display:flex}}
+
+/* ══ 히어로 정돈 v3 — 분석 리포트 서비스 ══ */
+.hero{
+  overflow:hidden;
+  padding:76px 24px 70px;
+  background:
+    linear-gradient(90deg,rgba(163,66,40,.035) 1px,transparent 1px) 0 0/72px 72px,
+    var(--ivory);
+}
+.hero::before{
+  top:0;right:0;width:34%;height:100%;
+  background:var(--navy-dark);
+}
+.hero-inner{max-width:1120px;gap:72px}
+.hero-text{max-width:540px}
+.hero-brand-badge{margin-bottom:22px}
+.hero-brand-badge svg{width:34px;height:34px}
+.hero-main-title{
+  font-size:clamp(3rem,5.2vw,4.35rem);
+  letter-spacing:-.045em;
+  line-height:1.04;
+  margin-bottom:22px;
+}
+.hero-subtitle{
+  font-size:clamp(1.18rem,2.2vw,1.55rem);
+  line-height:1.55;
+  letter-spacing:-.025em;
+  margin-bottom:14px;
+}
+.hero-desc{font-size:.93rem;line-height:1.75}
+.hero-cta-row{margin-top:32px}
+.hero .cta-scroll-btn,.hero .cta-secondary-btn{min-height:52px;padding:0 25px;border-radius:8px}
+.hero .cta-secondary-btn{background:rgba(250,248,243,.64);color:var(--navy);border-color:#cec4b5}
+
+.hero-report-wrap{flex:0 0 470px;position:relative;padding:18px 0}
+.hero-report{
+  position:relative;
+  display:grid;
+  grid-template-columns:148px 1fr;
+  min-height:328px;
+  background:var(--ivory-light);
+  border:1px solid rgba(221,213,200,.9);
+  box-shadow:0 24px 60px rgba(8,24,38,.18);
+  z-index:1;
+}
+.hero-report-mark{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:#efe9dd;
+  border-right:1px solid var(--border);
+}
+.hero-report-mark::before,.hero-report-mark::after{
+  content:'';position:absolute;border:1px solid rgba(163,66,40,.28);border-radius:50%;
+  width:188px;height:58px;transform:rotate(-18deg);
+}
+.hero-report-mark::after{width:126px;height:126px;border-color:rgba(13,34,53,.1);transform:none}
+.mini-yinyang{width:94px;height:94px;position:relative;z-index:1;filter:drop-shadow(0 8px 14px rgba(8,24,38,.12))}
+.hero-report-body{padding:34px 30px 28px}
+.report-eyebrow{font-size:.7rem;color:var(--rust);letter-spacing:.14em;font-weight:700;margin-bottom:10px}
+.report-title{font-size:1.34rem;color:var(--navy);line-height:1.4;letter-spacing:-.03em;margin:0 0 22px;font-weight:700}
+.report-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--border)}
+.report-list li{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);font-size:.84rem;color:var(--text)}
+.report-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--rust);flex:0 0 auto}
+.report-foot{display:flex;justify-content:space-between;align-items:center;margin-top:19px;color:var(--text-muted);font-size:.7rem}
+.report-seal{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--rust);color:#fff;font-size:.58rem;line-height:1.15;text-align:center;border-radius:2px;font-weight:700}
+.hero-side-type{position:absolute;right:-52px;top:48px;display:flex;flex-direction:column;gap:10px;color:rgba(245,240,231,.55);font-family:serif;font-size:.76rem;z-index:2}
+
+@media(max-width:900px){
+  .hero{padding:58px 22px 48px}
+  .hero::before{width:24%}
+  .hero-inner{gap:34px}
+  .hero-report-wrap{flex-basis:400px}
+  .hero-report{grid-template-columns:118px 1fr}
+  .hero-report-body{padding:28px 22px 24px}
+}
+@media(max-width:720px){
+  .hero{padding:38px 18px 36px;background:var(--ivory)}
+  .hero::before{display:none}
+  .hero-inner{flex-direction:column;align-items:stretch;gap:28px}
+  .hero-text{max-width:none;text-align:left}
+  .hero-brand-badge{justify-content:flex-start;margin-bottom:16px}
+  .hero-main-title{font-size:2.85rem;margin-bottom:17px}
+  .hero-subtitle{font-size:1.18rem}
+  .hero-desc br{display:none}
+  .hero-cta-row{justify-content:flex-start;margin-top:25px}
+  .hero .cta-scroll-btn,.hero .cta-secondary-btn{flex:1 1 150px;padding:0 16px}
+  .hero-report-wrap{flex-basis:auto;width:100%;padding:0}
+  .hero-report{grid-template-columns:94px 1fr;min-height:0;box-shadow:0 14px 36px rgba(8,24,38,.11)}
+  .mini-yinyang{width:68px;height:68px}
+  .hero-report-body{padding:22px 18px 18px}
+  .report-title{font-size:1.08rem;margin-bottom:14px}
+  .report-list li{padding:9px 0;font-size:.78rem}
+  .report-foot{margin-top:14px}
+  .hero-side-type{display:none}
+}
+@media(max-width:390px){
+  .hero{padding-left:16px;padding-right:16px}
+  .hero-main-title{font-size:2.55rem}
+  .hero-report{grid-template-columns:76px 1fr}
+  .mini-yinyang{width:56px;height:56px}
+  .report-foot span:first-child{display:none}
+  .report-foot{justify-content:flex-end}
+}
 
 </style>
 </head>
 <body>
-<canvas id="stars"></canvas>
+<!-- stars canvas removed (light theme) -->
 <button class="scroll-top-btn" id="scroll-top-btn" onclick="scrollToTop()" title="맨 위로">↑</button>
 <div id="term-tooltip" role="tooltip">
   <button class="tt-close" onclick="hideTermTooltip()">✕</button>
@@ -1554,52 +2214,242 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
 
   <!-- ══ 히어로 ══ -->
   <section class="hero">
-    <div class="osok-badge">✦ 오속 사주 ✦</div>
-
-    <div class="osok-char">
-      <div class="char-glow"></div>
-      <div class="char-ring"></div>
-      <div class="char-ring2"></div>
-      <img src="osok.png" alt="오속">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <!-- 좌상단 오속 뱃지 -->
+        <div class="hero-brand-badge">
+          <svg viewBox="0 0 32 32" width="32" height="32"><rect width="32" height="32" rx="4" fill="#A34228"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-size="12" font-family="serif" font-weight="700">오속</text></svg>
+        </div>
+        <h1 class="hero-main-title">오속 사주</h1>
+        <p class="hero-subtitle">운명을 단정하지 않고,<br>지금의 방향을 읽습니다</p>
+        <p class="hero-desc">사주·자미두수·점성술을 함께<br>살펴보는 개인 분석</p>
+        <div class="hero-cta-row">
+          <button class="cta-scroll-btn" onclick="scrollToFreeForm()" aria-label="무료 사주 입력 영역으로 이동">무료로 시작하기</button>
+          <button class="cta-secondary-btn" onclick="document.getElementById('result-sec').scrollIntoView({behavior:'smooth'})">상세 리포트 보기</button>
+        </div>
+      </div>
+      <div class="hero-report-wrap" aria-label="오속 사주 분석 리포트 미리보기">
+        <div class="hero-report">
+          <div class="hero-report-mark" aria-hidden="true">
+            <svg class="mini-yinyang" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="46" fill="#0D2235"/>
+              <path d="M50 4a46 46 0 0 1 0 92 23 23 0 0 0 0-46 23 23 0 0 1 0-46z" fill="#E8E2D5"/>
+              <circle cx="50" cy="27" r="7" fill="#0D2235"/>
+              <circle cx="50" cy="73" r="7" fill="#E8E2D5"/>
+            </svg>
+          </div>
+          <div class="hero-report-body">
+            <p class="report-eyebrow">PERSONAL READING REPORT</p>
+            <h2 class="report-title">나를 이해하고<br>다음 방향을 정하는 분석</h2>
+            <ul class="report-list">
+              <li>타고난 성향과 강점</li>
+              <li>일·재물·관계의 흐름</li>
+              <li>지금 먼저 살펴볼 선택</li>
+              <li>세 가지 관점의 교차 분석</li>
+            </ul>
+            <div class="report-foot">
+              <span>사주 · 자미두수 · 점성술</span>
+              <span class="report-seal">오<br>속</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-side-type" aria-hidden="true"><span>年</span><span>月</span><span>日</span><span>時</span></div>
+      </div>
     </div>
-
-    <p class="hero-kw">열심히 하는데도 자꾸 막히는 기분이 든다면</p>
-
-    <h1 class="hero-hook">
-      노력이 부족한 게 아니라,<br>
-      지금은 방향과 시기를<br>
-      <span class="em">다시 봐야 할 때일 수 있어요.</span>
-    </h1>
-
-    <div class="hero-divider"></div>
-
-    <p class="hero-sub">
-      생년월일을 바탕으로 지금 내 흐름이 어디에 머물러 있는지,<br>
-      무엇을 밀어야 하고 무엇을 기다려야 하는지 확인해보세요.
-    </p>
-
-    <button class="cta-scroll-btn" onclick="scrollToFreeForm()" aria-label="무료 사주 입력 영역으로 이동">내 사주 흐름 무료로 확인하기</button>
-    <p style="margin-top:14px;font-size:.78rem;color:rgba(184,158,126,.48);letter-spacing:.04em">약 1분 소요 · 회원가입 없이 무료</p>
   </section>
 
-  <!-- ══ 무료 결과 가치 요약 ══ -->
+  <!-- ══ 세 가지 관점 ══ -->
+  <section class="triple-sec">
+    <div class="triple-header">
+      <h2 class="sec-title">세 가지 관점으로 <span class="em">읽는 나</span></h2>
+      <p class="triple-desc">한 가지 해석으로 단정하지 않아요. 세 가지 분석이 공통으로 가리키는 흐름을 비교해, 지금의 방향을 더 입체적으로 살펴봅니다.</p>
+    </div>
+    <div class="triple-grid">
+      <div class="triple-card">
+        <div class="triple-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 2 A5 5 0 0 0 12 22 A5 5 0 0 1 12 12 A5 5 0 0 0 12 2Z"/></svg>
+        </div>
+        <h3>사주명리학</h3>
+        <p>타고난 흐름과<br>오행의 균형을 분석</p>
+        <div class="triple-art" aria-hidden="true">
+          <svg width="100%" height="60" viewBox="0 0 160 60" preserveAspectRatio="xMidYMax meet">
+            <rect x="0" y="30" width="18" height="30" fill="currentColor"/>
+            <rect x="22" y="18" width="18" height="42" fill="currentColor" opacity=".65"/>
+            <rect x="44" y="8" width="18" height="52" fill="currentColor" opacity=".45"/>
+            <rect x="66" y="22" width="18" height="38" fill="currentColor" opacity=".7"/>
+            <rect x="88" y="12" width="18" height="48" fill="currentColor" opacity=".5"/>
+            <rect x="110" y="26" width="18" height="34" fill="currentColor" opacity=".4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="triple-card">
+        <div class="triple-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <h3>자미두수</h3>
+        <p>삶의 영역별 운세와<br>시기를 확인</p>
+        <div class="triple-art" aria-hidden="true">
+          <svg width="100%" height="60" viewBox="0 0 160 60" preserveAspectRatio="xMidYMax meet">
+            <ellipse cx="80" cy="52" rx="72" ry="18" fill="currentColor" opacity=".3"/>
+            <circle cx="80" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="80" cy="30" r="10" fill="none" stroke="currentColor" stroke-width="1" opacity=".6"/>
+            <circle cx="80" cy="30" r="3" fill="currentColor" opacity=".5"/>
+            <circle cx="108" cy="20" r="4" fill="currentColor" opacity=".7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="triple-card">
+        <div class="triple-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="11" r="6"/><circle cx="16" cy="14" r="6"/></svg>
+        </div>
+        <h3>서양 점성술</h3>
+        <p>성향과 관계, 선택의<br>패턴을 해석</p>
+        <div class="triple-art" aria-hidden="true">
+          <svg width="100%" height="60" viewBox="0 0 160 60" preserveAspectRatio="xMidYMax meet">
+            <circle cx="55" cy="36" r="28" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="98" cy="36" r="28" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+            <ellipse cx="77" cy="36" rx="10" ry="14" fill="currentColor" opacity=".12"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 이런 내용을 받아요 ══ -->
   <section class="value-summary-sec">
     <div class="sec-header">
-      <h2 class="sec-title">무료 사주에서 <span class="em">먼저 확인해보세요</span></h2>
+      <h2 class="sec-title">이런 내용을 <span class="em">받아요</span></h2>
     </div>
-    <div class="value-cards">
-      <div class="value-card">
-        <div class="vc-num">1</div>
-        <p class="vc-text">나는 어떤 방식으로 움직일 때 잘 풀리는 사람인지</p>
+    <div class="benefit-cards-grid">
+      <div class="benefit-card">
+        <div class="bc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A34228" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <p class="bc-name">핵심 요약</p>
+        <p class="bc-desc">한눈에 보는<br>나의 흐름</p>
+        <div class="bc-art" aria-hidden="true">
+          <svg width="100%" height="44" viewBox="0 0 80 44" preserveAspectRatio="xMidYMax meet">
+            <rect x="2" y="24" width="12" height="20" fill="#0D2235"/>
+            <rect x="18" y="14" width="12" height="30" fill="#0D2235" opacity=".65"/>
+            <rect x="34" y="8" width="12" height="36" fill="#0D2235" opacity=".45"/>
+            <rect x="50" y="18" width="12" height="26" fill="#0D2235" opacity=".7"/>
+            <rect x="66" y="10" width="12" height="34" fill="#0D2235" opacity=".5"/>
+          </svg>
+        </div>
       </div>
-      <div class="value-card">
-        <div class="vc-num">2</div>
-        <p class="vc-text">요즘 일이 막히는 이유가 방향인지, 시기인지</p>
+      <div class="benefit-card">
+        <div class="bc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A34228" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M3 21v-2a9 9 0 0118 0v2"/></svg>
+        </div>
+        <p class="bc-name">성향 분석</p>
+        <p class="bc-desc">강점과 약점,<br>성향의 결</p>
+        <div class="bc-art" aria-hidden="true">
+          <svg width="100%" height="44" viewBox="0 0 80 44" preserveAspectRatio="xMidYMax meet">
+            <polygon points="40,4 76,40 4,40" fill="none" stroke="#0D2235" stroke-width="1.5"/>
+            <circle cx="40" cy="28" r="10" fill="#0D2235" opacity=".18"/>
+          </svg>
+        </div>
       </div>
-      <div class="value-card">
-        <div class="vc-num">3</div>
-        <p class="vc-text">일·재물·관계에서 지금 주의해야 할 흐름은 무엇인지</p>
+      <div class="benefit-card">
+        <div class="bc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A34228" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <p class="bc-name">운의 흐름</p>
+        <p class="bc-desc">시기별 흐름과<br>기회 포인트</p>
+        <div class="bc-art" aria-hidden="true">
+          <svg width="100%" height="44" viewBox="0 0 80 44" preserveAspectRatio="xMidYMax meet">
+            <polyline points="2,34 18,22 34,28 50,12 70,18" fill="none" stroke="#0D2235" stroke-width="1.5"/>
+            <circle cx="50" cy="12" r="3.5" fill="#A34228" opacity=".65"/>
+          </svg>
+        </div>
       </div>
+      <div class="benefit-card">
+        <div class="bc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A34228" stroke-width="2"><circle cx="9" cy="9" r="4"/><circle cx="16" cy="15" r="4"/></svg>
+        </div>
+        <p class="bc-name">관계 분석</p>
+        <p class="bc-desc">타인과의 관계<br>패턴 이해</p>
+        <div class="bc-art" aria-hidden="true">
+          <svg width="100%" height="44" viewBox="0 0 80 44" preserveAspectRatio="xMidYMax meet">
+            <circle cx="30" cy="28" r="20" fill="none" stroke="#0D2235" stroke-width="1.5"/>
+            <circle cx="52" cy="28" r="20" fill="none" stroke="#0D2235" stroke-width="1.5" opacity=".5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A34228" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <p class="bc-name">실천 가이드</p>
+        <p class="bc-desc">지금 나에게<br>필요한 방향</p>
+        <div class="bc-art" aria-hidden="true">
+          <svg width="100%" height="44" viewBox="0 0 80 44" preserveAspectRatio="xMidYMax meet">
+            <line x1="4" y1="18" x2="76" y2="18" stroke="#0D2235" stroke-width="2"/>
+            <line x1="4" y1="28" x2="58" y2="28" stroke="#0D2235" stroke-width="2" opacity=".55"/>
+            <line x1="4" y1="38" x2="40" y2="38" stroke="#0D2235" stroke-width="2" opacity=".3"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 이용 방법 ══ -->
+  <section class="how-sec">
+    <div class="sec-header">
+      <h2 class="sec-title"><span class="em">이용 방법</span></h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-num">01</div>
+        <p class="how-title">정보 입력</p>
+        <p class="how-desc">생년월일과 시간을<br>입력해 주세요</p>
+        <div class="how-art" aria-hidden="true">
+          <svg width="64" height="52" viewBox="0 0 64 52" fill="none"><rect x="4" y="8" width="56" height="36" rx="4" stroke="#0D2235" stroke-width="1.5" opacity=".3"/><circle cx="32" cy="26" r="9" fill="#0D2235" opacity=".2"/></svg>
+        </div>
+      </div>
+      <div class="how-arrow" aria-hidden="true">›</div>
+      <div class="how-step">
+        <div class="how-num">02</div>
+        <p class="how-title">분석 진행</p>
+        <p class="how-desc">세 가지 관점으로<br>분석을 진행합니다</p>
+        <div class="how-art" aria-hidden="true">
+          <svg width="64" height="52" viewBox="0 0 64 52" fill="none"><circle cx="32" cy="26" r="20" stroke="#0D2235" stroke-width="1.5" opacity=".3"/><path d="M22 26 L32 16 L42 26" stroke="#0D2235" stroke-width="1.5" opacity=".5"/></svg>
+        </div>
+      </div>
+      <div class="how-arrow" aria-hidden="true">›</div>
+      <div class="how-step">
+        <div class="how-num">03</div>
+        <p class="how-title">결과 확인</p>
+        <p class="how-desc">나만의 리포트를<br>확인하고 활용하세요</p>
+        <div class="how-art" aria-hidden="true">
+          <svg width="64" height="52" viewBox="0 0 64 52" fill="none"><rect x="10" y="4" width="44" height="44" rx="3" stroke="#0D2235" stroke-width="1.5" opacity=".3"/><line x1="18" y1="16" x2="46" y2="16" stroke="#0D2235" stroke-width="1.5" opacity=".4"/><line x1="18" y1="24" x2="38" y2="24" stroke="#0D2235" stroke-width="1.5" opacity=".3"/><line x1="18" y1="32" x2="30" y2="32" stroke="#0D2235" stroke-width="1.5" opacity=".2"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FAQ ══ -->
+  <section class="faq-sec">
+    <div class="sec-header">
+      <h2 class="sec-title">자주 묻는 <span class="em">질문</span></h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary class="faq-q"><span class="faq-q-letter">Q</span><span class="faq-q-text">정확한 결과를 위해 정확한 시간이 필요한가요?</span><span class="faq-toggle">+</span></summary>
+        <p class="faq-a">출생 시간이 있으면 더 정확한 해석이 가능해요. 모르시는 경우 '모름'을 선택해도 사주명리학·자미두수·점성술 세 가지 분석 결과를 받으실 수 있어요.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q"><span class="faq-q-letter">Q</span><span class="faq-q-text">무료 서비스와 유료 리포트의 차이는 무엇인가요?</span><span class="faq-toggle">+</span></summary>
+        <p class="faq-a">무료 분석은 지금의 큰 흐름과 에너지 방향을 간략히 알려드려요. 유료 상세 리포트는 일·재물·관계·성향·시기별 운세를 깊이 있게 다루며, AI 기반 맞춤 해석이 담겨요.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q"><span class="faq-q-letter">Q</span><span class="faq-q-text">결과는 어떻게 활용하면 좋을까요?</span><span class="faq-toggle">+</span></summary>
+        <p class="faq-a">오속의 결과는 '참고 자료'로 활용하시길 권해요. 지금 에너지 흐름이 어디에 있는지 파악하고, 중요한 선택의 기준을 세우는 데 도움이 돼요. 운명을 단정하지 않아요.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q"><span class="faq-q-letter">Q</span><span class="faq-q-text">개인 정보는 안전하게 관리되나요?</span><span class="faq-toggle">+</span></summary>
+        <p class="faq-a">입력한 생년월일 정보는 사주 결과 생성에만 사용되며, 브라우저에만 임시 저장돼요. 별도 서버에 저장하거나 제3자에게 제공하지 않아요.</p>
+      </details>
     </div>
   </section>
 
@@ -1673,34 +2523,66 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
   </section>
 
   <!-- ══ 왜 흐름을 알아야 할까요 ══ -->
-  <section class="why-sec">
+  <section class="why-sec" style="display:none">
     <div class="sec-header">
       <h2 class="sec-title">왜 지금의 <span class="em">흐름을 알아야 할까요?</span></h2>
     </div>
     <p class="why-body">같은 노력을 해도 잘 풀리는 때와 잠시 정비해야 하는 때는 다릅니다. 오속은 미래를 단정하기보다, 지금 내 에너지가 어디에 머물러 있는지 살펴보고 다음 선택의 기준을 찾도록 도와드려요.</p>
   </section>
 
-  <!-- ══ 3중 분석 (혜택 중심) ══ -->
-  <section class="triple-sec">
+  <!-- ══ 3중 분석 (기존 위치 — 위로 이동됨, 숨김) ══ -->
+  <section class="triple-sec" style="display:none">
     <div class="triple-header">
       <h2 class="sec-title">한 가지 해석으로 <span class="em">단정하지 않아요</span></h2>
       <p class="triple-desc">세 가지 분석이 공통으로 가리키는 흐름을 비교해, 지금의 방향을 더 입체적으로 살펴봅니다.</p>
     </div>
     <div class="triple-grid">
       <div class="triple-card">
-        <div class="triple-icon">☯</div>
+        <div class="triple-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 2 A5 5 0 0 0 12 22 A5 5 0 0 1 12 12 A5 5 0 0 0 12 2Z"/></svg>
+        </div>
         <h3>사주명리학</h3>
-        <p>타고난 기질과 일·재물·관계에서 반복되는 삶의 패턴을 살펴봐요.</p>
+        <p>타고난 흐름과<br>오행의 균형을 분석</p>
+        <div class="triple-art" aria-hidden="true">
+          <svg width="100%" height="60" viewBox="0 0 160 60" preserveAspectRatio="xMidYMax meet">
+            <rect x="0" y="30" width="18" height="30" fill="currentColor"/>
+            <rect x="22" y="18" width="18" height="42" fill="currentColor" opacity=".65"/>
+            <rect x="44" y="8" width="18" height="52" fill="currentColor" opacity=".45"/>
+            <rect x="66" y="22" width="18" height="38" fill="currentColor" opacity=".7"/>
+            <rect x="88" y="12" width="18" height="48" fill="currentColor" opacity=".5"/>
+            <rect x="110" y="26" width="18" height="34" fill="currentColor" opacity=".4"/>
+          </svg>
+        </div>
       </div>
       <div class="triple-card">
-        <div class="triple-icon">✦</div>
+        <div class="triple-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
         <h3>자미두수</h3>
-        <p>지금 어느 영역에 변화가 들어오는지, 시기별 흐름을 확인해요.</p>
+        <p>삶의 영역별 운세와<br>시기를 확인</p>
+        <div class="triple-art" aria-hidden="true">
+          <svg width="100%" height="60" viewBox="0 0 160 60" preserveAspectRatio="xMidYMax meet">
+            <ellipse cx="80" cy="52" rx="72" ry="18" fill="currentColor" opacity=".3"/>
+            <circle cx="80" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="80" cy="30" r="10" fill="none" stroke="currentColor" stroke-width="1" opacity=".6"/>
+            <circle cx="80" cy="30" r="3" fill="currentColor" opacity=".5"/>
+            <circle cx="108" cy="20" r="4" fill="currentColor" opacity=".7"/>
+          </svg>
+        </div>
       </div>
       <div class="triple-card">
-        <div class="triple-icon">♑</div>
+        <div class="triple-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="11" r="6"/><circle cx="16" cy="14" r="6"/></svg>
+        </div>
         <h3>서양 점성술</h3>
-        <p>감정과 관계, 선택할 때 반복되는 내면의 성향을 함께 살펴봐요.</p>
+        <p>성향과 관계, 선택의<br>패턴을 해석</p>
+        <div class="triple-art" aria-hidden="true">
+          <svg width="100%" height="60" viewBox="0 0 160 60" preserveAspectRatio="xMidYMax meet">
+            <circle cx="55" cy="36" rx="32" ry="28" r="28" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="98" cy="36" r="28" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+            <ellipse cx="77" cy="36" rx="10" ry="14" fill="currentColor" opacity=".12"/>
+          </svg>
+        </div>
       </div>
     </div>
   </section>
@@ -1965,48 +2847,55 @@ input::placeholder,select::placeholder{color:var(--text-placeholder)}
 </div><!-- /page -->
 
 <!-- 이메일 입력 팝업 -->
-<div id="saju-email-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;padding:20px">
-  <div style="background:#10102a;border:1px solid rgba(201,168,76,.35);border-radius:20px;padding:32px 28px;max-width:380px;width:100%;text-align:center">
+<div id="saju-email-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#FAF8F3;border:1px solid #DDD5C8;border-radius:20px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.12)">
     <div style="font-size:26px;margin-bottom:12px">✉️</div>
-    <h3 style="font-size:18px;color:#e8c97a;margin-bottom:8px;font-weight:700">이메일 주소를 입력해주세요</h3>
-    <p id="saju-popup-tier" style="font-size:12px;color:#c9a84c;margin-bottom:6px;letter-spacing:.05em">✦ 기본 리딩 (₩9,900)</p>
-    <p style="font-size:13px;color:#b89e7e;line-height:1.8;margin-bottom:20px">
+    <h3 style="font-size:18px;color:#0D2235;margin-bottom:8px;font-weight:700">이메일 주소를 입력해주세요</h3>
+    <p id="saju-popup-tier" style="font-size:12px;color:#B49A63;margin-bottom:6px;letter-spacing:.05em">✦ 기본 리딩 (₩9,900)</p>
+    <p style="font-size:13px;color:#66635E;line-height:1.8;margin-bottom:20px">
       결제 완료 후 입력하신 이메일로<br>상세 리딩이 자동 발송돼요.
     </p>
     <input type="email" id="saju-email-input"
-      style="width:100%;padding:13px 14px;background:#0d0c22;border:1px solid rgba(201,168,76,.3);border-radius:10px;color:#ede0c8;font-size:15px;font-family:inherit;outline:none;margin-bottom:8px;box-sizing:border-box"
+      style="width:100%;padding:13px 14px;background:#fff;border:1px solid #DDD5C8;border-radius:10px;color:#25282B;font-size:15px;font-family:inherit;outline:none;margin-bottom:8px;box-sizing:border-box"
       placeholder="이메일 주소 입력"
       onkeydown="if(event.key==='Enter')submitSajuEmail()">
     <p id="saju-email-err" style="display:none;color:#e57373;font-size:12px;margin-bottom:8px">이메일 주소를 올바르게 입력해주세요.</p>
     <!-- 쿠폰 입력 -->
     <div style="margin-bottom:12px;text-align:left">
-      <button onclick="toggleSajuCoupon()" style="background:none;border:none;color:rgba(201,168,76,.6);font-size:12px;cursor:pointer;padding:0;text-decoration:underline">쿠폰 코드가 있나요?</button>
+      <button onclick="toggleSajuCoupon()" style="background:none;border:none;color:#B49A63;font-size:12px;cursor:pointer;padding:0;text-decoration:underline">쿠폰 코드가 있나요?</button>
       <div id="saju-coupon-wrap" style="display:none;margin-top:8px">
         <div style="display:flex;gap:6px">
           <input type="text" id="saju-coupon-input"
-            style="flex:1;padding:10px 12px;background:#0d0c22;border:1px solid rgba(201,168,76,.3);border-radius:8px;color:#ede0c8;font-size:13px;font-family:inherit;outline:none;text-transform:uppercase"
+            style="flex:1;padding:10px 12px;background:#fff;border:1px solid #DDD5C8;border-radius:8px;color:#25282B;font-size:13px;font-family:inherit;outline:none;text-transform:uppercase"
             placeholder="쿠폰 코드" oninput="this.value=this.value.toUpperCase()"
             onkeydown="if(event.key==='Enter')applySajuCoupon()">
           <button onclick="applySajuCoupon()"
-            style="padding:10px 14px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);border-radius:8px;color:#e8c97a;font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap">적용</button>
+            style="padding:10px 14px;background:rgba(180,154,99,.12);border:1px solid rgba(180,154,99,.35);border-radius:8px;color:#0D2235;font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap">적용</button>
         </div>
         <div id="saju-coupon-msg" style="font-size:12px;margin-top:5px;display:none"></div>
-        <div id="saju-coupon-preview" style="display:none;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:8px 12px;margin-top:6px;font-size:12px;color:#b89e7e;line-height:1.9">
+        <div id="saju-coupon-preview" style="display:none;background:rgba(180,154,99,.06);border:1px solid rgba(180,154,99,.2);border-radius:8px;padding:8px 12px;margin-top:6px;font-size:12px;color:#66635E;line-height:1.9">
           <div style="display:flex;justify-content:space-between"><span>정가</span><span id="scp-original" style="text-decoration:line-through"></span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:#c9a84c">쿠폰 할인</span><span id="scp-discount" style="color:#c9a84c"></span></div>
-          <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid rgba(201,168,76,.15);padding-top:5px;margin-top:3px"><span>최종</span><span id="scp-final" style="color:#e8c97a"></span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#B49A63">쿠폰 할인</span><span id="scp-discount" style="color:#B49A63"></span></div>
+          <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid #DDD5C8;padding-top:5px;margin-top:3px"><span>최종</span><span id="scp-final" style="color:#0D2235"></span></div>
         </div>
       </div>
     </div>
     <button id="saju-pay-submit-btn" onclick="submitSajuEmail()"
-      style="width:100%;padding:15px;background:linear-gradient(135deg,#c9a84c,#e8c97a);border:none;border-radius:12px;color:#06060f;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:44px">
+      style="width:100%;padding:15px;background:#0D2235;border:none;border-radius:12px;color:#fff;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:44px">
       결제하러 가기 →
     </button>
     <button onclick="closeSajuEmailPopup()"
-      style="width:100%;padding:10px;background:transparent;border:1px solid rgba(201,168,76,.2);border-radius:12px;color:#b89e7e;font-size:13px;font-family:inherit;cursor:pointer">
+      style="width:100%;padding:10px;background:transparent;border:1px solid #DDD5C8;border-radius:12px;color:#66635E;font-size:13px;font-family:inherit;cursor:pointer">
       취소
     </button>
   </div>
+</div>
+
+<!-- ══ 스티키 하단 CTA 바 ══ -->
+<div class="sticky-bottom-bar" id="sticky-bottom-bar">
+  <div class="sbb-logo">오속</div>
+  <button class="sbb-btn-primary" onclick="scrollToFreeForm()">무료로 시작하기</button>
+  <button class="sbb-btn-secondary" onclick="document.querySelector('.product-select-sec')?.scrollIntoView({behavior:'smooth'})">상세 리포트 보기</button>
 </div>
 
 <footer class="footer-new">
@@ -2113,13 +3002,11 @@ function scrollToFreeForm() {
   }
 }
 
-/* ─── 별 배경 ─── */
+/* ─── 별 배경 (비활성화) ─── */
 (function(){
-  const c=document.getElementById('stars'),ctx=c.getContext('2d');
-  let W,H,stars=[];
-  function init(){W=c.width=innerWidth;H=c.height=innerHeight;const cnt=innerWidth<640?55:160;stars=Array.from({length:cnt},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+.2,a:Math.random(),s:Math.random()*.003+.001}))}
-  function draw(){ctx.clearRect(0,0,W,H);stars.forEach(s=>{s.a+=s.s;if(s.a>1||s.a<0)s.s*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(201,168,76,${s.a*.5+.1})`;ctx.fill()});requestAnimationFrame(draw)}
-  window.addEventListener('resize',init);init();draw();
+  const c=document.getElementById('stars');
+  if(!c)return;
+  // 라이트 테마 전환으로 별 배경 비활성화
 })();
 
 /* ─── 폼 초기화 ─── */
@@ -4341,6 +5228,8 @@ function initNavObserver() {
 window.addEventListener('scroll', () => {
   const btn = document.getElementById('scroll-top-btn');
   if (btn) btn.classList.toggle('visible', window.scrollY > 400);
+  const sbb = document.getElementById('sticky-bottom-bar');
+  if (sbb) sbb.classList.toggle('visible', window.scrollY > 600);
 });
 function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
