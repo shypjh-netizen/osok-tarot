@@ -2097,6 +2097,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 /* ══ 히어로 정돈 v3 — 분석 리포트 서비스 ══ */
 .hero{
   overflow:hidden;
+  width:100vw;
+  margin-left:calc(50% - 50vw);
   padding:76px 24px 70px;
   background:
     linear-gradient(90deg,rgba(163,66,40,.035) 1px,transparent 1px) 0 0/72px 72px,
@@ -2162,6 +2164,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .report-foot{display:flex;justify-content:space-between;align-items:center;margin-top:19px;color:var(--text-muted);font-size:.7rem}
 .report-seal{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--rust);color:#fff;font-size:.58rem;line-height:1.15;text-align:center;border-radius:2px;font-weight:700}
 .hero-side-type{position:absolute;right:-52px;top:48px;display:flex;flex-direction:column;gap:10px;color:rgba(245,240,231,.55);font-family:serif;font-size:.76rem;z-index:2}
+
+@media(min-width:721px){
+  .hero-text{min-width:430px}
+  .hero-main-title{white-space:nowrap}
+  .hero-subtitle{white-space:nowrap}
+}
 
 @media(max-width:900px){
   .hero{padding:58px 22px 48px}
