@@ -2401,6 +2401,21 @@ body{
       <div class="hero-report-wrap" aria-label="오속 사주 분석 리포트 미리보기">
         <div class="hero-cosmos" aria-hidden="true">
           <svg viewBox="0 0 560 560" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <!-- 가장자리를 손으로 그린 듯 미세하게 흔드는 수묵 필터 -->
+              <filter id="osokInkEdge" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">
+                <feTurbulence type="fractalNoise" baseFrequency=".014 .046" numOctaves="3" seed="23" result="inkNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="inkNoise" scale="7" xChannelSelector="R" yChannelSelector="G" result="roughShape"/>
+                <feGaussianBlur in="roughShape" stdDeviation=".18"/>
+              </filter>
+              <!-- 먹 안쪽의 종이결과 농담 -->
+              <filter id="osokInkGrain" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+                <feTurbulence type="fractalNoise" baseFrequency=".055" numOctaves="4" seed="8" result="grain"/>
+                <feColorMatrix in="grain" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .24 0" result="faintGrain"/>
+                <feBlend in="SourceGraphic" in2="faintGrain" mode="multiply"/>
+              </filter>
+              <clipPath id="osokInkCircle"><circle cx="280" cy="280" r="190"/></clipPath>
+            </defs>
             <g fill="none" stroke="#0D2235" opacity=".34">
               <circle cx="280" cy="280" r="222"/><circle cx="280" cy="280" r="244"/><circle cx="280" cy="280" r="266"/>
             </g>
@@ -2408,9 +2423,23 @@ body{
               <ellipse cx="280" cy="280" rx="304" ry="78" transform="rotate(-16 280 280)"/>
               <circle cx="10" cy="328" r="10" fill="#A34228" stroke="none"/><circle cx="550" cy="234" r="5" fill="#F4EFE5"/>
             </g>
-            <circle cx="280" cy="280" r="188" fill="#0D2235"/>
-            <path d="M280 92a188 188 0 0 1 0 376 94 94 0 0 0 0-188 94 94 0 0 1 0-188z" fill="#F2EDE3"/>
-            <circle cx="280" cy="186" r="27" fill="#0D2235"/><circle cx="280" cy="374" r="27" fill="#F2EDE3"/>
+            <g filter="url(#osokInkEdge)">
+              <circle cx="280" cy="280" r="188" fill="#0A2032"/>
+              <path d="M280 92a188 188 0 0 1 0 376 94 94 0 0 0 0-188 94 94 0 0 1 0-188z" fill="#F2EDE3"/>
+              <circle cx="280" cy="186" r="27" fill="#0A2032"/><circle cx="280" cy="374" r="27" fill="#F2EDE3"/>
+            </g>
+            <!-- 실제 먹이 종이에 스민 듯한 농도 얼룩 -->
+            <g clip-path="url(#osokInkCircle)" opacity=".34" filter="url(#osokInkGrain)">
+              <path d="M80 146c112-48 265-52 403 5v278c-128 46-289 42-403-9z" fill="#0A2032" opacity=".16"/>
+              <path d="M98 398c106-28 225-12 352 34" fill="none" stroke="#F2EDE3" stroke-width="7" opacity=".08"/>
+              <path d="M104 182c92 20 194 8 312-31" fill="none" stroke="#F2EDE3" stroke-width="4" opacity=".09"/>
+            </g>
+            <!-- 붓이 시작하고 끝난 자국을 살린 불완전한 외곽선 -->
+            <g fill="none" stroke="#071C2C" stroke-linecap="round" opacity=".5" filter="url(#osokInkEdge)">
+              <path d="M154 141c-52 47-76 113-61 183" stroke-width="6"/>
+              <path d="M125 372c34 59 91 92 159 96" stroke-width="4"/>
+              <path d="M404 139c35 33 57 76 63 122" stroke-width="3" opacity=".55"/>
+            </g>
             <g stroke="#B49A63" opacity=".7"><line x1="450" y1="16" x2="450" y2="542"/><line x1="486" y1="46" x2="486" y2="514"/></g>
             <circle cx="450" cy="114" r="7" fill="#0D2235" stroke="#B49A63"/><circle cx="450" cy="414" r="7" fill="#A34228"/>
           </svg>
