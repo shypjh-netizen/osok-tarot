@@ -2126,7 +2126,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 }
 .hero-desc{font-size:.93rem;line-height:1.75}
 .hero-cta-row{margin-top:32px}
-.hero .cta-scroll-btn,.hero .cta-secondary-btn{min-height:52px;padding:0 25px;border-radius:8px}
+.hero .cta-scroll-btn,.hero .cta-secondary-btn{
+  min-height:52px;
+  height:52px;
+  margin:0;
+  padding:0 25px;
+  border-radius:8px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+}
 .hero .cta-secondary-btn{background:rgba(250,248,243,.64);color:var(--navy);border-color:#cec4b5}
 
 .hero-report-wrap{flex:0 0 470px;position:relative;padding:18px 0}
