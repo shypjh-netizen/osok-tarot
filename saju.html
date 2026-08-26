@@ -727,11 +727,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .flow-action-box.avoid-box .flow-action-label{color:rgba(200,90,90,.75)}
 .flow-action-text{font-size:.9rem;line-height:1.7;color:#d8d0c0}
 
-/* 상세 성향 아코디언 */
-.details-accordion{background:rgba(255,255,255,.018);border:1px solid rgba(201,168,76,.11);border-radius:16px;overflow:hidden}
-.details-acc-header{padding:16px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;color:var(--sub);font-size:.93rem;letter-spacing:.03em;min-height:52px;transition:background .2s;border:none;width:100%;background:transparent;font-family:inherit;text-align:left}
+/* 상세 성향 아코디언 — 접힌 상태에서도 무료 내용임을 바로 알 수 있게 */
+.details-accordion{background:rgba(255,255,255,.018);border:1px solid rgba(201,168,76,.18);border-radius:16px;overflow:hidden}
+.details-acc-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;color:var(--sub);min-height:76px;transition:background .2s,border-color .2s;border:none;width:100%;background:transparent;font-family:inherit;text-align:left}
 .details-acc-header:hover{background:rgba(201,168,76,.04);color:#f0ead8}
-.details-acc-icon{transition:transform .3s;font-style:normal;color:var(--gold);font-size:.8rem}
+.details-acc-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
+.details-acc-kicker{font-size:.65rem;color:var(--gold);letter-spacing:.13em;font-weight:600}
+.details-acc-title{font-size:.98rem;color:var(--text);font-weight:700;letter-spacing:.01em}
+.details-acc-desc{font-size:.76rem;color:var(--sub);line-height:1.45}
+.details-acc-action{display:inline-flex;align-items:center;gap:7px;color:var(--gold);font-size:.78rem;white-space:nowrap;font-weight:600}
+.details-acc-icon{transition:transform .3s;font-style:normal;color:var(--gold);font-size:.9rem}
 .details-acc-inner{display:none;border-top:1px solid rgba(201,168,76,.08)}
 .detail-item{padding:18px 22px;border-bottom:1px solid rgba(201,168,76,.06)}
 .detail-item:last-child{border-bottom:none}
@@ -803,9 +808,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 #product-select-sec .ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:520px){#product-select-sec .ps-grid{grid-template-columns:1fr}}
 
-/* ── 사주 상세 토글 버튼 ── */
-#saju-details-toggle-btn{display:block;width:100%;padding:14px 18px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.18);border-radius:12px;color:var(--sub);font-family:inherit;font-size:.87rem;cursor:pointer;text-align:left;min-height:48px;transition:all .2s;letter-spacing:.02em}
-#saju-details-toggle-btn:hover{border-color:rgba(201,168,76,.38);color:var(--text)}
+/* ── 사주 계산 근거 토글 ── */
+#saju-details-wrap{margin:18px 0 24px}
+#saju-details-toggle-btn{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:16px 18px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.25);border-radius:12px;color:var(--sub);font-family:inherit;cursor:pointer;text-align:left;min-height:72px;transition:all .2s;letter-spacing:.02em}
+#saju-details-toggle-btn:hover{border-color:rgba(201,168,76,.5);color:var(--text);background:rgba(201,168,76,.08)}
+.saju-details-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
+.saju-details-eyebrow{font-size:.65rem;letter-spacing:.12em;color:var(--gold);font-weight:600}
+.saju-details-title{font-size:.94rem;color:var(--text);font-weight:700}
+.saju-details-desc{font-size:.75rem;color:var(--sub);line-height:1.45}
+.saju-details-action{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;color:var(--gold);font-size:.78rem;font-weight:600}
+.saju-details-arrow{font-size:.95rem;font-style:normal}
 #saju-details-inner{margin-top:12px;display:flex;flex-direction:column;gap:16px}
 
 /* ── 신규 상품 카드 ── */
@@ -3543,7 +3555,48 @@ body{
     <!-- AI 리딩 섹션들 (파싱 후 동적 생성) -->
     <div id="reading-sections"></div>
 
-    <!-- 순서 5: 상품 선택 UI -->
+    <!-- 사주 계산 근거: 결제 카드 바로 앞에 두되, 기본은 접힌 상태 -->
+    <div id="saju-details-wrap" style="display:none;scroll-margin-top:48px">
+      <button id="saju-details-toggle-btn" onclick="toggleSajuDetails()"
+        aria-expanded="false" aria-controls="saju-details-inner">
+        <span class="saju-details-copy">
+          <span class="saju-details-eyebrow">무료 공개 · 내 사주 계산 근거</span>
+          <span class="saju-details-title">내 사주 계산 근거 확인하기</span>
+          <span class="saju-details-desc">사주팔자 · 오행 분포 · 신살</span>
+        </span>
+        <span class="saju-details-action">확인하기 <em class="saju-details-arrow" id="saju-details-arrow">▾</em></span>
+      </button>
+      <div id="saju-details-inner" style="display:none">
+
+        <!-- 사주팔자 -->
+        <div class="pillars-wrap" id="sec-pillars" style="scroll-margin-top:48px">
+          <p class="pillars-label">✦ 사주팔자 ✦</p>
+          <p style="font-size:.72rem;color:rgba(184,158,126,.45);text-align:center;margin-bottom:12px;margin-top:-8px">
+            천간<i class="term-trigger" onclick="event.stopPropagation();showTermTooltip('천간',this)">?</i> (위) &nbsp;·&nbsp; 지지<i class="term-trigger" onclick="event.stopPropagation();showTermTooltip('지지',this)">?</i> (아래) &nbsp;·&nbsp; 십성<i class="term-trigger" onclick="event.stopPropagation();showTermTooltip('십성',this)">?</i> (배지)
+          </p>
+          <div class="pillars-grid" id="pillars-grid"></div>
+        </div>
+
+        <!-- 오행 -->
+        <div class="section-card" id="sec-ohaeng" style="scroll-margin-top:48px">
+          <h3>오행(五行) 분포</h3>
+          <div class="ohaeng-bars" id="ohaeng-bars"></div>
+          <div id="ohaeng-msg" class="ohaeng-msg-text"></div>
+        </div>
+
+        <!-- 신살 -->
+        <div class="section-card" id="sinsal-sec" style="display:none;scroll-margin-top:48px">
+          <h3>✦ 신살 &amp; 특수 에너지 <i class="term-trigger" style="font-size:.6rem" onclick="event.stopPropagation();showTermTooltip('대운',this)">대운?</i> <i class="term-trigger" style="font-size:.6rem;width:auto;border-radius:8px;padding:0 5px" onclick="event.stopPropagation();showTermTooltip('세운',this)">세운?</i></h3>
+          <div class="sinsal-wrap" id="sinsal-wrap"></div>
+        </div>
+
+        <!-- 별자리 -->
+        <div class="zodiac-badge" id="zodiac-badge"></div>
+
+      </div>
+    </div>
+
+    <!-- 결제 선택 UI -->
     <div id="product-select-sec" style="display:none;scroll-margin-top:48px">
       <p class="ps-guide-line">질문 하나가 분명하다면 <strong>4,900원</strong> &nbsp;·&nbsp; 전체 흐름이 궁금하다면 <strong>14,900원</strong></p>
       <div class="ps-grid">
@@ -3626,42 +3679,6 @@ body{
           &nbsp;·&nbsp; <a href="#" onclick="showTerms();return false;">이용약관</a><br>
           본 서비스는 오락·참고 목적이며 전문적인 상담을 대체하지 않아요.
         </p>
-      </div>
-    </div>
-
-    <!-- 순서 7: 사주 상세 정보 (기본 접힌 상태) -->
-    <div id="saju-details-wrap" style="display:none;scroll-margin-top:48px">
-      <button id="saju-details-toggle-btn" onclick="toggleSajuDetails()"
-        aria-expanded="false" aria-controls="saju-details-inner">
-        ✦ 사주 상세 정보 펼쳐보기 ▾
-      </button>
-      <div id="saju-details-inner" style="display:none">
-
-        <!-- 사주팔자 -->
-        <div class="pillars-wrap" id="sec-pillars" style="scroll-margin-top:48px">
-          <p class="pillars-label">✦ 사주팔자 ✦</p>
-          <p style="font-size:.72rem;color:rgba(184,158,126,.45);text-align:center;margin-bottom:12px;margin-top:-8px">
-            천간<i class="term-trigger" onclick="event.stopPropagation();showTermTooltip('천간',this)">?</i> (위) &nbsp;·&nbsp; 지지<i class="term-trigger" onclick="event.stopPropagation();showTermTooltip('지지',this)">?</i> (아래) &nbsp;·&nbsp; 십성<i class="term-trigger" onclick="event.stopPropagation();showTermTooltip('십성',this)">?</i> (배지)
-          </p>
-          <div class="pillars-grid" id="pillars-grid"></div>
-        </div>
-
-        <!-- 오행 -->
-        <div class="section-card" id="sec-ohaeng" style="scroll-margin-top:48px">
-          <h3>오행(五行) 분포</h3>
-          <div class="ohaeng-bars" id="ohaeng-bars"></div>
-          <div id="ohaeng-msg" class="ohaeng-msg-text"></div>
-        </div>
-
-        <!-- 신살 -->
-        <div class="section-card" id="sinsal-sec" style="display:none;scroll-margin-top:48px">
-          <h3>✦ 신살 &amp; 특수 에너지 <i class="term-trigger" style="font-size:.6rem" onclick="event.stopPropagation();showTermTooltip('대운',this)">대운?</i> <i class="term-trigger" style="font-size:.6rem;width:auto;border-radius:8px;padding:0 5px" onclick="event.stopPropagation();showTermTooltip('세운',this)">세운?</i></h3>
-          <div class="sinsal-wrap" id="sinsal-wrap"></div>
-        </div>
-
-        <!-- 별자리 -->
-        <div class="zodiac-badge" id="zodiac-badge"></div>
-
       </div>
     </div>
 
@@ -3754,10 +3771,9 @@ body{
       placeholder="이메일 주소 입력"
       onkeydown="if(event.key==='Enter')submitSajuEmail()">
     <p id="saju-email-err" style="display:none;color:#e57373;font-size:12px;margin-bottom:8px">이메일 주소를 올바르게 입력해주세요.</p>
-    <!-- 쿠폰 입력 -->
-    <div style="margin-bottom:12px;text-align:left">
-      <button onclick="toggleSajuCoupon()" style="background:none;border:none;color:#B49A63;font-size:12px;cursor:pointer;padding:0;text-decoration:underline">쿠폰 코드가 있나요?</button>
-      <div id="saju-coupon-wrap" style="display:none;margin-top:8px">
+    <!-- 쿠폰 입력: 놓치지 않도록 항상 표시 -->
+    <div id="saju-coupon-wrap" style="margin-bottom:12px;text-align:left">
+      <p style="margin:0 0 7px;color:#5F574D;font-size:12px;font-weight:700">쿠폰 코드 <span style="color:#9A9186;font-weight:400">(있으면 입력)</span></p>
         <div style="display:flex;gap:6px">
           <input type="text" id="saju-coupon-input"
             style="flex:1;padding:10px 12px;background:#fff;border:1px solid #DDD5C8;border-radius:8px;color:#25282B;font-size:13px;font-family:inherit;outline:none;text-transform:uppercase"
@@ -3772,7 +3788,6 @@ body{
           <div style="display:flex;justify-content:space-between"><span style="color:#B49A63">쿠폰 할인</span><span id="scp-discount" style="color:#B49A63"></span></div>
           <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid #DDD5C8;padding-top:5px;margin-top:3px"><span>최종</span><span id="scp-final" style="color:#0D2235"></span></div>
         </div>
-      </div>
     </div>
     <button id="saju-pay-submit-btn" onclick="submitSajuEmail()"
       style="width:100%;padding:15px;background:#0D2235;border:none;border-radius:12px;color:#fff;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:44px">
@@ -6123,8 +6138,12 @@ function renderReadingSections(parsed) {
   if (detItems.length) {
     html += `<div class="details-accordion" id="details-accordion">
       <button class="details-acc-header" onclick="toggleDetailsAccordion()" aria-expanded="false" aria-controls="details-acc-inner">
-        <span>내 사주를 더 자세히 읽어보기</span>
-        <em class="details-acc-icon" id="details-acc-icon">▾</em>
+        <span class="details-acc-copy">
+          <span class="details-acc-kicker">무료 추가 분석</span>
+          <strong class="details-acc-title">내 사주를 더 자세히 읽어보기</strong>
+          <small class="details-acc-desc">타고난 성향 · 일 · 재물 · 관계 · 감정</small>
+        </span>
+        <span class="details-acc-action">5가지 보기 <em class="details-acc-icon" id="details-acc-icon">▾</em></span>
       </button>
       <div class="details-acc-inner" id="details-acc-inner">
         ${detItems.map(d => `
@@ -6430,6 +6449,9 @@ function showSajuEmailPopup(tier='basic'){
   overlay.style.display='flex';
   document.getElementById('saju-email-input').value='';
   document.getElementById('saju-email-err').style.display='none';
+  resetSajuCoupon();
+  const couponInput = document.getElementById('saju-coupon-input');
+  if (couponInput) couponInput.value = '';
   setTimeout(()=>document.getElementById('saju-email-input').focus(),100);
   const priceMap={premium:14900,single:4900,basic:9900};
   pxc('InitiateCheckout',{content_name:tier,value:priceMap[tier]||9900,currency:'KRW'});
@@ -7627,7 +7649,9 @@ async function calculate(){
   document.getElementById('saju-details-wrap').style.display='none';
   document.getElementById('saju-details-inner').style.display='none';
   const dtb = document.getElementById('saju-details-toggle-btn');
-  if (dtb) { dtb.textContent='✦ 사주 상세 정보 펼쳐보기 ▾'; dtb.setAttribute('aria-expanded','false'); }
+  const dta = document.getElementById('saju-details-arrow');
+  if (dtb) dtb.setAttribute('aria-expanded','false');
+  if (dta) dta.textContent='▾';
   // 맞춤 질문 초기화
   CQ = { topic: null, question: '', context: '' };
 
@@ -7782,7 +7806,9 @@ function resetSaju(){
   });
   const di=document.getElementById('saju-details-inner'); if(di) di.style.display='none';
   const dtb=document.getElementById('saju-details-toggle-btn');
-  if(dtb){dtb.textContent='✦ 사주 상세 정보 펼쳐보기 ▾';dtb.setAttribute('aria-expanded','false');}
+  const dta=document.getElementById('saju-details-arrow');
+  if(dtb) dtb.setAttribute('aria-expanded','false');
+  if(dta) dta.textContent='▾';
   document.getElementById('form-sec').classList.remove('hidden');
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -8352,9 +8378,8 @@ function toggleSajuDetails() {
   inner.style.flexDirection = 'column';
   inner.style.gap = '16px';
   btn.setAttribute('aria-expanded', String(!isOpen));
-  btn.textContent = isOpen
-    ? '✦ 사주 상세 정보 펼쳐보기 ▾'
-    : '✦ 사주 상세 정보 접기 ▴';
+  const arrow = document.getElementById('saju-details-arrow');
+  if (arrow) arrow.textContent = isOpen ? '▾' : '▴';
 }
 
 /* ── trackEvent (픽셀 래퍼, 향후 GA 등 연결 가능) ── */
