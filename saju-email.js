@@ -480,7 +480,52 @@ function renderChecklistHtml(content, editorial = false) {
   return html || `<div style="color:${P.text};font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:keep-all">${escHtml(content)}</div>`;
 }
 
-function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, summaryCard) {
+function buildFocusVisualHtml(name, topicLabel, visualDigest) {
+  if (!visualDigest) return '';
+
+  const clamp = (n) => Math.max(1, Math.min(5, Number(n) || 3));
+  const meter = (level, color) => {
+    const active = clamp(level);
+    return Array.from({ length: 5 }, (_, i) =>
+      `<span style="display:inline-block;width:18px;height:6px;margin-right:3px;border-radius:99px;background:${i < active ? color : '#e7dfd1'}"></span>`
+    ).join('');
+  };
+  const safe = (v) => escHtml(String(v || ''));
+  const signals = Array.isArray(visualDigest.signals) ? visualDigest.signals.slice(0, 3) : [];
+  const timeline = Array.isArray(visualDigest.timeline) ? visualDigest.timeline.slice(0, 3) : [];
+
+  return `
+    <div style="margin:0 0 20px;padding:22px 20px;background:#fffdf8;border:1px solid #d9cebd;border-radius:2px">
+      <p style="color:#b4472a;font-size:11px;letter-spacing:3px;margin:0 0 8px;text-align:center">READING MAP</p>
+      <h2 style="color:#10283c;font-size:19px;line-height:1.5;margin:0 0 5px;text-align:center;font-weight:700">${safe(name)}님의 ${safe(topicLabel)} 흐름 지도</h2>
+      <p style="color:#71685e;font-size:13px;line-height:1.7;margin:0 0 18px;text-align:center;word-break:keep-all">${safe(visualDigest.overview)}</p>
+
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:7px 0;margin:0 -7px 18px">
+        <tr>
+          ${signals.map((signal, i) => {
+            const colors = ['#10283c', '#b4472a', '#82643d'];
+            return `<td width="33.33%" valign="top" style="padding:13px 10px;background:#f7f2e9;border:1px solid #e2d8c8">
+              <p style="color:#71685e;font-size:10px;letter-spacing:.04em;margin:0 0 7px">${safe(signal.label)}</p>
+              <div style="white-space:nowrap;margin:0 0 8px">${meter(signal.level, colors[i] || '#10283c')}</div>
+              <p style="color:#10283c;font-size:12px;line-height:1.55;margin:0;font-weight:700;word-break:keep-all">${safe(signal.keyword)}</p>
+            </td>`;
+          }).join('')}
+        </tr>
+      </table>
+
+      ${timeline.length ? `<div style="padding-top:15px;border-top:1px solid #e2d8c8">
+        <p style="color:#b4472a;font-size:11px;font-weight:700;letter-spacing:.08em;margin:0 0 10px">흐름을 읽는 순서</p>
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
+          <tr>${timeline.map((item, i) => `<td width="33.33%" valign="top" style="padding:${i ? '0 0 0 12px' : '0 12px 0 0'};border-left:${i ? '1px solid #d9cebd' : 'none'}">
+            <p style="color:#b4472a;font-size:11px;font-weight:700;margin:0 0 5px">${safe(item.label)}</p>
+            <p style="color:#10283c;font-size:12px;line-height:1.65;margin:0;word-break:keep-all">${safe(item.text)}</p>
+          </td>`).join('')}</tr>
+        </table>
+      </div>` : ''}
+    </div>`;
+}
+
+function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, summaryCard, visualDigest) {
   /* ── 공통 스타일 토큰 ── */
   const isEditorial = productLabel === '내 질문 하나 집중 리딩';
   const C = isEditorial ? {
@@ -610,6 +655,7 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, su
     </div>
 
     ${questionHtml}
+    ${isEditorial ? buildFocusVisualHtml(name, headerMeta.topicLabel || '선택한 고민', visualDigest) : ''}
     ${summaryHtml}
 
     <div style="background:${C.card};border:1px solid ${C.cardBrdr};border-radius:${isEditorial ? '2px' : '14px'};padding:20px 16px 24px">
@@ -1108,6 +1154,75 @@ ${yearNote}
     피해야할선택: safeField(decisionBrief.avoidSummary, r4.content),
     첫행동: firstAction,
   };
+
+  /* ── 이메일 상단 시각 요약: 숫자는 예언 수치가 아니라
+     이 리딩에서 각 요소를 얼마나 중점적으로 봐야 하는지의 강조도다. ── */
+  const visualFallback = {
+    overview: summaryCard.핵심결론,
+    signals: [
+      { label: '지금의 흐름', level: 3, keyword: decisionBrief.primaryArea },
+      { label: '밀어야 할 것', level: 4, keyword: summaryCard.밀어야할방향 },
+      { label: '점검할 것', level: 3, keyword: summaryCard.피해야할선택 },
+    ],
+    timeline: [
+      { label: '지금', text: summaryCard.핵심결론 },
+      { label: '다음 단계', text: summaryCard.밀어야할방향 },
+      { label: '확인 신호', text: decisionBrief.recheckSignal },
+    ],
+  };
+  let visualDigest = visualFallback;
+  const visualPrompt = `${name}님의 [${topicLabel}] 집중 리딩을 이메일 첫 화면에서 한눈에 보여줄 "리딩 지도"를 만드세요.
+아래 판단 기준 외의 새로운 사주 사실, 금액, 날짜, 직업·가족 상황을 만들지 마세요.
+
+직접 답변: ${decisionBrief.directAnswer}
+핵심 판단 영역: ${decisionBrief.primaryArea}
+핵심 근거: ${decisionBrief.primaryReason}
+밀어야 할 것: ${decisionBrief.pushSummary}
+피해야 할 것: ${decisionBrief.avoidSummary}
+다시 점검할 신호: ${decisionBrief.recheckSignal}
+
+아래 JSON만 출력하세요.
+{
+  "overview": "리딩 전체 결론을 24~42자로 요약한 한 문장",
+  "signals": [
+    {"label":"지금의 흐름","level":3,"keyword":"2~8자의 핵심 단어 또는 짧은 구"},
+    {"label":"밀어야 할 것","level":4,"keyword":"2~8자의 핵심 단어 또는 짧은 구"},
+    {"label":"점검할 것","level":3,"keyword":"2~8자의 핵심 단어 또는 짧은 구"}
+  ],
+  "timeline": [
+    {"label":"지금","text":"22자 이내의 짧은 문장"},
+    {"label":"다음 단계","text":"22자 이내의 짧은 문장"},
+    {"label":"확인 신호","text":"22자 이내의 짧은 문장"}
+  ]
+}
+
+규칙:
+- level은 1~5 정수이며, 객관적인 운세 점수나 성공 확률이 아니라 이 리딩에서의 '강조도'입니다.
+- overview와 timeline은 단정적 미래 예언·금전 보장 표현을 쓰지 마세요.
+- 설명문이나 마크다운 없이 JSON만 출력하세요.`;
+  const validateVisualDigest = (content) => {
+    try {
+      const m = content.match(/\{[\s\S]*\}/);
+      if (!m) return { ok: false, reason: 'visual:json_missing' };
+      const p = JSON.parse(m[0]);
+      if (!p.overview || !Array.isArray(p.signals) || p.signals.length !== 3 || !Array.isArray(p.timeline) || p.timeline.length !== 3) {
+        return { ok: false, reason: 'visual:shape_invalid' };
+      }
+      if (p.signals.some(x => !x.label || !x.keyword || !Number.isInteger(x.level) || x.level < 1 || x.level > 5)) {
+        return { ok: false, reason: 'visual:signals_invalid' };
+      }
+      if (p.timeline.some(x => !x.label || !x.text)) return { ok: false, reason: 'visual:timeline_invalid' };
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, reason: 'visual:parse_failed' };
+    }
+  };
+  const visualResult = await generateWithRetry(ctx, visualPrompt, systemPrompt, 550, validateVisualDigest, 1);
+  if (visualResult.ok) {
+    try {
+      visualDigest = JSON.parse(visualResult.content.match(/\{[\s\S]*\}/)[0]);
+    } catch {}
+  }
   /* 최종 검증 로그 */
   const badFields = Object.entries(summaryCard).filter(([k,v]) => isIntro(v)).map(([k]) => k);
   if (badFields.length > 0) {
@@ -1132,7 +1247,7 @@ ${yearNote}
     throw new Error(`generation_incomplete: ${details}`);
   }
 
-  return { sections, closingMessage, summaryCard };
+  return { sections, closingMessage, summaryCard, visualDigest };
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -1230,18 +1345,19 @@ async function sendSajuEmail(email, sajuData, isPremium) {
     const questionLine = sajuData.concern?.question || sajuData.customQuestion || `${topicLabel}에서 지금 가장 우선해야 할 방향은 무엇인가요?`;
     const basisLine  = `결과 기준 · ${currentYear}년 ${currentSewoon || ''} 세운`;
 
-    const { sections: focusSections, closingMessage, summaryCard } = await generateFocusReading(
+    const { sections: focusSections, closingMessage, summaryCard, visualDigest } = await generateFocusReading(
       sajuData, ctx, name, currentYear, currentSewoon, systemPrompt
     );
     sections.push(...focusSections);
 
     const html = buildEmailHtml(
       name,
-      { infoLine, topicLine: `선택한 고민 · ${topicLabel}`, basisLine, questionLine },
+      { infoLine, topicLine: `선택한 고민 · ${topicLabel}`, topicLabel, basisLine, questionLine },
       sections,
       closingMessage || '',
       '내 질문 하나 집중 리딩',
-      summaryCard || null
+      summaryCard || null,
+      visualDigest || null
     );
 
     // Resend 발송
