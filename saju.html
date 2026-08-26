@@ -5958,41 +5958,53 @@ function renderDeepCluePreview(parsed) {
   };
   const conclusionText = type => conclusions.find(item => item.type === type)?.content || '';
   const choose = (preferred, ...fallbacks) => compactResultText(preferred || fallbacks.find(Boolean) || '현재 흐름에서 먼저 확인해야 할 지점이 분명하게 드러나고 있어요.');
+  const personalize = text => {
+    const name = String(S.sajuData?.name || '').trim();
+    if (!name) return text;
+    const person = name.endsWith('님') ? name : name + '님';
+    return String(text || '')
+      .replaceAll('당신에게', person + '에게')
+      .replaceAll('당신의', person + '의')
+      .replaceAll('당신은', person + '은')
+      .replaceAll('당신이', person + '이')
+      .replaceAll('당신을', person + '을')
+      .replaceAll('당신과', person + '과');
+  };
 
   const cards = [
     {
       no:'01', title:'운이 열리는 나이',
-      clue:choose(supplied.lifetime, parsed.flow, conclusionText('wait')),
+      clue:personalize(choose(supplied.lifetime, parsed.flow, conclusionText('wait'))),
       more:'어느 시기부터 흐름이 달라지는지'
     },
     {
       no:'02', title:'귀인과 소모 관계',
-      clue:choose(supplied.people, det.relationship, traitText(1)),
+      clue:personalize(choose(supplied.people, det.relationship, traitText(1))),
       more:'누가 귀인이 되고 누가 나를 소모시키는지'
     },
     {
       no:'03', title:'재물 그릇',
-      clue:choose(supplied.money, det.money, conclusionText('organize')),
+      clue:personalize(choose(supplied.money, det.money, conclusionText('organize'))),
       more:'돈이 붙는 방식과 반복해서 새는 지점'
     },
     {
       no:'04', title:'직업과 재능',
-      clue:choose(supplied.career, det.work, traitText(2)),
+      clue:personalize(choose(supplied.career, det.work, traitText(2))),
       more:'성과가 나는 역할과 오래 버티기 힘든 환경'
     },
     {
       no:'05', title:'전환 시기',
-      clue:choose(supplied.timing, parsed.flow, parsed.analysisBasis),
+      clue:personalize(choose(supplied.timing, parsed.flow, parsed.analysisBasis)),
       more:'결정해도 되는 때와 조금 더 기다릴 때'
     },
     {
       no:'06', title:'반복 패턴',
-      clue:choose(supplied.pattern, traitText(1), det.emotion),
+      clue:personalize(choose(supplied.pattern, traitText(1), det.emotion)),
       more:'왜 비슷한 선택과 결과로 다시 돌아오는지'
     },
     {
       no:'07', title:'지금의 우선순위',
-      clue:choose(supplied.priority, parsed.topicPreview, conclusionText('push'), parsed.firstAction),
+      clue:personalize(choose(supplied.priority, parsed.topicPreview, conclusionText('push'), parsed.firstAction)),
       more:'지금 버릴 것과 먼저 잡아야 할 한 가지'
     },
   ];
