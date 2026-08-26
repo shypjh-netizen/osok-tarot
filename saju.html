@@ -3558,6 +3558,7 @@ body{
             <li class="ps-card-item"><span class="psi">✦</span>질문과 현재 흐름의 연결</li>
             <li class="ps-card-item"><span class="psi">✦</span>선택 가능한 방향 비교</li>
             <li class="ps-card-item"><span class="psi">✦</span>현재 피해야 할 선택</li>
+            <li class="ps-card-item"><span class="psi">✦</span>답이 달라지는 조건과 재점검 신호</li>
             <li class="ps-card-item"><span class="psi">✦</span>먼저 실행할 행동 순서</li>
           </ul>
           <button onclick="showPayModal('single')" class="pay-btn-primary single-btn" aria-label="내 질문 하나 집중 리딩 4900원 결제">
@@ -8027,6 +8028,7 @@ ${question ? '직접 질문: ' + question : ''}
         <p class="single-cta-desc">가장 답답한 질문 하나를 기준으로, 현재 흐름과 선택의 방향을 구체적으로 살펴봅니다.</p>
         <div class="single-cta-items">
           ${lockedItems.slice(0,3).map(i=>`<div class="single-cta-item"><span class="sci">✦</span>${escHtml(i)}</div>`).join('')}
+          <div class="single-cta-item"><span class="sci">✦</span>답이 달라지는 조건과 재점검 신호</div>
           <div class="single-cta-item"><span class="sci">✦</span>앞으로 30일 행동 순서</div>
         </div>
         <button class="single-cta-btn" onclick="showPayModal('single')" aria-label="${escHtml(ctaLabel)} 4900원">

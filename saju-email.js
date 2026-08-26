@@ -403,24 +403,31 @@ function parseYearFlowsJson(raw) {
   }
 }
 
-function renderFocusYearCards(raw) {
+function renderFocusYearCards(raw, editorial = false) {
   const rows = parseYearFlowsJson(raw);
   const nowYear = new Date().getFullYear();
+  const P = editorial ? {
+    text: '#10283c', sub: '#6f685f', accent: '#b4472a', push: '#376d63', avoid: '#b4472a',
+    currentBg: '#f7efe5', otherBg: '#fffdf8', currentBorder: '#c89b7c', otherBorder: '#ddd3c5', badgeText: '#fffdf8',
+  } : {
+    text: '#ede0c8', sub: '#b89e7e', accent: '#c9a84c', push: '#7ecfbe', avoid: '#d07060',
+    currentBg: 'rgba(201,168,76,0.06)', otherBg: 'rgba(255,255,255,0.02)', currentBorder: 'rgba(201,168,76,0.4)', otherBorder: 'rgba(201,168,76,0.12)', badgeText: '#07071a',
+  };
   if (!rows) {
-    return `<div style="color:#ede0c8;font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:keep-all;overflow-wrap:break-word">${escHtml(raw)}</div>`;
+    return `<div style="color:${P.text};font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:keep-all;overflow-wrap:break-word">${escHtml(raw)}</div>`;
   }
   return rows.map((r, i) => {
     const isThisYear = Number(r.year) === nowYear;
-    const cardBg = isThisYear ? 'rgba(201,168,76,0.06)' : 'rgba(255,255,255,0.02)';
-    const cardBrdr = isThisYear ? 'rgba(201,168,76,0.4)' : 'rgba(201,168,76,0.12)';
-    const badge = isThisYear ? `<span style="background:#c9a84c;color:#07071a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle">올해</span>` : '';
-    return `<div style="background:${cardBg};border:1px solid ${cardBrdr};border-radius:10px;padding:16px 18px;margin-bottom:12px;word-break:keep-all;overflow-wrap:break-word">
-      <p style="color:#c9a84c;font-size:14px;font-weight:700;margin:0 0 10px">${escHtml(String(r.year))}년 · ${escHtml(r.sewoon || '')}${badge}</p>
-      <p style="color:#ede0c8;font-size:13px;line-height:1.8;margin:0 0 10px">${escHtml(r.flow || '')}</p>
-      <p style="color:#7ecfbe;font-size:12px;font-weight:700;margin:0 0 3px">▶ 밀어야 할 행동</p>
-      <p style="color:#ede0c8;font-size:13px;line-height:1.75;margin:0 0 8px">${escHtml(r.action || '')}</p>
-      <p style="color:#d07060;font-size:12px;font-weight:700;margin:0 0 3px">✕ 주의할 선택</p>
-      <p style="color:#ede0c8;font-size:13px;line-height:1.75;margin:0">${escHtml(r.caution || '')}</p>
+    const cardBg = isThisYear ? P.currentBg : P.otherBg;
+    const cardBrdr = isThisYear ? P.currentBorder : P.otherBorder;
+    const badge = isThisYear ? `<span style="background:${P.accent};color:${P.badgeText};font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle">올해</span>` : '';
+    return `<div style="background:${cardBg};border:1px solid ${cardBrdr};border-radius:${editorial ? '2px' : '10px'};padding:16px 18px;margin-bottom:12px;word-break:keep-all;overflow-wrap:break-word">
+      <p style="color:${P.accent};font-size:14px;font-weight:700;margin:0 0 10px">${escHtml(String(r.year))}년 · ${escHtml(r.sewoon || '')}${badge}</p>
+      <p style="color:${P.text};font-size:13px;line-height:1.8;margin:0 0 10px">${escHtml(r.flow || '')}</p>
+      <p style="color:${P.push};font-size:12px;font-weight:700;margin:0 0 3px">밀어야 할 행동</p>
+      <p style="color:${P.text};font-size:13px;line-height:1.75;margin:0 0 8px">${escHtml(r.action || '')}</p>
+      <p style="color:${P.avoid};font-size:12px;font-weight:700;margin:0 0 3px">주의할 선택</p>
+      <p style="color:${P.text};font-size:13px;line-height:1.75;margin:0">${escHtml(r.caution || '')}</p>
     </div>`;
   }).join('');
 }
@@ -433,7 +440,10 @@ function escHtml(s) {
    이메일 HTML 빌더
 ───────────────────────────────────────────────────────────── */
 /* ─── 30일 체크리스트 렌더러 ─── */
-function renderChecklistHtml(content) {
+function renderChecklistHtml(content, editorial = false) {
+  const P = editorial
+    ? { accent: '#b4472a', text: '#10283c', sub: '#6f685f', panel: '#f7efe5', panelBorder: '#c89b7c' }
+    : { accent: '#c9a84c', text: '#ede0c8', sub: '#b89e7e', panel: 'rgba(201,168,76,0.06)', panelBorder: 'rgba(201,168,76,0.4)' };
   const lines = content.split('\n').map(l => l.trim()).filter(Boolean);
   let html = '';
   let currentWeek = '';
@@ -450,29 +460,47 @@ function renderChecklistHtml(content) {
       const weekLabels = ['', '1주차', '2주차', '3주차', '4주차'];
       const wNum = parseInt(weekMatch[1]);
       html += `<div style="margin-bottom:20px">
-        <p style="color:#c9a84c;font-size:14px;font-weight:700;margin:0 0 8px;border-left:3px solid #c9a84c;padding-left:10px">${weekLabels[wNum] || line}</p>`;
+        <p style="color:${P.accent};font-size:14px;font-weight:700;margin:0 0 8px;border-left:3px solid ${P.accent};padding-left:10px">${weekLabels[wNum] || line}</p>`;
     } else if (goalMatch) {
-      html += `<p style="color:#b89e7e;font-size:13px;margin:0 0 8px;line-height:1.6;word-break:keep-all">${escHtml(goalMatch[1])}</p>`;
+      html += `<p style="color:${P.sub};font-size:13px;margin:0 0 8px;line-height:1.6;word-break:keep-all">${escHtml(goalMatch[1])}</p>`;
     } else if (actionMatch) {
-      html += `<p style="color:#ede0c8;font-size:14px;margin:0 0 6px;line-height:1.75;padding-left:4px;word-break:keep-all">□ ${escHtml(actionMatch[1])}</p>`;
+      html += `<p style="color:${P.text};font-size:14px;margin:0 0 6px;line-height:1.75;padding-left:4px;word-break:keep-all">□ ${escHtml(actionMatch[1])}</p>`;
     } else if (afterMatch) {
       if (currentWeek) { html += '</div>'; currentWeek = ''; }
-      html += `<div style="margin-top:16px;padding:14px 16px;background:rgba(201,168,76,0.06);border-radius:10px;border-left:3px solid rgba(201,168,76,0.4)">
-        <p style="color:#c9a84c;font-size:13px;font-weight:700;margin:0 0 6px">30일 후 확인할 변화</p>
-        <p style="color:#ede0c8;font-size:14px;line-height:1.75;margin:0;word-break:keep-all">${escHtml(line.replace(/^30일\s*후?\s*확인[할]?\s*변화[:\s：]*/, '').trim())}</p>
+      html += `<div style="margin-top:16px;padding:14px 16px;background:${P.panel};border-radius:${editorial ? '2px' : '10px'};border-left:3px solid ${P.panelBorder}">
+        <p style="color:${P.accent};font-size:13px;font-weight:700;margin:0 0 6px">30일 후 확인할 변화</p>
+        <p style="color:${P.text};font-size:14px;line-height:1.75;margin:0;word-break:keep-all">${escHtml(line.replace(/^30일\s*후?\s*확인[할]?\s*변화[:\s：]*/, '').trim())}</p>
       </div>`;
     } else if (line && currentWeek) {
       /* 주차 내부의 일반 텍스트도 행동 항목으로 렌더 */
-      html += `<p style="color:#ede0c8;font-size:14px;margin:0 0 6px;line-height:1.75;padding-left:4px;word-break:keep-all">${escHtml(line)}</p>`;
+      html += `<p style="color:${P.text};font-size:14px;margin:0 0 6px;line-height:1.75;padding-left:4px;word-break:keep-all">${escHtml(line)}</p>`;
     }
   }
   if (currentWeek) html += '</div>';
-  return html || `<div style="color:#ede0c8;font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:keep-all">${escHtml(content)}</div>`;
+  return html || `<div style="color:${P.text};font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:keep-all">${escHtml(content)}</div>`;
 }
 
 function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, summaryCard) {
   /* ── 공통 스타일 토큰 ── */
-  const C = {
+  const isEditorial = productLabel === '내 질문 하나 집중 리딩';
+  const C = isEditorial ? {
+    bg:        '#f2ede3',
+    card:      '#fffdf8',
+    cardBrdr:  '#d9cebd',
+    gold:      '#b4472a',
+    goldDim:   '#c89b7c',
+    ivory:     '#10283c',
+    sub:       '#71685e',
+    pushBg:    '#eef3ef',
+    pushBrdr:  '#aac0b7',
+    pushLabel: '#376d63',
+    avoidBg:   '#f8eee9',
+    avoidBrdr: '#d5aa98',
+    avoidLabel:'#b4472a',
+    choiceBg:  '#f4efe6',
+    choiceBrdr:'#cbbda8',
+    choiceLabel:'#82643d',
+  } : {
     bg:        '#07071a',   // 전체 배경
     card:      '#0f0f2a',   // 일반 카드
     cardBrdr:  'rgba(201,168,76,0.18)',
@@ -493,12 +521,16 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, su
 
   /* ── 요약 카드 (말줄임표 없음 — 높이 자동) ── */
   const summaryHtml = summaryCard ? `
-    <div style="margin-bottom:20px;padding:22px 20px;background:${C.card};border:1px solid ${C.goldDim};border-radius:14px">
-      <p style="color:${C.gold};font-size:11px;letter-spacing:3px;margin:0 0 16px;text-align:center">✦ 리딩 핵심 요약 ✦</p>
-      <div style="margin-bottom:12px;padding:14px 16px;background:rgba(201,168,76,0.06);border-left:3px solid ${C.gold};border-radius:0 8px 8px 0">
+    <div style="margin-bottom:20px;padding:22px 20px;background:${C.card};border:1px solid ${C.goldDim};border-radius:${isEditorial ? '2px' : '14px'}">
+      <p style="color:${C.gold};font-size:11px;letter-spacing:3px;margin:0 0 16px;text-align:center">${isEditorial ? 'READING SUMMARY' : '✦ 리딩 핵심 요약 ✦'}</p>
+      <div style="margin-bottom:12px;padding:14px 16px;background:${isEditorial ? '#f7efe5' : 'rgba(201,168,76,0.06)'};border-left:3px solid ${C.gold};border-radius:${isEditorial ? '0' : '0 8px 8px 0'}">
         <p style="color:${C.gold};font-size:11px;font-weight:700;margin:0 0 6px;letter-spacing:1px">핵심 결론</p>
         <p style="color:${C.ivory};font-size:14px;line-height:1.8;margin:0;word-break:keep-all;overflow-wrap:break-word">${escHtml(summaryCard.핵심결론 || '')}</p>
       </div>
+      ${summaryCard.판단근거 ? `<div style="margin-bottom:10px;padding:12px 14px;background:${C.choiceBg};border-left:3px solid ${C.choiceLabel};border-radius:0 8px 8px 0">
+        <p style="color:${C.choiceLabel};font-size:11px;font-weight:700;margin:0 0 5px">이 답이 나온 핵심 근거</p>
+        <p style="color:${C.ivory};font-size:14px;line-height:1.8;margin:0;word-break:keep-all;overflow-wrap:break-word">${escHtml(summaryCard.판단근거)}</p>
+      </div>` : ''}
       ${summaryCard.밀어야할방향 ? `<div style="margin-bottom:10px;padding:12px 14px;background:${C.pushBg};border-left:3px solid ${C.pushLabel};border-radius:0 8px 8px 0">
         <p style="color:${C.pushLabel};font-size:11px;font-weight:700;margin:0 0 5px">▶ 지금 밀어야 할 방향</p>
         <p style="color:${C.ivory};font-size:14px;line-height:1.8;margin:0;word-break:keep-all;overflow-wrap:break-word">${escHtml(summaryCard.밀어야할방향)}</p>
@@ -514,14 +546,14 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, su
     </div>` : '';
 
   /* ── 섹션 카드 ── */
-  const sectionsHtml = sections.map(({ icon, label, content, isTimeline, isFocusTimeline, focusType, is30DayPlan }) => {
+  const sectionsHtml = sections.map(({ icon, label, content, isTimeline, isFocusTimeline, focusType, is30DayPlan }, index) => {
     let bodyHtml;
     if (isTimeline) {
       bodyHtml = renderTimelineHtml(content);
     } else if (isFocusTimeline) {
-      bodyHtml = renderFocusYearCards(content);
+      bodyHtml = renderFocusYearCards(content, isEditorial);
     } else if (is30DayPlan) {
-      bodyHtml = renderChecklistHtml(content);
+      bodyHtml = renderChecklistHtml(content, isEditorial);
     } else {
       bodyHtml = `<div style="color:${C.ivory};font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:keep-all;overflow-wrap:break-word">${escHtml(content)}</div>`;
     }
@@ -530,16 +562,21 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, su
     if (focusType === 'push')   { bg = C.pushBg;   brdr = C.pushBrdr;   lc = C.pushLabel;   lBrdr = C.pushLabel; }
     if (focusType === 'avoid')  { bg = C.avoidBg;  brdr = C.avoidBrdr;  lc = C.avoidLabel;  lBrdr = C.avoidLabel; }
     if (focusType === 'choices'){ bg = C.choiceBg; brdr = C.choiceBrdr; lc = C.choiceLabel; lBrdr = C.choiceLabel; }
+    if (focusType === 'conditions'){ bg = C.choiceBg; brdr = C.choiceBrdr; lc = C.gold; lBrdr = C.gold; }
 
-    return `<div style="background:${bg};border:1px solid ${brdr};border-radius:12px;padding:20px 20px 22px;margin-bottom:16px">
-      <h2 style="color:${lc};font-size:15px;font-weight:700;border-bottom:1px solid ${brdr};padding-bottom:9px;margin:0 0 14px;line-height:1.5;word-break:keep-all">${icon} ${label}</h2>
+    const sectionMark = isEditorial
+      ? `<span style="display:inline-block;color:${C.gold};font-size:11px;letter-spacing:2px;margin-right:10px;vertical-align:2px">${String(index + 1).padStart(2, '0')}</span>`
+      : `${icon} `;
+
+    return `<div style="background:${bg};border:1px solid ${brdr};border-radius:${isEditorial ? '2px' : '12px'};padding:20px 20px 22px;margin-bottom:16px">
+      <h2 style="color:${lc};font-size:15px;font-weight:700;border-bottom:1px solid ${brdr};padding-bottom:9px;margin:0 0 14px;line-height:1.5;word-break:keep-all">${sectionMark}${label}</h2>
       ${bodyHtml}
     </div>`;
   }).join('');
 
   const closingHtml = closingMsg ? `
-    <div style="margin-top:4px;padding:20px 20px;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.18);border-radius:12px">
-      <p style="color:${C.gold};font-size:11px;letter-spacing:.1em;margin:0 0 10px;text-align:center">✦ 오속의 마무리 메시지 ✦</p>
+    <div style="margin-top:4px;padding:20px 20px;background:${isEditorial ? '#f7efe5' : 'rgba(201,168,76,0.05)'};border:1px solid ${C.cardBrdr};border-radius:${isEditorial ? '2px' : '12px'}">
+      <p style="color:${C.gold};font-size:11px;letter-spacing:.1em;margin:0 0 10px;text-align:center">${isEditorial ? '09  오속의 마지막 정리' : '✦ 오속의 마무리 메시지 ✦'}</p>
       <p style="color:${C.ivory};font-size:14px;line-height:1.85;margin:0;word-break:keep-all;overflow-wrap:break-word">${escHtml(closingMsg)}</p>
     </div>` : '';
 
@@ -547,6 +584,11 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, su
     ? `<p style="color:${C.gold};font-size:13px;margin:6px 0 2px;font-weight:600">${escHtml(headerMeta.topicLine)}</p>
        <p style="color:${C.sub};font-size:12px;margin:0">${escHtml(headerMeta.basisLine || '')}</p>`
     : '';
+  const questionHtml = isEditorial && headerMeta.questionLine ? `
+    <div style="margin:0 0 20px;padding:18px 18px 17px;background:#10283c;border-left:4px solid #b4472a">
+      <p style="color:#c89b7c;font-size:10px;letter-spacing:3px;margin:0 0 8px">MY QUESTION</p>
+      <p style="color:#fffdf8;font-size:16px;line-height:1.75;margin:0;word-break:keep-all;overflow-wrap:break-word">“${escHtml(headerMeta.questionLine)}”</p>
+    </div>` : '';
 
   return `<!DOCTYPE html>
 <html lang="ko">
@@ -558,23 +600,24 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, su
 <body style="background:${C.bg};margin:0;padding:0;font-family:Georgia,'Noto Serif KR',serif">
   <div style="max-width:680px;margin:0 auto;padding:36px 16px 48px">
 
-    <div style="text-align:center;margin-bottom:28px;padding:28px 20px 24px;background:${C.card};border:1px solid ${C.cardBrdr};border-radius:14px">
-      <p style="color:${C.gold};font-size:11px;letter-spacing:4px;margin:0 0 10px">✦ 오속 사주 ✦</p>
+    <div style="text-align:center;margin-bottom:${isEditorial ? '18px' : '28px'};padding:28px 20px 24px;background:${C.card};border:1px solid ${C.cardBrdr};border-radius:${isEditorial ? '2px' : '14px'}">
+      <p style="color:${C.gold};font-size:11px;letter-spacing:4px;margin:0 0 10px">${isEditorial ? '오  속  사  주' : '✦ 오속 사주 ✦'}</p>
       ${productLabel ? `<p style="color:${C.choiceLabel};font-size:12px;letter-spacing:2px;margin:0 0 10px">${escHtml(productLabel)}</p>` : ''}
       <h1 style="color:${C.ivory};font-size:20px;line-height:1.65;margin:0 0 12px;font-weight:700">${escHtml(name)}님의 사주 리딩이 도착했어요</h1>
       <p style="color:${C.sub};font-size:13px;margin:0 0 4px">${escHtml(headerMeta.infoLine || '')}</p>
       ${headerExtra}
-      <p style="color:rgba(184,158,126,0.45);font-size:11px;margin:10px 0 0">본 리딩은 오속 사주 AI 기반 분석이에요 · 오락 및 참고 목적</p>
+      <p style="color:${C.sub};opacity:.62;font-size:11px;margin:10px 0 0">${isEditorial ? '명리 계산을 바탕으로 질문의 방향을 읽어드려요 · 오락 및 참고 목적' : '본 리딩은 오속 사주 기반 분석이에요 · 오락 및 참고 목적'}</p>
     </div>
 
+    ${questionHtml}
     ${summaryHtml}
 
-    <div style="background:${C.card};border:1px solid ${C.cardBrdr};border-radius:14px;padding:20px 16px 24px">
+    <div style="background:${C.card};border:1px solid ${C.cardBrdr};border-radius:${isEditorial ? '2px' : '14px'};padding:20px 16px 24px">
       ${sectionsHtml}
       ${closingHtml}
     </div>
 
-    <div style="text-align:center;color:rgba(184,158,126,0.45);font-size:12px;line-height:2;margin-top:28px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.08)">
+    <div style="text-align:center;color:${isEditorial ? '#71685e' : 'rgba(184,158,126,0.55)'};font-size:12px;line-height:2;margin-top:28px;padding-top:20px;border-top:1px solid ${isEditorial ? '#d9cebd' : 'rgba(201,168,76,0.08)'}">
       <p style="margin:0">오속 사주 · www.osok.kr/saju.html</p>
       <p style="margin:0">궁금한 점은 <a href="http://pf.kakao.com/_bSudX/chat" style="color:${C.gold}">카카오 채널</a>로 문의해주세요</p>
       <p style="margin:4px 0 0;font-size:11px">상호: 온나라 · 대표: 박지현 · 사업자등록번호: 602-23-61592</p>
@@ -607,7 +650,7 @@ async function generateFocusReading(sajuData, ctx, name, currentYear, currentSew
   const concern    = sajuData.concern || {};
   const cat        = concern.category || 'year';
   const topicLabel = concern.label || FOCUS_TOPIC_MAP[cat] || cat;
-  const question   = concern.question || '';
+  const question   = concern.question || sajuData.customQuestion || '';
   const relStatus  = sajuData.relationStatus || 'private';
   const tCfg       = TOPIC_CONFIG[cat] || TOPIC_CONFIG.custom;
   const sections   = [];
@@ -616,7 +659,6 @@ async function generateFocusReading(sajuData, ctx, name, currentYear, currentSew
   const yr = currentYear;
   const sw = currentSewoon || `${yr}년 세운`;
   const yearNote = `※ 분석 기준: ${yr}년 ${sw}. "${yr}년"만 "올해"로 사용하세요. 2025년·을사를 절대 현재로 표현하지 마세요.`;
-  const qNote    = question ? `직접 질문: "${question}"` : '';
   const completeNote = `\n[필수] 모든 문장을 완전하게 끝내주세요. 단락 마지막이 조사(을/를/이/가/에서 등)나 연결어로 끊기지 않도록 하세요.`;
 
   /* 관계 상태 문자열 */
@@ -662,50 +704,75 @@ async function generateFocusReading(sajuData, ctx, name, currentYear, currentSew
   const w4Start = nowKST.getDate() + 21, w4End = nowKST.getDate() + 29;
   const dateNote = `리딩 생성일: ${genDateStr}. 30일 계획은 이 날짜를 기준으로 작성하세요. 과거 날짜(1월 1일 등)를 하드코딩하지 마세요.`;
 
-  /* ── yearCore: 올해의 핵심 해석 (year 주제 전용, 섹션 간 결론 통일용) ── */
-  let yearCore = null;
-  if (cat === 'year') {
-    const corePrompt = `${name}님의 사주와 ${yr}년 ${sw} 세운을 분석해 아래 JSON만 출력하세요. 다른 텍스트 없이 JSON만.
+  /* ── 판단 기준표: 모든 주제에 한 결론을 먼저 고정 ── */
+  const displayQuestion = question || `${topicLabel}에서 지금 가장 우선해야 할 방향은 무엇인가요?`;
+  const briefPrompt = `${name}님의 사주와 ${yr}년 ${sw} 세운을 기준으로 아래 질문에 답하는 판단 기준표를 만드세요.
+선택 주제: ${topicLabel}
+실제 질문: "${displayQuestion}"
+관계 상태: ${relStatusLabel}
 
-각 필드 규칙:
-- coreDirection: "무엇을 우선해야 하는가"에 직접 답하는 완결 문장. "분석한 결과입니다", "살펴보겠습니다" 같은 안내문 금지. 예: "기존 기반을 지키면서 재물 가능성 하나를 작게 검증하는 방향이 적합합니다."
-- pushSummary: 사용자가 지금 해야 할 행동을 동사로 제시. 안내문 금지. 예: "수입 가능성 한 가지를 골라 시간·비용 한도를 정해 검증하세요."
-- avoidSummary: 하지 말아야 할 행동을 구체적으로 제시. pushSummary와 반대되는 내용. 안내문 금지. 예: "검증 전에 큰 비용이나 시간을 먼저 투입하거나 여러 방향을 동시에 벌이지 마세요."
-
+아래 JSON만 출력하세요. 다른 텍스트는 쓰지 마세요.
 {
-  "primaryArea": "올해 가장 크게 움직이는 영역 (예: 일·진로 / 재물·수입 / 관계 / 건강·생활 / 변화)",
-  "primaryReason": "그 영역이 핵심인 사주적 근거 (원국·대운·세운 기반, 1문장)",
-  "coreDirection": "완결된 핵심 방향 1문장 — 안내문 금지",
-  "pushSummary": "지금 해야 할 행동 1문장 — 동사로 시작, 안내문 금지",
-  "avoidSummary": "지금 하지 말아야 할 행동 1문장 — pushSummary와 반대, 안내문 금지",
-  "yearElementNote": "올해 세운 오행이 일간과 어떤 관계인지 핵심 작용 (1문장)",
-  "daewoonNote": "현재 대운 간지와 상태. 전환 날짜 계산값 있으면 포함, 없으면 null",
-  "relationshipPriority": "관계가 실제로 올해 1순위 영역인가? true 또는 false"
+  "directAnswer": "질문에 대한 직접적인 답 1문장",
+  "primaryArea": "질문의 핵심 판단 영역",
+  "primaryReason": "이 결론이 나오는 가장 큰 사주적 근거 1문장",
+  "originalEvidence": "원국에서 확인되는 근거 1문장",
+  "daewoonEvidence": "현재 대운에서 확인되는 근거 1문장. 정확한 정보가 없으면 null",
+  "sewoonEvidence": "${yr}년 ${sw} 세운에서 확인되는 근거 1문장",
+  "pushSummary": "지금 해야 할 행동 1문장",
+  "avoidSummary": "지금 하지 말아야 할 행동 1문장",
+  "optionA": "실질적으로 갈리는 첫 번째 선택지",
+  "optionB": "optionA와 다른 두 번째 선택지",
+  "keepCondition": "현재 결론을 그대로 따라야 하는 현실 조건 1문장",
+  "changeCondition": "다른 선택이 더 나아지는 현실 조건 1문장",
+  "recheckSignal": "결정을 다시 점검해야 하는 구체적인 신호 1문장",
+  "relationshipPriority": false,
+  "supportClueRelevant": true
 }
 
+[판단 기준]
+- directAnswer는 안내문이 아니라 질문에 바로 답하는 문장으로 작성하세요.
+- keepCondition과 changeCondition은 사용자가 입력하지 않은 직업·자산·가족 상황을 가정하지 말고, "만약 ~하다면"의 조건문으로 쓰세요.
+- optionA와 optionB는 표현만 다른 같은 선택이어서는 안 됩니다.
+- supportClueRelevant는 매력살·귀인·원국 강점이 이 질문의 판단에 직접 도움이 될 때만 true로 하세요.
 ${yearNote}
+${relNote}
 ${sewoonRef}
 ${prohibitNote}`;
-    try {
-      const coreRaw = await generateReading(ctx, corePrompt, systemPrompt, 600);
-      const coreMatch = coreRaw.match(/\{[\s\S]*\}/);
-      if (coreMatch) yearCore = JSON.parse(coreMatch[0]);
-    } catch (e) {
-      console.error('[saju-email][yearCore] parse failed:', e.message);
-    }
-  }
 
-  /* yearCore에서 공통 컨텍스트 추출 */
-  const coreCtx = yearCore
-    ? `[이 리딩의 핵심 결론 — 모든 섹션이 이 방향을 따라야 합니다]
-핵심 방향: ${yearCore.coreDirection}
-1순위 영역: ${yearCore.primaryArea}
-밀어야 할 것: ${yearCore.pushSummary}
-피해야 할 것: ${yearCore.avoidSummary}
-올해 세운 작용: ${yearCore.yearElementNote}
-관계가 1순위인가: ${yearCore.relationshipPriority ? '예' : '아니오 — 관계 내용을 1순위로 만들지 마세요'}
-${yearCore.daewoonNote ? `대운 상태: ${yearCore.daewoonNote}` : '대운 전환 날짜: 계산값 없음 — 날짜 추정 금지'}`
-    : '';
+  let decisionBrief = null;
+  const validateBrief = (content) => {
+    try {
+      const m = content.match(/\{[\s\S]*\}/);
+      if (!m) return { ok: false, reason: 'decisionBrief:json_missing' };
+      const parsed = JSON.parse(m[0]);
+      const required = ['directAnswer', 'primaryArea', 'primaryReason', 'originalEvidence', 'sewoonEvidence', 'pushSummary', 'avoidSummary', 'optionA', 'optionB', 'keepCondition', 'changeCondition', 'recheckSignal'];
+      const missing = required.filter(k => !parsed[k] || typeof parsed[k] !== 'string');
+      if (missing.length) return { ok: false, reason: `decisionBrief:missing(${missing.join(',')})` };
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, reason: `decisionBrief:parse(${e.message})` };
+    }
+  };
+  const briefResult = await generateWithRetry(ctx, briefPrompt, systemPrompt, 1200, validateBrief);
+  if (!briefResult.ok) throw new Error(`generation_incomplete: ${briefResult.reason}`);
+  decisionBrief = JSON.parse(briefResult.content.match(/\{[\s\S]*\}/)[0]);
+
+  const coreCtx = `[이 리딩의 판단 기준 — 모든 섹션이 반드시 이 결론을 따라야 합니다]
+실제 질문: ${displayQuestion}
+직접 답변: ${decisionBrief.directAnswer}
+핵심 영역: ${decisionBrief.primaryArea}
+판단 근거: ${decisionBrief.primaryReason}
+원국 근거: ${decisionBrief.originalEvidence}
+대운 근거: ${decisionBrief.daewoonEvidence || '계산값 없음 — 추정 금지'}
+세운 근거: ${decisionBrief.sewoonEvidence}
+밀어야 할 것: ${decisionBrief.pushSummary}
+피해야 할 것: ${decisionBrief.avoidSummary}
+비교할 선택: ${decisionBrief.optionA} / ${decisionBrief.optionB}
+현재 결론 유지 조건: ${decisionBrief.keepCondition}
+답이 달라지는 조건: ${decisionBrief.changeCondition}
+다시 점검할 신호: ${decisionBrief.recheckSignal}
+관계가 1순위인가: ${decisionBrief.relationshipPriority ? '예' : '아니오 — 질문과 직접 관련된 경우에만 짧게 언급'}`;
 
   /* ══════════════════════════════════════════════════════════
      주제별 전용 프롬프트 빌더
@@ -713,11 +780,7 @@ ${yearCore.daewoonNote ? `대운 상태: ${yearCore.daewoonNote}` : '대운 전�
 
   /* 섹션 1: 핵심 답변 — 4단락 명리 구조, 각 2~3문장 */
   function buildP1() {
-    const conclusionLine = cat === 'year'
-      ? `[결론 먼저] ${name}님의 ${yr}년 [${topicLabel}]에서 해야 할 것과 하지 말아야 할 것을 첫 문장에 직접 제시.`
-      : cat === 'custom'
-      ? `[결론 먼저] "${question}"에 대한 핵심 답변을 첫 문장에 직접 제시.`
-      : `[결론 먼저] [${topicLabel}] 고민에서 지금 우선해야 할 방향을 첫 문장에 직접 제시. ${qNote}`;
+    const conclusionLine = `[결론 먼저] 실제 질문 "${displayQuestion}"에 대한 답으로 "${decisionBrief.directAnswer}"의 의미를 유지해 첫 문장을 작성하세요.`;
     return `${conclusionLine}
 ${coreCtx}
 ${yearNote}
@@ -736,13 +799,7 @@ ${prohibitNote}`;
 
   /* 섹션 2: 두 방향 비교 — 항목당 3줄, 오속의 판단 3문장 */
   function buildP2() {
-    const abDef = cat === 'year'
-      ? `A: 새로운 것을 넓히거나 변화를 추구하는 방향\nB: 기존 기반을 지키고 강화하는 방향`
-      : cat === 'work' ? `A: 현재 분야·역할 유지\nB: 이직·전환·새로운 도전`
-      : cat === 'business' ? `A: 지금 바로 시작·확장\nB: 더 준비 후 시작`
-      : cat === 'love' || cat === 'marriage' ? `A: 현재 관계를 적극적으로 진전시키는 방향\nB: 지금은 내면을 먼저 정리하는 방향`
-      : cat === 'money' ? `A: 새로운 수입 가능성을 소규모로 시험하는 방향\nB: 현재 여건을 점검하고 지키는 방향`
-      : `${name}님의 [${topicLabel}] 고민에서 실질적으로 갈리는 두 방향`;
+    const abDef = `A: ${decisionBrief.optionA}\nB: ${decisionBrief.optionB}`;
     return `${name}님의 [${topicLabel}] 고민에서 두 방향을 비교하세요.
 방향 정의: ${abDef}
 ${yearNote}
@@ -770,9 +827,7 @@ ${prohibitNote}`;
 
   /* 섹션 3: 밀어야 할 방향 — 행동 2개 + 이유 1문장 */
   function buildP3() {
-    const focus = cat === 'year'
-      ? `[${yearCore?.primaryArea || '핵심 영역'}] 기준, ${name}님이 지금 실제로 해야 할 행동.`
-      : `[${topicLabel}] 고민에서 ${name}님이 지금 해야 할 행동.`;
+    const focus = `[${decisionBrief.primaryArea}] 기준, ${name}님이 [${topicLabel}] 고민에서 지금 실제로 해야 할 행동.`;
     return `${focus}
 ${coreCtx}
 ${yearNote}
@@ -811,9 +866,7 @@ ${prohibitNote}`;
   /* 섹션 5: 연도별 흐름 JSON — 연도당 3항목 각 1문장 */
   const yr2 = yr + 1, yr3 = yr + 2;
   function buildP5() {
-    const flowCtx = cat === 'year'
-      ? `${coreCtx}\n각 연도는 일·재물·관계·건강·변화 중 서로 다른 영역 하나씩. 3연도 모두 관계 중심 금지. '정리→검증→확장' 패턴은 실제 계산이 뒷받침될 때만.`
-      : `각 연도에서 [${topicLabel}] 관련 흐름을 서로 다른 각도로.`;
+    const flowCtx = `${coreCtx}\n각 연도에서 [${topicLabel}]와 관련된 흐름을 서로 다른 각도로 보여주세요. 실제 계산이 뒷받침되지 않는 일률적인 '정리→검증→확장' 패턴을 반복하지 마세요.`;
     return `${name}님의 ${yr}·${yr2}·${yr3}년 흐름을 아래 JSON으로만 출력하세요. 다른 텍스트 없이 JSON만:
 [
   {"year":${yr},"sewoon":"${sw}","flow":"이 해의 역할 1~2문장","action":"밀어야 할 행동 1문장","caution":"주의할 선택 1문장"},
@@ -829,9 +882,7 @@ ${prohibitNote}`;
 
   /* 섹션 6: 30일 체크리스트 — 주차당 목표1+행동2 구조만 */
   function buildP6() {
-    const planFocus = cat === 'year'
-      ? `[${yearCore?.primaryArea || '핵심 영역'}] 기준 행동으로 구성. 관계가 1순위가 아니면 배우자 중심 행동 금지.`
-      : `[${topicLabel}] 분야 실행 계획.`;
+    const planFocus = `[${decisionBrief.primaryArea}]와 [${topicLabel}] 기준 실행 계획. 관계가 1순위가 아니면 배우자·연애 중심 행동 금지.`;
     return `${name}님의 앞으로 30일 행동 계획.
 ${dateNote}
 ${planFocus}
@@ -870,6 +921,7 @@ ${prohibitNote}`;
     return `${name}님 사주에서 실제 성립하는 매력살·귀인을 확인하고 [${topicLabel}]와 연결하세요.
 [확인 대상]: 도화살, 화개살, 홍염살, 천을귀인, 천덕귀인, 월덕귀인, 문창귀인, 학당귀인, 태극귀인
 ${yearNote}
+[이 질문과의 관련성]: ${decisionBrief.supportClueRelevant ? '직접 관련 있음 — 선택에 활용할 단서를 중심으로 작성' : '관련성이 낮음 — 신살을 억지로 붙이지 말고 판단에 보조가 되는 원국 강점만 짧게 작성'}.
 
 성립 시 다음 구조로 작성:
 - 확인된 강점/신살: (명칭과 어느 기둥에서 성립하는지)
@@ -884,6 +936,28 @@ ${yearNote}
 첫 줄: 신살 있으면 "나의 매력살·귀인 에너지", 없으면 "올해 활용할 나의 강점".
 일반 성격 칭찬·앞 섹션 오행 반복 금지. 계산되지 않은 신살 생성 금지.
 최대 2단락. 해요체, 마크다운 금지.${completeNote}
+${prohibitNote}`;
+  }
+
+  /* 섹션 8: 답이 달라지는 조건 — 단정이 아닌 조건부 판단 */
+  function buildP8() {
+    return `${name}님의 질문 "${displayQuestion}"에 대한 현실적인 조건부 판단을 작성하세요.
+${coreCtx}
+${yearNote}
+${relNote}
+
+정확히 아래 형식으로만 작성하세요:
+
+[현재 답이 유지되는 조건]
+${decisionBrief.keepCondition}을 현실에서 어떻게 확인할지 2문장.
+
+[다른 선택이 더 나아지는 조건]
+${decisionBrief.changeCondition}이 생겼을 때 어떤 방향으로 조정할지 2문장.
+
+[다시 판단할 신호]
+${decisionBrief.recheckSignal}을 포함해, 계속·중단·전환 중 하나를 고를 수 있는 확인 기준 2개를 제시하세요.
+
+사용자가 입력하지 않은 직업·수입·자산·가족 상황을 사실로 가정하지 마세요. 불안을 자극하는 표현 금지. 해요체, 마크다운 금지.${completeNote}
 ${prohibitNote}`;
   }
 
@@ -947,7 +1021,16 @@ ${prohibitNote}`;
     sections.push({ icon: '📅', label: `${yr}~${yr3} 연도별 흐름`, content: r5.content || '(생성 오류)', isFocusTimeline: true });
   }
 
-  /* 6. 30일 행동 계획 */
+  /* 6. 답이 달라지는 조건 */
+  const rConditions = await generateWithRetry(ctx, buildP8(), systemPrompt, 1600, c => validateContent(c, '답이달라지는조건'));
+  if (rConditions.ok) {
+    sections.push({ icon: '◇', label: '답이 달라지는 조건', content: rConditions.content, focusType: 'conditions' });
+  } else {
+    failedSections.push({ name: '답이 달라지는 조건', reason: rConditions.reason });
+    sections.push({ icon: '◇', label: '답이 달라지는 조건', content: rConditions.content || '(생성 오류)', focusType: 'conditions' });
+  }
+
+  /* 7. 30일 행동 계획 */
   const r6 = await generateWithRetry(ctx, buildP6(), systemPrompt, 2500, validate30DayPlan);
   if (r6.ok) {
     sections.push({ icon: '🗓️', label: '앞으로 30일 행동 순서', content: r6.content, is30DayPlan: true });
@@ -956,9 +1039,9 @@ ${prohibitNote}`;
     sections.push({ icon: '🗓️', label: '앞으로 30일 행동 순서', content: r6.content || '(생성 오류)', is30DayPlan: true });
   }
 
-  /* 7. 매력살·귀인 */
+  /* 8. 보조 판단 단서 */
   const r7 = await generateWithRetry(ctx, buildP7(), systemPrompt, 1800, c => validateContent(c, '매력살귀인'));
-  const shinsal7Label = (r7.content || '').includes('올해 활용할') ? '올해 활용할 나의 강점' : '나의 매력살·귀인 에너지';
+  const shinsal7Label = (r7.content || '').includes('올해 활용할') ? '판단을 돕는 나의 강점' : '판단을 돕는 매력살·귀인';
   if (r7.ok) {
     sections.push({ icon: '✨', label: shinsal7Label, content: r7.content });
   } else {
@@ -966,7 +1049,7 @@ ${prohibitNote}`;
     sections.push({ icon: '✨', label: shinsal7Label, content: r7.content || '(생성 오류)' });
   }
 
-  /* 8. 마무리 메시지 (별도 생성 + 검증) */
+  /* 9. 마무리 메시지 (별도 생성 + 검증) */
   const validateClosing = (c) => {
     const v = validateContent(c, 'closing');
     if (!v.ok) return v;
@@ -1018,22 +1101,13 @@ ${yearNote}
     return candidate;
   };
 
-  let summaryCard = null;
-  if (yearCore) {
-    summaryCard = {
-      핵심결론: safeField(yearCore.coreDirection, r1.content),
-      밀어야할방향: safeField(yearCore.pushSummary, r3.content),
-      피해야할선택: safeField(yearCore.avoidSummary, r4.content),
-      첫행동: firstAction,
-    };
-  } else {
-    summaryCard = {
-      핵심결론: safeField(extractFirstSentence(r1.content), r1.content),
-      밀어야할방향: safeField(extractFirstSentence(r3.content), r3.content),
-      피해야할선택: safeField(extractFirstSentence(r4.content), r4.content),
-      첫행동: firstAction,
-    };
-  }
+  const summaryCard = {
+    핵심결론: safeField(decisionBrief.directAnswer, r1.content),
+    판단근거: safeField(decisionBrief.primaryReason, r1.content),
+    밀어야할방향: safeField(decisionBrief.pushSummary, r3.content),
+    피해야할선택: safeField(decisionBrief.avoidSummary, r4.content),
+    첫행동: firstAction,
+  };
   /* 최종 검증 로그 */
   const badFields = Object.entries(summaryCard).filter(([k,v]) => isIntro(v)).map(([k]) => k);
   if (badFields.length > 0) {
@@ -1042,7 +1116,16 @@ ${yearNote}
 
   /* ── 임계 섹션 실패 시 이메일 차단 ── */
   const criticalFailed = failedSections.filter(f =>
-    ['핵심 답변', '30일 행동 순서', '마무리 메시지'].includes(f.name)
+    [
+      '핵심 답변',
+      '선택지 비교',
+      '밀어야 할 방향',
+      '피해야 할 선택',
+      '연도별 흐름',
+      '답이 달라지는 조건',
+      '30일 행동 순서',
+      '마무리 메시지',
+    ].includes(f.name)
   );
   if (criticalFailed.length > 0) {
     const details = criticalFailed.map(f => `${f.name}(${f.reason})`).join(', ');
@@ -1144,6 +1227,7 @@ async function sendSajuEmail(email, sajuData, isPremium) {
   if (tier === 'single') {
     /* 4,900원 — 내 질문 하나 집중 리딩 */
     const topicLabel = sajuData.concern?.label || FOCUS_TOPIC_MAP[sajuData.concern?.category] || '선택한 고민';
+    const questionLine = sajuData.concern?.question || sajuData.customQuestion || `${topicLabel}에서 지금 가장 우선해야 할 방향은 무엇인가요?`;
     const basisLine  = `결과 기준 · ${currentYear}년 ${currentSewoon || ''} 세운`;
 
     const { sections: focusSections, closingMessage, summaryCard } = await generateFocusReading(
@@ -1153,7 +1237,7 @@ async function sendSajuEmail(email, sajuData, isPremium) {
 
     const html = buildEmailHtml(
       name,
-      { infoLine, topicLine: `선택한 고민 · ${topicLabel}`, basisLine },
+      { infoLine, topicLine: `선택한 고민 · ${topicLabel}`, basisLine, questionLine },
       sections,
       closingMessage || '',
       '내 질문 하나 집중 리딩',
