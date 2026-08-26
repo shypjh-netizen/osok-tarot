@@ -2742,6 +2742,194 @@ body{
   #result-sec .free-core-diagnosis{padding:30px 22px 28px}
   #result-sec .fcd-text{font-size:1.02rem;line-height:1.85}
 }
+
+/* ═══════════════════════════════════════════════════════
+   무료 결과 구조 보강: 요약 → 5개 장 → 7개 깊이보기 단서
+═══════════════════════════════════════════════════════ */
+#result-sec .result-group-heading{
+  scroll-margin-top:92px;
+  margin:18px 0 -4px;
+  padding:0 0 12px 18px;
+  border-left:3px solid var(--rust);
+}
+#result-sec .result-group-no{
+  margin:0 0 5px;
+  color:var(--rust);
+  font:700 .68rem/1 Georgia,serif;
+  letter-spacing:.2em;
+}
+#result-sec .result-group-heading h2{
+  margin:0;
+  color:var(--navy);
+  font-family:Georgia,"Noto Serif KR",serif;
+  font-size:1.45rem;
+  line-height:1.35;
+}
+#result-sec .result-group-heading p:last-child{
+  margin:7px 0 0;
+  color:#746c63;
+  font-size:.84rem;
+  line-height:1.7;
+}
+#result-sec .quick-conclusions-sec{
+  padding:28px;
+  background:#f0eadf;
+  border:1px solid var(--border);
+}
+#result-sec .quick-conclusions-head{
+  margin:0 0 18px;
+  color:var(--navy);
+  font-family:Georgia,"Noto Serif KR",serif;
+  font-size:1.05rem;
+}
+#result-sec .quick-conclusions-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+}
+#result-sec .quick-conclusion-card{
+  min-height:142px;
+  padding:22px 20px;
+  background:#fffdf8;
+}
+#result-sec .qcc-label{
+  margin:0 0 14px;
+  color:var(--rust);
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.08em;
+}
+#result-sec .qcc-content{
+  margin:0;
+  color:#534d46;
+  font-size:.92rem;
+  line-height:1.75;
+  word-break:keep-all;
+}
+#result-sec .deep-clue-preview{
+  padding:34px 32px 30px;
+  overflow:hidden;
+  background:#0d263a;
+  border:1px solid #0d263a;
+  color:#f8f2e8;
+}
+#result-sec .deep-clue-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:22px;
+}
+#result-sec .deep-clue-eyebrow{
+  margin:0 0 7px;
+  color:#d8bd78;
+  font:700 .7rem/1 Georgia,serif;
+  letter-spacing:.18em;
+}
+#result-sec .deep-clue-head h3{
+  margin:0;
+  color:#fffaf0;
+  font-family:Georgia,"Noto Serif KR",serif;
+  font-size:1.45rem;
+  line-height:1.4;
+}
+#result-sec .deep-clue-head > p{
+  max-width:360px;
+  margin:0;
+  color:rgba(248,242,232,.68);
+  font-size:.8rem;
+  line-height:1.7;
+}
+#result-sec .deep-clue-track{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(235px,31%);
+  gap:12px;
+  overflow-x:auto;
+  padding:0 0 14px;
+  scroll-snap-type:x mandatory;
+  scrollbar-color:#a94326 rgba(255,255,255,.08);
+}
+#result-sec .deep-clue-card{
+  display:flex;
+  min-height:258px;
+  padding:22px 20px;
+  flex-direction:column;
+  scroll-snap-align:start;
+  background:#f8f3e9;
+  border:1px solid rgba(255,255,255,.18);
+  color:var(--navy);
+}
+#result-sec .dcc-no{
+  color:var(--rust);
+  font:700 .68rem/1 Georgia,serif;
+  letter-spacing:.18em;
+}
+#result-sec .dcc-title{
+  margin:18px 0 14px;
+  color:var(--navy);
+  font-family:Georgia,"Noto Serif KR",serif;
+  font-size:1.08rem;
+}
+#result-sec .dcc-clue{
+  margin:0;
+  color:#514c46;
+  font-size:.9rem;
+  line-height:1.78;
+  word-break:keep-all;
+}
+#result-sec .dcc-more{
+  margin:auto 0 0;
+  padding-top:18px;
+  border-top:1px solid #ddd4c6;
+  color:#9c3d25;
+  font-size:.74rem;
+  font-weight:700;
+  line-height:1.55;
+}
+#result-sec .deep-clue-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding-top:16px;
+}
+#result-sec .deep-clue-footer p{
+  margin:0;
+  color:rgba(248,242,232,.7);
+  font-size:.78rem;
+  line-height:1.65;
+}
+#result-sec .deep-clue-cta{
+  flex:0 0 auto;
+  padding:13px 20px;
+  border:1px solid #b64a2c;
+  background:#b34327;
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+
+@media(max-width:720px){
+  .result-report-cover{min-height:565px}
+  .result-report-cover::after{height:205px}
+  .rrc-mark{top:266px}
+  .rrc-index span:last-child{grid-column:1/-1}
+  #result-sec .result-group-heading{margin-top:10px;padding-left:14px;scroll-margin-top:78px}
+  #result-sec .result-group-heading h2{font-size:1.25rem}
+  #result-sec .quick-conclusions-sec{padding:20px 18px}
+  #result-sec .quick-conclusions-grid{grid-template-columns:1fr}
+  #result-sec .quick-conclusion-card{min-height:0;padding:18px 17px}
+  #result-sec .deep-clue-preview{padding:27px 18px 24px}
+  #result-sec .deep-clue-head{display:block}
+  #result-sec .deep-clue-head > p{margin-top:10px}
+  #result-sec .deep-clue-track{grid-auto-columns:84%}
+  #result-sec .deep-clue-card{min-height:238px}
+  #result-sec .deep-clue-footer{display:block}
+  #result-sec .deep-clue-cta{width:100%;margin-top:15px}
+}
 </style>
 </head>
 <body>
@@ -3298,10 +3486,11 @@ body{
         <span class="rrc-orbit"></span>
       </div>
       <div class="rrc-index" aria-label="리포트 구성">
-        <span><b>01</b> 핵심 진단</span>
-        <span><b>02</b> 성향과 강점</span>
+        <span><b>01</b> 핵심 요약</span>
+        <span><b>02</b> 성향 분석</span>
         <span><b>03</b> 운의 흐름</span>
-        <span><b>04</b> 선택 가이드</span>
+        <span><b>04</b> 관계 분석</span>
+        <span><b>05</b> 실천 가이드</span>
       </div>
     </header>
 
@@ -3333,10 +3522,11 @@ body{
     <!-- 고정 목차 -->
     <nav class="saju-nav" id="saju-nav">
       <div class="saju-nav-inner">
-        <a class="sn-item" onclick="navScrollTo('sec-summary')">한눈에 보기</a>
-        <a class="sn-item" onclick="navScrollTo('ai-reading-anchor')">사주 리딩</a>
-        <a class="sn-item" onclick="navScrollTo('product-select-sec')">상품 선택</a>
-        <a class="sn-item" onclick="navScrollTo('saju-details-wrap')">사주 상세</a>
+        <a class="sn-item" onclick="navScrollTo('ai-reading-anchor')">핵심 요약</a>
+        <a class="sn-item" onclick="navScrollTo('result-traits-anchor')">성향 분석</a>
+        <a class="sn-item" onclick="navScrollTo('result-flow-anchor')">운의 흐름</a>
+        <a class="sn-item" onclick="navScrollTo('result-relation-anchor')">관계 분석</a>
+        <a class="sn-item" onclick="navScrollTo('result-action-anchor')">실천 가이드</a>
       </div>
     </nav>
 
@@ -4633,6 +4823,23 @@ const SAJU_SYSTEM = `당신은 사주명리학, 자미두수(紫微斗數), 서�
 ===고민미리보기===
 고민 주제가 있으면 그 주제와 관련된 이 사주의 흐름을 2~4문장으로 작성하세요. 고민 주제가 없으면 지금 가장 많이 막히는 영역이 어디인지 파악해 2~4문장으로 작성하세요. 이 내용은 유료 분석 전 미리보기입니다.
 
+===깊이보기단서===
+아래 7개 항목을 각각 한 문장으로 작성하세요. 무료 결과에서 보여줄 ‘결론의 단서’이므로 내담자가 내 얘기라고 느낄 만큼 구체적이어야 하지만, 세부 시기·원인·대응법까지 모두 설명하지 마세요.
+운이나이: (제공된 대운·세운 데이터로만 중요한 시기의 단서. 연령이나 연도는 계산 데이터가 있을 때만 사용)
+사람관계: (나를 돕는 사람과 에너지를 소모시키는 관계를 구분하는 단서)
+재물그릇: (돈을 버는 방식·모으는 방식·소비 패턴 중 가장 두드러진 한 가지)
+직업재능: (일할 때 강점이 나타나는 환경과 맞지 않는 환경을 구분하는 단서)
+전환시기: (현재 흐름에서 지금이 확장·정비·전환 중 어느 구간인지 보여주는 단서)
+반복패턴: (선택·일·관계에서 계속 반복되는 패턴 한 가지)
+우선순위: (지금 가장 먼저 선택하거나 정리해야 할 것 한 가지)
+
+깊이보기 공통 규칙:
+- 각 문장은 35~85자 권장
+- “좋은 일이 생겨요”처럼 모두에게 해당되는 표현 금지
+- 사건·성공·수입·결혼을 확정하는 표현 금지
+- 제공된 계산 데이터에 없는 정확한 연도·나이·사건 생성 금지
+- 일곱 문장이 같은 의미를 반복하지 않도록 하세요.
+
 ===상세성향===
 타고난성향: (타고난 기질과 성격 패턴을 2~3문장)
 일패턴: (일하는 방식과 커리어 패턴을 2~3문장)
@@ -4708,6 +4915,17 @@ function parseSajuReading(text) {
 
     const topicPreview = extractSection('고민미리보기');
 
+    const clueSec = extractSection('깊이보기단서');
+    const deepClues = {
+      lifetime: (clueSec.match(/운이나이:\s*(.+)/)?.[1] || '').trim(),
+      people:   (clueSec.match(/사람관계:\s*(.+)/)?.[1] || '').trim(),
+      money:    (clueSec.match(/재물그릇:\s*(.+)/)?.[1] || '').trim(),
+      career:   (clueSec.match(/직업재능:\s*(.+)/)?.[1] || '').trim(),
+      timing:   (clueSec.match(/전환시기:\s*(.+)/)?.[1] || '').trim(),
+      pattern:  (clueSec.match(/반복패턴:\s*(.+)/)?.[1] || '').trim(),
+      priority: (clueSec.match(/우선순위:\s*(.+)/)?.[1] || '').trim(),
+    };
+
     const detailSec = extractSection('상세성향');
     const details = {
       personality: (detailSec.match(/타고난성향:\s*([\s\S]+?)(?=일패턴:|재물소비:|관계패턴:|감정선택:|$)/)?.[1] || '').trim(),
@@ -4724,6 +4942,7 @@ function parseSajuReading(text) {
       traits,
       flow, analysisBasis, firstAction, avoidAction,
       topicPreview,
+      deepClues,
       details,
     };
   }
@@ -5685,6 +5904,106 @@ function renderShinsalCards(shinsal, name, knownHour, auspicious) {
     </div>`;
 }
 
+function compactResultText(value, max = 105) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (!text) return '';
+  return text.length > max ? text.slice(0, max).trim() + '…' : text;
+}
+
+function renderResultGroupHeading(id, no, title, desc) {
+  return `<div class="result-group-heading" id="${id}">
+    <p class="result-group-no">${no}</p>
+    <h2>${escHtml(title)}</h2>
+    ${desc ? `<p>${escHtml(desc)}</p>` : ''}
+  </div>`;
+}
+
+function renderQuickConclusions(items) {
+  if (!items || !items.length) return '';
+  return `<section class="quick-conclusions-sec" aria-label="지금의 세 가지 판단 기준">
+    <p class="quick-conclusions-head">지금 판단할 세 가지</p>
+    <div class="quick-conclusions-grid">
+      ${items.slice(0, 3).map(item => `<article class="quick-conclusion-card">
+        <p class="qcc-label">${escHtml(item.label)}</p>
+        <p class="qcc-content">${escHtml(compactResultText(item.content, 130))}</p>
+      </article>`).join('')}
+    </div>
+  </section>`;
+}
+
+function renderDeepCluePreview(parsed) {
+  const det = parsed.details || {};
+  const traits = parsed.traits || [];
+  const conclusions = parsed.quickConclusions || [];
+  const supplied = parsed.deepClues || {};
+  const traitText = index => {
+    const item = traits[index];
+    return typeof item === 'object' ? item?.description : item;
+  };
+  const conclusionText = type => conclusions.find(item => item.type === type)?.content || '';
+  const choose = (preferred, ...fallbacks) => compactResultText(preferred || fallbacks.find(Boolean) || '현재 흐름에서 먼저 확인해야 할 지점이 분명하게 드러나고 있어요.');
+
+  const cards = [
+    {
+      no:'01', title:'운이 열리는 나이',
+      clue:choose(supplied.lifetime, parsed.flow, conclusionText('wait')),
+      more:'어느 시기부터 흐름이 달라지는지'
+    },
+    {
+      no:'02', title:'귀인과 소모 관계',
+      clue:choose(supplied.people, det.relationship, traitText(1)),
+      more:'누가 귀인이 되고 누가 나를 소모시키는지'
+    },
+    {
+      no:'03', title:'재물 그릇',
+      clue:choose(supplied.money, det.money, conclusionText('organize')),
+      more:'돈이 붙는 방식과 반복해서 새는 지점'
+    },
+    {
+      no:'04', title:'직업과 재능',
+      clue:choose(supplied.career, det.work, traitText(2)),
+      more:'성과가 나는 역할과 오래 버티기 힘든 환경'
+    },
+    {
+      no:'05', title:'전환 시기',
+      clue:choose(supplied.timing, parsed.flow, parsed.analysisBasis),
+      more:'결정해도 되는 때와 조금 더 기다릴 때'
+    },
+    {
+      no:'06', title:'반복 패턴',
+      clue:choose(supplied.pattern, traitText(1), det.emotion),
+      more:'왜 비슷한 선택과 결과로 다시 돌아오는지'
+    },
+    {
+      no:'07', title:'지금의 우선순위',
+      clue:choose(supplied.priority, parsed.topicPreview, conclusionText('push'), parsed.firstAction),
+      more:'지금 버릴 것과 먼저 잡아야 할 한 가지'
+    },
+  ];
+
+  return `<section class="deep-clue-preview" aria-label="상세 리포트 깊이보기 단서">
+    <div class="deep-clue-head">
+      <div>
+        <p class="deep-clue-eyebrow">PERSONAL CLUES</p>
+        <h3>무료 결과에서 발견된 7가지 단서</h3>
+      </div>
+      <p>방향은 먼저 보여드리고, 정확한 시기와 원인·대응은 상세 리포트에서 이어서 풀이해요.</p>
+    </div>
+    <div class="deep-clue-track">
+      ${cards.map(card => `<article class="deep-clue-card">
+        <span class="dcc-no">${card.no}</span>
+        <h4 class="dcc-title">${escHtml(card.title)}</h4>
+        <p class="dcc-clue">${escHtml(card.clue)}</p>
+        <p class="dcc-more">상세 리포트에서 확인<br>${escHtml(card.more)}</p>
+      </article>`).join('')}
+    </div>
+    <div class="deep-clue-footer">
+      <p>카드를 옆으로 넘겨 단서를 확인해보세요. 결제 전까지는 세부 시기와 대응법이 공개되지 않아요.</p>
+      <button type="button" class="deep-clue-cta" onclick="showPayModal('premium')">7가지 전체 풀이 보기</button>
+    </div>
+  </section>`;
+}
+
 function renderReadingSections(parsed) {
   const wrap = document.getElementById('reading-sections');
   wrap.innerHTML = '';
@@ -5705,15 +6024,18 @@ function renderReadingSections(parsed) {
     if (_p) html += renderFortuneDebugPanel(_ft, _p);
   }
 
-  // 1. 핵심 진단
+  // 01. 핵심 요약
   if (parsed.coreDiagnosis) {
     html += `<div class="free-core-diagnosis" id="ai-reading-anchor" style="scroll-margin-top:48px">
-      <p class="fcd-label">✦ ${escHtml(name) ? escHtml(name) + '님의 ' : ''}핵심 진단</p>
+      <p class="fcd-label">✦ ${escHtml(name) ? escHtml(name) + '님의 ' : ''}핵심 요약</p>
       <p class="fcd-text">${escHtmlNl(parsed.coreDiagnosis)}</p>
     </div>`;
   }
+  html += renderQuickConclusions(parsed.quickConclusions);
 
-  // 2. 개인화 특징 3개
+  // 02. 성향 분석
+  html += renderResultGroupHeading('result-traits-anchor', '02', '성향 분석', '겉으로 드러나는 모습과 선택할 때 반복되는 반응을 함께 읽어요.');
+
   if (parsed.traits && parsed.traits.length) {
     const nums = ['01','02','03'];
     html += `<div class="free-traits-sec">
@@ -5731,28 +6053,12 @@ function renderReadingSections(parsed) {
       </div>
     </div>`;
   }
-
-  // 3. 오속 사주 유형
   html += renderTypeCard(S.sajuData?.osokType);
-
-  // 4. 대표 매력살 맛보기
-  {
-    const shinsal   = S.sajuData?.shinsal;
-    const knownHour = S.sajuData ? (S.sajuData.hourVal >= 0) : true;
-    html += renderShinsalCompact(shinsal, name, knownHour);
-  }
-
-  // 5. 대표 귀인·길신 맛보기
-  {
-    const knownHour   = S.sajuData ? (S.sajuData.hourVal >= 0) : true;
-    html += renderGwininCompact(S.sajuData?.auspicious, name, knownHour);
-  }
-
-  // 6. 능력 지표
   html += renderAbilityCard(S.sajuData?.osokAbilities);
 
-  // 7. 현재 대운 위치 (area signals 제외)
-  // 8. 현재 포함 3개 연도 흐름
+  // 03. 운의 흐름
+  html += renderResultGroupHeading('result-flow-anchor', '03', '운의 흐름', '현재 서 있는 구간과 가까운 흐름을 연결해서 살펴봐요.');
+
   {
     const _rawFt = S.sajuData?.fortuneTiming;
     const _ftPillars = S.sajuData
@@ -5768,7 +6074,6 @@ function renderReadingSections(parsed) {
     }
   }
 
-  // 9. 현재 흐름 + 분석 근거
   if (parsed.flow || parsed.analysisBasis) {
     html += `<div class="flow-sec">
       <p class="free-sec-label">지금의 흐름</p>
@@ -5780,7 +6085,17 @@ function renderReadingSections(parsed) {
     </div>`;
   }
 
-  // 10. 먼저 할 행동 + 피할 행동
+  // 04. 관계 분석
+  html += renderResultGroupHeading('result-relation-anchor', '04', '관계 분석', '매력이 드러나는 방식과 도움을 주는 관계의 결을 구분해요.');
+  {
+    const shinsal   = S.sajuData?.shinsal;
+    const knownHour = S.sajuData ? (S.sajuData.hourVal >= 0) : true;
+    html += renderShinsalCompact(shinsal, name, knownHour);
+    html += renderGwininCompact(S.sajuData?.auspicious, name, knownHour);
+  }
+
+  // 05. 실천 가이드
+  html += renderResultGroupHeading('result-action-anchor', '05', '실천 가이드', '지금 밀어야 할 것과 피해야 할 행동을 짧게 정리했어요.');
   if (parsed.firstAction || parsed.avoidAction) {
     html += `<div class="action-cards-sec">
       ${parsed.firstAction ? `<div class="flow-action-box do-box">
@@ -5794,7 +6109,7 @@ function renderReadingSections(parsed) {
     </div>`;
   }
 
-  // 11. 상세 성향 아코디언
+  // 무료 상세 성향
   const det = parsed.details || {};
   const detItems = [
     { label: '타고난 성향',           text: det.personality },
@@ -5820,10 +6135,13 @@ function renderReadingSections(parsed) {
     </div>`;
   }
 
-  // 12. 선택한 고민에 맞춘 유료 연결 문장
+  // 선택한 고민에 맞춘 연결 문장
   if (concern.selectedBeforeAnalysis) {
     html += renderConcernConnectionText(concern);
   }
+
+  // 상세 리포트의 7개 주제와 직접 이어지는 개인화 단서
+  html += renderDeepCluePreview(parsed);
 
   wrap.innerHTML = html;
   document.getElementById('saju-nav').classList.add('visible');
@@ -5914,7 +6232,7 @@ function navScrollTo(id) {
 }
 
 function initNavObserver() {
-  const targets = ['sec-summary','ai-reading-anchor','product-select-sec','saju-details-wrap'];
+  const targets = ['ai-reading-anchor','result-traits-anchor','result-flow-anchor','result-relation-anchor','result-action-anchor'];
   const items   = document.querySelectorAll('.sn-item');
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
