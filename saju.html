@@ -6572,8 +6572,6 @@ async function submitSajuEmail(){
     // 저장 실패해도 결제는 진행
   }
 
-  closeSajuEmailPopup();
-
   const priceMap2={premium:14900,single:4900,basic:9900};
   pxc('PaymentLinkOpened',{tier,currency:'KRW'});
   px('InitiateCheckout',{value:priceMap2[tier]||9900,currency:'KRW',num_items:1});
@@ -6584,10 +6582,11 @@ async function submitSajuEmail(){
       const r = await fetch('/api/webhook?action=coupon-free-saju-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ couponCode: SCQ.code, productId: SCQ.productId, userId: _getSajuUserId(), email, tier }),
+        body: JSON.stringify({ code: SCQ.code, productId: SCQ.productId, userId: _getSajuUserId(), email, tier }),
       });
       const d = await r.json();
       if (!r.ok || d.error) throw new Error(d.error || 'free order fail');
+      closeSajuEmailPopup();
       window.location.href = `/saju.html?payment=success&email=${encodeURIComponent(email)}&oid=${d.orderId}`;
     } catch(e) {
       alert('무료 쿠폰 처리 중 오류가 발생했어요. 다시 시도해주세요.');
@@ -6606,6 +6605,7 @@ async function submitSajuEmail(){
     });
     const data = await res2.json();
     if (data.error) throw new Error('결제 준비 실패');
+    closeSajuEmailPopup();
     window.location.href = isMobile ? data.mobile_url : data.pc_url;
   } catch(e) {
     alert('결제 준비 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
