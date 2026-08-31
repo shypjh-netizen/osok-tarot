@@ -1328,6 +1328,21 @@ async function sendSajuEmail(email, sajuData, isPremium) {
   /* ── 티어 확정 ── */
   const tier = sajuData.tier || (isPremium ? 'premium' : 'basic');
 
+  /* ── single 티어: concern 객체 복원 ──
+     saju_pending에 concern.category가 없어도 questionTopic에서 역매핑해 복원.
+     payCustomQuestion/showPayModal 경로로 저장된 데이터 대응. */
+  if (tier === 'single' && !sajuData.concern?.category) {
+    const labelToKey = Object.fromEntries(
+      Object.entries(FOCUS_TOPIC_MAP).map(([k, v]) => [v, k])
+    );
+    const category = labelToKey[sajuData.questionTopic] || 'custom';
+    sajuData.concern = {
+      category,
+      label: sajuData.questionTopic || FOCUS_TOPIC_MAP[category] || '직접 질문',
+      question: sajuData.customQuestion || sajuData.concern?.question || '',
+    };
+  }
+
   /* ── 입력 검증 ── */
   const validationErrors = validateSajuInput(sajuData, tier);
   if (validationErrors.length > 0) {
