@@ -481,7 +481,21 @@ function renderChecklistHtml(content, editorial = false) {
 }
 
 function buildFocusVisualHtml(name, topicLabel, visualDigest) {
-  if (!visualDigest) return '';
+  /* visualDigest 생성 실패 시에도 READING MAP이 사라지지 않도록 기본값 보장 */
+  const vd = visualDigest || {
+    overview: `${name}님의 ${topicLabel} 흐름 분석 결과입니다`,
+    signals: [
+      { label: '지금의 흐름', level: 3, keyword: '흐름 분석 완료' },
+      { label: '밀어야 할 것', level: 4, keyword: '핵심 행동 실천' },
+      { label: '점검할 것',   level: 3, keyword: '신중한 선택' },
+    ],
+    timeline: [
+      { label: '지금',     text: '현재 흐름을 파악하세요' },
+      { label: '다음 단계', text: '리딩에서 제안한 행동을 실천하세요' },
+      { label: '확인 신호', text: '30일 후 변화를 점검하세요' },
+    ],
+  };
+  /* 이하 vd를 사용하도록 변수 교체 (원래 코드와 동일 로직) */
 
   const clamp = (n) => Math.max(1, Math.min(5, Number(n) || 3));
   const meter = (level, color) => {
@@ -491,14 +505,14 @@ function buildFocusVisualHtml(name, topicLabel, visualDigest) {
     ).join('');
   };
   const safe = (v) => escHtml(String(v || ''));
-  const signals = Array.isArray(visualDigest.signals) ? visualDigest.signals.slice(0, 3) : [];
-  const timeline = Array.isArray(visualDigest.timeline) ? visualDigest.timeline.slice(0, 3) : [];
+  const signals = Array.isArray(vd.signals) ? vd.signals.slice(0, 3) : [];
+  const timeline = Array.isArray(vd.timeline) ? vd.timeline.slice(0, 3) : [];
 
   return `
     <div style="margin:0 0 20px;padding:22px 20px;background:#fffdf8;border:1px solid #d9cebd;border-radius:2px">
       <p style="color:#b4472a;font-size:11px;letter-spacing:3px;margin:0 0 8px;text-align:center">READING MAP</p>
       <h2 style="color:#10283c;font-size:19px;line-height:1.5;margin:0 0 5px;text-align:center;font-weight:700">${safe(name)}님의 ${safe(topicLabel)} 흐름 지도</h2>
-      <p style="color:#71685e;font-size:13px;line-height:1.7;margin:0 0 18px;text-align:center;word-break:keep-all">${safe(visualDigest.overview)}</p>
+      <p style="color:#71685e;font-size:13px;line-height:1.7;margin:0 0 18px;text-align:center;word-break:keep-all">${safe(vd.overview)}</p>
 
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:7px 0;margin:0 -7px 18px">
         <tr>
@@ -525,9 +539,10 @@ function buildFocusVisualHtml(name, topicLabel, visualDigest) {
     </div>`;
 }
 
-function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, summaryCard, visualDigest) {
+function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, summaryCard, visualDigest, tier = '') {
   /* ── 공통 스타일 토큰 ── */
-  const isEditorial = productLabel === '내 질문 하나 집중 리딩';
+  /* tier === 'single' 명시 체크로 문자열 불일치 폴백 방지 */
+  const isEditorial = tier === 'single' || productLabel === '내 질문 하나 집중 리딩';
   const C = isEditorial ? {
     bg:        '#f2ede3',
     card:      '#fffdf8',
@@ -1357,7 +1372,8 @@ async function sendSajuEmail(email, sajuData, isPremium) {
       closingMessage || '',
       '내 질문 하나 집중 리딩',
       summaryCard || null,
-      visualDigest || null
+      visualDigest,          /* visualFallback으로 초기화되어 항상 존재 */
+      'single'               /* isEditorial 결정을 tier에 명시적으로 의존 */
     );
 
     // Resend 발송
@@ -1529,7 +1545,9 @@ ${name}님의 기질과 ${currentYear}년 대운·세운 에너지에 맞는 구
     finalSections,
     closingMsg,
     productLabel,
-    tier === 'premium' ? premiumFocusSummaryCard : null
+    tier === 'premium' ? premiumFocusSummaryCard : null,
+    undefined,  /* visualDigest — basic/premium 불필요 */
+    tier        /* isEditorial=false 보장 (single이 아니므로) */
   );
 
   const emailRes = await fetch('https://api.resend.com/emails', {
