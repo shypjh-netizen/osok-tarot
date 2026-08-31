@@ -1603,6 +1603,19 @@ export default async function handler(req, res) {
   if (!sajuData) {
     sajuData = await redis.get(`saju_pending:${email.toLowerCase().trim()}`);
     if (!sajuData) return res.status(404).json({ error: 'saju_data_not_found' });
+
+    // saju_pending의 tier가 없거나 'basic'이면 주문 기록으로 정정
+    // (saju-save 실패 시 stale 데이터 문제 방지)
+    if (sajuData.tier !== 'single' && sajuData.tier !== 'premium') {
+      try {
+        const oid = await redis.get(`order:saju:by_email:${email.toLowerCase().trim()}`);
+        if (oid) {
+          const orderRec = await redis.get(`order:saju:${oid}`);
+          if (orderRec?.tier) sajuData.tier = orderRec.tier;
+        }
+      } catch { /* 조회 실패 시 기존 tier 유지 */ }
+    }
+
     isPremium = (sajuData.tier || 'basic') === 'premium';
   }
 
