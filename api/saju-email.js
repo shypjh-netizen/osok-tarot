@@ -251,7 +251,7 @@ async function generateReading(sajuContext, prompt, systemPrompt, maxTokens = 22
   if (!res.ok) throw new Error(await res.text());
   const data = await res.json();
   if (data.stop_reason === 'max_tokens') {
-    throw new Error(`max_tokens_reached(limit=${maxTokens}): 출력이 잘렸어요`);
+    console.warn(`[saju-email][generateReading] max_tokens reached (limit=${maxTokens}), returning partial output`);
   }
   return data.content[0].text;
 }
@@ -1327,7 +1327,7 @@ async function generatePremiumVisualData(sajuData, ctx, name, currentYear, curre
   }
 }`;
   try {
-    const raw = await generateReading(ctx, prompt, systemPrompt, 1100);
+    const raw = await generateReading(ctx, prompt, systemPrompt, 1600);
     const match = raw.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('no json');
     return JSON.parse(match[0]);
