@@ -539,10 +539,10 @@ function buildFocusVisualHtml(name, topicLabel, visualDigest) {
     </div>`;
 }
 
-function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, summaryCard, visualDigest, tier = '') {
+function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, summaryCard, visualDigest, tier = '', premiumVisualHtml = '') {
   /* ── 공통 스타일 토큰 ── */
-  /* tier === 'single' 명시 체크로 문자열 불일치 폴백 방지 */
-  const isEditorial = tier === 'single' || productLabel === '내 질문 하나 집중 리딩';
+  /* tier === 'single'/'premium' 명시 체크로 문자열 불일치 폴백 방지 */
+  const isEditorial = tier === 'single' || tier === 'premium' || productLabel === '내 질문 하나 집중 리딩';
   const C = isEditorial ? {
     bg:        '#f2ede3',
     card:      '#fffdf8',
@@ -606,9 +606,11 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, su
     </div>` : '';
 
   /* ── 섹션 카드 ── */
-  const sectionsHtml = sections.map(({ icon, label, content, isTimeline, isFocusTimeline, focusType, is30DayPlan }, index) => {
+  const sectionsHtml = sections.map(({ icon, label, content, isTimeline, isFocusTimeline, focusType, is30DayPlan, isAttractionCard = false, attractionData = null }, index) => {
     let bodyHtml;
-    if (isTimeline) {
+    if (isAttractionCard) {
+      bodyHtml = _renderAttractionCards(attractionData);
+    } else if (isTimeline) {
       bodyHtml = renderTimelineHtml(content);
     } else if (isFocusTimeline) {
       bodyHtml = renderFocusYearCards(content, isEditorial);
@@ -669,8 +671,9 @@ function buildEmailHtml(name, headerMeta, sections, closingMsg, productLabel, su
       <p style="color:${C.sub};opacity:.62;font-size:11px;margin:10px 0 0">${isEditorial ? '명리 계산을 바탕으로 질문의 방향을 읽어드려요 · 오락 및 참고 목적' : '본 리딩은 오속 사주 기반 분석이에요 · 오락 및 참고 목적'}</p>
     </div>
 
+    ${tier === 'premium' ? premiumVisualHtml : ''}
     ${questionHtml}
-    ${isEditorial ? buildFocusVisualHtml(name, headerMeta.topicLabel || '선택한 고민', visualDigest) : ''}
+    ${tier === 'single' ? buildFocusVisualHtml(name, headerMeta.topicLabel || '선택한 고민', visualDigest) : ''}
     ${summaryHtml}
 
     <div style="background:${C.card};border:1px solid ${C.cardBrdr};border-radius:${isEditorial ? '2px' : '14px'};padding:20px 16px 24px">
@@ -1268,6 +1271,197 @@ ${yearNote}
 /* ─────────────────────────────────────────────────────────────
    프리미엄 전용: 매력살·귀인운 상세 섹션
 ───────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   프리미엄 시각 데이터 AI 생성 (JSON 한 번 호출)
+───────────────────────────────────────────────────────────── */
+async function generatePremiumVisualData(sajuData, ctx, name, currentYear, currentSewoon, systemPrompt) {
+  const birthYear = sajuData.year || 1990;
+  const age = currentYear - birthYear;
+  const prompt = `${name}님(${birthYear}년생, 현재 약 ${age}세)의 사주를 바탕으로 아래 JSON만 출력하세요.
+숫자 1~5는 사주 기질·오행 흐름 기반 상대적 강약이며 절대 점수가 아닙니다. 미래를 단정하지 마세요.
+다른 설명 없이 JSON만 출력하세요.
+
+{
+  "blueprint": {
+    "headline": "${name}님을 한 문장으로 압축한 결론",
+    "strength1": "타고난 강점 첫 번째",
+    "strength2": "타고난 강점 두 번째",
+    "main_block": "반복되는 막힘 한 줄",
+    "turning_point": "지금 가장 중요한 전환점 한 줄",
+    "first_domain": "가장 먼저 정리할 영역 한 줄"
+  },
+  "lifetime_flow": {
+    "20s": 1에서5사이정수,
+    "30s": 1에서5사이정수,
+    "40s": 1에서5사이정수,
+    "50s": 1에서5사이정수,
+    "60s": 1에서5사이정수,
+    "peak": "20s|30s|40s|50s|60s 중 하나",
+    "peak_note": "해당 시기 특징 한 줄",
+    "current_note": "현재(${age}세) 흐름 한 줄"
+  },
+  "career_talent": {
+    "planning": 1에서5사이정수,
+    "analysis": 1에서5사이정수,
+    "expression": 1에서5사이정수,
+    "leadership": 1에서5사이정수,
+    "best_style": "가장 성과가 나는 방식 한 문장"
+  },
+  "wealth_flow": {
+    "earning": "강함|보통|점검 필요",
+    "earning_note": "근거 한 줄",
+    "keeping": "강함|보통|점검 필요",
+    "keeping_note": "근거 한 줄",
+    "timing": "강함|보통|점검 필요",
+    "timing_note": "근거 한 줄"
+  },
+  "timeline": {
+    "now": { "opp": "현재 기회 한 줄", "caution": "현재 주의 한 줄", "action": "지금 행동 한 줄" },
+    "late2026": { "opp": "2026년 후반 기회 한 줄", "caution": "주의 한 줄", "action": "행동 한 줄" },
+    "early2027": { "opp": "2027년 초반 기회 한 줄", "caution": "주의 한 줄", "action": "행동 한 줄" }
+  },
+  "attraction": {
+    "opportunity_relation": "기회가 들어오는 사람 또는 관계 두 문장",
+    "avoid_pattern": "피해야 할 관계 패턴 두 문장",
+    "action": "실제로 움직여야 하는 자리 또는 행동 두 문장"
+  }
+}`;
+  try {
+    const raw = await generateReading(ctx, prompt, systemPrompt, 1100);
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('no json');
+    return JSON.parse(match[0]);
+  } catch (e) {
+    console.error('[saju-email][premium-visual]', e.message);
+    return null;
+  }
+}
+
+/* ── BLUEPRINT ── */
+function buildBlueprintHtml(data, name) {
+  if (!data) return '';
+  const h = (v) => escHtml(String(v || ''));
+  return `<div style="margin:0 0 20px;padding:24px 20px;background:#fffdf8;border:1px solid #d9cebd;border-radius:2px">
+  <p style="color:#b4472a;font-size:11px;letter-spacing:3px;margin:0 0 14px;text-align:center">PREMIUM SAJU BLUEPRINT</p>
+  <p style="color:#10283c;font-size:17px;font-weight:700;line-height:1.65;margin:0 0 16px;text-align:center;word-break:keep-all">${h(data.headline)}</p>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin-bottom:10px"><tr>
+    <td width="50%" valign="top" style="padding:0 6px 0 0"><div style="background:#f7f2e9;border:1px solid #e2d8c8;padding:12px">
+      <p style="color:#b4472a;font-size:10px;letter-spacing:.05em;margin:0 0 5px">타고난 강점</p>
+      <p style="color:#10283c;font-size:12px;line-height:1.65;margin:0;word-break:keep-all">${h(data.strength1)}</p>
+      ${data.strength2 ? `<p style="color:#10283c;font-size:12px;line-height:1.65;margin:5px 0 0;word-break:keep-all">${h(data.strength2)}</p>` : ''}
+    </div></td>
+    <td width="50%" valign="top" style="padding:0 0 0 6px"><div style="background:#f7f2e9;border:1px solid #e2d8c8;padding:12px">
+      <p style="color:#b4472a;font-size:10px;letter-spacing:.05em;margin:0 0 5px">반복되는 막힘</p>
+      <p style="color:#10283c;font-size:12px;line-height:1.65;margin:0;word-break:keep-all">${h(data.main_block)}</p>
+    </div></td>
+  </tr></table>
+  <div style="padding:12px 14px;background:#f2ede3;border-left:3px solid #b4472a;margin-bottom:8px">
+    <p style="color:#71685e;font-size:10px;letter-spacing:.05em;margin:0 0 4px">지금 가장 중요한 전환점</p>
+    <p style="color:#10283c;font-size:13px;line-height:1.7;margin:0;word-break:keep-all">${h(data.turning_point)}</p>
+  </div>
+  <div style="padding:12px 14px;background:#f2ede3;border-left:3px solid #82643d">
+    <p style="color:#71685e;font-size:10px;letter-spacing:.05em;margin:0 0 4px">가장 먼저 정리할 영역</p>
+    <p style="color:#10283c;font-size:13px;line-height:1.7;margin:0;word-break:keep-all">${h(data.first_domain)}</p>
+  </div>
+</div>`;
+}
+
+/* ── 평생 대운 흐름 SVG ── */
+function buildLifetimeFlowHtml(data, birthYear, currentYear) {
+  if (!data) return '';
+  const h = (v) => escHtml(String(v || ''));
+  const clamp5 = (n) => Math.max(1, Math.min(5, Number(n) || 3));
+  const decades = ['20s','30s','40s','50s','60s'];
+  const labels  = ['20대','30대','40대','50대','60대'];
+  const levels  = decades.map(d => clamp5(data[d]));
+  const W=520, H=110, pL=28, pR=28, pT=14, pB=28;
+  const cW=W-pL-pR, cH=H-pT-pB;
+  const age = currentYear - (birthYear||1984);
+  let ci=0; if(age>=60)ci=4; else if(age>=50)ci=3; else if(age>=40)ci=2; else if(age>=30)ci=1;
+  const pi = Math.max(0, decades.indexOf(data.peak||'40s'));
+  const pts = levels.map((lv,i)=>({ x:pL+(i/4)*cW, y:pT+(1-(lv-1)/4)*cH }));
+  const pathD = pts.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const gridSvg = [1,2,3,4,5].map(lv=>{const y=pT+(1-(lv-1)/4)*cH;return`<line x1="${pL}" y1="${y.toFixed(1)}" x2="${(W-pR).toFixed(1)}" y2="${y.toFixed(1)}" stroke="#e2d8c8" stroke-width="0.6"/>`;}).join('');
+  const labelsSvg = pts.map((p,i)=>`<text x="${p.x.toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="9" fill="#9A8A78">${labels[i]}</text>`).join('');
+  const peakDot = pi!==ci?`<circle cx="${pts[pi].x.toFixed(1)}" cy="${pts[pi].y.toFixed(1)}" r="4" fill="#82643d" opacity=".75"/>`:'';
+  const curDot  = `<circle cx="${pts[ci].x.toFixed(1)}" cy="${pts[ci].y.toFixed(1)}" r="6" fill="#b4472a"/><circle cx="${pts[ci].x.toFixed(1)}" cy="${pts[ci].y.toFixed(1)}" r="2.5" fill="#fffdf8"/>`;
+  return `<div style="margin:0 0 20px;padding:22px 20px;background:#fffdf8;border:1px solid #d9cebd;border-radius:2px">
+  <p style="color:#b4472a;font-size:11px;letter-spacing:3px;margin:0 0 12px;text-align:center">평생 대운 흐름</p>
+  <div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:${W}px;display:block;margin:0 auto">
+    ${gridSvg}
+    <path d="${pathD}" fill="none" stroke="#10283c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${peakDot}${curDot}${labelsSvg}
+  </svg></div>
+  <p style="color:#71685e;font-size:11px;margin:8px 0 0;text-align:center"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#b4472a;vertical-align:middle;margin-right:5px"></span>현재 위치${pi!==ci?`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#82643d;vertical-align:middle;margin:0 5px 0 14px"></span>주요 전환점`:''}</p>
+  ${data.current_note?`<p style="color:#10283c;font-size:12px;line-height:1.65;margin:6px 0 0;text-align:center;word-break:keep-all">${h(data.current_note)}</p>`:''}
+  ${data.peak_note?`<p style="color:#71685e;font-size:11px;line-height:1.65;margin:4px 0 0;text-align:center;word-break:keep-all">${h(data.peak_note)}</p>`:''}
+</div>`;
+}
+
+/* ── 직업·재능 구조 막대 ── */
+function buildCareerTalentHtml(data) {
+  if (!data) return '';
+  const h = (v) => escHtml(String(v || ''));
+  const clamp5 = (n) => Math.max(1, Math.min(5, Number(n)||3));
+  const items = [{key:'planning',label:'기획'},{key:'analysis',label:'분석'},{key:'expression',label:'표현'},{key:'leadership',label:'리더십'}];
+  const levels = items.map(it=>({...it, lv:clamp5(data[it.key])}));
+  const maxLv = Math.max(...levels.map(l=>l.lv));
+  const bars = levels.map(it=>{
+    const isTop=it.lv===maxLv;
+    const color=isTop?'#b4472a':(it.lv>=4?'#10283c':'#9A8A78');
+    const pct=((it.lv/5)*100).toFixed(0);
+    return `<tr><td style="padding:6px 10px 6px 0;color:#71685e;font-size:11px;white-space:nowrap;width:52px">${it.label}</td><td style="padding:6px 0"><div style="background:#e7dfd1;height:7px;width:100%"><div style="background:${color};height:7px;width:${pct}%"></div></div></td></tr>`;
+  }).join('');
+  return `<div style="margin:0 0 20px;padding:22px 20px;background:#fffdf8;border:1px solid #d9cebd;border-radius:2px">
+  <p style="color:#b4472a;font-size:11px;letter-spacing:3px;margin:0 0 14px;text-align:center">직업·재능 구조</p>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse">${bars}</table>
+  ${data.best_style?`<p style="color:#10283c;font-size:12px;line-height:1.7;margin:12px 0 0;padding-top:12px;border-top:1px solid #e2d8c8;word-break:keep-all">${h(data.best_style)}</p>`:''}
+</div>`;
+}
+
+/* ── 재물 흐름 ── */
+function buildWealthFlowHtml(data) {
+  if (!data) return '';
+  const h = (v) => escHtml(String(v || ''));
+  const sC=(s)=>s==='강함'?'#376d63':s==='보통'?'#82643d':'#b4472a';
+  const sB=(s)=>s==='강함'?'#eef3ef':s==='보통'?'#f4efe6':'#f8eee9';
+  const sBr=(s)=>s==='강함'?'#aac0b7':s==='보통'?'#cbbda8':'#d5aa98';
+  const items=[{label:'돈을 버는 힘',key:'earning'},{label:'돈을 지키는 힘',key:'keeping'},{label:'확장 타이밍',key:'timing'}];
+  const cells=items.map(it=>{const s=data[it.key]||'보통';const n=data[`${it.key}_note`]||'';
+    return `<td width="33%" valign="top" style="padding:12px 6px;background:${sB(s)};border:1px solid ${sBr(s)}"><p style="color:#71685e;font-size:10px;letter-spacing:.04em;margin:0 0 4px">${it.label}</p><p style="color:${sC(s)};font-size:12px;font-weight:700;margin:0 0 5px">${h(s)}</p><p style="color:#10283c;font-size:11px;line-height:1.55;margin:0;word-break:keep-all">${h(n)}</p></td>`;
+  }).join('');
+  return `<div style="margin:0 0 20px;padding:22px 20px;background:#fffdf8;border:1px solid #d9cebd;border-radius:2px">
+  <p style="color:#b4472a;font-size:11px;letter-spacing:3px;margin:0 0 14px;text-align:center">재물 흐름</p>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:5px 0;margin:0 -5px"><tr>${cells}</tr></table>
+</div>`;
+}
+
+/* ── 2026 → 2027 흐름 타임라인 ── */
+function build2026TimelineHtml(data) {
+  if (!data) return '';
+  const h = (v) => escHtml(String(v || ''));
+  const periods=[{label:'지금',key:'now'},{label:'2026년 후반',key:'late2026'},{label:'2027년 초반',key:'early2027'}];
+  const rows=periods.map(p=>{const d=data[p.key]||{};
+    return `<tr><td style="padding:12px 12px 12px 0;border-bottom:1px solid #e2d8c8;white-space:nowrap;vertical-align:top;width:75px"><p style="color:#b4472a;font-size:11px;font-weight:700;margin:0">${p.label}</p></td><td style="padding:12px 0;border-bottom:1px solid #e2d8c8;vertical-align:top">${d.opp?`<p style="color:#376d63;font-size:10px;font-weight:700;margin:0 0 2px">기회</p><p style="color:#10283c;font-size:12px;line-height:1.6;margin:0 0 6px;word-break:keep-all">${h(d.opp)}</p>`:''} ${d.caution?`<p style="color:#b4472a;font-size:10px;font-weight:700;margin:0 0 2px">주의</p><p style="color:#10283c;font-size:12px;line-height:1.6;margin:0 0 6px;word-break:keep-all">${h(d.caution)}</p>`:''} ${d.action?`<p style="color:#82643d;font-size:10px;font-weight:700;margin:0 0 2px">행동</p><p style="color:#10283c;font-size:12px;line-height:1.6;margin:0;word-break:keep-all">${h(d.action)}</p>`:''}</td></tr>`;
+  }).join('');
+  return `<div style="margin:0 0 20px;padding:22px 20px;background:#fffdf8;border:1px solid #d9cebd;border-radius:2px">
+  <p style="color:#b4472a;font-size:11px;letter-spacing:3px;margin:0 0 14px;text-align:center">2026 → 2027 흐름</p>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse">${rows}</table>
+</div>`;
+}
+
+/* ── 매력살·귀인운 카드 본문 렌더 (섹션 렌더러 내부용) ── */
+function _renderAttractionCards(d) {
+  if (!d) return '';
+  const h = (v) => escHtml(String(v || ''));
+  const items=[
+    {label:'기회가 들어오는 사람 또는 관계',key:'opportunity_relation',color:'#376d63',bg:'#eef3ef',brdr:'#aac0b7'},
+    {label:'피해야 할 관계 패턴',key:'avoid_pattern',color:'#b4472a',bg:'#f8eee9',brdr:'#d5aa98'},
+    {label:'실제로 움직여야 하는 자리 또는 행동',key:'action',color:'#82643d',bg:'#f4efe6',brdr:'#cbbda8'},
+  ];
+  return items.map(it=>`<div style="padding:13px 14px;background:${it.bg};border:1px solid ${it.brdr};margin-bottom:7px"><p style="color:${it.color};font-size:10px;letter-spacing:.05em;font-weight:700;margin:0 0 5px">${it.label}</p><p style="color:#10283c;font-size:13px;line-height:1.7;margin:0;word-break:keep-all">${h(d[it.key])}</p></div>`).join('');
+}
+
 async function buildPremiumAttractionSection(sajuData, ctx, name, currentYear, systemPrompt) {
   const shinsal    = sajuData.shinsal    || {};
   const auspicious = sajuData.auspicious || {};
@@ -1418,28 +1612,37 @@ async function sendSajuEmail(email, sajuData, isPremium) {
   const relStatus = sajuData.relationStatus || 'private';
   const loveCfg   = REL_LOVE_CONFIG[relStatus] || REL_LOVE_CONFIG.private;
 
-  /* 프리미엄 전용 사전 섹션 (순서: focus 리딩 → 매력살·귀인운 → 기존 종합 리딩) */
-  let premiumFocusSections   = [];
+  /* 프리미엄 전용 사전 섹션 (순서: 시각 리포트 → focus 리딩 → 매력살·귀인운 → 기존 종합 리딩 → 60일) */
+  let premiumFocusSections    = [];
   let premiumFocusSummaryCard = null;
-  let premiumAttractionSection = null;
+  let premiumVisualData       = null;
+  let premiumTopHtml          = '';
 
   if (tier === 'premium') {
-    try {
-      const { sections: fSecs, summaryCard: fCard } = await generateFocusReading(
-        sajuData, ctx, name, currentYear, currentSewoon, systemPrompt
-      );
-      premiumFocusSections   = fSecs;
-      premiumFocusSummaryCard = fCard;
-    } catch (e) {
-      console.error('[saju-email][premium-focus]', e.message);
+    /* 시각 데이터와 focus 리딩을 병렬로 생성 */
+    const [visualResult, focusResult] = await Promise.allSettled([
+      generatePremiumVisualData(sajuData, ctx, name, currentYear, currentSewoon, systemPrompt),
+      generateFocusReading(sajuData, ctx, name, currentYear, currentSewoon, systemPrompt),
+    ]);
+    if (visualResult.status === 'fulfilled') {
+      premiumVisualData = visualResult.value;
+    } else {
+      console.error('[saju-email][premium-visual]', visualResult.reason?.message);
     }
-    try {
-      premiumAttractionSection = await buildPremiumAttractionSection(
-        sajuData, ctx, name, currentYear, systemPrompt
-      );
-    } catch (e) {
-      console.error('[saju-email][premium-attraction]', e.message);
+    if (focusResult.status === 'fulfilled') {
+      premiumFocusSections    = focusResult.value.sections;
+      premiumFocusSummaryCard = focusResult.value.summaryCard;
+    } else {
+      console.error('[saju-email][premium-focus]', focusResult.reason?.message);
     }
+    /* 5가지 시각 섹션 HTML 조립 (BLUEPRINT → 대운 → 재능 → 재물 → 타임라인) */
+    premiumTopHtml = [
+      buildBlueprintHtml(premiumVisualData?.blueprint, name),
+      buildLifetimeFlowHtml(premiumVisualData?.lifetime_flow, sajuData.year, currentYear),
+      buildCareerTalentHtml(premiumVisualData?.career_talent),
+      buildWealthFlowHtml(premiumVisualData?.wealth_flow),
+      build2026TimelineHtml(premiumVisualData?.timeline),
+    ].join('');
   }
 
   /* 1. 질문 맞춤 답변 (basic만 — premium은 focus 리딩이 대신) */
@@ -1540,16 +1743,29 @@ ${name}님의 기질과 ${currentYear}년 대운·세운 에너지에 맞는 구
       const content = await generateReading(ctx, cat.prompt, systemPrompt, 2200);
       sections.push({ icon: cat.icon, label: cat.label, content });
     }
+    /* 60일 실행 로드맵 (프리미엄 전용 마지막 섹션) */
+    const plan60Prompt = `${name}님의 사주와 ${currentYear}년 ${currentSewoon || ''} 세운을 바탕으로 앞으로 60일(약 2개월) 실행 로드맵을 작성해주세요.
+1~30일: 지금 당장 시작할 것 3~4가지를 구체적으로.
+31~60일: 다음 단계로 나아갈 것 3~4가지를 구체적으로.
+60일 후 확인할 변화 신호 2~3가지.
+${name}님의 기질·현재 운 흐름에 맞게 개인화하세요. 실용적이고 따뜻하게. 반드시 해요체, 마크다운 금지.`;
+    const plan60 = await generateReading(ctx, plan60Prompt, systemPrompt, 1500);
+    sections.push({ icon: '', label: '60일 실행 로드맵', content: plan60 });
   }
 
   /* 6. 마무리 메시지 */
   const closingPrompt = `${name}님의 사주 리딩을 마무리하는 따뜻한 메시지를 3~4문장으로 작성해주세요. 이 사람의 기질과 ${currentYear}년 에너지를 담아 개인화되게. 반드시 해요체, 마크다운 금지.`;
   const closingMsg = await generateReading(ctx, closingPrompt, systemPrompt, 800);
 
+  /* 매력살·귀인운 카드 섹션 (프리미엄, visualData에서 가져옴) */
+  const attractionCardSection = tier === 'premium' && premiumVisualData?.attraction
+    ? { icon: '', label: '매력살 · 귀인운', isAttractionCard: true, attractionData: premiumVisualData.attraction }
+    : null;
+
   const finalSections = tier === 'premium'
     ? [
         ...premiumFocusSections,
-        ...(premiumAttractionSection ? [premiumAttractionSection] : []),
+        ...(attractionCardSection ? [attractionCardSection] : []),
         ...sections,
       ]
     : sections;
@@ -1561,8 +1777,9 @@ ${name}님의 기질과 ${currentYear}년 대운·세운 에너지에 맞는 구
     closingMsg,
     productLabel,
     tier === 'premium' ? premiumFocusSummaryCard : null,
-    undefined,  /* visualDigest — basic/premium 불필요 */
-    tier        /* isEditorial=false 보장 (single이 아니므로) */
+    undefined,
+    tier,
+    premiumTopHtml   /* 프리미엄 시각 섹션 HTML (BLUEPRINT + 4 차트) */
   );
 
   const emailRes = await fetch('https://api.resend.com/emails', {
